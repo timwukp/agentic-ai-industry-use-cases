@@ -47,6 +47,15 @@ from bedrock_agentcore.tools import CodeInterpreterClient, BrowserClient
 import structlog
 from secure import Secure
 
+# FRAUD DETECTION: Import fraud detection module
+from fraud_detection import (
+    FraudDetectionEngine,
+    TransactionRequest,
+    FraudAnalysisResult,
+    FraudRule,
+    FraudRiskLevel
+)
+
 # SECURITY FIX: Configure secure logging with structured logging
 structlog.configure(
     processors=[
@@ -116,6 +125,10 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
+# FRAUD DETECTION: Initialize fraud detection engine
+fraud_engine = FraudDetectionEngine()
+logger.info("Fraud detection engine initialized")
+
 # Health check endpoint
 @app.get("/health")
 async def health_check(request: Request):
@@ -146,6 +159,254 @@ async def analyze_inventory(
     except Exception as e:
         logger.error("Error in inventory analysis", error=str(e))
         raise HTTPException(status_code=400, detail=str(e))
+
+# FRAUD DETECTION ENDPOINTS
+
+@app.post("/fraud/analyze", response_model=FraudAnalysisResult)
+async def analyze_transaction_fraud(
+    transaction: TransactionRequest,
+    request: Request
+):
+    """
+    Analyze a transaction for fraud risk
+    
+    Performs comprehensive fraud detection including:
+    - Transaction amount anomaly detection
+    - Purchase pattern analysis
+    - Payment method verification
+    - Customer behavior analysis
+    - Real-time fraud risk scoring
+    
+    Returns detailed fraud analysis with risk score, flags, and recommendations
+    """
+    try:
+        logger.info(
+            "Fraud analysis API called",
+            transaction_id=transaction.transaction_id,
+            customer_id=transaction.customer_id,
+            client_host=request.client.host if request.client else "unknown"
+        )
+        
+        # Perform fraud analysis
+        result = fraud_engine.analyze_transaction(transaction)
+        
+        # Log critical risk transactions
+        if result.risk_level in [FraudRiskLevel.HIGH, FraudRiskLevel.CRITICAL]:
+            logger.warning(
+                "High-risk transaction detected",
+                transaction_id=transaction.transaction_id,
+                risk_score=result.risk_score,
+                risk_level=result.risk_level.value,
+                flags=result.flags
+            )
+        
+        return result
+        
+    except ValueError as e:
+        logger.error("Validation error in fraud analysis", error=str(e))
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error("Error in fraud analysis", error=str(e), exc_info=True)
+        raise HTTPException(status_code=500, detail="Internal server error in fraud analysis")
+
+@app.get("/fraud/report")
+async def get_fraud_report(
+    customer_id: Optional[str] = None,
+    start_date: Optional[str] = None,
+    end_date: Optional[str] = None,
+    request: Request = None
+):
+    """
+    Retrieve fraud detection report
+    
+    Generate comprehensive fraud detection report with:
+    - Total transactions analyzed
+    - Number of flagged transactions
+    - Fraud detection rate
+    - Time period coverage
+    
+    Optional filters:
+    - customer_id: Filter by specific customer
+    - start_date: Filter by start date (ISO format)
+    - end_date: Filter by end date (ISO format)
+    """
+    try:
+        # Sanitize inputs
+        if customer_id:
+            customer_id = bleach.clean(customer_id, tags=[], attributes={}, strip=True)
+        if start_date:
+            start_date = bleach.clean(start_date, tags=[], attributes={}, strip=True)
+        if end_date:
+            end_date = bleach.clean(end_date, tags=[], attributes={}, strip=True)
+        
+        logger.info(
+            "Fraud report requested",
+            customer_id=customer_id,
+            start_date=start_date,
+            end_date=end_date
+        )
+        
+        # Generate report
+        report = fraud_engine.get_fraud_report(
+            customer_id=customer_id,
+            start_date=start_date,
+            end_date=end_date
+        )
+        
+        return {
+            "status": "success",
+            "report": report,
+            "generated_at": datetime.utcnow().isoformat()
+        }
+        
+    except Exception as e:
+        logger.error("Error generating fraud report", error=str(e))
+        raise HTTPException(status_code=500, detail="Error generating fraud report")
+
+@app.put("/fraud/rules")
+async def update_fraud_rule(
+    rule: FraudRule,
+    request: Request
+):
+    """
+    Update fraud detection rules and thresholds
+    
+    Allows dynamic configuration of fraud detection parameters:
+    - Transaction amount thresholds
+    - Rapid transaction counts
+    - Time windows for pattern detection
+    
+    Rules can be enabled/disabled without code changes
+    """
+    try:
+        logger.info(
+            "Fraud rule update requested",
+            rule_id=rule.rule_id,
+            rule_name=rule.rule_name,
+            threshold=rule.threshold,
+            enabled=rule.enabled,
+            client_host=request.client.host if request.client else "unknown"
+        )
+        
+        # Update rule
+        result = fraud_engine.update_fraud_rule(rule)
+        
+        # Audit log the rule change
+        logger.info(
+            "Fraud rule updated",
+            rule_id=rule.rule_id,
+            status=result['status'],
+            old_threshold=result.get('old_threshold'),
+            new_threshold=result.get('new_threshold')
+        )
+        
+        return {
+            "status": "success",
+            "update_result": result,
+            "timestamp": datetime.utcnow().isoformat()
+        }
+        
+    except ValueError as e:
+        logger.error("Validation error updating fraud rule", error=str(e))
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error("Error updating fraud rule", error=str(e))
+        raise HTTPException(status_code=500, detail="Error updating fraud rule")
+
+@app.post("/fraud/encrypt")
+async def encrypt_fraud_data(
+    request: Request
+):
+    """
+    Encrypt sensitive fraud detection data using AES-256-GCM
+    
+    Provides secure encryption for sensitive fraud-related information:
+    - Customer identification data
+    - Payment information
+    - Transaction details requiring protection
+    
+    Returns encrypted data with nonce for decryption
+    """
+    try:
+        # Read request body
+        body = await request.json()
+        data = body.get('data')
+        
+        if not data:
+            raise ValueError("Data field is required")
+        
+        # Sanitize and validate
+        if not isinstance(data, str):
+            data = json.dumps(data)
+        
+        if len(data) > 10000:  # 10KB limit
+            raise ValueError("Data too large for encryption")
+        
+        logger.info("Encrypting fraud data", data_length=len(data))
+        
+        # Encrypt using AES-256-GCM
+        encrypted = fraud_engine.encrypt_sensitive_data(data)
+        
+        logger.info("Fraud data encrypted successfully")
+        
+        return {
+            "status": "success",
+            "encrypted_data": encrypted,
+            "timestamp": datetime.utcnow().isoformat()
+        }
+        
+    except ValueError as e:
+        logger.error("Validation error in encryption", error=str(e))
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error("Error encrypting fraud data", error=str(e))
+        raise HTTPException(status_code=500, detail="Error encrypting data")
+
+@app.post("/fraud/decrypt")
+async def decrypt_fraud_data(
+    request: Request
+):
+    """
+    Decrypt AES-256-GCM encrypted fraud detection data
+    
+    Decrypts previously encrypted fraud-related information
+    Verifies authentication tag to ensure data integrity
+    
+    Requires both nonce and ciphertext from encryption response
+    """
+    try:
+        # Read request body
+        body = await request.json()
+        encrypted_data = body.get('encrypted_data')
+        
+        if not encrypted_data:
+            raise ValueError("encrypted_data field is required")
+        
+        if not isinstance(encrypted_data, dict):
+            raise ValueError("encrypted_data must be an object with nonce and ciphertext")
+        
+        if 'nonce' not in encrypted_data or 'ciphertext' not in encrypted_data:
+            raise ValueError("encrypted_data must contain nonce and ciphertext")
+        
+        logger.info("Decrypting fraud data")
+        
+        # Decrypt using AES-256-GCM
+        decrypted = fraud_engine.decrypt_sensitive_data(encrypted_data)
+        
+        logger.info("Fraud data decrypted successfully")
+        
+        return {
+            "status": "success",
+            "decrypted_data": decrypted,
+            "timestamp": datetime.utcnow().isoformat()
+        }
+        
+    except ValueError as e:
+        logger.error("Validation error in decryption", error=str(e))
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        logger.error("Error decrypting fraud data", error=str(e))
+        raise HTTPException(status_code=500, detail="Error decrypting data")
 
 if __name__ == "__main__":
     uvicorn.run(
