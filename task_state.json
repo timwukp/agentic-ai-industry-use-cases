@@ -12,7 +12,7 @@
       "category": "Project Setup",
       "description": "Create eKYC directory structure, README.md, requirements.txt, and setup.py with project metadata and dependencies",
       "priority": 1,
-      "status": "pending",
+      "status": "completed",
       "repository": "agentic-ai-industry-use-cases",
       "steps": [
         "Create ekyc/ directory structure as specified in the requirements",
