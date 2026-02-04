@@ -1,0 +1,24 @@
+{
+  "name": "@ekyc/sdk",
+  "version": "0.1.0",
+  "description": "JavaScript/TypeScript SDK for the eKYC verification API",
+  "main": "dist/ekyc-sdk.js",
+  "types": "dist/ekyc-sdk.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "keywords": [
+    "ekyc",
+    "identity-verification",
+    "biometric",
+    "document-verification"
+  ],
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
