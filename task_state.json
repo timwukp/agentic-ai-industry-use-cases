@@ -28,7 +28,7 @@
       "category": "Core Infrastructure",
       "description": "Create base eKYC agent class extending secure_base_agent.py with identity verification-specific security controls",
       "priority": 2,
-      "status": "pending",
+      "status": "in_progress",
       "repository": "agentic-ai-industry-use-cases",
       "steps": [
         "Create src/agents/base_ekyc_agent.py extending SecureBaseAgent from common/secure_base_agent.py",
