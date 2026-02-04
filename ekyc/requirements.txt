@@ -1,0 +1,43 @@
+# Next-Generation eKYC System Dependencies
+# ==========================================
+
+# Core AWS SDK
+boto3>=1.34.0
+botocore>=1.34.0
+
+# Bedrock and Agent frameworks
+strands-agents>=0.1.0
+bedrock-agentcore>=0.1.0
+
+# Web framework
+fastapi>=0.109.0
+uvicorn>=0.27.0
+python-multipart>=0.0.6
+
+# Data validation
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# Security
+cryptography>=41.0.0
+python-jose[cryptography]>=3.3.0
+passlib[bcrypt]>=1.7.4
+
+# Database
+aioboto3>=12.0.0
+
+# Monitoring
+aws-xray-sdk>=2.12.0
+opentelemetry-api>=1.22.0
+opentelemetry-sdk>=1.22.0
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.23.0
+pytest-cov>=4.1.0
+moto>=4.2.0
+httpx>=0.26.0
+
+# Utilities
+python-dateutil>=2.8.2
+pyyaml>=6.0.1

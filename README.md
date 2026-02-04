@@ -48,6 +48,14 @@ Our agentic AI applications are built using:
 - [Property Valuation Agent](./real-estate/property-valuation/)
 - [Market Analysis Assistant](./real-estate/market-analysis/)
 - [Document Processing Agent](./real-estate/document-processing/)
+
+### 7. Identity Verification (eKYC)
+- [Next-Generation eKYC System](./ekyc/) - **MULTI-AGENT VERIFICATION** ⭐ NEW
+  - Document Verification Agent (Textract OCR, authenticity checks)
+  - Biometric Verification Agent (Rekognition face matching, liveness detection)
+  - Compliance Screening Agent (OFAC, UN, EU, UK sanctions, PEP checks)
+  - Fraud Detection Agent (device fingerprinting, velocity checks, risk scoring)
+  - Manual Review Agent (compliance officer workflow)
 - [Client Matching System](./real-estate/client-matching/)
 
 ## 🛠️ Technical Stack

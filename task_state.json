@@ -1,0 +1,291 @@
+{
+  "task_id": "task-20260204-0343",
+  "task_description": "Implement Next-Generation eKYC (electronic Know Your Customer) System as a new industry use case. The system provides digital identity verification using AWS Strands framework for multi-agent orchestration, AWS Bedrock AgentCore SDK for agent deployment, and AWS Nova ACT SDK for QA testing. Features include 5 specialized verification agents (Document, Biometric, Compliance, Fraud Detection, Manual Review), RESTful API with OpenAPI 3.0 spec, client SDKs (Python/JavaScript), CloudFormation infrastructure templates, and comprehensive security following existing repository patterns. Performance targets: 10,000 concurrent sessions, <60s end-to-end verification, 99.9% uptime.",
+  "status": "in_progress",
+  "settings": {
+    "target_branch": "main",
+    "create_pr": true
+  },
+  "features": [
+    {
+      "id": "FEAT-001",
+      "category": "Project Setup",
+      "description": "Create eKYC directory structure, README.md, requirements.txt, and setup.py with project metadata and dependencies",
+      "priority": 1,
+      "status": "completed",
+      "repository": "agentic-ai-industry-use-cases",
+      "steps": [
+        "Create ekyc/ directory structure as specified in the requirements",
+        "Create README.md with project overview, architecture, setup instructions, API documentation summary, and security compliance information",
+        "Create requirements.txt with all Python dependencies (strands-agents, bedrock-agentcore, boto3, fastapi, cryptography, pydantic, etc.)",
+        "Create setup.py with package metadata, entry points, and classifiers",
+        "Create __init__.py files for all Python packages",
+        "Verify directory structure matches specification"
+      ]
+    },
+    {
+      "id": "FEAT-002",
+      "category": "Core Infrastructure",
+      "description": "Create base eKYC agent class extending secure_base_agent.py with identity verification-specific security controls",
+      "priority": 2,
+      "status": "completed",
+      "repository": "agentic-ai-industry-use-cases",
+      "steps": [
+        "Create src/agents/base_ekyc_agent.py extending SecureBaseAgent from common/secure_base_agent.py",
+        "Add eKYC-specific security configuration (biometric data handling, PII protection, consent management)",
+        "Implement verification session management with timeout handling (60-second workflow timeout)",
+        "Add KYC-specific audit logging with 7-year retention configuration",
+        "Implement data encryption helpers for AES-256 biometric data encryption",
+        "Add compliance check decorators for GDPR, AML, and KYC regulations"
+      ]
+    },
+    {
+      "id": "FEAT-003",
+      "category": "Data Models",
+      "description": "Create Pydantic data models for sessions, documents, biometrics, and screening results with DynamoDB schemas",
+      "priority": 3,
+      "status": "in_progress",
+      "repository": "agentic-ai-industry-use-cases",
+      "steps": [
+        "Create src/models/__init__.py with model exports",
+        "Create src/models/session.py with VerificationSession model (DynamoDB schema, status enum, 60s timeout)",
+        "Create src/models/document.py with DocumentData model (encrypted fields, 150+ country support, document types)",
+        "Create src/models/biometric.py with BiometricData model (encrypted storage, retention policies, liveness data)",
+        "Create src/models/screening.py with ScreeningResult, WatchlistEntry, PEPEntry, AdverseMediaEntry models",
+        "Add data validation and encryption field helpers for all sensitive data fields"
+      ]
+    },
+    {
+      "id": "FEAT-004",
+      "category": "Core Services",
+      "description": "Create AWS service integration classes for Textract, Rekognition, KMS encryption, and watchlist databases",
+      "priority": 4,
+      "status": "pending",
+      "repository": "agentic-ai-industry-use-cases",
+      "steps": [
+        "Create src/services/__init__.py with service exports",
+        "Create src/services/textract_service.py with OCR extraction methods (3-second target), document parsing, and quality validation",
+        "Create src/services/rekognition_service.py with face matching (95% threshold, 5-second target) and liveness detection (10-second target)",
+        "Create src/services/encryption_service.py with KMS integration, AES-256-GCM encryption, and key rotation support",
+        "Create src/services/watchlist_service.py with OFAC, UN, EU, UK sanctions integration and fuzzy matching (80% threshold)",
+        "Create src/services/dynamodb_service.py for session and result persistence with TTL management"
+      ]
+    },
+    {
+      "id": "FEAT-005",
+      "category": "Verification Agents",
+      "description": "Implement Document Verification Agent with Textract OCR, document authenticity checks, and 150+ country support",
+      "priority": 5,
+      "status": "pending",
+      "repository": "agentic-ai-industry-use-cases",
+      "steps": [
+        "Create src/agents/document_verification_agent.py extending BaseEKYCAgent",
+        "Implement document capture API endpoint handler with image quality validation",
+        "Add AWS Textract OCR integration with 3-second extraction target",
+        "Implement document authenticity verification (holograms, watermarks, microprinting detection patterns)",
+        "Add document type detection and routing (passport, driver's license, national ID)",
+        "Implement country-specific validation rules for 150+ countries",
+        "Create verification result model with confidence scores and extracted fields"
+      ]
+    },
+    {
+      "id": "FEAT-006",
+      "category": "Verification Agents",
+      "description": "Implement Biometric Verification Agent with Rekognition face matching and multi-mode liveness detection",
+      "priority": 6,
+      "status": "pending",
+      "repository": "agentic-ai-industry-use-cases",
+      "steps": [
+        "Create src/agents/biometric_verification_agent.py extending BaseEKYCAgent",
+        "Implement selfie capture API endpoint handler with quality checks",
+        "Add AWS Rekognition face matching with 95% accuracy threshold and 5-second target",
+        "Implement active liveness detection (random challenges: head movements, expressions, blinking)",
+        "Implement passive liveness detection (texture analysis, depth estimation, micro-movement detection)",
+        "Add AES-256 encryption for all biometric data before storage",
+        "Create liveness result model with challenge-response records and confidence scores"
+      ]
+    },
+    {
+      "id": "FEAT-007",
+      "category": "Verification Agents",
+      "description": "Implement Compliance Screening Agent with watchlist integration, PEP/adverse media checks, and audit trail",
+      "priority": 7,
+      "status": "pending",
+      "repository": "agentic-ai-industry-use-cases",
+      "steps": [
+        "Create src/agents/compliance_screening_agent.py extending BaseEKYCAgent",
+        "Implement OFAC, UN, EU, UK sanctions database integration with fuzzy matching",
+        "Add PEP (Politically Exposed Persons) database integration with relationship mapping",
+        "Implement adverse media database integration with sentiment analysis",
+        "Add fuzzy name matching with 80% confidence threshold and phonetic algorithms",
+        "Implement 15-second screening target with parallel watchlist queries",
+        "Create 7-year audit trail with S3 Glacier archival integration",
+        "Add match result model with risk scoring and match explanations"
+      ]
+    },
+    {
+      "id": "FEAT-008",
+      "category": "Verification Agents",
+      "description": "Implement Fraud Detection Agent with device fingerprinting, velocity checks, and ML-based scoring",
+      "priority": 8,
+      "status": "pending",
+      "repository": "agentic-ai-industry-use-cases",
+      "steps": [
+        "Create src/agents/fraud_detection_agent.py extending BaseEKYCAgent",
+        "Implement device fingerprinting with browser/device attribute collection",
+        "Add geolocation analysis with VPN/proxy detection algorithms",
+        "Implement velocity checks with 24-hour rolling window tracking",
+        "Add synthetic identity detection ML model integration",
+        "Create 0-100 verification scoring system with risk factor breakdown",
+        "Implement configurable thresholds for auto-approve (80+), auto-reject (<30), and manual review (30-80)",
+        "Add fraud signal aggregation and decision explanation generation"
+      ]
+    },
+    {
+      "id": "FEAT-009",
+      "category": "Verification Agents",
+      "description": "Implement Manual Review Agent with queue management, reviewer dashboard interface, and SLA tracking",
+      "priority": 9,
+      "status": "pending",
+      "repository": "agentic-ai-industry-use-cases",
+      "steps": [
+        "Create src/agents/manual_review_agent.py extending BaseEKYCAgent",
+        "Implement DynamoDB-based review queue system with priority ordering",
+        "Add compliance officer dashboard interface data provider",
+        "Create side-by-side image viewer data preparation (document vs selfie)",
+        "Implement decision recording with mandatory reason codes and audit trail",
+        "Add 5-minute notification SLA tracking with escalation triggers",
+        "Create reviewer assignment and workload balancing logic",
+        "Implement review decision model with approval/rejection/escalation states"
+      ]
+    },
+    {
+      "id": "FEAT-010",
+      "category": "Orchestration",
+      "description": "Implement AWS Strands orchestrator with workflow state machine and inter-agent communication",
+      "priority": 10,
+      "status": "pending",
+      "repository": "agentic-ai-industry-use-cases",
+      "steps": [
+        "Create src/orchestration/__init__.py with orchestrator exports",
+        "Create src/orchestration/strands_orchestrator.py with Strands framework integration",
+        "Implement agent execution order: document \u2192 biometric \u2192 compliance \u2192 fraud \u2192 manual review (conditional)",
+        "Create src/orchestration/workflow_state_machine.py with verification session states",
+        "Add inter-agent communication via event bus pattern",
+        "Implement 60-second workflow timeout with graceful handling",
+        "Create result aggregation logic combining all agent outputs",
+        "Add workflow retry logic and error recovery mechanisms"
+      ]
+    },
+    {
+      "id": "FEAT-011",
+      "category": "API Layer",
+      "description": "Implement RESTful API with FastAPI, OpenAPI 3.0 spec, OAuth 2.0 auth, and webhook system",
+      "priority": 11,
+      "status": "pending",
+      "repository": "agentic-ai-industry-use-cases",
+      "steps": [
+        "Create src/api/__init__.py with API exports",
+        "Create src/api/routes.py with all RESTful endpoints (sessions, documents, selfies, results, webhooks, analytics)",
+        "Create src/api/schemas.py with Pydantic request/response schemas",
+        "Create src/api/openapi.yaml with complete OpenAPI 3.0 specification",
+        "Implement OAuth 2.0 + API key authentication middleware",
+        "Add rate limiting (1000 req/min per organization) with Redis backend",
+        "Implement webhook system with exponential backoff retry logic",
+        "Add request validation and error handling middleware"
+      ]
+    },
+    {
+      "id": "FEAT-012",
+      "category": "Client SDKs",
+      "description": "Create Python SDK with async support, retry logic, and comprehensive examples",
+      "priority": 12,
+      "status": "pending",
+      "repository": "agentic-ai-industry-use-cases",
+      "steps": [
+        "Create sdk/python/ directory structure with package files",
+        "Create sdk/python/ekyc_client/__init__.py with client exports",
+        "Create sdk/python/ekyc_client/client.py with EKYCClient class (async/sync support)",
+        "Create sdk/python/ekyc_client/models.py with SDK-specific data models",
+        "Create sdk/python/ekyc_client/exceptions.py with custom exception classes",
+        "Create sdk/python/setup.py and pyproject.toml for package distribution",
+        "Create sdk/python/examples/ with usage examples for all endpoints",
+        "Create sdk/python/README.md with installation and usage documentation"
+      ]
+    },
+    {
+      "id": "FEAT-013",
+      "category": "Client SDKs",
+      "description": "Create JavaScript/TypeScript SDK with Promise-based API and browser/Node.js support",
+      "priority": 13,
+      "status": "pending",
+      "repository": "agentic-ai-industry-use-cases",
+      "steps": [
+        "Create sdk/javascript/ directory structure with package files",
+        "Create sdk/javascript/package.json with dependencies and build configuration",
+        "Create sdk/javascript/src/index.ts with main client export",
+        "Create sdk/javascript/src/client.ts with EKYCClient class",
+        "Create sdk/javascript/src/types.ts with TypeScript interfaces",
+        "Create sdk/javascript/tsconfig.json with TypeScript configuration",
+        "Create sdk/javascript/examples/ with usage examples",
+        "Create sdk/javascript/README.md with installation and usage documentation"
+      ]
+    },
+    {
+      "id": "FEAT-014",
+      "category": "Infrastructure",
+      "description": "Create CloudFormation templates for all AWS resources and AgentCore deployment configuration",
+      "priority": 14,
+      "status": "pending",
+      "repository": "agentic-ai-industry-use-cases",
+      "steps": [
+        "Create infrastructure/cloudformation/ directory structure",
+        "Create infrastructure/cloudformation/ekyc-stack.yaml with main stack template",
+        "Add API Gateway configuration with custom domain and WAF integration",
+        "Add Cognito user pool configuration with MFA and password policies",
+        "Add DynamoDB tables configuration with encryption and TTL",
+        "Add S3 buckets configuration with encryption and lifecycle policies",
+        "Add KMS key configuration with rotation policies",
+        "Create infrastructure/config/agentcore-config.yaml for Bedrock AgentCore deployment",
+        "Create deployment/agentcore-config.yaml with eKYC-specific agent configuration",
+        "Create deployment/deployment-guide.md with step-by-step deployment instructions"
+      ]
+    },
+    {
+      "id": "FEAT-015",
+      "category": "Testing",
+      "description": "Create Nova ACT test framework with functional, performance, and security test scenarios",
+      "priority": 15,
+      "status": "pending",
+      "repository": "agentic-ai-industry-use-cases",
+      "steps": [
+        "Create tests/ directory structure (unit/, integration/, nova_act/)",
+        "Create tests/nova_act/config.yaml with Nova ACT SDK configuration",
+        "Create tests/nova_act/functional/ with end-to-end verification test scenarios",
+        "Create tests/nova_act/performance/ with load testing scenarios (10,000 concurrent sessions)",
+        "Create tests/nova_act/security/ with security validation scenarios",
+        "Create tests/unit/ with unit tests for all agents and services",
+        "Create tests/integration/ with integration tests for API and orchestration",
+        "Create conftest.py with pytest fixtures and test utilities"
+      ]
+    },
+    {
+      "id": "FEAT-016",
+      "category": "Documentation",
+      "description": "Create comprehensive documentation including API reference, architecture diagrams, and integration guides",
+      "priority": 16,
+      "status": "pending",
+      "repository": "agentic-ai-industry-use-cases",
+      "steps": [
+        "Create docs/ directory structure",
+        "Create docs/api-reference.md with detailed API endpoint documentation",
+        "Create docs/architecture.md with system architecture, data flow diagrams, and component descriptions",
+        "Create docs/integration-guide.md with step-by-step integration instructions for various platforms",
+        "Create docs/security.md with security implementation details and compliance information",
+        "Create docs/troubleshooting.md with common issues and solutions",
+        "Update main README.md with links to all documentation",
+        "Add Mermaid diagrams for workflow visualization"
+      ]
+    }
+  ]
+}
