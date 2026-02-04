@@ -8,3 +8,15 @@ This module contains AWS service integrations:
 - Watchlist database integrations
 - DynamoDB for data persistence
 """
+
+from .encryption_service import EncryptionService
+from .rekognition_service import RekognitionService
+from .textract_service import TextractService
+from .watchlist_service import WatchlistService
+
+__all__ = [
+    "EncryptionService",
+    "RekognitionService",
+    "TextractService",
+    "WatchlistService",
+]
