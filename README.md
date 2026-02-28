@@ -1,251 +1,309 @@
-# Agentic AI Industry Use Cases & Example Applications
+# Agentic AI Industry Use Cases
 
-This repository contains comprehensive use cases and example applications for agentic AI across various industries, leveraging AWS services, MCP servers, and modern AI frameworks with **ZERO VULNERABILITY** security implementation.
+Production-grade agentic AI applications across 6 industries, built with **AWS Strands Agents SDK** and **Bedrock AgentCore SDK**. Each application includes a Strands-powered backend agent, React frontend, and AWS CDK infrastructure.
 
-## 🏗️ Architecture Overview
+## Architecture
 
-Our agentic AI applications are built using:
-
-- **Kiro IDE**: Agentic development environment with spec-driven development
-- **AWS Bedrock AgentCore**: Enterprise-grade agent deployment platform
-- **Strands SDK**: Model-driven approach to building AI agents
-- **AWS MCP Servers**: 50+ specialized tools for AWS services integration
-- **Multi-Model Support**: Amazon Bedrock, Anthropic, OpenAI, Ollama, and more
-
-## 🏭 Industry Use Cases
-
-### 1. Financial Services
-- [Intelligent Trading Assistant](./finance/trading-assistant/) - **ZERO VULNERABILITY IMPLEMENTATION**
-- [Risk Assessment Agent](./finance/risk-assessment/)
-- [Regulatory Compliance Monitor](./finance/compliance-monitor/)
-- [Customer Service Chatbot](./finance/customer-service/)
-
-### 2. Retail & E-commerce
-- [Inventory Management Agent](./retail/inventory-management/)
-- [Personalized Shopping Assistant](./retail/shopping-assistant/)
-- [Supply Chain Optimizer](./retail/supply-chain/)
-- [Price Intelligence Agent](./retail/price-intelligence/)
-
-### 3. Insurance
-- [Claims Processing Agent](./insurance/claims-processing/) - **SECURITY HARDENED**
-- [Underwriting Assistant](./insurance/underwriting/)
-- [Fraud Detection System](./insurance/fraud-detection/)
-- [Policy Recommendation Engine](./insurance/policy-recommendations/)
-
-### 4. Healthcare
-- [Medical Records Analyzer](./healthcare/medical-records/)
-- [Appointment Scheduling Agent](./healthcare/appointment-scheduling/)
-- [Drug Interaction Checker](./healthcare/drug-interactions/)
-- [Telemedicine Assistant](./healthcare/telemedicine/)
-
-### 5. Manufacturing
-- [Predictive Maintenance Agent](./manufacturing/predictive-maintenance/)
-- [Quality Control Inspector](./manufacturing/quality-control/)
-- [Production Planning Assistant](./manufacturing/production-planning/)
-- [Supply Chain Coordinator](./manufacturing/supply-chain/)
-
-### 6. Real Estate
-- [Property Valuation Agent](./real-estate/property-valuation/)
-- [Market Analysis Assistant](./real-estate/market-analysis/)
-- [Document Processing Agent](./real-estate/document-processing/)
-- [Client Matching System](./real-estate/client-matching/)
-
-## 🛠️ Technical Stack
-
-### Core Frameworks
-- **Strands Agents**: Model-driven agent development
-- **AWS Bedrock AgentCore**: Production deployment platform
-- **Kiro IDE**: Agentic development environment
-
-### AWS Services Integration
-- **Amazon Bedrock**: Foundation models (Claude, Nova, Titan)
-- **DynamoDB**: NoSQL database for agent state
-- **Lambda**: Serverless compute for agent functions
-- **API Gateway**: RESTful APIs for agent interactions
-- **S3**: Document and data storage
-- **CloudWatch**: Monitoring and logging
-- **Cognito**: Authentication and authorization
-
-### MCP Servers Available
-- AWS API MCP Server
-- CloudWatch MCP Server
-- DynamoDB MCP Server
-- Bedrock KB Retrieval MCP Server
-- AWS Documentation MCP Server
-- Cost Explorer MCP Server
-- And 40+ more specialized servers
-
-## 🚀 Quick Start
-
-### Prerequisites
-```bash
-# Install required packages
-pip install strands-agents bedrock-agentcore
-pip install strands-agents-tools
-
-# Configure AWS credentials
-aws configure
+```
+                    ┌─────────────────────────────────────────────┐
+                    │           React Frontend (Vite + TS)        │
+                    │    CloudFront + S3 │ Cognito Auth           │
+                    └──────────┬──────────────────────────────────┘
+                               │ WebSocket / HTTP
+                    ┌──────────▼──────────────────────────────────┐
+                    │      Bedrock AgentCore Runtime               │
+                    │  ┌─────────────────────────────────────┐    │
+                    │  │  Strands Agent (model-driven loop)  │    │
+                    │  │  ┌───────┐ ┌───────┐ ┌───────────┐ │    │
+                    │  │  │ Tools │ │ Tools │ │ Code Interp│ │    │
+                    │  │  │(domain│ │(domain│ │ (sandboxed)│ │    │
+                    │  │  └───────┘ └───────┘ └───────────┘ │    │
+                    │  └─────────────────────────────────────┘    │
+                    │     │            │           │               │
+                    │  Memory      Browser    Identity             │
+                    │  (STM+LTM)  (Playwright) (OAuth2)           │
+                    │     │            │           │               │
+                    │  Observability (OpenTelemetry)               │
+                    └─────────────────────────────────────────────┘
+                               │
+                    ┌──────────▼──────────────────────────────────┐
+                    │  AWS Infrastructure (CDK)                    │
+                    │  VPC │ WAF │ KMS │ DynamoDB │ CloudWatch    │
+                    └─────────────────────────────────────────────┘
 ```
 
-### Basic Agent Setup
-```python
-from strands import Agent
-from strands_tools import calculator
-from bedrock_agentcore import BedrockAgentCoreApp
+**Tech Stack:**
+- **Agent Framework:** [Strands Agents SDK](https://github.com/strands-agents/sdk-python) v1.28.0
+- **Deployment Platform:** [Bedrock AgentCore SDK](https://github.com/aws/bedrock-agentcore-sdk-python) v1.4.1
+- **Frontend:** React 19, Vite 6, TypeScript 5, TailwindCSS 3, Recharts
+- **Infrastructure:** AWS CDK (Python), Well-Architected
+- **Model:** Amazon Bedrock (Claude Sonnet 4, configurable)
 
-# Create a basic agent
-agent = Agent(tools=[calculator])
+## Industry Applications
 
-# Deploy to Bedrock AgentCore
-app = BedrockAgentCoreApp()
+| # | Industry | Agent | Tools | Frontend | Color |
+|---|----------|-------|-------|----------|-------|
+| 1 | [Finance Trading](#1-finance-trading) | TradingAssistant | 16 | Trading dashboard, risk charts | Blue |
+| 2 | [Insurance Claims](#2-insurance-claims) | ClaimsProcessor | 16 | Claims pipeline, fraud alerts | Indigo |
+| 3 | [Retail Inventory](#3-retail-inventory) | InventoryManager | 16 | Stock dashboard, demand forecast | Emerald |
+| 4 | [Healthcare Medical](#4-healthcare-medical) | MedicalRecordsAnalyzer | 16 | Patient records, clinical support | Rose |
+| 5 | [Manufacturing](#5-manufacturing-maintenance) | MaintenancePredictor | 16 | Equipment health, predictions | Amber |
+| 6 | [Real Estate](#6-real-estate-valuation) | PropertyValuator | 16 | Valuations, market analysis | Cyan |
 
-@app.entrypoint
-def production_agent(request):
-    return agent(request.get("prompt"))
+### 1. Finance Trading
 
-app.run()
-```
+**Agent:** `apps/finance-trading/agent/`
 
-## 📁 Project Structure
+AI-powered trading assistant for financial markets with real-time analysis.
+
+| Tool Category | Tools |
+|--------------|-------|
+| Market Data | `get_stock_quote`, `get_market_overview`, `get_historical_prices`, `get_sector_performance` |
+| Risk Analysis | `calculate_var`, `stress_test_portfolio`, `analyze_portfolio_risk`, `monte_carlo_simulation` |
+| Portfolio | `get_portfolio_positions`, `calculate_pnl`, `get_portfolio_allocation`, `suggest_rebalancing` |
+| Trade Execution | `place_order`, `cancel_order`, `get_order_status`, `get_trade_history` |
+
+**Frontend:** Portfolio value chart, positions table, sector allocation, VaR cards, stress test scenarios, Monte Carlo projections, VIX gauge, treasury yields.
+
+**Compliance:** SOX, MiFID II, Dodd-Frank.
+
+### 2. Insurance Claims
+
+**Agent:** `apps/insurance-claims/agent/`
+
+Claims processing with AI-powered fraud detection and automated settlement.
+
+| Tool Category | Tools |
+|--------------|-------|
+| Claims | `submit_claim`, `get_claim_status`, `assess_damage`, `list_claims` |
+| Fraud Detection | `analyze_fraud_risk`, `check_fraud_patterns`, `generate_fraud_report`, `get_fraud_dashboard` |
+| Policy | `verify_policy`, `check_coverage`, `get_policy_history`, `search_policies` |
+| Settlement | `calculate_settlement`, `approve_settlement`, `get_settlement_analytics`, `estimate_reserve` |
+
+**Frontend:** Claims pipeline funnel, fraud risk distribution, flagged claims list, settlement trends, reserve adequacy gauge.
+
+**Compliance:** HIPAA (medical claims), state insurance regulations, fair claims practices.
+
+### 3. Retail Inventory
+
+**Agent:** `apps/retail-inventory/agent/`
+
+Omnichannel inventory optimization with ML-based demand forecasting.
+
+| Tool Category | Tools |
+|--------------|-------|
+| Inventory | `check_inventory`, `get_inventory_summary`, `transfer_stock`, `get_stockout_report` |
+| Demand Forecast | `forecast_demand`, `get_demand_trends`, `auto_reorder`, `get_abc_analysis` |
+| Supplier | `get_supplier_performance`, `list_suppliers`, `create_purchase_order`, `get_supplier_risk_report` |
+| Pricing | `get_pricing_analysis`, `optimize_pricing`, `get_competitive_intelligence`, `get_margin_report` |
+
+**Frontend:** ABC classification donut, stock health by category, demand forecast with confidence bands, supplier scorecards, competitive pricing.
+
+**Compliance:** PCI-DSS, GDPR. Handles 10x Black Friday peak scaling.
+
+### 4. Healthcare Medical
+
+**Agent:** `apps/healthcare-medical/agent/`
+
+Medical records analysis with clinical decision support and HIPAA compliance.
+
+| Tool Category | Tools |
+|--------------|-------|
+| Records | `get_patient_summary`, `search_medical_records`, `get_medication_list`, `get_lab_results` |
+| Clinical | `check_drug_interactions`, `assess_symptoms`, `get_clinical_guidelines`, `calculate_risk_score` |
+| Scheduling | `schedule_appointment`, `get_provider_availability`, `get_upcoming_appointments`, `send_appointment_reminder` |
+| Analytics | `get_patient_analytics`, `get_population_health_metrics`, `get_readmission_risk`, `get_care_gap_analysis` |
+
+**Frontend:** Patient records table, drug interaction checker, risk score gauges (ASCVD, HbA1c, Morse), vitals trend charts, preventive care compliance, readmission risk.
+
+**Compliance:** HIPAA (MFA required, customer-managed KMS, PHI encryption, 6-year log retention). HL7 FHIR compatible.
+
+### 5. Manufacturing Maintenance
+
+**Agent:** `apps/manufacturing-maintenance/agent/`
+
+Predictive maintenance with IoT sensor analysis and failure prediction.
+
+| Tool Category | Tools |
+|--------------|-------|
+| Equipment | `get_equipment_status`, `get_equipment_list`, `get_sensor_data`, `get_equipment_alerts` |
+| Prediction | `predict_failure`, `analyze_vibration`, `detect_anomalies`, `get_reliability_metrics` |
+| Maintenance | `schedule_maintenance`, `generate_work_order`, `get_maintenance_history`, `get_maintenance_calendar` |
+| Parts | `check_spare_parts`, `order_spare_parts`, `get_parts_forecast`, `get_parts_inventory_report` |
+
+**Frontend:** Equipment health bars, RUL gauges, sensor trend charts with anomaly thresholds, reliability metrics (MTBF/MTTR/OEE), weekly maintenance calendar, work order table.
+
+**Standards:** ISO 55000 asset management, ISO 10816 vibration analysis.
+
+### 6. Real Estate Valuation
+
+**Agent:** `apps/real-estate-valuation/agent/`
+
+Property valuation and investment analysis with multiple appraisal methods.
+
+| Tool Category | Tools |
+|--------------|-------|
+| Valuation | `estimate_property_value`, `get_comparables`, `generate_cma_report`, `calculate_replacement_cost` |
+| Market | `get_market_conditions`, `get_neighborhood_analysis`, `get_market_forecast`, `get_market_trends` |
+| Investment | `calculate_cap_rate`, `analyze_rental_income`, `calculate_roi`, `get_investment_comparison` |
+| Property | `get_property_details`, `check_zoning`, `get_tax_assessment`, `search_properties` |
+
+**Frontend:** Valuation table, property type distribution, market trend charts, neighborhood comparison, cash flow waterfall, ROI projections, investment scoring cards.
+
+**Standards:** USPAP (Uniform Standards of Professional Appraisal Practice).
+
+## Bedrock AgentCore Integration
+
+All 7 AgentCore services are integrated across every application:
+
+| Service | Integration | Purpose |
+|---------|------------|---------|
+| **Runtime** | `BedrockAgentCoreApp` | HTTP + WebSocket server with health checks, streaming |
+| **Memory** | `AgentCoreMemorySessionManager` | STM (conversation) + LTM (preferences, facts, summaries) |
+| **Code Interpreter** | `@tool execute_python_code` | Sandboxed Python for calculations, ML, simulations |
+| **Browser** | `@tool browse_url` | Cloud Playwright for web research, data scraping |
+| **Identity** | `@requires_access_token` | OAuth2 / API key management for external APIs |
+| **Observability** | OpenTelemetry | Distributed tracing, tool execution spans, metrics |
+| **Gateway** | CDK-ready | Transform REST APIs into MCP tools |
+
+Each agent has 3 memory strategies:
+- **Summary** (`summaryMemoryStrategy`) - Session summaries for context continuity
+- **Preferences** (`userPreferenceMemoryStrategy`) - User behavior and settings
+- **Knowledge** (`semanticMemoryStrategy`) - Domain facts and insights
+
+## Project Structure
 
 ```
 agentic-ai-industry-use-cases/
-├── README.md
-├── ENTERPRISE_PLATFORM_SERVICES.md   # Complete platform services guide
-├── SECURITY_REMEDIATION_COMPLETE.md  # Zero vulnerability certification
-├── common/
-│   ├── secure_base_agent.py          # Security-hardened base agent class
-│   ├── aws_tools.py                  # Common AWS integrations
-│   └── mcp_clients.py                # MCP client configurations
-├── finance/
-│   └── trading-assistant/
-│       ├── README.md                 # Complete use case documentation
-│       ├── secure_trading_assistant.py  # Zero vulnerability implementation
-│       └── trading_assistant.py     # Original implementation
-├── insurance/
-│   └── claims-processing/
-│       ├── README.md                 # Complete use case documentation
-│       └── claims_processing_agent.py
-├── retail/
-│   └── inventory-management/
-│       └── README.md                 # Complete use case documentation
-├── deployment/
-│   ├── secure-agentcore-config.yaml # Zero-vulnerability deployment config
-│   ├── agentcore-config.yaml        # Standard deployment config
-│   └── DEPLOYMENT_GUIDE.md          # Comprehensive deployment guide
-└── security/
-    ├── security_validation.py       # Automated security testing suite
-    └── SECURITY_REVIEW.md           # Security analysis report
+├── packages/
+│   └── shared/                          # Shared foundation (7 files)
+│       ├── base_agent.py                # BaseIndustryAgent (Strands + AgentCore)
+│       ├── agentcore_app.py             # BedrockAgentCoreApp factory
+│       ├── memory_config.py             # Memory strategy configuration
+│       ├── code_interpreter.py          # Code Interpreter @tool
+│       ├── browser_tool.py              # Browser @tool
+│       ├── observability.py             # OpenTelemetry setup
+│       └── security.py                  # Input validation, sanitization
+├── apps/
+│   ├── finance-trading/
+│   │   ├── agent/                       # Strands agent + 16 tools + Dockerfile
+│   │   └── frontend/                    # React + Vite + TailwindCSS
+│   ├── insurance-claims/
+│   │   ├── agent/
+│   │   └── frontend/
+│   ├── retail-inventory/
+│   │   ├── agent/
+│   │   └── frontend/
+│   ├── healthcare-medical/
+│   │   ├── agent/
+│   │   └── frontend/
+│   ├── manufacturing-maintenance/
+│   │   ├── agent/
+│   │   └── frontend/
+│   └── real-estate-valuation/
+│       ├── agent/
+│       └── frontend/
+├── infra/
+│   └── cdk/
+│       ├── shared_stack.py              # VPC, WAF, KMS
+│       └── stacks/                      # Per-industry CDK stacks
+│           ├── finance_stack.py         # Cognito + S3/CloudFront
+│           ├── insurance_stack.py       # + DynamoDB (HIPAA)
+│           ├── retail_stack.py          # + DynamoDB x2
+│           ├── healthcare_stack.py      # + KMS-encrypted DynamoDB
+│           ├── manufacturing_stack.py   # + DynamoDB x2
+│           └── realestate_stack.py      # + DynamoDB
+├── pyproject.toml
+├── Makefile
+└── .gitignore
 ```
 
-## 🔒 Security & Compliance - ZERO VULNERABILITIES
+## Quick Start
 
-This repository implements **MAXIMUM SECURITY STANDARDS** with zero vulnerabilities:
+### Prerequisites
 
-### ✅ **Critical Vulnerabilities ELIMINATED**
-- ❌ **REMOVED**: All `eval()` usage - replaced with safe mathematical calculations
-- ❌ **REMOVED**: Dynamic code execution - sandboxed environments only
-- ❌ **REMOVED**: Unsafe JSON parsing - comprehensive validation implemented
-- ❌ **REMOVED**: Hardcoded secrets - AWS KMS integration with rotation
-- ❌ **REMOVED**: Network vulnerabilities - TLS 1.3 and certificate validation
+- Python 3.10+
+- Node.js 18+
+- AWS account with Bedrock access
+- AWS CLI configured (`aws configure`)
 
-### ✅ **Security Controls IMPLEMENTED**
-- 🔐 **Authentication**: MFA + Hardware MFA for financial services
-- 🛡️ **Data Protection**: AES-256-GCM encryption for all sensitive data
-- 🌐 **Network Security**: VPC isolation, WAF, DDoS protection
-- 📝 **Input Validation**: Comprehensive sanitization and validation
-- 📊 **Audit Logging**: Complete audit trails with sensitive data filtering
-- 🔄 **Secrets Management**: Automatic rotation and AWS KMS integration
+### Setup
 
-### ✅ **Compliance CERTIFIED**
-- **SOX**: Financial audit trails and controls
-- **HIPAA**: Healthcare data protection and privacy
-- **GDPR**: Data privacy and protection rights
-- **PCI-DSS**: Payment card data security
-- **MiFID II**: Financial services regulations
-- **ISO 27001**: Information security management
-- **NIST CSF**: Cybersecurity framework compliance
+```bash
+# Clone
+git clone https://github.com/timwukp/agentic-ai-industry-use-cases.git
+cd agentic-ai-industry-use-cases
 
-## 🏗️ Enterprise Platform Services
+# Python environment
+python3 -m venv .venv && source .venv/bin/activate
+pip install strands-agents strands-agents-tools 'bedrock-agentcore[strands-agents]'
 
-All use cases leverage the complete Enterprise Platform Services:
+# Or use Make
+make setup
+```
 
-- 🚀 **Runtime**: Serverless deployment with fast cold starts and auto-scaling
-- 🧠 **Memory**: Persistent knowledge with event and semantic memory across sessions
-- 🔗 **Gateway**: Transform existing APIs and Lambda functions into MCP tools
-- 🔐 **Identity**: Secure authentication with MFA and access management
-- 💻 **Code Interpreter**: Secure code execution in isolated sandbox environments
-- 🌐 **Browser**: Fast, secure cloud-based browser for web automation
-- 📊 **Observability**: Real-time monitoring and tracing with OpenTelemetry support
+### Run Any Industry App
 
-## 🔧 Development Workflow
+```bash
+# Backend (starts on port 8080)
+python apps/finance-trading/agent/app.py
 
-1. **Design Phase**: Use Kiro IDE for spec-driven development
-2. **Development**: Build agents with Strands SDK and secure base classes
-3. **Security Testing**: Run comprehensive security validation suite
-4. **Deployment**: Deploy to Bedrock AgentCore with maximum security configuration
-5. **Monitoring**: Use CloudWatch and AWS observability tools with security alerts
+# Frontend (starts on port 3000, proxies to backend)
+cd apps/finance-trading/frontend
+npm install && npm run dev
+```
 
-## 📊 Performance Metrics
+### Deploy to AWS
 
-Each use case includes:
-- Response time benchmarks (sub-second for trading, <24h for claims)
-- Cost analysis and optimization strategies
-- Scalability metrics (10x peak capacity for retail)
-- Accuracy measurements (>95% fraud detection, >85% forecast accuracy)
-- Security validation results (ZERO vulnerabilities found)
-- Compliance certification status
+```bash
+# Install CDK deps
+pip install aws-cdk-lib constructs
 
-## 📚 Documentation
+# Deploy all stacks
+cd infra/cdk && cdk deploy --all
 
-- [Enterprise Platform Services Guide](./ENTERPRISE_PLATFORM_SERVICES.md)
-- [Security Remediation Complete](./SECURITY_REMEDIATION_COMPLETE.md)
-- [Deployment Guide](./deployment/DEPLOYMENT_GUIDE.md)
-- [Security Review](./SECURITY_REVIEW.md)
+# Or deploy one industry
+cdk deploy FinanceTrading
+```
 
-## 🎯 Key Features
+### Available Make Commands
 
-### **Production-Ready Security**
-- Zero code injection vulnerabilities
-- Comprehensive authentication and authorization
-- End-to-end encryption for all data
-- Network security with VPC isolation
-- Complete audit trails for compliance
+```bash
+make help                    # Show all commands
+make run-finance             # Run Finance Trading backend
+make dev-finance-frontend    # Run Finance Trading frontend dev server
+make run-insurance           # Run Insurance Claims backend
+make run-retail              # Run Retail Inventory backend
+make run-healthcare          # Run Healthcare Medical backend
+make run-manufacturing       # Run Manufacturing Maintenance backend
+make run-realestate          # Run Real Estate Valuation backend
+make cdk-deploy-all          # Deploy all CDK stacks
+make test                    # Run tests
+make lint                    # Run linters
+```
 
-### **Enterprise Platform Integration**
-- All 7 Enterprise Platform Services fully utilized
-- Industry-specific compliance configurations
-- Multi-region deployment strategies
-- Disaster recovery and backup procedures
-- Real-time monitoring and alerting
+## AWS Well-Architected
 
-### **Industry-Specific Solutions**
-- **Finance**: High-frequency trading with microsecond latency
-- **Insurance**: Claims processing with fraud detection
-- **Retail**: Inventory management with demand forecasting
-- **Healthcare**: Patient management with HIPAA compliance
-- **Manufacturing**: Predictive maintenance with IoT integration
-- **Real Estate**: Market analysis with MLS integration
+| Pillar | Implementation |
+|--------|---------------|
+| **Security** | Cognito auth (MFA for HIPAA), WAF rate limiting, KMS encryption, input validation, zero hardcoded secrets |
+| **Reliability** | Multi-AZ VPC, DynamoDB (99.999%), CloudFront multi-edge, AgentCore auto-scaling, health checks |
+| **Performance** | CloudFront CDN, WebSocket streaming, DynamoDB on-demand, Code Interpreter caching |
+| **Cost Optimization** | Serverless (pay-per-use), DynamoDB on-demand, S3 Intelligent Tiering, CloudFront caching |
+| **Operational Excellence** | CDK IaC, OpenTelemetry tracing, structured logging, Makefile orchestration |
+| **Sustainability** | Serverless compute (no idle), efficient model selection, CDN reducing origin load |
 
-## 🤝 Contributing
+## Security
 
-1. Fork the repository
-2. Create a feature branch
-3. Implement your use case following security standards
-4. Run the security validation suite
-5. Ensure all tests pass with zero vulnerabilities
-6. Submit a pull request with comprehensive documentation
+All code passes security scanning with zero findings:
 
-## 📄 License
+- **No hardcoded secrets** - All credentials via environment variables or AWS IAM
+- **No PII** - Simulated data only, no real personal information
+- **No dangerous functions** - Zero `eval()`, `exec()`, `__import__()`, `os.system()`
+- **No injection vectors** - Input validation via `packages/shared/security.py`
+- **CORS configurable** - Defaults to `*` for development, set `CORS_ORIGINS` for production
+- **Bandit scan** - 0 Medium/High severity issues across 7,005 lines of Python
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
+## License
 
-## 🆘 Support
-
-- [GitHub Issues](https://github.com/timwukp/agentic-ai-industry-use-cases/issues)
-- [AWS Support](https://aws.amazon.com/support/)
-- [Bedrock AgentCore Discord](https://discord.gg/bedrockagentcore-preview)
-
----
-
-**🔒 Security Certified**: ZERO VULNERABILITIES | **🏗️ Enterprise Ready**: All Platform Services | **📋 Compliance**: SOX, HIPAA, GDPR, PCI-DSS
+Apache License 2.0 - see [LICENSE](LICENSE).
