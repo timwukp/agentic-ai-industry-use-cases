@@ -4,33 +4,7 @@ Production-grade agentic AI applications across 6 industries, built with **AWS S
 
 ## Architecture
 
-```
-                    ┌─────────────────────────────────────────────┐
-                    │           React Frontend (Vite + TS)        │
-                    │    CloudFront + S3 │ Cognito Auth           │
-                    └──────────┬──────────────────────────────────┘
-                               │ WebSocket / HTTP
-                    ┌──────────▼──────────────────────────────────┐
-                    │      Bedrock AgentCore Runtime               │
-                    │  ┌─────────────────────────────────────┐    │
-                    │  │  Strands Agent (model-driven loop)  │    │
-                    │  │  ┌───────┐ ┌───────┐ ┌───────────┐ │    │
-                    │  │  │ Tools │ │ Tools │ │ Code Interp│ │    │
-                    │  │  │(domain│ │(domain│ │ (sandboxed)│ │    │
-                    │  │  └───────┘ └───────┘ └───────────┘ │    │
-                    │  └─────────────────────────────────────┘    │
-                    │     │            │           │               │
-                    │  Memory      Browser    Identity             │
-                    │  (STM+LTM)  (Playwright) (OAuth2)           │
-                    │     │            │           │               │
-                    │  Observability (OpenTelemetry)               │
-                    └─────────────────────────────────────────────┘
-                               │
-                    ┌──────────▼──────────────────────────────────┐
-                    │  AWS Infrastructure (CDK)                    │
-                    │  VPC │ WAF │ KMS │ DynamoDB │ CloudWatch    │
-                    └─────────────────────────────────────────────┘
-```
+![Architecture Diagram](docs/architecture.png)
 
 **Tech Stack:**
 - **Agent Framework:** [Strands Agents SDK](https://github.com/strands-agents/sdk-python) v1.28.0
