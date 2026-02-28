@@ -1,0 +1,40 @@
+[project]
+name = "agentic-ai-industry-use-cases"
+version = "2.0.0"
+description = "Enterprise Agentic AI applications across 6 industries, built with AWS Strands + Bedrock AgentCore"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+dependencies = [
+    "strands-agents>=1.28.0",
+    "strands-agents-tools>=0.2.21",
+    "bedrock-agentcore[strands-agents]>=1.4.1",
+    "boto3>=1.34.0",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "numpy>=1.26.0",
+    "scipy>=1.11.0",
+    "pandas>=2.1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-asyncio>=0.21",
+    "black>=23.0",
+    "ruff>=0.1",
+    "mypy>=1.0",
+]
+frontend = [
+    "aws-cdk-lib>=2.120.0",
+    "constructs>=10.0.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.black]
+line-length = 120
+
+[tool.ruff]
+line-length = 120

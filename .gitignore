@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Node
+node_modules/
+.npm
+
+# Frontend builds (rebuild from source)
+apps/*/frontend/dist/
+
+# Environment & Secrets - NEVER COMMIT
+.env
+.env.*
+*.pem
+*.key
+*.crt
+*.p12
+.agentcore.json
+
+# AWS
+.aws/
+credentials
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# CDK
+cdk.out/
