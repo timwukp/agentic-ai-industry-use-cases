@@ -1,0 +1,65 @@
+name: Kiro Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  kiro-review:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write  # needed to post PR comments
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # full history for diff
+
+      - name: Install Kiro CLI
+        run: curl -fsSL https://cli.kiro.dev/install | bash
+
+      - name: Get PR diff
+        run: git diff origin/${{ github.base_ref }}...HEAD > /tmp/pr-diff.txt
+
+      - name: Kiro Review — Security
+        env:
+          KIRO_API_KEY: ${{ secrets.KIRO_API_KEY }}
+        run: |
+          cat /tmp/pr-diff.txt | kiro-cli chat --no-interactive --trust-tools=read,grep \
+            "You are a senior security reviewer. Review this PR diff for:
+          1. Hardcoded secrets or API keys
+          2. Input validation gaps
+          3. Unsafe deserialization or injection risks
+          4. Missing error handling that could leak sensitive info
+          5. AWS credential handling issues
+          Format as a concise markdown report with severity levels." - \
+            > /tmp/review-security.md 2>&1
+
+      - name: Kiro Review — Code Quality
+        env:
+          KIRO_API_KEY: ${{ secrets.KIRO_API_KEY }}
+        run: |
+          cat /tmp/pr-diff.txt | kiro-cli chat --no-interactive --trust-tools=read,grep \
+            "You are a senior code reviewer. Review this PR diff for:
+          1. Bugs or logic errors
+          2. Code style inconsistencies
+          3. Missing error handling
+          4. Performance concerns
+          5. Suggestions for improvement
+          Be concise. Only comment on real issues, not nitpicks." - \
+            > /tmp/review-quality.md 2>&1
+
+      - name: Post review as PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const security = fs.readFileSync('/tmp/review-security.md', 'utf8');
+            const quality = fs.readFileSync('/tmp/review-quality.md', 'utf8');
+            const body = `## 🤖 Kiro Automated Code Review\n\n### 🔒 Security Review\n${security}\n\n### 📝 Code Quality Review\n${quality}\n\n---\n*Powered by [Kiro CLI](https://kiro.dev) headless mode*`;
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: body
+            });
