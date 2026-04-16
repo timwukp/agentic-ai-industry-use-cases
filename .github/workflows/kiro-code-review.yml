@@ -37,8 +37,14 @@ jobs:
           KIRO_API_KEY: ${{ secrets.KIRO_API_KEY }}
         run: |
           export PATH="$HOME/.local/bin:$PATH"
-          PROMPT="You are a senior security reviewer. Review this PR diff for: 1) Hardcoded secrets or API keys 2) Input validation gaps 3) Unsafe deserialization or injection risks 4) Missing error handling that could leak sensitive info 5) AWS credential handling issues. Format as a concise markdown report with severity levels."
-          cat /tmp/pr-diff.txt | kiro-cli chat --no-interactive --trust-tools=read,grep "$PROMPT" - > /tmp/review-security.md 2>&1 || true
+          DIFF=$(cat /tmp/pr-diff.txt | head -500)
+          kiro-cli chat --no-interactive --trust-tools=read,grep \
+            "You are a senior security reviewer. Here is the PR diff:
+
+          $DIFF
+
+          Review for: 1) Hardcoded secrets or API keys 2) Input validation gaps 3) Unsafe deserialization or injection risks 4) Missing error handling that could leak sensitive info 5) AWS credential handling issues. Format as a concise markdown report with severity levels." \
+            > /tmp/review-security.md 2>&1 || true
           cat /tmp/review-security.md
 
       - name: Kiro Review — Code Quality
@@ -46,8 +52,14 @@ jobs:
           KIRO_API_KEY: ${{ secrets.KIRO_API_KEY }}
         run: |
           export PATH="$HOME/.local/bin:$PATH"
-          PROMPT="You are a senior code reviewer. Review this PR diff for: 1) Bugs or logic errors 2) Code style inconsistencies 3) Missing error handling 4) Performance concerns 5) Suggestions for improvement. Be concise. Only comment on real issues, not nitpicks."
-          cat /tmp/pr-diff.txt | kiro-cli chat --no-interactive --trust-tools=read,grep "$PROMPT" - > /tmp/review-quality.md 2>&1 || true
+          DIFF=$(cat /tmp/pr-diff.txt | head -500)
+          kiro-cli chat --no-interactive --trust-tools=read,grep \
+            "You are a senior code reviewer. Here is the PR diff:
+
+          $DIFF
+
+          Review for: 1) Bugs or logic errors 2) Code style inconsistencies 3) Missing error handling 4) Performance concerns 5) Suggestions for improvement. Be concise, only comment on real issues." \
+            > /tmp/review-quality.md 2>&1 || true
           cat /tmp/review-quality.md
 
       - name: Post review as PR comment
