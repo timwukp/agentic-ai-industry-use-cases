@@ -280,14 +280,34 @@ All code passes security scanning with zero findings:
 
 ### DevSecOps CI/CD Workflows
 
-Automated security scanning runs on every PR via GitHub Actions:
+11 automated security workflows powered by GitHub Actions + Kiro CLI headless mode:
+
+#### PR Gate — Always Triggered
+
+| Workflow | What It Does |
+|----------|--------------|
+| **Kiro Code Review** | AI-powered security + code quality review |
+| **Kiro Compliance Gate** | MAS TRM / SOC2 regulatory compliance check |
+| **Kiro Secret Scanning** | Credential and secret leak detection |
+| **PII & Secrets Scan** | detect-secrets + PII patterns (emails, AWS account IDs, SSNs) |
+
+#### PR Gate — Path-Filtered
 
 | Workflow | Trigger | What It Does |
 |----------|---------|--------------|
-| **PII & Secrets Scan** | All PRs | Detects hardcoded secrets (detect-secrets) and PII patterns (emails, AWS account IDs, SSNs) |
-| **Python Security & Lint** | PRs touching `*.py` | Bandit SAST scan (medium+ blocks merge), pip-audit for vulnerable dependencies, Ruff + Black linting |
-| **IaC Security Scan** | PRs touching `infra/` | Checkov scans CDK/CloudFormation for misconfigurations |
-| **SBOM & License** | PRs touching `pyproject.toml` | Generates CycloneDX SBOM, blocks restrictive licenses (GPL/AGPL/SSPL) |
+| **Python Security & Lint** | `*.py`, `pyproject.toml` | Bandit SAST (medium+ blocks merge), pip-audit, Ruff + Black |
+| **Kiro Test Generation** | `*.py`, `*.ts` | Auto-suggest test cases for new code |
+| **IaC Security Scan** | `infra/` | Checkov scans CDK/CloudFormation for misconfigurations |
+| **Kiro IaC Security** | `cdk/`, `*.tf`, `cloudformation/` | IaC security review for Terraform, CFN, CDK |
+| **Kiro Dependency Risk** | `pyproject.toml`, `requirements.txt` | CVE, license, supply chain risk assessment |
+| **SBOM & License** | `pyproject.toml` | CycloneDX SBOM, blocks restrictive licenses (GPL/AGPL/SSPL) |
+
+#### Release & Scheduled
+
+| Workflow | Trigger | What It Does |
+|----------|---------|--------------|
+| **Kiro Release Notes** | Tag/release | Auto-generate changelog |
+| **Kiro Tech Debt** | Weekly (Mon 9AM UTC) | Tech debt analysis and tracking |
 
 All workflows enforce **least-privilege** (`permissions: contents: read`), **pinned tool versions**, and **pip caching** for fast CI.
 
