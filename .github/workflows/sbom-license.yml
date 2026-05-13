@@ -8,6 +8,9 @@ on:
     paths:
       - 'pyproject.toml'
 
+permissions:
+  contents: read
+
 jobs:
   sbom:
     runs-on: ubuntu-latest
@@ -17,16 +20,24 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+          cache: 'pip'
 
       - name: Install tools
-        run: pip install pip-licenses cyclonedx-bom
+        run: pip install pip-licenses==5.0.0 cyclonedx-bom==4.6.7
 
       - name: Install project dependencies
-        run: pip install -e . 2>/dev/null || pip install -e ".[dev]" 2>/dev/null || true
+        run: |
+          pip install -e ".[dev]" 2>&1 | tee /tmp/pip-install.log || \
+          pip install -e . 2>&1 | tee /tmp/pip-install.log || \
+          echo "⚠️  Could not install project deps"
 
       - name: Generate SBOM (CycloneDX)
         run: |
-          cyclonedx-py environment -o sbom.json --format json 2>/dev/null || true
+          cyclonedx-py environment -o sbom.json --format json
+          if [ ! -s sbom.json ]; then
+            echo "❌ SBOM generation failed — file is empty"
+            exit 1
+          fi
           echo "✅ SBOM generated"
 
       - name: License compliance check
@@ -40,6 +51,7 @@ jobs:
             echo "⚠️  Found potentially restrictive licenses:"
             echo "$PROBLEMATIC"
             echo "Please review license compatibility."
+            exit 1
           else
             echo "✅ No problematic licenses found."
           fi
