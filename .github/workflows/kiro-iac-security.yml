@@ -1,0 +1,66 @@
+name: Kiro IaC Security Review
+
+on:
+  pull_request:
+    paths:
+      - '**/*.tf'
+      - '**/cloudformation/**'
+      - '**/cdk/**'
+      - '**/*.template'
+
+jobs:
+  iac-security-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Kiro CLI
+        run: |
+          curl -fsSL https://cli.kiro.dev/install | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Get changed IaC files
+        id: iac-files
+        run: |
+          git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '\.(tf|yaml|yml|json|template)$' > /tmp/iac-files.txt || true
+          echo "count=$(wc -l < /tmp/iac-files.txt | tr -d ' ')" >> $GITHUB_OUTPUT
+
+      - name: Kiro IaC Security Review
+        if: steps.iac-files.outputs.count != '0'
+        env:
+          KIRO_API_KEY: ${{ secrets.KIRO_API_KEY }}
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          FILES=$(cat /tmp/iac-files.txt | head -20)
+          kiro-cli chat --no-interactive --trust-tools=read,grep,glob \
+            "Review these infrastructure-as-code files for security issues:
+          $FILES
+          Check for:
+          1) Public access misconfigurations (S3, Security Groups, ALBs)
+          2) Missing encryption at rest and in transit
+          3) Overly permissive IAM policies (wildcards, admin access)
+          4) Missing logging and monitoring (CloudTrail, VPC Flow Logs)
+          5) Non-compliant with MAS TRM guidelines
+          6) Hardcoded secrets or credentials
+          Format as markdown with severity: CRITICAL, HIGH, MEDIUM, LOW." \
+            > /tmp/review-iac.md 2>&1 || true
+
+      - name: Post IaC review comment
+        if: always() && steps.iac-files.outputs.count != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let review = 'No IaC security issues found or review not available.';
+            try { review = fs.readFileSync('/tmp/review-iac.md', 'utf8'); } catch(e) {}
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## 🏗️ Kiro IaC Security Review\n\n${review}\n\n---\n*Powered by Kiro CLI*`
+            });

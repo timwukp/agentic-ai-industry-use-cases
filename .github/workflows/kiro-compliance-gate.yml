@@ -1,0 +1,59 @@
+name: Kiro Compliance Gate
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    branches: [main, release/*]
+
+jobs:
+  compliance-review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Kiro CLI
+        run: |
+          curl -fsSL https://cli.kiro.dev/install | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Kiro Compliance Review
+        env:
+          KIRO_API_KEY: ${{ secrets.KIRO_API_KEY }}
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          DIFF=$(git diff origin/${{ github.base_ref }}...HEAD -- . ':!*.lock' ':!*.png' ':!*.jpg' | head -3000)
+          kiro-cli chat --no-interactive --trust-tools=read,grep \
+            "You are a compliance auditor for a regulated financial institution.
+          Review this PR diff for regulatory compliance:
+          $DIFF
+
+          Check against:
+          1) DATA PROTECTION - Encryption at rest/transit, PII handling
+          2) AUDIT LOGGING - All state changes logged, tamper-proof audit trail
+          3) ACCESS CONTROL - Least privilege, RBAC, no hardcoded credentials
+          4) CHANGE MANAGEMENT - Traceability, approval gates, rollback capability
+          5) MAS TRM GUIDELINES - Technology risk management compliance
+
+          For each category output: PASS / FAIL / NOT APPLICABLE with justification.
+          End with an overall COMPLIANCE VERDICT." \
+            > /tmp/review-compliance.md 2>&1 || true
+
+      - name: Post compliance review
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let review = 'Compliance review not available.';
+            try { review = fs.readFileSync('/tmp/review-compliance.md', 'utf8'); } catch(e) {}
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## ✅ Kiro Compliance Gate\n\n${review}\n\n---\n*Powered by Kiro CLI*`
+            });
