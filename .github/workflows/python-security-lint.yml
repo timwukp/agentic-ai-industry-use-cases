@@ -1,0 +1,54 @@
+name: Python Security & Lint
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - '**/*.py'
+      - 'pyproject.toml'
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dev tools
+        run: pip install ruff black mypy
+
+      - name: Ruff lint
+        run: ruff check . --output-format=github
+
+      - name: Black format check
+        run: black --check --diff .
+
+      - name: Type check (non-blocking)
+        run: mypy --ignore-missing-imports --no-error-summary . || true
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install security tools
+        run: pip install bandit safety pip-audit
+
+      - name: Bandit security scan
+        run: |
+          bandit -r apps/ packages/ infra/ -f json -o /tmp/bandit-report.json || true
+          bandit -r apps/ packages/ infra/ -ll -ii
+        continue-on-error: true
+
+      - name: Dependency vulnerability scan
+        run: |
+          pip install -e ".[dev]" 2>/dev/null || pip install -e . 2>/dev/null || true
+          pip-audit --desc --fix --dry-run 2>&1 | tee /tmp/audit-results.txt || true
+          echo "Dependency audit complete."

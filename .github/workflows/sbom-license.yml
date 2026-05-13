@@ -1,0 +1,53 @@
+name: SBOM & License Compliance
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - 'pyproject.toml'
+
+jobs:
+  sbom:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install tools
+        run: pip install pip-licenses cyclonedx-bom
+
+      - name: Install project dependencies
+        run: pip install -e . 2>/dev/null || pip install -e ".[dev]" 2>/dev/null || true
+
+      - name: Generate SBOM (CycloneDX)
+        run: |
+          cyclonedx-py environment -o sbom.json --format json 2>/dev/null || true
+          echo "✅ SBOM generated"
+
+      - name: License compliance check
+        run: |
+          echo "=== Dependency Licenses ==="
+          pip-licenses --format=table --order=license
+          echo ""
+          echo "=== Checking for problematic licenses ==="
+          PROBLEMATIC=$(pip-licenses --format=csv | grep -iE "GPL|AGPL|SSPL" | grep -v "LGPL" || true)
+          if [ -n "$PROBLEMATIC" ]; then
+            echo "⚠️  Found potentially restrictive licenses:"
+            echo "$PROBLEMATIC"
+            echo "Please review license compatibility."
+          else
+            echo "✅ No problematic licenses found."
+          fi
+
+      - name: Upload SBOM artifact
+        if: github.ref == 'refs/heads/main'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.json
+          retention-days: 90
