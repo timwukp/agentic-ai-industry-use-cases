@@ -1,0 +1,69 @@
+name: Kiro Dependency Risk Assessment
+
+on:
+  pull_request:
+    paths:
+      - '**/package.json'
+      - '**/requirements.txt'
+      - '**/pyproject.toml'
+      - '**/poetry.lock'
+      - '**/go.mod'
+      - '**/Cargo.toml'
+      - '**/pom.xml'
+
+jobs:
+  dependency-risk:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Kiro CLI
+        run: |
+          curl -fsSL https://cli.kiro.dev/install | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Get dependency diff
+        id: deps
+        run: |
+          git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '(package\.json|requirements\.txt|pyproject\.toml|go\.mod|Cargo\.toml|pom\.xml)' > /tmp/dep-files.txt || true
+          echo "count=$(wc -l < /tmp/dep-files.txt | tr -d ' ')" >> $GITHUB_OUTPUT
+          git diff origin/${{ github.base_ref }}...HEAD -- $(cat /tmp/dep-files.txt) > /tmp/dep-diff.txt 2>/dev/null || true
+
+      - name: Kiro Dependency Risk Assessment
+        if: steps.deps.outputs.count != '0'
+        env:
+          KIRO_API_KEY: ${{ secrets.KIRO_API_KEY }}
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          DIFF=$(cat /tmp/dep-diff.txt | head -2000)
+          kiro-cli chat --no-interactive --trust-tools=read,grep \
+            "Assess the risk of these dependency changes:
+          $DIFF
+          Evaluate each new/updated dependency for:
+          1) Known CVEs for this version
+          2) License compatibility with commercial use
+          3) Supply chain risk (popularity, maintenance, typosquatting)
+          4) Version pinning (floating ranges?)
+          5) Transitive dependency risks
+          Output a risk matrix: package, version, risk level, justification, recommendation." \
+            > /tmp/review-deps.md 2>&1 || true
+
+      - name: Post dependency review
+        if: always() && steps.deps.outputs.count != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let review = 'Dependency risk assessment not available.';
+            try { review = fs.readFileSync('/tmp/review-deps.md', 'utf8'); } catch(e) {}
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## 📦 Kiro Dependency Risk Assessment\n\n${review}\n\n---\n*Powered by Kiro CLI*`
+            });

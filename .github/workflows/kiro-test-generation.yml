@@ -1,0 +1,68 @@
+name: Kiro Test Case Generation
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+    paths:
+      - '**/*.py'
+      - '**/*.ts'
+      - '**/*.js'
+      - '**/*.java'
+      - '**/*.go'
+
+jobs:
+  test-suggestions:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Kiro CLI
+        run: |
+          curl -fsSL https://cli.kiro.dev/install | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Get changed source files
+        id: sources
+        run: |
+          git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '\.(py|ts|js|java|go)$' | grep -v test | grep -v spec > /tmp/source-files.txt || true
+          echo "count=$(wc -l < /tmp/source-files.txt | tr -d ' ')" >> $GITHUB_OUTPUT
+
+      - name: Kiro Test Generation
+        if: steps.sources.outputs.count != '0'
+        env:
+          KIRO_API_KEY: ${{ secrets.KIRO_API_KEY }}
+        run: |
+          export PATH="$HOME/.local/bin:$PATH"
+          FILES=$(cat /tmp/source-files.txt | head -10)
+          DIFF=$(git diff origin/${{ github.base_ref }}...HEAD -- $(cat /tmp/source-files.txt | head -10) | head -2000)
+          kiro-cli chat --no-interactive --trust-tools=read,grep,glob \
+            "Analyze these changed files and suggest test cases:
+          Files: $FILES
+          Diff:
+          $DIFF
+          For each changed function, suggest:
+          1) UNIT TESTS - Happy path, edge cases, error handling
+          2) INTEGRATION TESTS - External service interactions
+          3) SECURITY TESTS - Input validation, auth, injection prevention
+          Format as concrete test code snippets in the project's language." \
+            > /tmp/review-tests.md 2>&1 || true
+
+      - name: Post test suggestions
+        if: always() && steps.sources.outputs.count != '0'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let review = 'Test suggestions not available.';
+            try { review = fs.readFileSync('/tmp/review-tests.md', 'utf8'); } catch(e) {}
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              body: `## 🧪 Kiro Test Case Suggestions\n\n${review}\n\n---\n*Powered by Kiro CLI*`
+            });
