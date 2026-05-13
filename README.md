@@ -278,6 +278,19 @@ All code passes security scanning with zero findings:
 - **CORS configurable** - Defaults to `*` for development, set `CORS_ORIGINS` for production
 - **Bandit scan** - 0 Medium/High severity issues across 7,005 lines of Python
 
+### DevSecOps CI/CD Workflows
+
+Automated security scanning runs on every PR via GitHub Actions:
+
+| Workflow | Trigger | What It Does |
+|----------|---------|--------------|
+| **PII & Secrets Scan** | All PRs | Detects hardcoded secrets (detect-secrets) and PII patterns (emails, AWS account IDs, SSNs) |
+| **Python Security & Lint** | PRs touching `*.py` | Bandit SAST scan (medium+ blocks merge), pip-audit for vulnerable dependencies, Ruff + Black linting |
+| **IaC Security Scan** | PRs touching `infra/` | Checkov scans CDK/CloudFormation for misconfigurations |
+| **SBOM & License** | PRs touching `pyproject.toml` | Generates CycloneDX SBOM, blocks restrictive licenses (GPL/AGPL/SSPL) |
+
+All workflows enforce **least-privilege** (`permissions: contents: read`), **pinned tool versions**, and **pip caching** for fast CI.
+
 ## License
 
 Apache License 2.0 - see [LICENSE](LICENSE).
