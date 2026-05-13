@@ -1,3 +1,4 @@
+# DevSecOps: IaC security scanning enabled via checkov + kiro-iac-security
 """Shared infrastructure stack: VPC, WAF, KMS keys, CloudWatch log groups.
 
 Follows AWS Well-Architected Framework:
