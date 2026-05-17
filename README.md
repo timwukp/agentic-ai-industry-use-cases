@@ -311,6 +311,12 @@ All code passes security scanning with zero findings:
 
 All workflows enforce **least-privilege** (`permissions: contents: read`), **pinned tool versions**, and **pip caching** for fast CI.
 
+## Disclaimer
+
+This project is provided for educational and demonstration purposes. It uses simulated data and is NOT intended for production trading, medical, insurance, or other critical decision-making without proper validation, testing, and regulatory compliance review.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. See the [LICENSE](LICENSE) file for full terms. The authors assume no liability for any use of this software.
+
 ## License
 
 Apache License 2.0 - see [LICENSE](LICENSE).
