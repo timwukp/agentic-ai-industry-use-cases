@@ -1,7 +1,14 @@
-from strands import tool
+"""Dynamic pricing tools for the Retail Inventory Assistant.
+
+Provides competitor price scanning, optimal price calculation, price impact
+simulation, and pricing strategy generation for real-time price optimization.
+"""
+
 import json
 import random
 from datetime import datetime
+
+from strands import tool
 
 
 @tool

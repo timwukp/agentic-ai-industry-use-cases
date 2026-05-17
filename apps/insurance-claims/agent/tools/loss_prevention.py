@@ -1,7 +1,14 @@
-from strands import tool
+"""Loss prevention tools for the Insurance Claims Assistant.
+
+Provides loss probability prediction, prevention alerts, loss pattern analysis,
+and risk mitigation recommendations for proactive loss management.
+"""
+
 import json
 import random
 from datetime import datetime, timedelta
+
+from strands import tool
 
 
 @tool

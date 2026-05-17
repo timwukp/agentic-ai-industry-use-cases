@@ -1,7 +1,14 @@
-from strands import tool
+"""Clinical trials tools for the Healthcare Medical Assistant.
+
+Provides patient-to-trial matching, eligibility criteria checking, active trial
+searching, and trial summary generation for clinical research coordination.
+"""
+
 import json
 import random
 from datetime import datetime, timedelta
+
+from strands import tool
 
 
 @tool

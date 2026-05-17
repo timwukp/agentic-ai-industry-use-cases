@@ -1,7 +1,14 @@
-from strands import tool
+"""Event-driven trading tools for the Trading Assistant.
+
+Provides earnings call analysis, macro event impact assessment, alternative data
+scanning, and trade signal generation for event-based trading strategies.
+"""
+
 import json
 import random
 from datetime import datetime
+
+from strands import tool
 
 
 @tool

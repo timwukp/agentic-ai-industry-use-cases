@@ -1,7 +1,14 @@
-from strands import tool
+"""Underwriting tools for the Insurance Claims Assistant.
+
+Provides risk factor assessment, premium calculation, application review,
+and policy terms recommendation for automated underwriting workflows.
+"""
+
 import json
 import random
 from datetime import datetime
+
+from strands import tool
 
 
 @tool

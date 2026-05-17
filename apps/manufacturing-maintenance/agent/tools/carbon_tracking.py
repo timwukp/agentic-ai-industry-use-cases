@@ -1,7 +1,14 @@
-from strands import tool
+"""Carbon and ESG tracking tools for the Manufacturing Maintenance Assistant.
+
+Provides carbon footprint calculation, emission reduction identification,
+ESG report generation, and Scope 3 emissions tracking for sustainability compliance.
+"""
+
 import json
 import random
 from datetime import datetime
+
+from strands import tool
 
 
 @tool

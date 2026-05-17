@@ -1,7 +1,14 @@
-from strands import tool
+"""Omnichannel inventory tools for the Retail Inventory Assistant.
+
+Provides inventory conflict resolution, order routing optimization,
+inventory reservation, and cross-channel stock synchronization.
+"""
+
 import json
 import random
 from datetime import datetime, timedelta
+
+from strands import tool
 
 
 @tool

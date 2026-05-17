@@ -1,7 +1,14 @@
-from strands import tool
+"""ESG assessment tools for the Real Estate Valuation Assistant.
+
+Provides energy performance analysis, retrofit ROI calculation, GRESB report
+generation, and climate risk assessment for sustainable real estate investing.
+"""
+
 import json
 import random
 from datetime import datetime, timedelta
+
+from strands import tool
 
 
 @tool

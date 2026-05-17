@@ -1,7 +1,14 @@
-from strands import tool
+"""Regulatory reporting tools for the Trading Assistant.
+
+Provides report generation, compliance gap analysis, rule change monitoring,
+and data validation for Basel III, MiFID II, and Dodd-Frank frameworks.
+"""
+
 import json
 import random
 from datetime import datetime, timedelta
+
+from strands import tool
 
 
 @tool

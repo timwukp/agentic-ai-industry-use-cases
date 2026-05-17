@@ -1,7 +1,14 @@
-from strands import tool
+"""Due diligence tools for the Real Estate Valuation Assistant.
+
+Provides legal document review, title status checking, environmental risk
+assessment, and due diligence checklist generation for property transactions.
+"""
+
 import json
 import random
 from datetime import datetime, timedelta
+
+from strands import tool
 
 
 @tool

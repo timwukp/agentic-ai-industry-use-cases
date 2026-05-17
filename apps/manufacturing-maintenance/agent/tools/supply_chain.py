@@ -1,7 +1,14 @@
-from strands import tool
+"""Supply chain resilience tools for the Manufacturing Maintenance Assistant.
+
+Provides disruption impact assessment, alternative supplier sourcing, shortage
+scenario simulation, and contingency plan generation for supply chain management.
+"""
+
 import json
 import random
 from datetime import datetime, timedelta
+
+from strands import tool
 
 
 @tool

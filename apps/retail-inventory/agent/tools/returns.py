@@ -1,7 +1,14 @@
-from strands import tool
+"""Returns management tools for the Retail Inventory Assistant.
+
+Provides return reason analysis, disposition determination, return probability
+prediction, and return fraud detection for reverse logistics optimization.
+"""
+
 import json
 import random
 from datetime import datetime
+
+from strands import tool
 
 
 @tool

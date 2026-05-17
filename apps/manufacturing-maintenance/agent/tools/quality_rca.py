@@ -1,7 +1,14 @@
-from strands import tool
+"""Quality root cause analysis tools for the Manufacturing Maintenance Assistant.
+
+Provides defect pattern analysis, root cause investigation, 8D report generation,
+and corrective action recommendations for quality management.
+"""
+
 import json
 import random
 from datetime import datetime, timedelta
+
+from strands import tool
 
 
 @tool

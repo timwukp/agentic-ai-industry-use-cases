@@ -1,7 +1,14 @@
-from strands import tool
+"""Customer retention tools for the Insurance Claims Assistant.
+
+Provides churn risk prediction, renewal offer generation, customer lifecycle
+analysis, and competitive pricing comparison for policyholder retention.
+"""
+
 import json
 import random
 from datetime import datetime, timedelta
+
+from strands import tool
 
 
 @tool

@@ -1,7 +1,14 @@
-from strands import tool
+"""Prior authorization tools for the Healthcare Medical Assistant.
+
+Provides coverage policy checking, prior auth submission, denial risk prediction,
+and appeal letter drafting for streamlining authorization workflows.
+"""
+
 import json
 import random
 from datetime import datetime, timedelta
+
+from strands import tool
 
 
 @tool

@@ -1,7 +1,14 @@
-from strands import tool
+"""Lease administration tools for the Real Estate Valuation Assistant.
+
+Provides lease term extraction, critical date tracking, lease liability
+calculation, and tenant churn prediction for commercial lease management.
+"""
+
 import json
 import random
 from datetime import datetime, timedelta
+
+from strands import tool
 
 
 @tool

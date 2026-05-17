@@ -1,7 +1,14 @@
-from strands import tool
+"""AML/KYC compliance tools for the Trading Assistant.
+
+Provides transaction screening, sanctions checking, customer behavior analysis,
+and Suspicious Activity Report generation for anti-money laundering compliance.
+"""
+
 import json
 import random
 from datetime import datetime, timedelta
+
+from strands import tool
 
 
 @tool

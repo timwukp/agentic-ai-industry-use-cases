@@ -1,7 +1,14 @@
-from strands import tool
+"""Chronic disease management tools for the Healthcare Medical Assistant.
+
+Provides patient metrics monitoring, treatment adherence assessment, care plan
+generation, and escalation alerting for ongoing disease management.
+"""
+
 import json
 import random
 from datetime import datetime, timedelta
+
+from strands import tool
 
 
 @tool
