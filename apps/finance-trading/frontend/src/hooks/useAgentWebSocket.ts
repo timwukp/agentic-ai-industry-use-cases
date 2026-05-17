@@ -49,6 +49,12 @@ export function useAgentWebSocket(wsUrl?: string): UseAgentWebSocketReturn {
 
   const url = wsUrl || `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`
 
+  // Use a ref to break the circular dependency between connect and scheduleReconnect.
+  // scheduleReconnect needs to call connect, and connect needs to call scheduleReconnect.
+  // By storing scheduleReconnect in a ref, connect always sees the latest version without
+  // needing it in its useCallback dependency array.
+  const scheduleReconnectRef = useRef<() => void>(() => {})
+
   const connect = useCallback(() => {
     if (userDisconnectedRef.current) return
 
@@ -99,7 +105,7 @@ export function useAgentWebSocket(wsUrl?: string): UseAgentWebSocketReturn {
 
         // Only reconnect if not a normal close and not user-initiated
         if (event.code !== 1000 && !userDisconnectedRef.current) {
-          scheduleReconnect()
+          scheduleReconnectRef.current()
         }
       }
 
@@ -111,12 +117,13 @@ export function useAgentWebSocket(wsUrl?: string): UseAgentWebSocketReturn {
       setError('Failed to establish WebSocket connection')
       setIsConnected(false)
       if (!userDisconnectedRef.current) {
-        scheduleReconnect()
+        scheduleReconnectRef.current()
       }
     }
   }, [url])
 
-  const scheduleReconnect = useCallback(() => {
+  // Keep the ref in sync with the latest reconnection logic
+  scheduleReconnectRef.current = () => {
     if (reconnectAttemptRef.current >= RECONNECT_MAX_ATTEMPTS) {
       setIsReconnecting(false)
       setError('Max reconnection attempts reached. Please refresh the page.')
@@ -124,16 +131,19 @@ export function useAgentWebSocket(wsUrl?: string): UseAgentWebSocketReturn {
     }
 
     setIsReconnecting(true)
-    const delay = Math.min(
+    const baseDelay = Math.min(
       RECONNECT_INITIAL_DELAY * Math.pow(RECONNECT_MULTIPLIER, reconnectAttemptRef.current),
       RECONNECT_MAX_DELAY
     )
+    // Add random jitter (0-50% of base delay) to prevent thundering herd
+    const jitter = Math.random() * baseDelay * 0.5
+    const delay = baseDelay + jitter
     reconnectAttemptRef.current += 1
 
     reconnectTimeoutRef.current = setTimeout(() => {
       connect()
     }, delay)
-  }, [connect])
+  }
 
   const disconnect = useCallback(() => {
     userDisconnectedRef.current = true

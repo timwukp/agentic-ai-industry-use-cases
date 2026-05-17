@@ -27,6 +27,10 @@ def create_agentcore_app(
 
     origins = allowed_origins or ["*"]
 
+    # NOTE: allow_origins=["*"] with allow_credentials=True will not work with
+    # credentialed requests in browsers (the Fetch spec forbids wildcard origin
+    # with credentials). In production, set the CORS_ORIGINS env var to specific
+    # origins (e.g., ["https://app.example.com"]) to enable cookie/auth flows.
     app = BedrockAgentCoreApp(
         middleware=[
             Middleware(
@@ -83,6 +87,10 @@ def create_agentcore_app(
                     continue
                 prompt = sanitize_input(prompt)
 
+                # Agent is re-instantiated per message by design. AgentCore Memory
+                # handles conversation persistence across turns, so the agent itself
+                # is stateless. This avoids stale in-memory state and simplifies
+                # connection lifecycle management.
                 agent = agent_factory(session_id=session_id, actor_id=actor_id)
                 response = agent(prompt)
 

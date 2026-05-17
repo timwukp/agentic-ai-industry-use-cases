@@ -8,11 +8,12 @@ COPY packages/ packages/
 RUN pip install --no-cache-dir .
 
 # Stage 2: Runtime
+# The package is already installed in /opt/venv/lib site-packages from the builder stage.
+# No need to copy raw source again - the installed package is sufficient.
 FROM python:3.12-slim AS runtime
 WORKDIR /app
 COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
-COPY packages/ packages/
 COPY apps/finance-trading/ apps/finance-trading/
 RUN useradd -m -r agent && chown -R agent:agent /app
 USER agent
