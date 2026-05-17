@@ -1,27 +1,21 @@
-FROM python:3.12-slim AS base
-
-WORKDIR /app
-
-# Install system deps
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential && \
-    rm -rf /var/lib/apt/lists/*
-
-# Copy requirements
+# Stage 1: Builder
+FROM python:3.12-slim AS builder
+WORKDIR /build
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 COPY pyproject.toml .
-RUN pip install --no-cache-dir ".[frontend]"
+COPY packages/ packages/
+RUN pip install --no-cache-dir .
 
-# Copy source
+# Stage 2: Runtime
+FROM python:3.12-slim AS runtime
+WORKDIR /app
+COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 COPY packages/ packages/
 COPY apps/finance-trading/ apps/finance-trading/
-
-# Non-root user
 RUN useradd -m -r agent && chown -R agent:agent /app
 USER agent
-
 EXPOSE 8080
-
-HEALTHCHECK --interval=30s --timeout=5s --retries=3 \
-    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8080/ping')"
-
+HEALTHCHECK --interval=30s --timeout=5s --retries=3 CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8080/ping')"
 CMD ["python", "apps/finance-trading/agent/app.py"]

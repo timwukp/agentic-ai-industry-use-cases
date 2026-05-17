@@ -2,9 +2,15 @@
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
-VENV := .venv
-PYTHON := $(VENV)/bin/python
-PIP := $(VENV)/bin/pip
+ifeq ($(OS),Windows_NT)
+    VENV := .venv/Scripts
+    PYTHON := $(VENV)/python
+    PIP := $(VENV)/pip
+else
+    VENV := .venv
+    PYTHON := $(VENV)/bin/python
+    PIP := $(VENV)/bin/pip
+endif
 
 # ============================================================
 # Setup
@@ -20,10 +26,7 @@ venv: ## Create Python virtual environment
 
 .PHONY: install-deps
 install-deps: ## Install all Python dependencies
-	$(PIP) install strands-agents strands-agents-tools 'bedrock-agentcore[strands-agents]'
-	$(PIP) install boto3 pydantic pydantic-settings numpy scipy pandas
-	$(PIP) install aws-cdk-lib constructs
-	$(PIP) install pytest pytest-asyncio black ruff mypy
+	$(PIP) install -e '.[dev]'
 
 # ============================================================
 # Finance Trading Assistant
@@ -103,6 +106,14 @@ format: ## Auto-format code
 	$(PYTHON) -m black .
 	$(PYTHON) -m ruff check --fix .
 
+.PHONY: typecheck
+typecheck: ## Run type checking with mypy
+	$(PYTHON) -m mypy packages/ --ignore-missing-imports
+
+.PHONY: lock
+lock: ## Generate requirements.txt from current environment
+	$(PIP) freeze > requirements.txt
+
 # ============================================================
 # Docker
 # ============================================================
@@ -114,6 +125,15 @@ docker-build-finance: ## Build Finance Trading Docker image
 .PHONY: docker-run-finance
 docker-run-finance: ## Run Finance Trading in Docker
 	docker run -p 8080:8080 -e AWS_REGION=us-west-2 agenticai-finance-trading
+
+.PHONY: docker-build-all
+docker-build-all: ## Build Docker images for all agents
+	docker build -t agenticai-finance-trading -f apps/finance-trading/agent/Dockerfile .
+	docker build -t agenticai-insurance-claims -f apps/insurance-claims/agent/Dockerfile .
+	docker build -t agenticai-retail-inventory -f apps/retail-inventory/agent/Dockerfile .
+	docker build -t agenticai-healthcare-medical -f apps/healthcare-medical/agent/Dockerfile .
+	docker build -t agenticai-manufacturing-maintenance -f apps/manufacturing-maintenance/agent/Dockerfile .
+	docker build -t agenticai-real-estate-valuation -f apps/real-estate-valuation/agent/Dockerfile .
 
 # ============================================================
 # Help

@@ -7,6 +7,7 @@ from packages.shared.code_interpreter import execute_python_code, install_and_ru
 from packages.shared.browser_tool import browse_url
 from packages.shared.observability import setup_observability
 from packages.shared.logging_config import setup_logging, get_logger
+from packages.shared.data_provider import DataProvider, MockDataProvider, get_data_provider
 
 __all__ = [
     "BaseIndustryAgent",
@@ -18,4 +19,7 @@ __all__ = [
     "setup_observability",
     "setup_logging",
     "get_logger",
+    "DataProvider",
+    "MockDataProvider",
+    "get_data_provider",
 ]
