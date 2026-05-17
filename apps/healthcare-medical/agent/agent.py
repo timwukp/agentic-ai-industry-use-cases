@@ -16,13 +16,7 @@ HIPAA COMPLIANCE: All data handling follows HIPAA regulations.
 HL7 FHIR standards observed for data interoperability.
 """
 import os
-import sys
 from typing import Optional
-
-# Add project root for shared package imports (packages.shared.*)
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-# Add agent directory so local tool modules can be imported as tools.*
-sys.path.insert(0, os.path.dirname(__file__))
 
 from bedrock_agentcore.memory.integrations.strands.config import (
     AgentCoreMemoryConfig,
@@ -30,25 +24,25 @@ from bedrock_agentcore.memory.integrations.strands.config import (
 )
 
 from packages.shared.base_agent import BaseIndustryAgent
-from tools.records import (
+from .tools.records import (
     get_patient_summary,
     search_medical_records,
     get_medication_list,
     get_lab_results,
 )
-from tools.clinical import (
+from .tools.clinical import (
     check_drug_interactions,
     assess_symptoms,
     get_clinical_guidelines,
     calculate_risk_score,
 )
-from tools.scheduling import (
+from .tools.scheduling import (
     schedule_appointment,
     get_provider_availability,
     get_upcoming_appointments,
     send_appointment_reminder,
 )
-from tools.analytics import (
+from .tools.analytics import (
     get_patient_analytics,
     get_population_health_metrics,
     get_readmission_risk,

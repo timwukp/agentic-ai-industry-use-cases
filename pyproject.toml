@@ -5,9 +5,9 @@ description = "Enterprise Agentic AI applications across 6 industries, built wit
 requires-python = ">=3.10"
 license = "Apache-2.0"
 dependencies = [
-    "strands-agents>=1.28.0",
-    "strands-agents-tools>=0.2.21",
-    "bedrock-agentcore[strands-agents]>=1.4.1",
+    "strands-agents>=1.40.0",
+    "strands-agents-tools>=0.5.3",
+    "bedrock-agentcore[strands-agents]>=1.9.1",
     "boto3>=1.34.0",
     "pydantic>=2.0",
     "pydantic-settings>=2.0",
@@ -28,6 +28,9 @@ frontend = [
     "aws-cdk-lib>=2.120.0",
     "constructs>=10.0.0",
 ]
+
+[tool.setuptools.packages.find]
+where = ["."]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

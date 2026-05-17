@@ -2,6 +2,11 @@
 
 Provides real-time and historical market data, sector performance,
 and market overview functionality.
+
+The DATA_PROVIDER_MODE environment variable can switch between mock and real
+data providers. By default, simulated random data is used (mock behavior).
+The data provider abstraction (packages.shared.data_provider) is available
+for future integration with real market data sources.
 """
 import json
 import random

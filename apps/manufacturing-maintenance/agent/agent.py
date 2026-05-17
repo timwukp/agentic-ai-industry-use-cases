@@ -12,13 +12,7 @@ Uses AgentCore Memory for persistent equipment knowledge/maintenance patterns,
 Code Interpreter for calculations, and Browser for research.
 """
 import os
-import sys
 from typing import Optional
-
-# Add project root for shared package imports (packages.shared.*)
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-# Add agent directory so local tool modules can be imported as tools.*
-sys.path.insert(0, os.path.dirname(__file__))
 
 from bedrock_agentcore.memory.integrations.strands.config import (
     AgentCoreMemoryConfig,
@@ -26,25 +20,25 @@ from bedrock_agentcore.memory.integrations.strands.config import (
 )
 
 from packages.shared.base_agent import BaseIndustryAgent
-from tools.equipment import (
+from .tools.equipment import (
     get_equipment_status,
     get_equipment_list,
     get_sensor_data,
     get_equipment_alerts,
 )
-from tools.prediction import (
+from .tools.prediction import (
     predict_failure,
     analyze_vibration,
     detect_anomalies,
     get_reliability_metrics,
 )
-from tools.maintenance import (
+from .tools.maintenance import (
     schedule_maintenance,
     generate_work_order,
     get_maintenance_history,
     get_maintenance_calendar,
 )
-from tools.parts import (
+from .tools.parts import (
     check_spare_parts,
     order_spare_parts,
     get_parts_forecast,

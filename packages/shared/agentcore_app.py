@@ -1,6 +1,5 @@
 """Factory for creating BedrockAgentCoreApp with standard configuration."""
 import json
-import logging
 from typing import Callable, Optional
 
 from bedrock_agentcore import BedrockAgentCoreApp, RequestContext
@@ -8,7 +7,10 @@ from bedrock_agentcore.runtime.models import PingStatus
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 
-logger = logging.getLogger(__name__)
+from packages.shared.security import validate_input, sanitize_input
+from packages.shared.logging_config import setup_logging, get_logger
+
+logger = get_logger(__name__)
 
 
 def create_agentcore_app(
@@ -21,8 +23,14 @@ def create_agentcore_app(
         agent_factory: Callable that accepts (session_id, actor_id) and returns a BaseIndustryAgent
         allowed_origins: CORS allowed origins. Defaults to ["*"] for development.
     """
+    setup_logging(service_name="agentcore-app")
+
     origins = allowed_origins or ["*"]
 
+    # NOTE: allow_origins=["*"] with allow_credentials=True will not work with
+    # credentialed requests in browsers (the Fetch spec forbids wildcard origin
+    # with credentials). In production, set the CORS_ORIGINS env var to specific
+    # origins (e.g., ["https://app.example.com"]) to enable cookie/auth flows.
     app = BedrockAgentCoreApp(
         middleware=[
             Middleware(
@@ -41,6 +49,11 @@ def create_agentcore_app(
         prompt = request.get("prompt", "")
         session_id = context.session_id or request.get("session_id", "default")
         actor_id = request.get("actor_id", "default-user")
+
+        is_valid, error_msg = validate_input(prompt)
+        if not is_valid:
+            return {"error": error_msg, "session_id": session_id, "actor_id": actor_id}
+        prompt = sanitize_input(prompt)
 
         agent = agent_factory(session_id=session_id, actor_id=actor_id)
         response = agent(prompt)
@@ -64,6 +77,20 @@ def create_agentcore_app(
                 prompt = message.get("prompt", "")
                 actor_id = message.get("actor_id", "default-user")
 
+                is_valid, error_msg = validate_input(prompt)
+                if not is_valid:
+                    await websocket.send_text(json.dumps({
+                        "type": "error",
+                        "content": error_msg,
+                        "session_id": session_id,
+                    }))
+                    continue
+                prompt = sanitize_input(prompt)
+
+                # Agent is re-instantiated per message by design. AgentCore Memory
+                # handles conversation persistence across turns, so the agent itself
+                # is stateless. This avoids stale in-memory state and simplifies
+                # connection lifecycle management.
                 agent = agent_factory(session_id=session_id, actor_id=actor_id)
                 response = agent(prompt)
 

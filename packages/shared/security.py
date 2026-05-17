@@ -32,6 +32,12 @@ SENSITIVE_PATTERNS = [
 def validate_input(text: str, max_length: int = 10000) -> tuple[bool, str]:
     """Validate user input for security threats.
 
+    NOTE: This is a defense-in-depth heuristic layer, not a security boundary.
+    The regex blocklist catches common low-hanging injection patterns but is
+    inherently bypassable (e.g., encoded variants, indirect invocations). The
+    primary defense against prompt injection is LLM-level guardrails and
+    tool-function access controls that restrict what the model can actually execute.
+
     Args:
         text: Input text to validate.
         max_length: Maximum allowed length.
