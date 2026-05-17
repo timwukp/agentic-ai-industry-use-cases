@@ -4,7 +4,6 @@ Uses Strands Agents SDK for agent logic and Bedrock AgentCore SDK for deployment
 Subclasses implement get_tools(), get_system_prompt(), and get_memory_config().
 """
 import os
-import logging
 from abc import ABC, abstractmethod
 from typing import Optional
 
@@ -21,8 +20,9 @@ from bedrock_agentcore.memory.integrations.strands.session_manager import (
 from packages.shared.observability import setup_observability
 from packages.shared.code_interpreter import execute_python_code
 from packages.shared.browser_tool import browse_url
+from packages.shared.logging_config import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class BaseIndustryAgent(ABC):

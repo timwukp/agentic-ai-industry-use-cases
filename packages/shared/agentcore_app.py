@@ -1,6 +1,5 @@
 """Factory for creating BedrockAgentCoreApp with standard configuration."""
 import json
-import logging
 from typing import Callable, Optional
 
 from bedrock_agentcore import BedrockAgentCoreApp, RequestContext
@@ -9,8 +8,9 @@ from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 
 from packages.shared.security import validate_input, sanitize_input
+from packages.shared.logging_config import setup_logging, get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def create_agentcore_app(
@@ -23,6 +23,8 @@ def create_agentcore_app(
         agent_factory: Callable that accepts (session_id, actor_id) and returns a BaseIndustryAgent
         allowed_origins: CORS allowed origins. Defaults to ["*"] for development.
     """
+    setup_logging(service_name="agentcore-app")
+
     origins = allowed_origins or ["*"]
 
     app = BedrockAgentCoreApp(
