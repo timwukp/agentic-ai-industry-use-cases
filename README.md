@@ -7,8 +7,8 @@ Production-grade agentic AI applications across 6 industries, built with **AWS S
 ![Architecture Diagram](docs/architecture.png)
 
 **Tech Stack:**
-- **Agent Framework:** [Strands Agents SDK](https://github.com/strands-agents/sdk-python) v1.28.0
-- **Deployment Platform:** [Bedrock AgentCore SDK](https://github.com/aws/bedrock-agentcore-sdk-python) v1.4.1
+- **Agent Framework:** [Strands Agents SDK](https://github.com/strands-agents/sdk-python) v1.40.0
+- **Deployment Platform:** [Bedrock AgentCore SDK](https://github.com/aws/bedrock-agentcore-sdk-python) v1.9.1
 - **Frontend:** React 19, Vite 6, TypeScript 5, TailwindCSS 3, Recharts
 - **Infrastructure:** AWS CDK (Python), Well-Architected
 - **Model:** Amazon Bedrock (Claude Sonnet 4, configurable)

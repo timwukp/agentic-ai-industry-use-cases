@@ -11,13 +11,7 @@ Uses AgentCore Memory for persistent portfolio/preference knowledge,
 Code Interpreter for calculations, and Browser for research.
 """
 import os
-import sys
 from typing import Optional
-
-# Add project root for shared package imports (packages.shared.*)
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-# Add agent directory so local tool modules can be imported as tools.*
-sys.path.insert(0, os.path.dirname(__file__))
 
 from bedrock_agentcore.memory.integrations.strands.config import (
     AgentCoreMemoryConfig,
@@ -25,25 +19,25 @@ from bedrock_agentcore.memory.integrations.strands.config import (
 )
 
 from packages.shared.base_agent import BaseIndustryAgent
-from tools.market_data import (
+from .tools.market_data import (
     get_stock_quote,
     get_market_overview,
     get_historical_prices,
     get_sector_performance,
 )
-from tools.risk_analysis import (
+from .tools.risk_analysis import (
     calculate_var,
     stress_test_portfolio,
     analyze_portfolio_risk,
     monte_carlo_simulation,
 )
-from tools.portfolio import (
+from .tools.portfolio import (
     get_portfolio_positions,
     calculate_pnl,
     get_portfolio_allocation,
     suggest_rebalancing,
 )
-from tools.trade import (
+from .tools.trade import (
     place_order,
     cancel_order,
     get_order_status,

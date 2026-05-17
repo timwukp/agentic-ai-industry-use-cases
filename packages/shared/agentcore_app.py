@@ -8,6 +8,8 @@ from bedrock_agentcore.runtime.models import PingStatus
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 
+from packages.shared.security import validate_input, sanitize_input
+
 logger = logging.getLogger(__name__)
 
 
@@ -42,6 +44,11 @@ def create_agentcore_app(
         session_id = context.session_id or request.get("session_id", "default")
         actor_id = request.get("actor_id", "default-user")
 
+        is_valid, error_msg = validate_input(prompt)
+        if not is_valid:
+            return {"error": error_msg, "session_id": session_id, "actor_id": actor_id}
+        prompt = sanitize_input(prompt)
+
         agent = agent_factory(session_id=session_id, actor_id=actor_id)
         response = agent(prompt)
 
@@ -63,6 +70,16 @@ def create_agentcore_app(
                 message = json.loads(data)
                 prompt = message.get("prompt", "")
                 actor_id = message.get("actor_id", "default-user")
+
+                is_valid, error_msg = validate_input(prompt)
+                if not is_valid:
+                    await websocket.send_text(json.dumps({
+                        "type": "error",
+                        "content": error_msg,
+                        "session_id": session_id,
+                    }))
+                    continue
+                prompt = sanitize_input(prompt)
 
                 agent = agent_factory(session_id=session_id, actor_id=actor_id)
                 response = agent(prompt)

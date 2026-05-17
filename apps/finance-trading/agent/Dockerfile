@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Copy requirements
 COPY pyproject.toml .
-RUN pip install --no-cache-dir -e ".[frontend]"
+RUN pip install --no-cache-dir ".[frontend]"
 
 # Copy source
 COPY packages/ packages/

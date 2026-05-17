@@ -11,13 +11,7 @@ Uses AgentCore Memory for persistent claims/preference knowledge,
 Code Interpreter for calculations, and Browser for research.
 """
 import os
-import sys
 from typing import Optional
-
-# Add project root for shared package imports (packages.shared.*)
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-# Add agent directory so local tool modules can be imported as tools.*
-sys.path.insert(0, os.path.dirname(__file__))
 
 from bedrock_agentcore.memory.integrations.strands.config import (
     AgentCoreMemoryConfig,
@@ -25,25 +19,25 @@ from bedrock_agentcore.memory.integrations.strands.config import (
 )
 
 from packages.shared.base_agent import BaseIndustryAgent
-from tools.claims import (
+from .tools.claims import (
     submit_claim,
     get_claim_status,
     assess_damage,
     list_claims,
 )
-from tools.fraud_detection import (
+from .tools.fraud_detection import (
     analyze_fraud_risk,
     check_fraud_patterns,
     generate_fraud_report,
     get_fraud_dashboard,
 )
-from tools.policy import (
+from .tools.policy import (
     verify_policy,
     check_coverage,
     get_policy_history,
     search_policies,
 )
-from tools.settlement import (
+from .tools.settlement import (
     calculate_settlement,
     approve_settlement,
     get_settlement_analytics,
