@@ -17,12 +17,12 @@ Production-grade agentic AI applications across 6 industries, built with **AWS S
 
 | # | Industry | Agent | Tools | Frontend | Color |
 |---|----------|-------|-------|----------|-------|
-| 1 | [Finance Trading](#1-finance-trading) | TradingAssistant | 16 | Trading dashboard, risk charts | Blue |
-| 2 | [Insurance Claims](#2-insurance-claims) | ClaimsProcessor | 16 | Claims pipeline, fraud alerts | Indigo |
-| 3 | [Retail Inventory](#3-retail-inventory) | InventoryManager | 16 | Stock dashboard, demand forecast | Emerald |
-| 4 | [Healthcare Medical](#4-healthcare-medical) | MedicalRecordsAnalyzer | 16 | Patient records, clinical support | Rose |
-| 5 | [Manufacturing](#5-manufacturing-maintenance) | MaintenancePredictor | 16 | Equipment health, predictions | Amber |
-| 6 | [Real Estate](#6-real-estate-valuation) | PropertyValuator | 16 | Valuations, market analysis | Cyan |
+| 1 | [Finance Trading](#1-finance-trading) | TradingAssistant | 28 | Trading dashboard, risk charts | Blue |
+| 2 | [Insurance Claims](#2-insurance-claims) | ClaimsProcessor | 28 | Claims pipeline, fraud alerts | Indigo |
+| 3 | [Retail Inventory](#3-retail-inventory) | InventoryManager | 28 | Stock dashboard, demand forecast | Emerald |
+| 4 | [Healthcare Medical](#4-healthcare-medical) | MedicalRecordsAnalyzer | 28 | Patient records, clinical support | Rose |
+| 5 | [Manufacturing](#5-manufacturing-maintenance) | MaintenancePredictor | 28 | Equipment health, predictions | Amber |
+| 6 | [Real Estate](#6-real-estate-valuation) | PropertyValuator | 28 | Valuations, market analysis | Cyan |
 
 ### 1. Finance Trading
 
@@ -160,7 +160,7 @@ agentic-ai-industry-use-cases/
 │       └── security.py                  # Input validation, sanitization
 ├── apps/
 │   ├── finance-trading/
-│   │   ├── agent/                       # Strands agent + 16 tools + Dockerfile
+│   │   ├── agent/                       # Strands agent + 28 tools + Dockerfile
 │   │   └── frontend/                    # React + Vite + TailwindCSS
 │   ├── insurance-claims/
 │   │   ├── agent/
@@ -310,6 +310,21 @@ All code passes security scanning with zero findings:
 | **Kiro Tech Debt** | Weekly (Mon 9AM UTC) | Tech debt analysis and tracking |
 
 All workflows enforce **least-privilege** (`permissions: contents: read`), **pinned tool versions**, and **pip caching** for fast CI.
+
+## Industry Use Case Studies
+
+Comprehensive use case documentation covering real-world pain points and agentic AI solutions for each industry:
+
+| Industry | Use Case Document | New Tools Added |
+|----------|-------------------|-----------------|
+| Finance Trading | [Finance Trading Use Cases](docs/use-cases/finance-trading-use-cases.md) | AML/KYC (4), Regulatory Reporting (4), Event Trading (4) |
+| Insurance Claims | [Insurance Claims Use Cases](docs/use-cases/insurance-claims-use-cases.md) | Underwriting (4), Loss Prevention (4), Customer Retention (4) |
+| Retail Inventory | [Retail Inventory Use Cases](docs/use-cases/retail-inventory-use-cases.md) | Returns & Reverse Logistics (4), Omnichannel (4), Dynamic Pricing (4) |
+| Healthcare Medical | [Healthcare Medical Use Cases](docs/use-cases/healthcare-medical-use-cases.md) | Clinical Trials (4), Prior Authorization (4), Chronic Disease (4) |
+| Manufacturing | [Manufacturing Use Cases](docs/use-cases/manufacturing-maintenance-use-cases.md) | Quality RCA (4), Supply Chain (4), Carbon/ESG (4) |
+| Real Estate | [Real Estate Use Cases](docs/use-cases/real-estate-valuation-use-cases.md) | Due Diligence (4), Lease Admin (4), ESG Assessment (4) |
+
+**Total: 72 new tools** across 18 modules addressing industry-specific pain points including compliance automation, risk intelligence, predictive analytics, and sustainability reporting.
 
 ## License
 
