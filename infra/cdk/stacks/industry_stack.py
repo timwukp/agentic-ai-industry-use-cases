@@ -28,7 +28,9 @@ EMBEDDING_MODEL = "amazon.titan-embed-text-v2:0"
 EMBEDDING_DIM = 1024
 
 
-def _stage(industry: str, name: str, extra_modules: dict[str, str] | None = None) -> str:
+def _stage(
+    industry: str, name: str, extra_modules: dict[str, str] | None = None
+) -> str:
     dest = STAGING / industry / name
     if dest.exists():
         shutil.rmtree(dest)
