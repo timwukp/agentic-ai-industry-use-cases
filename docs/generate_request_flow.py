@@ -124,7 +124,7 @@ box(
     440,
     58,
     "AgentCore Gateway (MCP)",
-    "5 tool Lambdas → DynamoDB · market-data / portfolio / risk / trading / kb",
+    "5 tool Lambdas per industry → DynamoDB · 4 domain tools + kb search",
     "cyan",
 )
 box(

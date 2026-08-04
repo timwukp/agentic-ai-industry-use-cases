@@ -72,12 +72,14 @@ export const industries: IndustryModule[] = [
     themeColor: 'text-indigo-400',
     description:
       'Claims intake, document analysis, fraud signals and settlement recommendations.',
-    enabled: false,
+    enabled: Boolean(import.meta.env.VITE_HARNESS_ARN_INSURANCE),
+    harnessArn: import.meta.env.VITE_HARNESS_ARN_INSURANCE as string | undefined,
     Dashboard: placeholder(
       'Insurance Claims',
       'Claims intake, document analysis, fraud signals and settlement recommendations.',
       ShieldCheck,
       'text-indigo-400',
+      Boolean(import.meta.env.VITE_HARNESS_ARN_INSURANCE),
     ),
   },
   {
@@ -87,12 +89,14 @@ export const industries: IndustryModule[] = [
     themeColor: 'text-emerald-400',
     description:
       'Demand forecasting, stock optimization and automated replenishment workflows.',
-    enabled: false,
+    enabled: Boolean(import.meta.env.VITE_HARNESS_ARN_RETAIL),
+    harnessArn: import.meta.env.VITE_HARNESS_ARN_RETAIL as string | undefined,
     Dashboard: placeholder(
       'Retail Inventory',
       'Demand forecasting, stock optimization and automated replenishment workflows.',
       ShoppingCart,
       'text-emerald-400',
+      Boolean(import.meta.env.VITE_HARNESS_ARN_RETAIL),
     ),
   },
   {
@@ -102,12 +106,14 @@ export const industries: IndustryModule[] = [
     themeColor: 'text-amber-400',
     description:
       'Predictive maintenance, sensor anomaly detection and work-order automation.',
-    enabled: false,
+    enabled: Boolean(import.meta.env.VITE_HARNESS_ARN_MANUFACTURING),
+    harnessArn: import.meta.env.VITE_HARNESS_ARN_MANUFACTURING as string | undefined,
     Dashboard: placeholder(
       'Manufacturing Maintenance',
       'Predictive maintenance, sensor anomaly detection and work-order automation.',
       Factory,
       'text-amber-400',
+      Boolean(import.meta.env.VITE_HARNESS_ARN_MANUFACTURING),
     ),
   },
   {
@@ -117,12 +123,14 @@ export const industries: IndustryModule[] = [
     themeColor: 'text-cyan-400',
     description:
       'Comparable analysis, automated valuation models and market trend insights.',
-    enabled: false,
+    enabled: Boolean(import.meta.env.VITE_HARNESS_ARN_REALESTATE),
+    harnessArn: import.meta.env.VITE_HARNESS_ARN_REALESTATE as string | undefined,
     Dashboard: placeholder(
       'Real Estate Valuation',
       'Comparable analysis, automated valuation models and market trend insights.',
       Building2,
       'text-cyan-400',
+      Boolean(import.meta.env.VITE_HARNESS_ARN_REALESTATE),
     ),
   },
 ]

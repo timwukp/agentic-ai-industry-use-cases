@@ -6,9 +6,10 @@
 （無需容器、無需自寫 agent loop），配備 **Gateway MCP 工具**、**Bedrock 知識庫
 （S3 Vectors）**、**託管記憶（Memory）**，以及單一 **Cognito 保護的響應式 PWA** 前端。
 
-**finance-trading（金融交易）** 與 **healthcare-medical（醫療健康）** 已端到端部署並驗證
-（串流聊天、實時工具調用、知識庫檢索、跨會話記憶、瀏覽器 E2E、線上評估）。其餘 4 個行業
-以同一模式提供 deploy-ready 模板。
+**六個行業全部已端到端部署並驗證**——每個行業都有自己的 harness、帶 5 個 MCP 工具 target
+的 Gateway、S3 Vectors 知識庫、託管記憶，以及日誌/追蹤投遞，全部可從同一個 PWA 訪問。
+**finance-trading（金融交易）** 與 **healthcare-medical（醫療健康）** 在聊天之上還有專門設計的
+dashboard；其餘四個行業以聊天為主（其 dashboard 路由會引導至已上線的 agent）。
 
 ## 架構
 
@@ -37,7 +38,7 @@ CloudFront，Lambda 最小權限 IAM，數據存儲 KMS 加密，私有 S3 + Clo
 | `web/` | 統一響應式 PWA（Vite + React 19 + Tailwind + Amplify Auth） |
 | `tests/` | 單元測試（pytest + moto）、基礎設施（CDK assertions）、E2E（Playwright） |
 
-## 部署（旗艦：finance）
+## 部署
 
 前置：Python 3.11+、Node 22+、AWS 憑證、`boto3 >= 1.43.51`。
 
@@ -46,11 +47,16 @@ make setup            # venv + 依賴 + CDK CLI
 make test             # 單元 + 基礎設施測試
 make deploy-finance   # CDK → 種子數據 → gateway → harness → memory → 可觀測性 → 冒煙
 make deploy-web       # 構建 PWA → 部署 WebStack → 發佈到 CloudFront
+
+# 其他行業，同一條流水線：
+python deploy/deploy.py --industry healthcare|insurance|retail|manufacturing|realestate
 ```
 
-`deploy/deploy.py` 按序執行所有步驟且冪等——可安全重跑，或用 `--from-step gateway`
-斷點續跑。底層使用 AgentCore Harness Builder skill 的腳本（preflight、validate、
-create/update harness、invoke）；skill 位置不同時設置 `HARNESS_SKILL_DIR`。
+`deploy/deploy.py` 按序執行所有步驟且冪等——可安全重跑，或用 `--from-step gateway` /
+`--only smoke` 斷點續跑。每個行業的 CDK 輸出會**合併**進 `deploy/outputs/cdk-outputs.json`
+而非覆蓋，所以部署第 N 個行業不會弄壞前面 N-1 個。底層使用 AgentCore Harness Builder
+skill 的腳本（preflight、validate、create/update harness、invoke）；skill 位置不同時設置
+`HARNESS_SKILL_DIR`。
 
 ### 驗證
 
@@ -61,17 +67,21 @@ cd tests/e2e && BASE_URL=https://<cloudfront> E2E_EMAIL=... E2E_PASSWORD=... npx
 
 ## 六個行業
 
-| 行業 | 代理 | 工具 | 狀態 |
-|---|---|---|---|
-| 金融交易 | `finance_trading_assistant` | 16 個領域工具 + 知識庫搜索 | **已部署並驗證** |
-| 醫療健康 | `healthcare_medical_assistant` | 16 個領域工具 + 知識庫搜索 | **已部署並驗證**（聊天已上線） |
-| 保險理賠 | 模板 | 理賠 / 欺詐 / 保單 / 理算 | 代碼完整 |
-| 零售庫存 | 模板 | 庫存 / 預測 / 供應商 / 定價 | 代碼完整 |
-| 製造維護 | 模板 | 設備 / 預測 / 維護 / 備件 | 代碼完整 |
-| 房地產估值 | 模板 | 估值 / 市場 / 投資 / 物業 | 代碼完整 |
+每個行業都是同一種結構：4 個領域工具 Lambda + 1 個知識庫搜索 Lambda，掛在各自的 Gateway
+（5 個 MCP target）後面，配一個 harness、一個知識庫、一個 Memory。
 
-部署其他行業：`python deploy/deploy.py --industry <name>`——參數化的 `IndustryStack` 加上
-gateway/harness/memory 腳本會處理全部（healthcare 就是零新增 stack 代碼上線的）。
+| 行業 | 代理 | Gateway 工具 target | 前端 |
+|---|---|---|---|
+| 金融交易 | `finance_trading_assistant` | market-data / portfolio / risk / trading / kb | Dashboard + 聊天 |
+| 醫療健康 | `healthcare_medical_assistant` | clinical / analytics / records / scheduling / kb | Patient 360 dashboard + 聊天 |
+| 保險理賠 | `insurance_claims_assistant` | claims / fraud-detection / policy / settlement / kb | 聊天 |
+| 零售庫存 | `retail_inventory_assistant` | inventory / demand-forecast / supplier / pricing / kb | 聊天 |
+| 製造維護 | `manufacturing_maintenance_assistant` | equipment / prediction / maintenance / parts / kb | 聊天 |
+| 房地產估值 | `real_estate_valuation_assistant` | valuation / market / investment / property / kb | 聊天 |
+
+六個行業都是同一條命令上線的——`python deploy/deploy.py --industry <name>`——且**每個行業
+零新增 stack 代碼**：參數化的 `IndustryStack` 加上 gateway/harness/memory/observability
+腳本，全部從 `deploy/industries.py` 讀取配置。唯一的按行業前端工作是加 dashboard。
 
 ## 數據誠實原則
 

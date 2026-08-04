@@ -7,9 +7,11 @@ fully-managed agents (no containers, no agent loop to write) with **Gateway MCP 
 a **Bedrock Knowledge Base (S3 Vectors)**, **managed Memory**, and a single **Cognito-secured
 responsive PWA** frontend.
 
-**finance-trading** and **healthcare-medical** are deployed end-to-end and verified
-(streaming chat, live tool calls, KB retrieval, cross-session memory, browser E2E, online
-evaluations). The other 4 industries ship as deploy-ready templates on the same pattern.
+**All six industries are deployed end-to-end and verified** — each has its own harness,
+Gateway with 5 MCP tool targets, Knowledge Base on S3 Vectors, managed Memory, and log/trace
+delivery, all reachable from the one PWA. **finance-trading** and **healthcare-medical** add
+purpose-built dashboards on top of chat; the other four are chat-first (their dashboard route
+hands off to the live agent).
 
 ## Architecture
 
@@ -38,7 +40,7 @@ S3 behind CloudFront OAC, no long-lived secrets in code.
 | `web/` | Unified responsive PWA (Vite + React 19 + Tailwind + Amplify Auth) |
 | `tests/` | Unit (pytest + moto), infra (CDK assertions), E2E (Playwright) |
 
-## Deploy (flagship: finance)
+## Deploy
 
 Prereqs: Python 3.11+, Node 22+, AWS credentials, `boto3 >= 1.43.51`.
 
@@ -47,10 +49,15 @@ make setup            # venv + deps + CDK CLI
 make test             # unit + infra tests
 make deploy-finance   # CDK → seed → gateway → harness → memory → observability → smoke
 make deploy-web       # build PWA → deploy WebStack → publish to CloudFront
+
+# any other industry, same pipeline:
+python deploy/deploy.py --industry healthcare|insurance|retail|manufacturing|realestate
 ```
 
 `deploy/deploy.py` sequences everything and is idempotent — rerun it safely, or resume with
-`--from-step gateway`. The AgentCore Harness Builder skill's scripts (preflight, validate,
+`--from-step gateway` / `--only smoke`. Each industry's CDK outputs are merged into
+`deploy/outputs/cdk-outputs.json` rather than overwriting it, so deploying industry N keeps
+industries 1..N-1 usable. The AgentCore Harness Builder skill's scripts (preflight, validate,
 create/update harness, invoke) are used underneath; set `HARNESS_SKILL_DIR` if the skill
 lives elsewhere.
 
@@ -63,18 +70,22 @@ cd tests/e2e && BASE_URL=https://<cloudfront> E2E_EMAIL=... E2E_PASSWORD=... npx
 
 ## The six industries
 
-| Industry | Agent | Tools | Status |
-|---|---|---|---|
-| Finance Trading | `finance_trading_assistant` | 16 domain + KB search | **Deployed & verified** |
-| Healthcare Medical | `healthcare_medical_assistant` | 16 domain + KB search | **Deployed & verified** (chat live) |
-| Insurance Claims | template | claims / fraud / policy / settlement | Code-complete |
-| Retail Inventory | template | inventory / forecast / supplier / pricing | Code-complete |
-| Manufacturing Maintenance | template | equipment / prediction / maintenance / parts | Code-complete |
-| Real Estate Valuation | template | valuation / market / investment / property | Code-complete |
+Every industry runs the same shape: 4 domain tool Lambdas + a KB-search Lambda behind its own
+Gateway (5 MCP targets), one harness, one Knowledge Base, one Memory.
 
-To deploy another industry: `python deploy/deploy.py --industry <name>` — the parameterized
-`IndustryStack` plus the gateway/harness/memory scripts handle everything (healthcare was
-brought online this way with zero new stack code).
+| Industry | Agent | Gateway tool targets | UI |
+|---|---|---|---|
+| Finance Trading | `finance_trading_assistant` | market-data / portfolio / risk / trading / kb | Dashboard + chat |
+| Healthcare Medical | `healthcare_medical_assistant` | clinical / analytics / records / scheduling / kb | Patient 360 dashboard + chat |
+| Insurance Claims | `insurance_claims_assistant` | claims / fraud-detection / policy / settlement / kb | Chat |
+| Retail Inventory | `retail_inventory_assistant` | inventory / demand-forecast / supplier / pricing / kb | Chat |
+| Manufacturing Maintenance | `manufacturing_maintenance_assistant` | equipment / prediction / maintenance / parts / kb | Chat |
+| Real Estate Valuation | `real_estate_valuation_assistant` | valuation / market / investment / property / kb | Chat |
+
+All six were brought online by the same command — `python deploy/deploy.py --industry <name>` —
+with **zero new stack code** per industry: the parameterized `IndustryStack` plus the
+gateway/harness/memory/observability scripts read everything from `deploy/industries.py`.
+Adding a dashboard is the only per-industry frontend work.
 
 ## Data honesty
 

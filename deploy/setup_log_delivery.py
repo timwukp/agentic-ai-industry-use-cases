@@ -91,11 +91,20 @@ def main() -> None:
     )
     print("delivery destinations ready")
 
-    # deliveries (source -> destination)
-    dests = {
-        d["name"]: d["arn"]
-        for d in logs.describe_delivery_destinations()["deliveryDestinations"]
-    }
+    # deliveries (source -> destination). Must page: an account with many
+    # harnesses has more destinations than one describe call returns, and the
+    # one we just created is not guaranteed to be on the first page.
+    dests: dict[str, str] = {}
+    token = None
+    while True:
+        kwargs = {"limit": 50}
+        if token:
+            kwargs["nextToken"] = token
+        page = logs.describe_delivery_destinations(**kwargs)
+        dests.update({d["name"]: d["arn"] for d in page["deliveryDestinations"]})
+        token = page.get("nextToken")
+        if not token:
+            break
     for suffix, dest_name in (
         ("app-logs", f"{prefix}-cwl"),
         ("traces", f"{prefix}-xray"),
