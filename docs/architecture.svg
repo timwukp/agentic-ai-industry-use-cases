@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="860" viewBox="0 0 1180 860" font-family="ui-sans-serif, -apple-system, Helvetica, Arial">
+<rect width="1180" height="860" fill="#0f172a"/>
+<text x="40" y="48" fill="#e2e8f0" font-size="24" font-weight="700">Agentic AI Industry Use Cases — AWS Bedrock AgentCore Harness</text>
+<text x="40" y="74" fill="#94a3b8" font-size="14">Declarative managed agents · Gateway MCP tools · Knowledge Base (S3 Vectors) · Cognito end to end</text>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker></defs>
+<rect x="430" y="100" width="320" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="430" y="100" width="4" height="62" rx="2" fill="#3b82f6"/>
+<text x="446" y="128" fill="#e2e8f0" font-size="15" font-weight="600">Responsive PWA (React 19 + Amplify)</text>
+<text x="446" y="146" fill="#94a3b8" font-size="11.5">mobile / tablet / desktop · industry modules</text>
+<rect x="430" y="212" width="320" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="430" y="212" width="4" height="62" rx="2" fill="#8b5cf6"/>
+<text x="446" y="240" fill="#e2e8f0" font-size="15" font-weight="600">Amazon CloudFront + AWS WAF</text>
+<text x="446" y="258" fill="#94a3b8" font-size="11.5">static site (S3, OAC) · /agent/* reverse proxy</text>
+<line x1="590" y1="162" x2="590" y2="212" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="598.0" y="181.0" fill="#94a3b8" font-size="11">HTTPS · Cognito JWT</text>
+<rect x="60" y="324" width="260" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="60" y="324" width="4" height="62" rx="2" fill="#f59e0b"/>
+<text x="76" y="352" fill="#e2e8f0" font-size="15" font-weight="600">Amazon Cognito</text>
+<text x="76" y="370" fill="#94a3b8" font-size="11.5">user pool · TOTP MFA · JWT issuer</text>
+<line x1="320" y1="355" x2="360" y2="355" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="360" y="324" width="220" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="360" y="324" width="4" height="62" rx="2" fill="#22c55e"/>
+<text x="376" y="352" fill="#e2e8f0" font-size="15" font-weight="600">API Gateway (HTTP API)</text>
+<text x="376" y="370" fill="#94a3b8" font-size="11.5">JWT authorizer · dashboards</text>
+<rect x="620" y="324" width="300" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="620" y="324" width="4" height="62" rx="2" fill="#3b82f6"/>
+<text x="636" y="352" fill="#e2e8f0" font-size="15" font-weight="600">AgentCore Data Plane</text>
+<text x="636" y="370" fill="#94a3b8" font-size="11.5">InvokeHarness · customJWTAuthorizer · streaming</text>
+<line x1="500" y1="274" x2="470" y2="324" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="493.0" y="293.0" fill="#94a3b8" font-size="11">REST</text>
+<line x1="680" y1="274" x2="710" y2="324" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="703.0" y="293.0" fill="#94a3b8" font-size="11">chat (eventstream)</text>
+<rect x="620" y="436" width="300" height="76" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="620" y="436" width="4" height="76" rx="2" fill="#f43f5e"/>
+<text x="636" y="464" fill="#e2e8f0" font-size="15" font-weight="600">AgentCore Harness (per industry)</text>
+<text x="636" y="482" fill="#94a3b8" font-size="11.5">Claude Sonnet · declarative config · finance + healthcare live</text>
+<line x1="770" y1="386" x2="770" y2="436" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="360" y="436" width="220" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="360" y="436" width="4" height="62" rx="2" fill="#22c55e"/>
+<text x="376" y="464" fill="#e2e8f0" font-size="15" font-weight="600">Dashboard Lambda</text>
+<text x="376" y="482" fill="#94a3b8" font-size="11.5">portfolio / orders / market</text>
+<line x1="470" y1="386" x2="470" y2="436" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="620" y="562" width="300" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="620" y="562" width="4" height="62" rx="2" fill="#06b6d4"/>
+<text x="636" y="590" fill="#e2e8f0" font-size="15" font-weight="600">AgentCore Gateway (MCP)</text>
+<text x="636" y="608" fill="#94a3b8" font-size="11.5">AWS_IAM inbound · 5 Lambda targets / industry</text>
+<line x1="770" y1="512" x2="770" y2="562" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="778.0" y="531.0" fill="#94a3b8" font-size="11">tools</text>
+<rect x="950" y="436" width="190" height="76" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="950" y="436" width="4" height="76" rx="2" fill="#8b5cf6"/>
+<text x="966" y="464" fill="#e2e8f0" font-size="15" font-weight="600">AgentCore Memory</text>
+<text x="966" y="482" fill="#94a3b8" font-size="11.5">preferences · facts · summaries</text>
+<line x1="920" y1="474" x2="950" y2="474" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="950" y="562" width="190" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="950" y="562" width="4" height="62" rx="2" fill="#8b5cf6"/>
+<text x="966" y="590" fill="#e2e8f0" font-size="15" font-weight="600">Built-in tools</text>
+<text x="966" y="608" fill="#94a3b8" font-size="11.5">browser · code interpreter</text>
+<line x1="920" y1="593" x2="950" y2="593" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="620" y="674" width="300" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="620" y="674" width="4" height="62" rx="2" fill="#22c55e"/>
+<text x="636" y="702" fill="#e2e8f0" font-size="15" font-weight="600">Tool Lambdas ×5</text>
+<text x="636" y="720" fill="#94a3b8" font-size="11.5">market-data / portfolio / risk / trading / kb</text>
+<line x1="770" y1="624" x2="770" y2="674" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="360" y="674" width="220" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="360" y="674" width="4" height="62" rx="2" fill="#f59e0b"/>
+<text x="376" y="702" fill="#e2e8f0" font-size="15" font-weight="600">Amazon DynamoDB</text>
+<text x="376" y="720" fill="#94a3b8" font-size="11.5">positions · demo order book</text>
+<line x1="620" y1="705" x2="580" y2="705" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<rect x="950" y="674" width="190" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="950" y="674" width="4" height="62" rx="2" fill="#06b6d4"/>
+<text x="966" y="702" fill="#e2e8f0" font-size="15" font-weight="600">Bedrock Knowledge Base</text>
+<text x="966" y="720" fill="#94a3b8" font-size="11.5">S3 Vectors · policy docs</text>
+<line x1="920" y1="705" x2="950" y2="705" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="470" y1="498" x2="470" y2="674" stroke="#94a3b8" stroke-width="1.5" marker-end="url(#arr)"/>
+<text x="478.0" y="580.0" fill="#94a3b8" font-size="11">reads</text>
+<text x="40" y="830" fill="#94a3b8" font-size="12">Security: JWT verified at every entry · WAF attached · least-privilege IAM · KMS · no VPC/NAT · simulated market data disclosed</text>
+</svg>

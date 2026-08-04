@@ -6,10 +6,13 @@
 （無需容器、無需自寫 agent loop），配備 **Gateway MCP 工具**、**Bedrock 知識庫
 （S3 Vectors）**、**託管記憶（Memory）**，以及單一 **Cognito 保護的響應式 PWA** 前端。
 
-旗艦案例 **finance-trading（金融交易）** 已端到端部署並驗證（串流聊天、實時工具調用、
-知識庫檢索、跨會話記憶、瀏覽器 E2E 測試）。其餘 5 個行業以同一模式提供代碼完整的模板。
+**finance-trading（金融交易）** 與 **healthcare-medical（醫療健康）** 已端到端部署並驗證
+（串流聊天、實時工具調用、知識庫檢索、跨會話記憶、瀏覽器 E2E、線上評估）。其餘 4 個行業
+以同一模式提供 deploy-ready 模板。
 
 ## 架構
+
+![架構圖](docs/architecture.png)
 
 ```
 瀏覽器 (React PWA, Cognito JWT)
@@ -73,14 +76,14 @@ cd tests/e2e && BASE_URL=https://<cloudfront> E2E_EMAIL=... E2E_PASSWORD=... npx
 | 行業 | 代理 | 工具 | 狀態 |
 |---|---|---|---|
 | 金融交易 | `finance_trading_assistant` | 16 個領域工具 + 知識庫搜索 | **已部署並驗證** |
-| 醫療健康 | 模板 | 病歷 / 臨床 / 排程 / 分析 | 代碼完整 |
+| 醫療健康 | `healthcare_medical_assistant` | 16 個領域工具 + 知識庫搜索 | **已部署並驗證**（聊天已上線） |
 | 保險理賠 | 模板 | 理賠 / 欺詐 / 保單 / 理算 | 代碼完整 |
 | 零售庫存 | 模板 | 庫存 / 預測 / 供應商 / 定價 | 代碼完整 |
 | 製造維護 | 模板 | 設備 / 預測 / 維護 / 備件 | 代碼完整 |
 | 房地產估值 | 模板 | 估值 / 市場 / 投資 / 物業 | 代碼完整 |
 
-部署其他行業：新增其數據/工具 stack（複製 finance stack 類），然後
-`python deploy/deploy.py --industry <name>`——harness/gateway/memory 腳本已按行業參數化。
+部署其他行業：`python deploy/deploy.py --industry <name>`——參數化的 `IndustryStack` 加上
+gateway/harness/memory 腳本會處理全部（healthcare 就是零新增 stack 代碼上線的）。
 
 ## 數據誠實原則
 

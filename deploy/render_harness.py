@@ -11,7 +11,10 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[1]
 OUTPUTS = REPO / "deploy" / "outputs"
 
-INDUSTRY_DIRS = {"finance": "finance-trading"}
+import sys  # noqa: E402
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from industries import INDUSTRIES  # noqa: E402
 
 
 def main() -> None:
@@ -20,7 +23,7 @@ def main() -> None:
     ap.add_argument("--region", default="us-east-1")
     args = ap.parse_args()
 
-    harness_dir = REPO / "harnesses" / INDUSTRY_DIRS[args.industry]
+    harness_dir = REPO / "harnesses" / INDUSTRIES[args.industry]["harness_dir"]
     template = (harness_dir / "harness.template.json").read_text()
 
     cdk = json.loads((OUTPUTS / "cdk-outputs.json").read_text())

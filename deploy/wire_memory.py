@@ -18,7 +18,10 @@ import boto3
 
 REPO = Path(__file__).resolve().parents[1]
 OUTPUTS = REPO / "deploy" / "outputs"
-INDUSTRY_DIRS = {"finance": "finance-trading"}
+import sys  # noqa: E402
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from industries import INDUSTRIES  # noqa: E402
 
 EVENT_ACTIONS = [
     "bedrock-agentcore:CreateEvent",
@@ -40,11 +43,16 @@ def main() -> None:
     args = ap.parse_args()
 
     cfg = json.loads(
-        (REPO / "harnesses" / INDUSTRY_DIRS[args.industry] / "memory.json").read_text()
+        (
+            REPO
+            / "harnesses"
+            / INDUSTRIES[args.industry]["harness_dir"]
+            / "memory.json"
+        ).read_text()
     )
     harness = json.loads((OUTPUTS / f"harness-id-{args.industry}.json").read_text())
     role_arn = json.loads((OUTPUTS / "cdk-outputs.json").read_text())[
-        "AgenticFinanceTools"
+        INDUSTRIES[args.industry]["stack"]
     ]["HarnessRoleArn"]
     role_name = role_arn.split("/")[-1]
 

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { Bot, Loader2, RefreshCw, Send, User } from 'lucide-react'
 import { invokeAgent, newSessionId } from '../lib/agentClient'
+import { industries } from '../industries/registry'
 import { useAuth } from '../lib/AuthContext'
 
 interface ChatMessage {
@@ -86,6 +87,7 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
         let received = false
         for await (const chunk of invokeAgent(prompt.trim(), sessionId, token, {
           actorId: user?.sub,
+          harnessArn: industries.find((i) => i.id === industryId)?.harnessArn,
           signal: controller.signal,
         })) {
           received = true

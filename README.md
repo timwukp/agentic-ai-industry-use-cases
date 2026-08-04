@@ -7,11 +7,13 @@ fully-managed agents (no containers, no agent loop to write) with **Gateway MCP 
 a **Bedrock Knowledge Base (S3 Vectors)**, **managed Memory**, and a single **Cognito-secured
 responsive PWA** frontend.
 
-The **finance-trading** flagship is deployed end-to-end and verified (streaming chat, live
-tool calls, KB retrieval, cross-session memory, browser E2E). The other 5 industries ship as
-code-complete templates that reuse the same pattern.
+**finance-trading** and **healthcare-medical** are deployed end-to-end and verified
+(streaming chat, live tool calls, KB retrieval, cross-session memory, browser E2E, online
+evaluations). The other 4 industries ship as deploy-ready templates on the same pattern.
 
 ## Architecture
+
+![Architecture](docs/architecture.png)
 
 ```
 Browser (React PWA, Cognito JWT)
@@ -76,15 +78,15 @@ cd tests/e2e && BASE_URL=https://<cloudfront> E2E_EMAIL=... E2E_PASSWORD=... npx
 | Industry | Agent | Tools | Status |
 |---|---|---|---|
 | Finance Trading | `finance_trading_assistant` | 16 domain + KB search | **Deployed & verified** |
-| Healthcare Medical | template | records / clinical / scheduling / analytics | Code-complete |
+| Healthcare Medical | `healthcare_medical_assistant` | 16 domain + KB search | **Deployed & verified** (chat live) |
 | Insurance Claims | template | claims / fraud / policy / settlement | Code-complete |
 | Retail Inventory | template | inventory / forecast / supplier / pricing | Code-complete |
 | Manufacturing Maintenance | template | equipment / prediction / maintenance / parts | Code-complete |
 | Real Estate Valuation | template | valuation / market / investment / property | Code-complete |
 
-To deploy another industry: add its data/tools stacks (copy the finance stack classes), then
-`python deploy/deploy.py --industry <name>` — the harness/gateway/memory scripts are already
-industry-parameterized.
+To deploy another industry: `python deploy/deploy.py --industry <name>` — the parameterized
+`IndustryStack` plus the gateway/harness/memory scripts handle everything (healthcare was
+brought online this way with zero new stack code).
 
 ## Data honesty
 

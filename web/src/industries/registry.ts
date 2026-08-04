@@ -20,6 +20,8 @@ export interface IndustryModule {
   description: string
   enabled: boolean
   Dashboard: ComponentType
+  /** Harness ARN override; defaults to config.harnessArn (finance). */
+  harnessArn?: string
 }
 
 function placeholder(
@@ -55,11 +57,13 @@ export const industries: IndustryModule[] = [
     icon: HeartPulse,
     themeColor: 'text-rose-400',
     description:
-      'Clinical triage, patient-record summarization and care-pathway assistance.',
-    enabled: false,
+      'Drug interactions, clinical guidelines, scheduling and population health with an AI medical records assistant.',
+    // chat-only for now: agent + tools + KB are live, dashboard REST API is not
+    enabled: Boolean(import.meta.env.VITE_HARNESS_ARN_HEALTHCARE),
+    harnessArn: import.meta.env.VITE_HARNESS_ARN_HEALTHCARE as string | undefined,
     Dashboard: placeholder(
       'Healthcare & Medical',
-      'Clinical triage, patient-record summarization and care-pathway assistance.',
+      'Chat is live (drug interactions, clinical guidelines, KB search). Dashboard widgets coming soon.',
       HeartPulse,
       'text-rose-400',
     ),
