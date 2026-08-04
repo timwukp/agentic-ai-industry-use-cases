@@ -29,7 +29,7 @@
 <rect x="700" y="210" width="440" height="58" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
 <rect x="700" y="210" width="4" height="58" rx="2" fill="#06b6d4"/>
 <text x="714" y="236" fill="#e2e8f0" font-size="14" font-weight="600">AgentCore Gateway (MCP)</text>
-<text x="714" y="253" fill="#94a3b8" font-size="11">5 tool Lambdas → DynamoDB · market-data / portfolio / risk / trading / kb</text>
+<text x="714" y="253" fill="#94a3b8" font-size="11">5 tool Lambdas per industry → DynamoDB · 4 domain tools + kb search</text>
 <rect x="700" y="292" width="440" height="58" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
 <rect x="700" y="292" width="4" height="58" rx="2" fill="#06b6d4"/>
 <text x="714" y="318" fill="#e2e8f0" font-size="14" font-weight="600">Knowledge Base tool</text>

@@ -34,11 +34,36 @@ test('chat streams a reply from the harness', async ({ page }) => {
   await page.screenshot({ path: 'screenshots/chat.png', fullPage: true });
 });
 
-test('disabled industries show coming soon', async ({ page }) => {
-  await login(page);
-  await page.goto('/insurance-claims/dashboard');
-  await expect(page.getByText(/coming soon/i)).toBeVisible();
-});
+// All six harnesses are deployed; these four have chat but no widgets yet, so
+// their dashboard route shows the "agent is live" hand-off into chat.
+const CHAT_ONLY = [
+  'insurance-claims',
+  'retail-inventory',
+  'manufacturing-maintenance',
+  'real-estate-valuation',
+];
+
+for (const industryId of CHAT_ONLY) {
+  test(`${industryId} dashboard offers the live agent`, async ({ page }) => {
+    await login(page);
+    await page.goto(`/${industryId}/dashboard`);
+    await expect(page.getByRole('link', { name: /agent is live/i })).toBeVisible({
+      timeout: 30_000,
+    });
+  });
+
+  test(`${industryId} chat streams from its own harness`, async ({ page }) => {
+    await login(page);
+    await page.goto(`/${industryId}/chat`);
+    const input = page.getByPlaceholder(/message|ask/i).locator('visible=true').first();
+    await input.fill('In one sentence: what tools do you have?');
+    await page.getByRole('button', { name: /send/i }).locator('visible=true').first().click();
+    const assistant = page.locator('[data-role="assistant"]').last();
+    await expect(assistant).toBeVisible({ timeout: 60_000 });
+    await expect(assistant).not.toHaveText('', { timeout: 60_000 });
+    await page.screenshot({ path: `screenshots/${industryId}-chat.png`, fullPage: true });
+  });
+}
 
 test('healthcare chat streams from its own harness', async ({ page }) => {
   await login(page);

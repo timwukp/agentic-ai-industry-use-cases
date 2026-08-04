@@ -38,7 +38,7 @@
 <rect x="620" y="436" width="300" height="76" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
 <rect x="620" y="436" width="4" height="76" rx="2" fill="#f43f5e"/>
 <text x="636" y="464" fill="#e2e8f0" font-size="15" font-weight="600">AgentCore Harness (per industry)</text>
-<text x="636" y="482" fill="#94a3b8" font-size="11.5">Claude Sonnet · declarative config · finance + healthcare live</text>
+<text x="636" y="482" fill="#94a3b8" font-size="11.5">Claude Sonnet · declarative · 6 industries live</text>
 <path id="e5" d="M 770 386 L 770 436" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
 <circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="0.90s" begin="1.20s" repeatCount="indefinite"/><animateMotion dur="0.90s" begin="1.20s" repeatCount="indefinite"><mpath href="#e5"/></animateMotion></circle>
 <rect x="360" y="436" width="220" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
@@ -68,8 +68,8 @@
 <circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="0.90s" begin="2.10s" repeatCount="indefinite"/><animateMotion dur="0.90s" begin="2.10s" repeatCount="indefinite"><mpath href="#e9"/></animateMotion></circle>
 <rect x="620" y="674" width="300" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
 <rect x="620" y="674" width="4" height="62" rx="2" fill="#22c55e"/>
-<text x="636" y="702" fill="#e2e8f0" font-size="15" font-weight="600">Tool Lambdas ×5</text>
-<text x="636" y="720" fill="#94a3b8" font-size="11.5">market-data / portfolio / risk / trading / kb</text>
+<text x="636" y="702" fill="#e2e8f0" font-size="15" font-weight="600">Tool Lambdas ×5 per industry</text>
+<text x="636" y="720" fill="#94a3b8" font-size="11.5">4 domain tools + kb search</text>
 <path id="e10" d="M 770 624 L 770 674" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
 <circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.1;0.9;1" dur="0.90s" begin="2.40s" repeatCount="indefinite"/><animateMotion dur="0.90s" begin="2.40s" repeatCount="indefinite"><mpath href="#e10"/></animateMotion></circle>
 <rect x="360" y="674" width="220" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>

@@ -153,7 +153,7 @@ box(
     300,
     76,
     "AgentCore Harness (per industry)",
-    "Claude Sonnet · declarative config · finance + healthcare live",
+    "Claude Sonnet · declarative · 6 industries live",
     "rose",
     pulse=True,
 )
@@ -183,8 +183,8 @@ box(
     674,
     300,
     62,
-    "Tool Lambdas ×5",
-    "market-data / portfolio / risk / trading / kb",
+    "Tool Lambdas ×5 per industry",
+    "4 domain tools + kb search",
     "green",
 )
 arrow(770, 624, 770, 674, delay=2.4)

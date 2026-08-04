@@ -35,8 +35,10 @@ def get_token(region: str) -> tuple[str, str]:
     return access_token, sub
 
 
-def invoke(prompt: str, session_id: str, region: str) -> None:
-    harness = json.loads((OUTPUTS / "harness-id-finance.json").read_text())
+def invoke(
+    prompt: str, session_id: str, region: str, industry: str = "finance"
+) -> None:
+    harness = json.loads((OUTPUTS / f"harness-id-{industry}.json").read_text())
     token, sub = get_token(region)
 
     url = (
@@ -62,40 +64,54 @@ def invoke(prompt: str, session_id: str, region: str) -> None:
         },
     )
     print(f"POST {url[:100]}...")
+    from botocore.eventstream import EventStreamBuffer
+
+    buf = EventStreamBuffer()
+    text_parts: list[str] = []
+    errors: list[str] = []
     with urllib.request.urlopen(req, timeout=310) as resp:  # nosec B310
         print("HTTP", resp.status, resp.headers.get("content-type"))
-        text_parts = []
-        for raw in resp:
-            line = raw.decode("utf-8", "replace").strip()
-            if not line.startswith("data:"):
-                continue
-            payload = line[5:].strip()
-            try:
-                event = json.loads(payload)
-            except json.JSONDecodeError:
-                continue
-            delta = (
-                event.get("contentBlockDelta", {}).get("delta", {}).get("text")
-                or event.get("delta", {}).get("text")
-                or event.get("text")
-            )
-            if delta:
-                text_parts.append(delta)
-                sys.stdout.write(delta)
-                sys.stdout.flush()
-        print("\n---")
-        print(f"[{len(text_parts)} chunks streamed]")
+        while True:
+            chunk = resp.read(8192)
+            if not chunk:
+                break
+            buf.add_data(chunk)
+            for event in buf:
+                if not event.payload:
+                    continue
+                try:
+                    e = json.loads(event.payload.decode("utf-8", "replace"))
+                except json.JSONDecodeError:
+                    continue
+                delta = (
+                    e.get("contentBlockDelta", {}).get("delta", {}).get("text")
+                    or e.get("delta", {}).get("text")
+                    or e.get("text")
+                )
+                if delta:
+                    text_parts.append(delta)
+                    sys.stdout.write(delta)
+                    sys.stdout.flush()
+                elif e.get("message"):
+                    errors.append(e["message"])
+    print("\n---")
+    print(f"[{len(text_parts)} chunks streamed]")
+    if errors:
+        raise SystemExit(f"harness error: {errors[0][:300]}")
+    if not text_parts:
+        raise SystemExit("FAIL: no text streamed")
 
 
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--prompt", required=True)
+    ap.add_argument("--industry", default="finance")
     ap.add_argument("--session-id", default=None)
     ap.add_argument("--region", default="us-east-1")
     args = ap.parse_args()
     session_id = args.session_id or (uuid.uuid4().hex + uuid.uuid4().hex[:8])
     print(f"session: {session_id}")
-    invoke(args.prompt, session_id, args.region)
+    invoke(args.prompt, session_id, args.region, args.industry)
 
 
 if __name__ == "__main__":
