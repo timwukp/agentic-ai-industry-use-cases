@@ -1,17 +1,28 @@
 """Gateway target: inventory — stock levels, summaries, transfers, stockout report.
 
-Inventory data is a deterministic simulation seeded from the function inputs
-(stable within a calendar day for date-relative fields).
+SKU economics and category structure come from the shared toolkit.retail_basis so
+the network summary, the ABC breakdown and the stockout report cannot disagree
+about how many SKUs the network carries or how many of them are out of stock.
 """
 
 import hashlib
 import random
 from datetime import datetime, timedelta, timezone
 
-from toolkit import tool_ok, tool_error
+from toolkit import (
+    CATALOG,
+    abc_breakdown,
+    category_rows,
+    network_in_stock_pct,
+    sku_basis,
+    tool_ok,
+    tool_error,
+)
 from toolkit.dispatch import dispatch
 
-CATEGORIES = ["Electronics", "Apparel", "Grocery", "Home & Garden", "Sports"]
+#: Days of cover the reorder point is set to hold.
+REORDER_COVER_DAYS = 14
+SAFETY_STOCK_DAYS = 7
 
 
 def _rng(*parts) -> random.Random:
@@ -25,94 +36,131 @@ def _today() -> datetime:
 
 
 def check_inventory(sku: str) -> dict:
-    r = _rng("check_inventory", sku.upper())
+    today = _today()
+    # Name, category, class and velocity come from the shared SKU basis, so this
+    # route and the stockout report describe the same product. Drawn here, a SKU
+    # came back as "Product 001 / Electronics" in one route and "Organic Coffee /
+    # Grocery" in another.
+    basis = sku_basis(sku)
+    r = _rng("check_inventory", basis.sku, today.strftime("%Y-%m-%d"))
+
+    # Stock is held as days of cover on the SKU's own velocity, not an absolute
+    # count: 5,000 units is a year of a C-class item and a fortnight of an
+    # A-class one, and days_of_supply below was drawn from the same free range.
+    days_cover = round(r.uniform(4, 70), 1)
+    total_on_hand = max(0, round(basis.avg_daily_units * days_cover))
+    reserved = round(total_on_hand * r.uniform(0, 0.25))
+    reorder_point = basis.avg_daily_units * REORDER_COVER_DAYS
+
     warehouses = ["DC-East", "DC-West", "DC-Central"]
-    stores = [f"Store-{n}" for n in r.sample(range(100, 200), 3)]
-
-    total_on_hand = r.randint(50, 5000)
-    reserved = r.randint(0, total_on_hand // 4)
-    avg_daily_sales = r.randint(5, 100)
-
-    location_breakdown = {}
-    remaining = total_on_hand
-    for loc in warehouses + stores:
-        qty = r.randint(0, remaining // 2) if remaining > 0 else 0
-        remaining -= qty
+    stores = [f"Store-{n}" for n in sorted(r.sample(range(100, 200), 3))]
+    # Locations must partition the on-hand quantity — halving the remainder at
+    # each stop left a third of the stock at no location at all.
+    weights = [r.uniform(0.5, 3.0) for _ in warehouses + stores]
+    location_breakdown, placed = {}, 0
+    for i, loc in enumerate(warehouses + stores):
+        qty = (
+            total_on_hand - placed
+            if i == len(weights) - 1
+            else round(total_on_hand * weights[i] / sum(weights))
+        )
+        qty = max(0, min(qty, total_on_hand - placed))
         location_breakdown[loc] = qty
-
-    reorder_point = avg_daily_sales * 14  # 2 weeks safety stock
+        placed += qty
 
     return tool_ok(
         {
-            "sku": sku,
-            "product_name": f"Product {sku[-3:]}",
-            "category": r.choice(CATEGORIES),
+            "sku": basis.sku,
+            "product_name": basis.name,
+            "category": basis.category,
             "inventory": {
                 "total_on_hand": total_on_hand,
                 "reserved": reserved,
                 "available_to_sell": total_on_hand - reserved,
-                "in_transit": r.randint(0, 500),
-                "on_order": r.randint(0, 1000),
+                "in_transit": round(basis.avg_daily_units * r.uniform(0, 5)),
+                "on_order": round(basis.avg_daily_units * r.uniform(0, 20)),
             },
             "by_location": location_breakdown,
             "metrics": {
-                "avg_daily_sales": avg_daily_sales,
-                "days_of_supply": round(total_on_hand / avg_daily_sales, 1),
+                "avg_daily_sales": basis.avg_daily_units,
+                "days_of_supply": days_cover,
                 "reorder_point": reorder_point,
-                "safety_stock": avg_daily_sales * 7,
+                "safety_stock": basis.avg_daily_units * SAFETY_STOCK_DAYS,
                 "needs_reorder": total_on_hand < reorder_point,
             },
-            "abc_class": r.choice(["A", "A", "B", "B", "B", "C", "C", "C", "C"]),
+            "unit_economics": {
+                "unit_price": basis.unit_price,
+                "unit_cost": basis.unit_cost,
+                "gross_margin_pct": basis.gross_margin_pct,
+                "daily_revenue": basis.daily_revenue,
+            },
+            "abc_class": basis.abc_class,
         },
         simulated=True,
     )
 
 
 def get_inventory_summary(category: str = "all") -> dict:
-    cats = CATEGORIES if category.lower() == "all" else [category.title()]
-    cat_data = []
-    for cat in cats:
-        r = _rng("inventory_summary", cat)
-        total_skus = r.randint(200, 2000)
-        cat_data.append(
-            {
-                "category": cat,
-                "total_skus": total_skus,
-                "in_stock_pct": round(r.uniform(88, 99), 1),
-                "stockout_skus": r.randint(1, max(1, int(total_skus * 0.05))),
-                "overstock_skus": r.randint(5, max(6, int(total_skus * 0.1))),
-                "total_value": round(r.uniform(500000, 5000000), 2),
-                "avg_days_of_supply": round(r.uniform(15, 45), 1),
-                "inventory_turnover": round(r.uniform(4, 12), 1),
-            }
-        )
-    r = _rng("inventory_alerts", category.lower())
+    day = _today().strftime("%Y-%m-%d")
+    rows = category_rows(day, category)
+    cat_data = [
+        {
+            "category": c.category,
+            "total_skus": c.total_skus,
+            "in_stock_pct": c.in_stock_pct,
+            # Every figure below is derived from the row above it: stockouts are
+            # the SKU count times the out-of-stock rate, turnover is a year over
+            # the days of supply, excess follows the days of supply. Drawn
+            # independently, a category reported 90.0% in stock beside 31
+            # stockouts on 1,295 SKUs, and 10.2 turns beside 45 days of supply.
+            "stockout_skus": c.stockout_skus,
+            "overstock_skus": c.overstock_skus,
+            "total_value": c.inventory_value,
+            "excess_value": c.excess_value,
+            "avg_days_of_supply": c.days_of_supply,
+            "inventory_turnover": c.turnover,
+        }
+        for c in rows
+    ]
+    total_skus = sum(c["total_skus"] for c in cat_data)
+    total_stockouts = sum(c["stockout_skus"] for c in cat_data)
+    excess_value = sum(c["excess_value"] for c in cat_data)
+    # A-class SKUs are the ones with safety stock policies, so the alert counts
+    # the A-class share of the network's actual stockouts rather than a free
+    # randint that read "9 A-class SKUs" beside a 6-A-class stockout report.
+    abc = abc_breakdown(rows)
+    a_share = abc["A"]["sku_count"] / total_skus if total_skus else 0
+    a_class_stockouts = max(1, round(total_stockouts * a_share * 0.5))
 
     return tool_ok(
         {
             "filter": category,
             "summary": cat_data,
             "overall": {
-                "total_skus": sum(c["total_skus"] for c in cat_data),
+                "total_skus": total_skus,
                 "total_inventory_value": round(
                     sum(c["total_value"] for c in cat_data), 2
                 ),
-                "avg_in_stock_rate": round(
-                    sum(c["in_stock_pct"] for c in cat_data) / len(cat_data), 1
-                ),
-                "total_stockouts": sum(c["stockout_skus"] for c in cat_data),
+                # SKU-weighted, so it equals 1 - total_stockouts / total_skus.
+                # A plain mean of the category percentages did not.
+                "avg_in_stock_rate": network_in_stock_pct(rows),
+                "total_stockouts": total_stockouts,
                 "total_overstock": sum(c["overstock_skus"] for c in cat_data),
+                "total_excess_value": round(excess_value, 2),
             },
             "alerts": [
                 {
                     "type": "STOCKOUT_RISK",
                     "severity": "HIGH",
-                    "message": f"{r.randint(3, 10)} A-class SKUs below safety stock",
+                    "message": (f"{a_class_stockouts} A-class SKUs below safety stock"),
                 },
                 {
                     "type": "OVERSTOCK",
                     "severity": "MEDIUM",
-                    "message": f"${r.randint(50, 200)}K excess inventory in seasonal items",
+                    "message": (
+                        f"${round(excess_value / 1000):,}K excess inventory "
+                        f"across {sum(c['overstock_skus'] for c in cat_data):,} SKUs"
+                    ),
                 },
             ],
         },
@@ -157,46 +205,71 @@ def transfer_stock(
 
 
 def get_stockout_report() -> dict:
+    """The catalog SKUs that are out of stock today, with revenue at risk.
+
+    These are the named SKUs an operator can act on — a subset of the network's
+    total_stockouts, which counts the whole (unlisted) long tail. The response
+    says so explicitly: the card used to print this report's row count as
+    "Active Stockouts: 11" directly above a category table whose stockout column
+    summed to 178.
+    """
     today = _today()
-    r = _rng("stockout_report", today.strftime("%Y-%m-%d"))
-    products = [
-        "Wireless Earbuds",
-        "Running Shoes",
-        "Organic Coffee",
-        "Smart Thermostat",
-        "Yoga Mat",
-        "USB-C Cable",
-        "Winter Jacket",
-    ]
+    day = today.strftime("%Y-%m-%d")
+    r = _rng("stockout_report", day)
+
+    # Draw from the shared catalog, so a row's SKU, name, category and ABC class
+    # are the same ones check_inventory reports for that product.
+    listed = [sku_basis(sku) for sku, *_ in CATALOG]
+    out_of_stock = r.sample(listed, k=r.randint(4, 8))
+
     stockouts = []
-    for _ in range(r.randint(5, 15)):
-        daily_revenue = round(r.uniform(50, 2000), 2)
+    for basis in out_of_stock:
         days_out = r.randint(1, 14)
-        on_order = r.random() > 0.3
+        # Lost revenue is this SKU's own daily revenue — the price and velocity
+        # check_inventory quotes — not a free draw over (50, 2000) that put a
+        # $6 jar of almond butter at $1,900 a day.
+        daily_loss = basis.daily_revenue
+        # An A-class item out for a week has been escalated; a C-class one may
+        # genuinely not be ordered yet. Drawing status freely produced
+        # "NOT_ORDERED" A-class items nine days out beside a recommendation to
+        # expedite exactly those.
+        if basis.abc_class == "A" or days_out > 7:
+            reorder_status = "ON_ORDER"
+        elif days_out > 3:
+            reorder_status = "PENDING"
+        else:
+            reorder_status = "NOT_ORDERED"
         stockouts.append(
             {
-                "sku": f"SKU-{r.choice(['ELEC', 'APRL', 'GROC', 'HOME', 'SPRT'])}-{r.randint(100, 999)}",
-                "product_name": r.choice(products),
-                "category": r.choice(
-                    ["Electronics", "Apparel", "Grocery", "Home", "Sports"]
-                ),
-                "abc_class": r.choice(["A", "A", "B"]),
+                "sku": basis.sku,
+                "product_name": basis.name,
+                "category": basis.category,
+                "abc_class": basis.abc_class,
                 "days_out_of_stock": days_out,
-                "estimated_daily_revenue_loss": daily_revenue,
-                "estimated_total_loss": round(daily_revenue * days_out, 2),
-                "reorder_status": r.choice(["ON_ORDER", "PENDING", "NOT_ORDERED"]),
+                "estimated_daily_revenue_loss": daily_loss,
+                "estimated_total_loss": round(daily_loss * days_out, 2),
+                "reorder_status": reorder_status,
+                # Only an ON_ORDER item has a confirmed delivery date; drawing
+                # the two apart produced "NOT_ORDERED with an ETA next Tuesday".
                 "eta": (
                     (today + timedelta(days=r.randint(2, 14))).strftime("%Y-%m-%d")
-                    if on_order
+                    if reorder_status == "ON_ORDER"
                     else None
                 ),
             }
         )
     stockouts.sort(key=lambda s: s["estimated_total_loss"], reverse=True)
 
+    network_stockouts = sum(c.stockout_skus for c in category_rows(day))
+
     return tool_ok(
         {
             "total_stockouts": len(stockouts),
+            "network_stockouts": network_stockouts,
+            "scope": (
+                f"{len(stockouts)} tracked catalog SKUs out of stock, of "
+                f"{network_stockouts:,} network-wide"
+            ),
             "total_revenue_impact": round(
                 sum(s["estimated_total_loss"] for s in stockouts), 2
             ),

@@ -1,4 +1,4 @@
-import { createElement, type ComponentType } from 'react'
+import type { ComponentType } from 'react'
 import type { LucideIcon } from 'lucide-react'
 import {
   Building2,
@@ -8,9 +8,12 @@ import {
   ShieldCheck,
   ShoppingCart,
 } from 'lucide-react'
-import PlaceholderDashboard from './PlaceholderDashboard'
 import FinanceDashboard from './finance/FinanceDashboard'
 import HealthcareDashboard from './healthcare/HealthcareDashboard'
+import InsuranceDashboard from './insurance/InsuranceDashboard'
+import RetailDashboard from './retail/RetailDashboard'
+import ManufacturingDashboard from './manufacturing/ManufacturingDashboard'
+import RealEstateDashboard from './realestate/RealEstateDashboard'
 
 export interface IndustryModule {
   id: string
@@ -23,24 +26,6 @@ export interface IndustryModule {
   Dashboard: ComponentType
   /** Harness ARN override; defaults to config.harnessArn (finance). */
   harnessArn?: string
-}
-
-function placeholder(
-  name: string,
-  description: string,
-  icon: LucideIcon,
-  accentClass: string,
-  chatLive = false,
-): ComponentType {
-  return function ComingSoon() {
-    return createElement(PlaceholderDashboard, {
-      name,
-      description,
-      icon,
-      accentClass,
-      chatLive,
-    })
-  }
 }
 
 export const industries: IndustryModule[] = [
@@ -74,13 +59,7 @@ export const industries: IndustryModule[] = [
       'Claims intake, document analysis, fraud signals and settlement recommendations.',
     enabled: Boolean(import.meta.env.VITE_HARNESS_ARN_INSURANCE),
     harnessArn: import.meta.env.VITE_HARNESS_ARN_INSURANCE as string | undefined,
-    Dashboard: placeholder(
-      'Insurance Claims',
-      'Claims intake, document analysis, fraud signals and settlement recommendations.',
-      ShieldCheck,
-      'text-indigo-400',
-      Boolean(import.meta.env.VITE_HARNESS_ARN_INSURANCE),
-    ),
+    Dashboard: InsuranceDashboard,
   },
   {
     id: 'retail-inventory',
@@ -91,13 +70,7 @@ export const industries: IndustryModule[] = [
       'Demand forecasting, stock optimization and automated replenishment workflows.',
     enabled: Boolean(import.meta.env.VITE_HARNESS_ARN_RETAIL),
     harnessArn: import.meta.env.VITE_HARNESS_ARN_RETAIL as string | undefined,
-    Dashboard: placeholder(
-      'Retail Inventory',
-      'Demand forecasting, stock optimization and automated replenishment workflows.',
-      ShoppingCart,
-      'text-emerald-400',
-      Boolean(import.meta.env.VITE_HARNESS_ARN_RETAIL),
-    ),
+    Dashboard: RetailDashboard,
   },
   {
     id: 'manufacturing-maintenance',
@@ -108,13 +81,7 @@ export const industries: IndustryModule[] = [
       'Predictive maintenance, sensor anomaly detection and work-order automation.',
     enabled: Boolean(import.meta.env.VITE_HARNESS_ARN_MANUFACTURING),
     harnessArn: import.meta.env.VITE_HARNESS_ARN_MANUFACTURING as string | undefined,
-    Dashboard: placeholder(
-      'Manufacturing Maintenance',
-      'Predictive maintenance, sensor anomaly detection and work-order automation.',
-      Factory,
-      'text-amber-400',
-      Boolean(import.meta.env.VITE_HARNESS_ARN_MANUFACTURING),
-    ),
+    Dashboard: ManufacturingDashboard,
   },
   {
     id: 'real-estate-valuation',
@@ -125,13 +92,7 @@ export const industries: IndustryModule[] = [
       'Comparable analysis, automated valuation models and market trend insights.',
     enabled: Boolean(import.meta.env.VITE_HARNESS_ARN_REALESTATE),
     harnessArn: import.meta.env.VITE_HARNESS_ARN_REALESTATE as string | undefined,
-    Dashboard: placeholder(
-      'Real Estate Valuation',
-      'Comparable analysis, automated valuation models and market trend insights.',
-      Building2,
-      'text-cyan-400',
-      Boolean(import.meta.env.VITE_HARNESS_ARN_REALESTATE),
-    ),
+    Dashboard: RealEstateDashboard,
   },
 ]
 

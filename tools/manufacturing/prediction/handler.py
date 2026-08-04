@@ -9,7 +9,7 @@ import hashlib
 import random
 from datetime import datetime, timedelta, timezone
 
-from toolkit import tool_ok
+from toolkit import asset_basis, tool_ok
 from toolkit.dispatch import dispatch
 
 FAILURE_MODES = [
@@ -52,12 +52,68 @@ def _today() -> datetime:
     return datetime(now.year, now.month, now.day, tzinfo=timezone.utc)
 
 
+# Share of failures attributable to each mode, in the order the dashboard lists
+# them. Bearings dominate rotating-equipment failure statistics.
+#: Production hours in the reporting year — the denominator both the failure
+#: count and OEE availability are measured against. This plant runs continuously,
+#: so it is the full 8760, and the two figures must use the same basis: dividing
+#: failures by 8760 while measuring availability against a 2000-hour year makes a
+#: machine that fails four times a year look 99% available.
+SCHEDULED_HOURS = 8760
+
+FAILURE_MODE_SHARES = [
+    ("Bearing failure", 0.5, (2, 12)),
+    ("Seal leak", 0.3, (1, 6)),
+    ("Electrical fault", 0.2, (1, 8)),
+]
+
+
+def _partition_failures(total: int, r: random.Random) -> list:
+    """Split `total` failures across the modes so the rows sum to the header.
+
+    Drawn independently, the three mode counts summed to 9 under a
+    "4 failures in 12 months" header on the same card. Largest-remainder
+    apportionment keeps the split exact for any total, including 1.
+    """
+    exact = [(name, total * share, rng) for name, share, rng in FAILURE_MODE_SHARES]
+    counts = [int(v) for _, v, _ in exact]
+    # Hand out the rounding remainder to the modes with the largest fractions.
+    remainder = total - sum(counts)
+    order = sorted(range(len(exact)), key=lambda i: exact[i][1] % 1, reverse=True)
+    for i in order[:remainder]:
+        counts[i] += 1
+    return [
+        {
+            "mode": name,
+            "count": count,
+            "avg_repair_hours": round(r.uniform(lo, hi), 1),
+        }
+        for (name, _, (lo, hi)), count in zip(exact, counts)
+    ]
+
+
 def predict_failure(equipment_id: str) -> dict:
+    """Remaining useful life implied by the asset's current wear state.
+
+    RUL is scaled by wear from the shared basis rather than drawn on its own: the
+    dashboard shows the prediction card beside the fleet health pill for the same
+    asset, and independent draws gave a 34-health STOPPED machine a 98-day RUL.
+    """
     today = _today()
+    basis = asset_basis(equipment_id, today.strftime("%Y-%m-%d"))
     r = _rng("predict_failure", equipment_id.upper(), today.strftime("%Y-%m-%d"))
     primary = r.choice(FAILURE_MODES)
+    # A pristine asset gets its full nominal life; a fully worn one is nearly out
+    # of it. Quadratic so the fall-off tracks the vibration curve in asset_basis.
+    life_left = max(0.03, (1 - basis.wear) ** 2)
     rul_days = max(
-        1, int(r.gauss(primary["typical_rul_days"], primary["typical_rul_days"] * 0.3))
+        1,
+        int(
+            r.gauss(
+                primary["typical_rul_days"] * life_left,
+                primary["typical_rul_days"] * life_left * 0.2,
+            )
+        ),
     )
     failure_probability = round(
         min(0.99, max(0.05, 1 - rul_days / (primary["typical_rul_days"] * 2))), 2
@@ -96,7 +152,9 @@ def predict_failure(equipment_id: str) -> dict:
             },
             "risk_level": risk_level,
             "degradation_trend": {
-                "current_degradation_pct": round(r.uniform(20, 85), 1),
+                # degradation IS the wear state, in percent — the card prints it
+                # next to the RUL that was just derived from the same number
+                "current_degradation_pct": round(basis.wear * 100, 1),
                 "degradation_rate_per_day": round(r.uniform(0.1, 2.5), 2),
                 "acceleration": r.choice(["STABLE", "ACCELERATING", "DECELERATING"]),
             },
@@ -124,8 +182,11 @@ def predict_failure(equipment_id: str) -> dict:
 
 def analyze_vibration(equipment_id: str) -> dict:
     today = _today()
+    basis = asset_basis(equipment_id, today.strftime("%Y-%m-%d"))
     r = _rng("analyze_vibration", equipment_id.upper(), today.strftime("%Y-%m-%d"))
-    shaft_rpm = r.randint(900, 3600)
+    # Same shaft speed the status route reports, so the spectrum's 1X peak lands
+    # where the asset's own RPM says it should.
+    shaft_rpm = basis.rpm or r.randint(900, 3600)
     shaft_freq = round(shaft_rpm / 60, 2)
 
     # bearing defect frequencies (typical ratios to shaft frequency)
@@ -133,7 +194,10 @@ def analyze_vibration(equipment_id: str) -> dict:
     bpfi = round(shaft_freq * r.uniform(5.0, 8.5), 2)
     bsf = round(shaft_freq * r.uniform(2.0, 4.5), 2)
     ftf = round(shaft_freq * r.uniform(0.35, 0.48), 2)
-    overall_velocity = round(r.uniform(0.5, 20.0), 2)
+    # The ISO zone printed here has to be the zone the asset's own vibration
+    # reading falls in — drawn apart, this card said "Zone A, newly commissioned"
+    # for an asset the alert list flagged at 14 mm/s.
+    overall_velocity = basis.vibration_mm_s
 
     # ISO 10816 zones (Class III machine)
     if overall_velocity <= 1.8:
@@ -145,37 +209,27 @@ def analyze_vibration(equipment_id: str) -> dict:
     else:
         iso_zone, iso_desc = "D", "Danger - damage occurring, immediate action required"
 
+    # Peaks are a share of the overall RMS, and a defect is called only when its
+    # own peak is significant. Independent draws produced 5 mm/s peaks under a
+    # 0.7 mm/s overall reading, and named an "inner race defect" on a machine
+    # whose spectrum was flat.
+    def _peak(freq: float, label: str, share: float, defect: str) -> dict:
+        amplitude = round(overall_velocity * share * r.uniform(0.8, 1.2), 2)
+        return {
+            "frequency_hz": freq,
+            "amplitude_mm_s": amplitude,
+            "label": label,
+            # 1.8 mm/s is the ISO 10816 Zone A/B boundary — below it a peak is
+            # not evidence of anything.
+            "diagnosis": defect if amplitude > 1.8 else "Normal",
+        }
+
     peaks = [
-        {
-            "frequency_hz": shaft_freq,
-            "amplitude_mm_s": round(r.uniform(0.2, 5.0), 2),
-            "label": "1X (Shaft speed)",
-            "diagnosis": "Imbalance" if r.random() > 0.5 else "Normal",
-        },
-        {
-            "frequency_hz": round(shaft_freq * 2, 2),
-            "amplitude_mm_s": round(r.uniform(0.1, 3.0), 2),
-            "label": "2X (Shaft speed)",
-            "diagnosis": "Misalignment" if r.random() > 0.5 else "Normal",
-        },
-        {
-            "frequency_hz": bpfo,
-            "amplitude_mm_s": round(r.uniform(0.05, 2.5), 2),
-            "label": "BPFO (Outer race)",
-            "diagnosis": "Outer race defect" if r.random() > 0.6 else "Normal",
-        },
-        {
-            "frequency_hz": bpfi,
-            "amplitude_mm_s": round(r.uniform(0.05, 2.0), 2),
-            "label": "BPFI (Inner race)",
-            "diagnosis": "Inner race defect" if r.random() > 0.7 else "Normal",
-        },
-        {
-            "frequency_hz": bsf,
-            "amplitude_mm_s": round(r.uniform(0.02, 1.5), 2),
-            "label": "BSF (Ball spin)",
-            "diagnosis": "Rolling element defect" if r.random() > 0.8 else "Normal",
-        },
+        _peak(shaft_freq, "1X (Shaft speed)", 0.55, "Imbalance"),
+        _peak(round(shaft_freq * 2, 2), "2X (Shaft speed)", 0.32, "Misalignment"),
+        _peak(bpfo, "BPFO (Outer race)", 0.24, "Outer race defect"),
+        _peak(bpfi, "BPFI (Inner race)", 0.18, "Inner race defect"),
+        _peak(bsf, "BSF (Ball spin)", 0.12, "Rolling element defect"),
     ]
     peaks.sort(key=lambda p: p["amplitude_mm_s"], reverse=True)
     defects = [p for p in peaks if p["diagnosis"] != "Normal"]
@@ -312,16 +366,50 @@ def detect_anomalies(equipment_id: str, hours: int = 24) -> dict:
 
 
 def get_reliability_metrics(equipment_id: str) -> dict:
-    r = _rng("reliability_metrics", equipment_id.upper())
-    mtbf_hours = r.randint(500, 8000)
-    mttr_hours = round(r.uniform(1, 48), 1)
-    availability = round(mtbf_hours / (mtbf_hours + mttr_hours) * 100, 2)
-    performance_rate = round(r.uniform(80, 99), 1)
-    quality_rate = round(r.uniform(92, 99.8), 1)
+    """12-month reliability, scaled by how worn the asset is.
+
+    A worn machine fails more often and runs slower. Drawn independently, the
+    OEE card reported "World Class 88%" for the asset the fleet table listed as
+    STOPPED at health 34 — the two sit on the same drill-down screen.
+    """
+    today = _today()
+    basis = asset_basis(equipment_id, today.strftime("%Y-%m-%d"))
+    r = _rng("reliability_metrics", equipment_id.upper(), today.strftime("%Y-%m-%d"))
+
+    # MTBF falls off with wear; the 500h floor is a machine failing weekly.
+    mtbf_hours = max(500, int(8000 * (1 - basis.wear) ** 1.5 * r.uniform(0.85, 1.15)))
+    # Operating hours in the year / MTBF, floored at one failure.
+    failures_12m = max(1, round(SCHEDULED_HOURS / mtbf_hours))
+    # Downtime is the sum of the repairs actually listed below, and MTTR is that
+    # downtime per failure. Drawing MTTR on its own gave a card whose three
+    # repair rows totalled 31h beside a "total downtime 4.2h" figure.
+    failure_modes = _partition_failures(failures_12m, r)
+    breakdown_hours = round(
+        sum(m["count"] * m["avg_repair_hours"] for m in failure_modes), 1
+    )
+    mttr_hours = round(breakdown_hours / failures_12m, 1)
+    # Planned maintenance is scheduled per quarter and roughly constant; the
+    # unplanned share is therefore the failure downtime measured against the two
+    # together, not a free 20-70% draw that could sit below the failure hours.
+    planned_hours = round(4 * r.uniform(3, 10), 1)
+    unplanned_pct = round(breakdown_hours / (breakdown_hours + planned_hours) * 100, 1)
+
+    # OEE availability is planned production time less ALL downtime, not just
+    # breakdowns: setup, changeover and adjustment losses dominate, and a worn
+    # asset needs more of them. Counting only the ~15h of breakdown repair gave
+    # 99.8% availability, which put 13 of 14 assets at "World Class" OEE
+    # directly above a benchmark card reading "industry average 65%" — and rated
+    # a DEGRADED machine 87.6%.
+    setup_hours = round(SCHEDULED_HOURS * (0.03 + basis.wear * 0.12), 1)
+    total_downtime = breakdown_hours + planned_hours + setup_hours
+    availability = round((SCHEDULED_HOURS - total_downtime) / SCHEDULED_HOURS * 100, 2)
+    # A worn asset is run below rated speed and scraps more, which is exactly
+    # what the performance and quality rates measure.
+    performance_rate = round(95 - basis.wear * 25 * r.uniform(0.95, 1.05), 1)
+    quality_rate = round(99.5 - basis.wear * 6 * r.uniform(0.95, 1.05), 1)
     oee = round(
         availability / 100 * performance_rate / 100 * quality_rate / 100 * 100, 1
     )
-    failures_12m = r.randint(2, 20)
 
     return tool_ok(
         {
@@ -346,31 +434,28 @@ def get_reliability_metrics(equipment_id: str) -> dict:
             },
             "failure_history": {
                 "total_failures_12m": failures_12m,
-                "total_downtime_hours": round(failures_12m * mttr_hours, 1),
-                "top_failure_modes": [
-                    {
-                        "mode": "Bearing failure",
-                        "count": r.randint(1, 5),
-                        "avg_repair_hours": round(r.uniform(2, 12), 1),
-                    },
-                    {
-                        "mode": "Seal leak",
-                        "count": r.randint(0, 3),
-                        "avg_repair_hours": round(r.uniform(1, 6), 1),
-                    },
-                    {
-                        "mode": "Electrical fault",
-                        "count": r.randint(0, 3),
-                        "avg_repair_hours": round(r.uniform(1, 8), 1),
-                    },
-                ],
-                "unplanned_downtime_pct": round(r.uniform(20, 70), 1),
+                "total_downtime_hours": breakdown_hours,
+                # The mode counts partition total_failures_12m — drawn apart, the
+                # three rows summed to 9 under a "4 failures" header.
+                "top_failure_modes": failure_modes,
+                "planned_downtime_hours": planned_hours,
+                "unplanned_downtime_pct": unplanned_pct,
             },
             "trends": {
-                "mtbf_trend": r.choice(["IMPROVING", "STABLE", "DECLINING"]),
-                "mtbf_change_pct": round(r.uniform(-15, 20), 1),
-                "oee_trend": r.choice(["IMPROVING", "STABLE", "DECLINING"]),
-                "oee_change_pct": round(r.uniform(-5, 10), 1),
+                # A worn asset is on the way down; the trend label must not
+                # contradict the wear-derived MTBF printed above it.
+                "mtbf_trend": (
+                    "DECLINING"
+                    if basis.wear > 0.6
+                    else "STABLE" if basis.wear > 0.3 else "IMPROVING"
+                ),
+                "mtbf_change_pct": round((0.45 - basis.wear) * 40, 1),
+                "oee_trend": (
+                    "DECLINING"
+                    if basis.wear > 0.6
+                    else "STABLE" if basis.wear > 0.3 else "IMPROVING"
+                ),
+                "oee_change_pct": round((0.45 - basis.wear) * 20, 1),
             },
             "benchmarks": {
                 "industry_avg_oee": 65.0,

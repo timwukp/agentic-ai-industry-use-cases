@@ -47,7 +47,7 @@
   },
   {
     "name": "get_comparables",
-    "description": "Find comparable property sales near an address, ordered by similarity score, with per-comp adjustments (sqft, beds, baths, time) and summary statistics.",
+    "description": "Find comparable property sales near an address, ordered by similarity to the subject (floor area, room count, sale recency, distance), with per-comp adjustments (sqft, beds, baths, time) and summary statistics. Also returns the subject property the adjustments are measured against.",
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -106,6 +106,10 @@
         "year_built": {
           "type": "integer",
           "description": "Year the structure was built"
+        },
+        "lot_sqft": {
+          "type": "integer",
+          "description": "Lot size in square feet. Optional; pass the same lot size used for this address elsewhere so the land value agrees. Omit and the lot is estimated from the building area and property type."
         }
       },
       "required": [

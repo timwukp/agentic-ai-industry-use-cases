@@ -40,12 +40,15 @@ export function StatCard({
   subClass?: string
 }) {
   return (
-    <div className="bg-slate-900 rounded-xl p-4 @lg:p-5 border border-slate-800">
+    // data-kpi lets E2E assert on the rendered value, not on the tile's presence
+    <div className="bg-slate-900 rounded-xl p-4 @lg:p-5 border border-slate-800" data-kpi={title}>
       <div className="flex items-center justify-between mb-2">
         <span className="text-xs @lg:text-sm text-slate-400">{title}</span>
         <Icon className="w-4 h-4 @lg:w-5 @lg:h-5 text-slate-500" />
       </div>
-      <div className="text-xl @lg:text-2xl font-bold text-white tabular-nums">{value}</div>
+      <div className="text-xl @lg:text-2xl font-bold text-white tabular-nums" data-kpi-value>
+        {value}
+      </div>
       {sub && <div className={`text-xs @lg:text-sm mt-1 ${subClass}`}>{sub}</div>}
     </div>
   )

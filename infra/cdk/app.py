@@ -64,7 +64,9 @@ WebStack(
     web_acl_arn=shared.web_acl_arn,
 )
 
-# industries with a dashboard_api handler expose REST widgets too
+# industries with a dashboard_api handler expose REST widgets too.
+# Keys are the module names dashboard_api/handler.py imports; values are the
+# tools/<industry>/<dir> whose handler.py gets copied in under that alias.
 DASHBOARD_MODULES = {
     "healthcare": {
         "analytics_tools": "analytics",
@@ -72,6 +74,37 @@ DASHBOARD_MODULES = {
         "records_tools": "records",
         "clinical_tools": "clinical",
     },
+    "insurance": {
+        "claims_tools": "claims",
+        "fraud_tools": "fraud_detection",
+        "settlement_tools": "settlement",
+    },
+    "retail": {
+        "inventory_tools": "inventory",
+        "forecast_tools": "demand_forecast",
+        "pricing_tools": "pricing",
+        "supplier_tools": "supplier",
+    },
+    "manufacturing": {
+        "equipment_tools": "equipment",
+        "prediction_tools": "prediction",
+        "maintenance_tools": "maintenance",
+        "parts_tools": "parts",
+    },
+    "realestate": {
+        "market_tools": "market",
+        "property_tools": "property",
+        "valuation_tools": "valuation",
+    },
+}
+
+# GET /api/<industry>/<path> for each industry's dashboard lambda
+DASHBOARD_ROUTES = {
+    "healthcare": ["population", "patient", "labs", "risk", "availability"],
+    "insurance": ["overview", "claims", "claim"],
+    "retail": ["overview", "stockouts", "demand", "forecast"],
+    "manufacturing": ["overview", "equipment", "sensor"],
+    "realestate": ["market", "listings", "comparables"],
 }
 
 industry_stacks = {}
@@ -86,10 +119,9 @@ for industry, targets in INDUSTRIES.items():
         dashboard_modules=DASHBOARD_MODULES.get(industry),
     )
 
-api.add_industry_routes(
-    "healthcare",
-    ["population", "patient", "labs", "risk", "availability"],
-    industry_stacks["healthcare"].dashboard_lambda,
-)
+for industry, paths in DASHBOARD_ROUTES.items():
+    api.add_industry_routes(
+        industry, paths, industry_stacks[industry].dashboard_lambda
+    )
 
 app.synth()

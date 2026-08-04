@@ -377,14 +377,23 @@ def get_maintenance_calendar(facility_id: str = "all", days: int = 30) -> dict:
         )
     scheduled_items.sort(key=lambda s: s["date"])
 
-    weeks = {}
+    # Pre-seed every ISO week in the horizon: a week with no jobs is real
+    # information ("nothing booked"), but omitting it makes the capacity chart
+    # skip a bar, which reads as if that week does not exist. Key on
+    # (iso_year, iso_week) so sorting stays correct across a year boundary.
+    weeks: dict[tuple[int, int], dict] = {}
+    for offset in range(0, days + 1):
+        iso = (today + timedelta(days=offset)).isocalendar()
+        weeks.setdefault((iso[0], iso[1]), {"maintenance_hours": 0.0, "events": 0})
     for item in scheduled_items:
-        week = datetime.strptime(item["date"], "%Y-%m-%d").isocalendar()[1]
-        weeks.setdefault(week, {"maintenance_hours": 0, "events": 0})
-        weeks[week]["maintenance_hours"] = round(
-            weeks[week]["maintenance_hours"] + item["duration_hours"], 1
+        iso = datetime.strptime(item["date"], "%Y-%m-%d").isocalendar()
+        bucket = weeks.setdefault(
+            (iso[0], iso[1]), {"maintenance_hours": 0.0, "events": 0}
         )
-        weeks[week]["events"] += 1
+        bucket["maintenance_hours"] = round(
+            bucket["maintenance_hours"] + item["duration_hours"], 1
+        )
+        bucket["events"] += 1
 
     total_hours = round(sum(s["duration_hours"] for s in scheduled_items), 1)
     available_hours = days * 4 * 8  # 4 techs, 8 hours/day
@@ -395,7 +404,9 @@ def get_maintenance_calendar(facility_id: str = "all", days: int = 30) -> dict:
             "period_days": days,
             "total_scheduled": len(scheduled_items),
             "schedule": scheduled_items[:20],
-            "weekly_capacity": {f"Week {k}": v for k, v in sorted(weeks.items())},
+            "weekly_capacity": {
+                f"Week {week}": v for (_year, week), v in sorted(weeks.items())
+            },
             "resource_utilization": {
                 "total_maintenance_hours": total_hours,
                 "technician_hours_available": available_hours,

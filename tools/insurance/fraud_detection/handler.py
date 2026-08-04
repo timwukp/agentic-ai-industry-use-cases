@@ -176,41 +176,67 @@ def generate_fraud_report(claim_id: str, investigation_findings: str) -> dict:
 
 
 def get_fraud_dashboard() -> dict:
+    """Monthly fraud funnel.
+
+    Every number here is derived from the one above it in the funnel: screened
+    -> flagged -> confirmed, then the pattern breakdown partitions the confirmed
+    cases. Drawing each independently produced a dashboard that said "9
+    confirmed cases" above a pattern chart whose bars summed to 20, and a
+    detection rate unrelated to the counts beside it.
+    """
     today = _today()
     r = _rng("fraud_dashboard", today.strftime("%Y-%m"))
+
+    screened = r.randint(500, 2000)
+    flagged = max(4, round(screened * r.uniform(0.03, 0.07)))
+    confirmed = max(1, round(flagged * r.uniform(0.10, 0.25)))
+    # A flagged claim is either confirmed fraud or a false positive — the two
+    # must therefore partition `flagged`, not be drawn apart from it.
+    false_positives = flagged - confirmed
+    # Some fraud slips through screening entirely; recall needs that denominator.
+    missed = max(0, round(confirmed * r.uniform(0.02, 0.09)))
+
+    # The pattern counts partition the confirmed cases, so the bars sum to
+    # exactly `confirmed` and each pct is that share of the total.
+    weights = [
+        r.uniform(*w) for w in ((0.15, 0.30), (0.20, 0.35), (0.10, 0.20), (0.05, 0.15))
+    ]
+    total_weight = sum(weights)
+    counts = [max(0, round(confirmed * w / total_weight)) for w in weights]
+    # rounding can drift by a case or two — settle the difference on the largest
+    drift = confirmed - sum(counts)
+    counts[counts.index(max(counts))] += drift
+
     return tool_ok(
         {
             "period": "current_month",
             "metrics": {
-                "total_claims_screened": r.randint(500, 2000),
-                "flagged_for_review": r.randint(30, 100),
-                "confirmed_fraud": r.randint(5, 20),
-                "false_positives": r.randint(10, 30),
-                "detection_rate_pct": round(r.uniform(92, 98), 1),
-                "false_positive_rate_pct": round(r.uniform(2, 8), 1),
-                "savings_from_detection": round(r.uniform(100000, 500000), 2),
+                "total_claims_screened": screened,
+                "flagged_for_review": flagged,
+                "confirmed_fraud": confirmed,
+                "false_positives": false_positives,
+                # recall: of all fraud that existed, the share screening caught
+                "detection_rate_pct": round(confirmed / (confirmed + missed) * 100, 1),
+                # of everything screened, the share wrongly flagged
+                "false_positive_rate_pct": round(false_positives / screened * 100, 1),
+                "missed_fraud_estimate": missed,
+                "savings_from_detection": round(confirmed * r.uniform(15000, 45000), 2),
             },
             "top_fraud_types": [
                 {
-                    "type": "Staged accidents",
-                    "count": r.randint(3, 10),
-                    "pct": round(r.uniform(15, 30), 1),
-                },
-                {
-                    "type": "Inflated claims",
-                    "count": r.randint(5, 15),
-                    "pct": round(r.uniform(20, 35), 1),
-                },
-                {
-                    "type": "Phantom damage",
-                    "count": r.randint(2, 8),
-                    "pct": round(r.uniform(10, 20), 1),
-                },
-                {
-                    "type": "Identity fraud",
-                    "count": r.randint(1, 5),
-                    "pct": round(r.uniform(5, 15), 1),
-                },
+                    "type": name,
+                    "count": count,
+                    "pct": round(count / confirmed * 100, 1) if confirmed else 0.0,
+                }
+                for name, count in zip(
+                    (
+                        "Staged accidents",
+                        "Inflated claims",
+                        "Phantom damage",
+                        "Identity fraud",
+                    ),
+                    counts,
+                )
             ],
             "trend": "IMPROVING" if r.random() > 0.3 else "STABLE",
         },

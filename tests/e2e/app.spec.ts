@@ -34,24 +34,16 @@ test('chat streams a reply from the harness', async ({ page }) => {
   await page.screenshot({ path: 'screenshots/chat.png', fullPage: true });
 });
 
-// All six harnesses are deployed; these four have chat but no widgets yet, so
-// their dashboard route shows the "agent is live" hand-off into chat.
-const CHAT_ONLY = [
+// Each industry runs its own harness. Dashboard widget assertions live in
+// industry-dash.spec.ts; here we only prove the harness streams.
+const INDUSTRIES = [
   'insurance-claims',
   'retail-inventory',
   'manufacturing-maintenance',
   'real-estate-valuation',
 ];
 
-for (const industryId of CHAT_ONLY) {
-  test(`${industryId} dashboard offers the live agent`, async ({ page }) => {
-    await login(page);
-    await page.goto(`/${industryId}/dashboard`);
-    await expect(page.getByRole('link', { name: /agent is live/i })).toBeVisible({
-      timeout: 30_000,
-    });
-  });
-
+for (const industryId of INDUSTRIES) {
   test(`${industryId} chat streams from its own harness`, async ({ page }) => {
     await login(page);
     await page.goto(`/${industryId}/chat`);

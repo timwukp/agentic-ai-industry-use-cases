@@ -235,26 +235,62 @@ def assess_damage(claim_id: str, damage_type: str, photos_submitted: int) -> dic
     )
 
 
+STATUS_FILTERS = ("all", "open", "pending", "closed", "flagged")
+# Stages still awaiting work from us. SETTLEMENT_OFFERED is excluded: the ball is
+# with the claimant, so it is open but not pending.
+PENDING_STAGES = ("SUBMITTED", "UNDER_REVIEW", "INVESTIGATION", "ASSESSMENT")
+# The dashboard labels the flagged filter "score > 0.7", so a flagged claim must
+# actually carry a score above that threshold.
+FLAGGED_THRESHOLD = 0.7
+
+
+def _priority_for(fraud_risk: float, amount: float) -> str:
+    """Triage priority implied by the claim's own risk and size.
+
+    Drawn independently this produced a 0.99 fraud score sitting at LOW priority
+    next to a $12,818 claim marked HIGH — the queue is meant to be sorted by
+    what needs an adjuster, so priority has to follow the two fields the
+    adjuster is looking at.
+    """
+    if fraud_risk > 0.85 or amount > 60000:
+        return "HIGH"
+    if fraud_risk > 0.5 or amount > 20000:
+        return "MEDIUM"
+    return "LOW"
+
+
 def list_claims(status_filter: str = "all", days: int = 30) -> dict:
     days = min(max(1, int(days)), 90)
     status_filter = status_filter.lower()
-    if status_filter not in ("all", "open", "pending", "closed", "flagged"):
+    if status_filter not in STATUS_FILTERS:
         return tool_error(
-            f"Invalid status_filter: {status_filter}",
-            valid=["all", "open", "pending", "closed", "flagged"],
+            f"Invalid status_filter: {status_filter}", valid=list(STATUS_FILTERS)
         )
     today = _today()
     r = _rng("list_claims", status_filter, days, today.strftime("%Y-%m-%d"))
 
     claims = []
     for _ in range(r.randint(8, 20)):
-        status = r.choice(CLAIM_STAGES)
-        if status_filter == "open" and status == "CLOSED":
-            status = "UNDER_REVIEW"
-        elif status_filter == "closed":
+        # Each filter must actually hold over every row it returns — coercing
+        # only the status left CLOSED claims in the "pending" tab and 0.27-risk
+        # claims in the "flagged" tab, directly under a "score > 0.7" card.
+        if status_filter == "closed":
             status = "CLOSED"
+        elif status_filter == "pending":
+            status = r.choice(PENDING_STAGES)
         elif status_filter == "flagged":
             status = r.choice(["INVESTIGATION", "UNDER_REVIEW"])
+        elif status_filter == "open":
+            status = r.choice([s for s in CLAIM_STAGES if s != "CLOSED"])
+        else:
+            status = r.choice(CLAIM_STAGES)
+
+        fraud_risk = (
+            round(r.uniform(FLAGGED_THRESHOLD + 0.01, 1.0), 2)
+            if status_filter == "flagged"
+            else round(r.uniform(0, 1), 2)
+        )
+        amount = round(r.uniform(500, 75000), 2)
         claims.append(
             {
                 "claim_id": f"CLM-{today.year}-{r.randrange(16 ** 6):06X}",
@@ -265,24 +301,37 @@ def list_claims(status_filter: str = "all", days: int = 30) -> dict:
                 "filed_date": (today - timedelta(days=r.randint(0, days))).strftime(
                     "%Y-%m-%d"
                 ),
-                "amount": round(r.uniform(500, 75000), 2),
-                "priority": r.choice(["LOW", "MEDIUM", "HIGH"]),
-                "fraud_risk": round(r.uniform(0, 1), 2),
+                "amount": amount,
+                "priority": _priority_for(fraud_risk, amount),
+                "fraud_risk": fraud_risk,
             }
         )
     claims.sort(key=lambda c: c["filed_date"], reverse=True)
+
+    # A settled claim carries no reserve, so exposure is an open-claims figure.
+    # Summing every row put $120K of closed claims into the "Reserve Exposure"
+    # card and labelled the total count "Open Claims".
+    open_claims = [c for c in claims if c["status"] != "CLOSED"]
+    reserve = round(sum(c["amount"] for c in open_claims), 2)
 
     return tool_ok(
         {
             "filter": status_filter,
             "period_days": days,
             "total_claims": len(claims),
+            "open_claims": len(open_claims),
             "claims": claims,
             "summary": {
                 "total_amount": round(sum(c["amount"] for c in claims), 2),
                 "avg_amount": round(sum(c["amount"] for c in claims) / len(claims), 2),
+                "reserve_exposure": reserve,
+                "avg_open_amount": (
+                    round(reserve / len(open_claims), 2) if open_claims else 0.0
+                ),
                 "high_priority": sum(1 for c in claims if c["priority"] == "HIGH"),
-                "flagged_fraud": sum(1 for c in claims if c["fraud_risk"] > 0.7),
+                "flagged_fraud": sum(
+                    1 for c in claims if c["fraud_risk"] > FLAGGED_THRESHOLD
+                ),
             },
         },
         simulated=True,

@@ -8,8 +8,8 @@
 
 **六個行業全部已端到端部署並驗證**——每個行業都有自己的 harness、帶 5 個 MCP 工具 target
 的 Gateway、S3 Vectors 知識庫、託管記憶，以及日誌/追蹤投遞，全部可從同一個 PWA 訪問。
-**finance-trading（金融交易）** 與 **healthcare-medical（醫療健康）** 在聊天之上還有專門設計的
-dashboard；其餘四個行業以聊天為主（其 dashboard 路由會引導至已上線的 agent）。
+六個行業也都有專門設計的 dashboard，各由自己的 REST 路由（每行業 3-5 條）支撐，已對照
+已部署的 API 驗證，並在桌面與行動裝置兩種寬度下截圖檢查。
 
 ## 架構
 
@@ -33,7 +33,7 @@ CloudFront，Lambda 最小權限 IAM，數據存儲 KMS 加密，私有 S3 + Clo
 | `tools/shared/toolkit/` | 共享 dispatch、DynamoDB 輔助、確定性行情模擬器 |
 | `kb/<industry>/seed-docs/` | 知識庫種子文檔（政策、產品指南） |
 | `skills/` | AgentCore Skills（git 源；合併後接線） |
-| `infra/cdk/` | 6 個 CDK stack：SharedSecurity、Auth、FinanceData、FinanceTools、Api、Web |
+| `infra/cdk/` | 11 個 CDK stack：SharedSecurity、Auth、FinanceData、FinanceTools、Api、Web，以及非金融行業各一個 `IndustryStack`（Healthcare、Insurance、Retail、Manufacturing、Realestate） |
 | `deploy/` | 編排器 + 冪等腳本（gateway、memory、seed、render、smoke） |
 | `web/` | 統一響應式 PWA（Vite + React 19 + Tailwind + Amplify Auth） |
 | `tests/` | 單元測試（pytest + moto）、基礎設施（CDK assertions）、E2E（Playwright） |
@@ -74,14 +74,27 @@ cd tests/e2e && BASE_URL=https://<cloudfront> E2E_EMAIL=... E2E_PASSWORD=... npx
 |---|---|---|---|
 | 金融交易 | `finance_trading_assistant` | market-data / portfolio / risk / trading / kb | Dashboard + 聊天 |
 | 醫療健康 | `healthcare_medical_assistant` | clinical / analytics / records / scheduling / kb | Patient 360 dashboard + 聊天 |
-| 保險理賠 | `insurance_claims_assistant` | claims / fraud-detection / policy / settlement / kb | 聊天 |
-| 零售庫存 | `retail_inventory_assistant` | inventory / demand-forecast / supplier / pricing / kb | 聊天 |
-| 製造維護 | `manufacturing_maintenance_assistant` | equipment / prediction / maintenance / parts / kb | 聊天 |
-| 房地產估值 | `real_estate_valuation_assistant` | valuation / market / investment / property / kb | 聊天 |
+| 保險理賠 | `insurance_claims_assistant` | claims / fraud-detection / policy / settlement / kb | 理賠隊列 dashboard + 聊天 |
+| 零售庫存 | `retail_inventory_assistant` | inventory / demand-forecast / supplier / pricing / kb | 庫存 dashboard + 聊天 |
+| 製造維護 | `manufacturing_maintenance_assistant` | equipment / prediction / maintenance / parts / kb | 設備健康 dashboard + 聊天 |
+| 房地產估值 | `real_estate_valuation_assistant` | valuation / market / investment / property / kb | 估值 dashboard + 聊天 |
 
 六個行業都是同一條命令上線的——`python deploy/deploy.py --industry <name>`——且**每個行業
 零新增 stack 代碼**：參數化的 `IndustryStack` 加上 gateway/harness/memory/observability
-腳本，全部從 `deploy/industries.py` 讀取配置。唯一的按行業前端工作是加 dashboard。
+腳本，全部從 `deploy/industries.py` 讀取配置。每個 dashboard 的 REST 路由宣告在
+`DASHBOARD_ROUTES`（`infra/cdk/app.py`），由每行業一個 `dashboard_api` Lambda 提供服務，
+而它 import 的正是 agent 透過 Gateway 呼叫的**同一批**工具處理器——所以瓷磚上的數字與
+agent 在聊天中引用的數字出自同一個函數，而非兩套實作。
+
+### Dashboard 數據一致性
+
+模擬數據的建構方式保證：描述同一個實體的數字不可能互相矛盾。每個衍生數字都由它上方顯示的
+數字計算而來，且觸及同一實體的每條路由都讀取同一個共享基準（`tools/shared/toolkit/` 中的
+`property_basis`、`asset_basis`、`retail_basis`、`market_basis`）。各自獨立抽樣會產生一眼
+可見的荒謬結果——例如市場瓷磚寫著 `$528K`，而它自己下方的歷史圖表最高點卻是 `$780K`；
+標為 `Median $/Sq Ft`（每平方英尺中位數）的瓷磚顯示的數字，在其下方表格的任何一列都找不到；
+或是 `YoY +8.8%`（年同比）瓷磚上方的圖表標題，對同樣的十二個月寫著 `+8.1% over period`。
+`tests/unit/test_industry_dashboard_apis.py` 為上述每一項都建立了回歸測試。
 
 ## 數據誠實原則
 
