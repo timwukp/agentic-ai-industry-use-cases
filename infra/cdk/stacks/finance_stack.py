@@ -34,6 +34,7 @@ class FinanceTradingStack(cdk.Stack):
         scope: Construct,
         construct_id: str,
         vpc: ec2.IVpc,
+        web_acl_arn: str,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -116,6 +117,7 @@ class FinanceTradingStack(cdk.Stack):
                 compress=True,
             ),
             default_root_object="index.html",
+            web_acl_id=web_acl_arn,
             error_responses=[
                 cloudfront.ErrorResponse(
                     http_status=404,
@@ -159,7 +161,7 @@ class FinanceTradingStack(cdk.Stack):
         self.runtime_role.add_to_policy(
             iam.PolicyStatement(
                 actions=["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
-                resources=["*"],
+                resources=["arn:aws:bedrock:*:*:model/*", "arn:aws:bedrock:*:*:inference-profile/*"],
             )
         )
 
@@ -170,7 +172,7 @@ class FinanceTradingStack(cdk.Stack):
                     "bedrock-agentcore:*Memory*",
                     "bedrock-agentcore:*Session*",
                 ],
-                resources=["*"],
+                resources=["arn:aws:bedrock-agentcore:*:*:memory/*", "arn:aws:bedrock-agentcore:*:*:session/*"],
             )
         )
 

@@ -4,16 +4,10 @@ This is the main entry point for deploying the Property Valuation Agent
 to AWS Bedrock AgentCore Runtime.
 """
 import os
-import sys
 import logging
 
-# Add project root to path for shared package imports (packages.shared.*)
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-# Add agent directory so local modules (agent, tools.*) can be imported directly
-sys.path.insert(0, os.path.dirname(__file__))
-
 from packages.shared.agentcore_app import create_agentcore_app
-from agent import PropertyValuationAgent
+from .agent import PropertyValuationAgent
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
 logger = logging.getLogger(__name__)

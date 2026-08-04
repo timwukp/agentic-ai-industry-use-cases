@@ -1,0 +1,13 @@
+# Auto-generated from pyproject.toml dependencies.
+# Pin versions to ensure reproducible builds.
+# To regenerate: pip freeze | grep -iE "^(strands|bedrock|boto3|pydantic|numpy|scipy|pandas)"
+
+strands-agents==1.40.0
+strands-agents-tools==0.5.3
+bedrock-agentcore==1.9.1
+boto3==1.43.4
+pydantic==2.11.7
+pydantic-settings==2.7.1
+numpy==2.4.5
+scipy==1.17.1
+pandas==3.0.3

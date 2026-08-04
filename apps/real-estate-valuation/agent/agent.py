@@ -12,13 +12,7 @@ Uses AgentCore Memory for persistent client preferences and market knowledge,
 Code Interpreter for calculations, and Browser for research.
 """
 import os
-import sys
 from typing import Optional
-
-# Add project root for shared package imports (packages.shared.*)
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-# Add agent directory so local tool modules can be imported as tools.*
-sys.path.insert(0, os.path.dirname(__file__))
 
 from bedrock_agentcore.memory.integrations.strands.config import (
     AgentCoreMemoryConfig,
@@ -26,25 +20,25 @@ from bedrock_agentcore.memory.integrations.strands.config import (
 )
 
 from packages.shared.base_agent import BaseIndustryAgent
-from tools.valuation import (
+from .tools.valuation import (
     estimate_property_value,
     get_comparables,
     generate_cma_report,
     calculate_replacement_cost,
 )
-from tools.market import (
+from .tools.market import (
     get_market_conditions,
     get_neighborhood_analysis,
     get_market_forecast,
     get_market_trends,
 )
-from tools.investment import (
+from .tools.investment import (
     calculate_cap_rate,
     analyze_rental_income,
     calculate_roi,
     get_investment_comparison,
 )
-from tools.property import (
+from .tools.property import (
     get_property_details,
     check_zoning,
     get_tax_assessment,

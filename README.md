@@ -7,8 +7,8 @@ Production-grade agentic AI applications across 6 industries, built with **AWS S
 ![Architecture Diagram](docs/architecture.png)
 
 **Tech Stack:**
-- **Agent Framework:** [Strands Agents SDK](https://github.com/strands-agents/sdk-python) v1.28.0
-- **Deployment Platform:** [Bedrock AgentCore SDK](https://github.com/aws/bedrock-agentcore-sdk-python) v1.4.1
+- **Agent Framework:** [Strands Agents SDK](https://github.com/strands-agents/sdk-python) v1.40.0
+- **Deployment Platform:** [Bedrock AgentCore SDK](https://github.com/aws/bedrock-agentcore-sdk-python) v1.9.1
 - **Frontend:** React 19, Vite 6, TypeScript 5, TailwindCSS 3, Recharts
 - **Infrastructure:** AWS CDK (Python), Well-Architected
 - **Model:** Amazon Bedrock (Claude Sonnet 4, configurable)
@@ -325,6 +325,11 @@ Comprehensive use case documentation covering real-world pain points and agentic
 | Real Estate | [Real Estate Use Cases](docs/use-cases/real-estate-valuation-use-cases.md) | Due Diligence (4), Lease Admin (4), ESG Assessment (4) |
 
 **Total: 72 new tools** across 18 modules addressing industry-specific pain points including compliance automation, risk intelligence, predictive analytics, and sustainability reporting.
+## Disclaimer
+
+This project is provided for educational and demonstration purposes. It uses simulated data and is NOT intended for production trading, medical, insurance, or other critical decision-making without proper validation, testing, and regulatory compliance review.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND. See the [LICENSE](LICENSE) file for full terms. The authors assume no liability for any use of this software.
 
 ## License
 

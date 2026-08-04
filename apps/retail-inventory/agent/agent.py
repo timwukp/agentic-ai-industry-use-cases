@@ -12,13 +12,7 @@ Uses AgentCore Memory for persistent retail knowledge/preferences,
 Code Interpreter for calculations, and Browser for research.
 """
 import os
-import sys
 from typing import Optional
-
-# Add project root for shared package imports (packages.shared.*)
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-# Add agent directory so local tool modules can be imported as tools.*
-sys.path.insert(0, os.path.dirname(__file__))
 
 from bedrock_agentcore.memory.integrations.strands.config import (
     AgentCoreMemoryConfig,
@@ -26,25 +20,25 @@ from bedrock_agentcore.memory.integrations.strands.config import (
 )
 
 from packages.shared.base_agent import BaseIndustryAgent
-from tools.inventory import (
+from .tools.inventory import (
     check_inventory,
     get_inventory_summary,
     transfer_stock,
     get_stockout_report,
 )
-from tools.demand_forecast import (
+from .tools.demand_forecast import (
     forecast_demand,
     get_demand_trends,
     auto_reorder,
     get_abc_analysis,
 )
-from tools.supplier import (
+from .tools.supplier import (
     get_supplier_performance,
     list_suppliers,
     create_purchase_order,
     get_supplier_risk_report,
 )
-from tools.pricing import (
+from .tools.pricing import (
     get_pricing_analysis,
     optimize_pricing,
     get_competitive_intelligence,
