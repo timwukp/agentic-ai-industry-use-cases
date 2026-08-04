@@ -64,14 +64,32 @@ WebStack(
     web_acl_arn=shared.web_acl_arn,
 )
 
+# industries with a dashboard_api handler expose REST widgets too
+DASHBOARD_MODULES = {
+    "healthcare": {
+        "analytics_tools": "analytics",
+        "scheduling_tools": "scheduling",
+        "records_tools": "records",
+        "clinical_tools": "clinical",
+    },
+}
+
+industry_stacks = {}
 for industry, targets in INDUSTRIES.items():
-    IndustryStack(
+    industry_stacks[industry] = IndustryStack(
         app,
         f"Agentic{industry.title()}Tools",
         env=env,
         industry=industry,
         targets=targets,
         kms_key=shared.kms_key,
+        dashboard_modules=DASHBOARD_MODULES.get(industry),
     )
+
+api.add_industry_routes(
+    "healthcare",
+    ["population", "patient", "labs", "risk", "availability"],
+    industry_stacks["healthcare"].dashboard_lambda,
+)
 
 app.synth()

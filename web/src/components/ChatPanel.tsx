@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { Bot, Loader2, RefreshCw, Send, User } from 'lucide-react'
 import { invokeAgent, newSessionId } from '../lib/agentClient'
+import { AGENT_PROMPT_EVENT } from '../lib/promptBus'
 import { industries } from '../industries/registry'
 import { useAuth } from '../lib/AuthContext'
 
@@ -33,6 +34,19 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
   const [error, setError] = useState<string | null>(null)
   const endRef = useRef<HTMLDivElement>(null)
   const abortRef = useRef<AbortController | null>(null)
+  const inputRef = useRef<HTMLTextAreaElement>(null)
+
+  // Prompt bus: dashboard "Ask agent" buttons prefill the input (never auto-send).
+  useEffect(() => {
+    const onPrompt = (event: Event) => {
+      const detail = (event as CustomEvent<string>).detail
+      if (typeof detail !== 'string') return
+      setInput(detail)
+      inputRef.current?.focus()
+    }
+    window.addEventListener(AGENT_PROMPT_EVENT, onPrompt)
+    return () => window.removeEventListener(AGENT_PROMPT_EVENT, onPrompt)
+  }, [])
 
   // Industry switch → pick up (or mint) that industry's session, clear the pane.
   useEffect(() => {
@@ -157,8 +171,8 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
           <div className="h-full flex flex-col items-center justify-center text-center gap-3 text-slate-500">
             <Bot className="w-8 h-8" />
             <p className="text-sm max-w-[240px]">
-              Ask about your portfolio, markets, risk analysis, or place a simulated
-              trade.
+              {industries.find((i) => i.id === industryId)?.description ??
+                'Ask the agent anything about this industry.'}
             </p>
           </div>
         )}
@@ -179,6 +193,7 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
       <form onSubmit={handleSubmit} className="p-3 border-t border-slate-800 bg-slate-900/60">
         <div className="flex items-end gap-2">
           <textarea
+            ref={inputRef}
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => {

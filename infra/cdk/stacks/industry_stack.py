@@ -28,13 +28,17 @@ EMBEDDING_MODEL = "amazon.titan-embed-text-v2:0"
 EMBEDDING_DIM = 1024
 
 
-def _stage(industry: str, name: str) -> str:
+def _stage(
+    industry: str, name: str, extra_modules: dict[str, str] | None = None
+) -> str:
     dest = STAGING / industry / name
     if dest.exists():
         shutil.rmtree(dest)
     dest.mkdir(parents=True)
     shutil.copy(TOOLS / industry / name / "handler.py", dest / "handler.py")
     shutil.copytree(TOOLS / "shared" / "toolkit", dest / "toolkit")
+    for alias, src_dir in (extra_modules or {}).items():
+        shutil.copy(TOOLS / industry / src_dir / "handler.py", dest / f"{alias}.py")
     return str(dest)
 
 
@@ -49,9 +53,13 @@ class IndustryStack(cdk.Stack):
         industry: str,  # tools/<industry> dir name, e.g. "healthcare"
         targets: list[str],  # handler dirs, e.g. ["records", ..., "kb_search"]
         kms_key: kms.IKey,
+        # dashboard REST lambda: {"alias_module": "source_handler_dir"} aliases
+        # bundled next to tools/<industry>/dashboard_api/handler.py; None = no API
+        dashboard_modules: dict[str, str] | None = None,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
+        self.dashboard_lambda: lambda_.Function | None = None
 
         # ---- Knowledge Base: docs bucket + S3 Vectors + Bedrock KB ----
         docs_bucket = s3.Bucket(
@@ -186,6 +194,25 @@ class IndustryStack(cdk.Stack):
                 resources=[knowledge_base.attr_knowledge_base_arn],
             )
         )
+
+        # ---- Dashboard REST Lambda (optional, sits behind the shared API) ----
+        if dashboard_modules:
+            self.dashboard_lambda = lambda_.Function(
+                self,
+                "DashboardApi",
+                function_name=f"{industry}-dashboard-api",
+                runtime=lambda_.Runtime.PYTHON_3_13,
+                handler="handler.lambda_handler",
+                timeout=cdk.Duration.seconds(30),
+                memory_size=256,
+                environment_encryption=kms_key,
+                code=lambda_.Code.from_asset(
+                    _stage(industry, "dashboard_api", extra_modules=dashboard_modules)
+                ),
+            )
+            cdk.CfnOutput(
+                self, "DashboardApiArn", value=self.dashboard_lambda.function_arn
+            )
 
         # ---- AgentCore roles ----
         self.gateway_role = iam.Role(

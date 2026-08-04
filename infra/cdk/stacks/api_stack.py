@@ -63,6 +63,25 @@ class ApiStack(cdk.Stack):
 
         cdk.CfnOutput(self, "ApiUrl", value=self.http_api.api_endpoint)
 
+    def add_industry_routes(
+        self,
+        industry: str,
+        paths: list[str],
+        handler: lambda_.IFunction | None,
+    ) -> None:
+        """Attach GET /api/<industry>/<path> routes backed by that industry's lambda."""
+        if handler is None:
+            return
+        integration = integrations.HttpLambdaIntegration(
+            f"{industry.title()}DashboardIntegration", handler
+        )
+        for path in paths:
+            self.http_api.add_routes(
+                path=f"/api/{industry}/{path}",
+                methods=[apigwv2.HttpMethod.GET],
+                integration=integration,
+            )
+
     @staticmethod
     def _web_origins() -> list[str]:
         outputs = (

@@ -10,6 +10,7 @@ import {
 } from 'lucide-react'
 import PlaceholderDashboard from './PlaceholderDashboard'
 import FinanceDashboard from './finance/FinanceDashboard'
+import HealthcareDashboard from './healthcare/HealthcareDashboard'
 
 export interface IndustryModule {
   id: string
@@ -29,6 +30,7 @@ function placeholder(
   description: string,
   icon: LucideIcon,
   accentClass: string,
+  chatLive = false,
 ): ComponentType {
   return function ComingSoon() {
     return createElement(PlaceholderDashboard, {
@@ -36,6 +38,7 @@ function placeholder(
       description,
       icon,
       accentClass,
+      chatLive,
     })
   }
 }
@@ -58,15 +61,9 @@ export const industries: IndustryModule[] = [
     themeColor: 'text-rose-400',
     description:
       'Drug interactions, clinical guidelines, scheduling and population health with an AI medical records assistant.',
-    // chat-only for now: agent + tools + KB are live, dashboard REST API is not
     enabled: Boolean(import.meta.env.VITE_HARNESS_ARN_HEALTHCARE),
     harnessArn: import.meta.env.VITE_HARNESS_ARN_HEALTHCARE as string | undefined,
-    Dashboard: placeholder(
-      'Healthcare & Medical',
-      'Chat is live (drug interactions, clinical guidelines, KB search). Dashboard widgets coming soon.',
-      HeartPulse,
-      'text-rose-400',
-    ),
+    Dashboard: HealthcareDashboard,
   },
   {
     id: 'insurance-claims',
