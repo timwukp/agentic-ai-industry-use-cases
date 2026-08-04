@@ -157,8 +157,8 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
           <div className="h-full flex flex-col items-center justify-center text-center gap-3 text-slate-500">
             <Bot className="w-8 h-8" />
             <p className="text-sm max-w-[240px]">
-              Ask about your portfolio, markets, risk analysis, or place a simulated
-              trade.
+              {industries.find((i) => i.id === industryId)?.description ??
+                'Ask the agent anything about this industry.'}
             </p>
           </div>
         )}
