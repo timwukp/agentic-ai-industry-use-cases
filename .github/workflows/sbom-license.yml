@@ -44,7 +44,7 @@ jobs:
       - name: License compliance check
         run: |
           echo "=== Dependency Licenses ==="
-          pip-licenses --format=table --order=license
+          pip-licenses --format=plain --order=license
           echo ""
           echo "=== Checking for problematic licenses ==="
           PROBLEMATIC=$(pip-licenses --format=csv | grep -iE "GPL|AGPL|SSPL" | grep -v "LGPL" || true)
