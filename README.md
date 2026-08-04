@@ -13,23 +13,11 @@ evaluations). The other 4 industries ship as deploy-ready templates on the same 
 
 ## Architecture
 
-![Architecture](docs/architecture.png)
+![Architecture](docs/architecture.svg)
 
-```
-Browser (React PWA, Cognito JWT)
-  │
-  ├── chat ──► CloudFront /agent/* ──► AgentCore data plane: InvokeHarness (streaming)
-  │                                       │ customJWTAuthorizer validates the Cognito token
-  │                                       ▼
-  │                                    Harness (declarative agent, Claude Sonnet)
-  │                                       ├── AgentCore Gateway (MCP) ──► 5 Lambdas ──► DynamoDB
-  │                                       │      market-data / portfolio / risk / trading / kb
-  │                                       ├── kb tool ──► Bedrock Knowledge Base (S3 Vectors)
-  │                                       ├── built-in browser + code interpreter
-  │                                       └── AgentCore Memory (preferences / facts / summaries)
-  │
-  └── dashboards ──► API Gateway HTTP API (Cognito JWT authorizer) ──► Lambda ──► DynamoDB
-```
+### Request flow
+
+![Request flow](docs/request-flow.svg)
 
 **Security posture:** Cognito user pool (TOTP MFA, advanced security, 12-char passwords),
 JWT verified at every entry point (harness `customJWTAuthorizer` + API Gateway authorizer),
