@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="660" viewBox="0 0 1180 660" font-family="ui-sans-serif, -apple-system, Helvetica, Arial">
+<rect width="1180" height="660" fill="#0f172a"/>
+<text x="40" y="44" fill="#e2e8f0" font-size="20" font-weight="700">Request Flow — chat (streaming) vs dashboards (REST)</text>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker></defs>
+<rect x="40" y="250" width="190" height="120" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="40" y="250" width="4" height="120" rx="2" fill="#3b82f6"/>
+<text x="54" y="276" fill="#e2e8f0" font-size="14" font-weight="600">Browser</text>
+<text x="54" y="293" fill="#94a3b8" font-size="11">React PWA · Cognito JWT</text>
+<rect x="280" y="84" width="250" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="280" y="84" width="4" height="62" rx="2" fill="#8b5cf6"/>
+<text x="294" y="110" fill="#e2e8f0" font-size="14" font-weight="600">CloudFront /agent/*</text>
+<text x="294" y="127" fill="#94a3b8" font-size="11">reverse proxy · WAF</text>
+<rect x="590" y="84" width="270" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="590" y="84" width="4" height="62" rx="2" fill="#3b82f6"/>
+<text x="604" y="110" fill="#e2e8f0" font-size="14" font-weight="600">AgentCore Data Plane</text>
+<text x="604" y="127" fill="#94a3b8" font-size="11">InvokeHarness · JWT verified · streaming</text>
+<rect x="917" y="81" width="226" height="68" rx="12" fill="none" stroke="#f43f5e" stroke-width="1.5" opacity="0.5"><animate attributeName="opacity" values="0.5;0.08;0.5" dur="3s" repeatCount="indefinite"/></rect>
+<rect x="920" y="84" width="220" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="920" y="84" width="4" height="62" rx="2" fill="#f43f5e"/>
+<text x="934" y="110" fill="#e2e8f0" font-size="14" font-weight="600">Harness</text>
+<text x="934" y="127" fill="#94a3b8" font-size="11">declarative agent · Claude</text>
+<path id="f1" d="M 135 250 L 135 115 L 280 115" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="2.55s" begin="0.00s" repeatCount="indefinite"/><animateMotion dur="2.55s" begin="0.00s" repeatCount="indefinite"><mpath href="#f1"/></animateMotion></circle>
+<text x="145" y="107" fill="#94a3b8" font-size="11.5" font-weight="600">chat</text>
+<path id="f2" d="M 530 115 L 590 115" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="0.90s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="0.90s" repeatCount="indefinite"><mpath href="#f2"/></animateMotion></circle>
+<path id="f3" d="M 860 115 L 920 115" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="1.50s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="1.50s" repeatCount="indefinite"><mpath href="#f3"/></animateMotion></circle>
+<rect x="700" y="210" width="440" height="58" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="700" y="210" width="4" height="58" rx="2" fill="#06b6d4"/>
+<text x="714" y="236" fill="#e2e8f0" font-size="14" font-weight="600">AgentCore Gateway (MCP)</text>
+<text x="714" y="253" fill="#94a3b8" font-size="11">5 tool Lambdas → DynamoDB · market-data / portfolio / risk / trading / kb</text>
+<rect x="700" y="292" width="440" height="58" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="700" y="292" width="4" height="58" rx="2" fill="#06b6d4"/>
+<text x="714" y="318" fill="#e2e8f0" font-size="14" font-weight="600">Knowledge Base tool</text>
+<text x="714" y="335" fill="#94a3b8" font-size="11">Bedrock KB · S3 Vectors · policy docs</text>
+<rect x="700" y="374" width="440" height="58" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="700" y="374" width="4" height="58" rx="2" fill="#8b5cf6"/>
+<text x="714" y="400" fill="#e2e8f0" font-size="14" font-weight="600">Built-in tools</text>
+<text x="714" y="417" fill="#94a3b8" font-size="11">browser · code interpreter</text>
+<rect x="700" y="456" width="440" height="58" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="700" y="456" width="4" height="58" rx="2" fill="#8b5cf6"/>
+<text x="714" y="482" fill="#e2e8f0" font-size="14" font-weight="600">AgentCore Memory</text>
+<text x="714" y="499" fill="#94a3b8" font-size="11">preferences · facts · summaries</text>
+<path id="f4" d="M 1030 146 L 1030 178 L 672 178 L 672 239 L 700 239" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="4.35s" begin="2.00s" repeatCount="indefinite"/><animateMotion dur="4.35s" begin="2.00s" repeatCount="indefinite"><mpath href="#f4"/></animateMotion></circle>
+<path id="f5" d="M 672 239 L 672 321 L 700 321" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="2.60s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="2.60s" repeatCount="indefinite"><mpath href="#f5"/></animateMotion></circle>
+<path id="f6" d="M 672 321 L 672 403 L 700 403" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="3.00s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="3.00s" repeatCount="indefinite"><mpath href="#f6"/></animateMotion></circle>
+<path id="f7" d="M 672 403 L 672 485 L 700 485" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="3.40s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="3.40s" repeatCount="indefinite"><mpath href="#f7"/></animateMotion></circle>
+<rect x="280" y="545" width="250" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="280" y="545" width="4" height="62" rx="2" fill="#22c55e"/>
+<text x="294" y="571" fill="#e2e8f0" font-size="14" font-weight="600">API Gateway (HTTP API)</text>
+<text x="294" y="588" fill="#94a3b8" font-size="11">Cognito JWT authorizer</text>
+<rect x="590" y="545" width="220" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="590" y="545" width="4" height="62" rx="2" fill="#22c55e"/>
+<text x="604" y="571" fill="#e2e8f0" font-size="14" font-weight="600">Dashboard Lambda</text>
+<text x="604" y="588" fill="#94a3b8" font-size="11">same tool logic as the agent</text>
+<rect x="870" y="545" width="220" height="62" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+<rect x="870" y="545" width="4" height="62" rx="2" fill="#f59e0b"/>
+<text x="884" y="571" fill="#e2e8f0" font-size="14" font-weight="600">Amazon DynamoDB</text>
+<text x="884" y="588" fill="#94a3b8" font-size="11">positions · demo order book</text>
+<path id="f8" d="M 135 370 L 135 576 L 280 576" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="3.19s" begin="0.40s" repeatCount="indefinite"/><animateMotion dur="3.19s" begin="0.40s" repeatCount="indefinite"><mpath href="#f8"/></animateMotion></circle>
+<text x="145" y="568" fill="#94a3b8" font-size="11.5" font-weight="600">dashboards</text>
+<path id="f9" d="M 530 576 L 590 576" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="1.60s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="1.60s" repeatCount="indefinite"><mpath href="#f9"/></animateMotion></circle>
+<path id="f10" d="M 810 576 L 870 576" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="2.20s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="2.20s" repeatCount="indefinite"><mpath href="#f10"/></animateMotion></circle>
+<text x="40" y="640" fill="#94a3b8" font-size="11.5">Both lanes carry the user's Cognito JWT · dashboard numbers and agent-quoted numbers come from the same deterministic tool functions</text>
+</svg>

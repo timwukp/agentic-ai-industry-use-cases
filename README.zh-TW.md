@@ -12,23 +12,11 @@
 
 ## 架構
 
-![架構圖](docs/architecture.png)
+![架構圖](docs/architecture.svg)
 
-```
-瀏覽器 (React PWA, Cognito JWT)
-  │
-  ├── 聊天 ──► CloudFront /agent/* ──► AgentCore 數據平面: InvokeHarness (串流)
-  │                                       │ customJWTAuthorizer 驗證 Cognito token
-  │                                       ▼
-  │                                    Harness (聲明式代理, Claude Sonnet)
-  │                                       ├── AgentCore Gateway (MCP) ──► 5 個 Lambda ──► DynamoDB
-  │                                       │      market-data / portfolio / risk / trading / kb
-  │                                       ├── kb 工具 ──► Bedrock 知識庫 (S3 Vectors)
-  │                                       ├── 內建瀏覽器 + 代碼解釋器
-  │                                       └── AgentCore Memory (偏好 / 事實 / 摘要)
-  │
-  └── 儀表板 ──► API Gateway HTTP API (Cognito JWT 授權) ──► Lambda ──► DynamoDB
-```
+### 請求流
+
+![請求流](docs/request-flow.svg)
 
 **安全設計：** Cognito 用戶池（TOTP MFA、進階安全、12 字符密碼），每個入口都驗證
 JWT（harness `customJWTAuthorizer` + API Gateway authorizer），WAF 實際掛載到
