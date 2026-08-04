@@ -12,8 +12,19 @@ from stacks.shared_security_stack import SharedSecurityStack
 from stacks.auth_stack import AuthStack
 from stacks.finance_data_stack import FinanceDataStack
 from stacks.finance_tools_stack import FinanceToolsStack
+from stacks.industry_stack import IndustryStack
 from stacks.api_stack import ApiStack
 from stacks.web_stack import WebStack
+
+# Non-finance industries all deploy through the parameterized IndustryStack.
+# Add an entry here + `cdk deploy Agentic<Name>Tools` to bring one online.
+INDUSTRIES = {
+    "healthcare": ["records", "clinical", "scheduling", "analytics", "kb_search"],
+    "insurance": ["claims", "fraud_detection", "policy", "settlement", "kb_search"],
+    "retail": ["inventory", "demand_forecast", "supplier", "pricing", "kb_search"],
+    "manufacturing": ["equipment", "prediction", "maintenance", "parts", "kb_search"],
+    "realestate": ["valuation", "market", "investment", "property", "kb_search"],
+}
 
 app = cdk.App()
 
@@ -52,5 +63,15 @@ WebStack(
     env=env,
     web_acl_arn=shared.web_acl_arn,
 )
+
+for industry, targets in INDUSTRIES.items():
+    IndustryStack(
+        app,
+        f"Agentic{industry.title()}Tools",
+        env=env,
+        industry=industry,
+        targets=targets,
+        kms_key=shared.kms_key,
+    )
 
 app.synth()

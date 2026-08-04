@@ -62,15 +62,22 @@ def ingest_kb(region: str, kb_id: str, ds_id: str) -> None:
 
 
 def main() -> None:
+    import sys
+
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from industries import INDUSTRIES
+
     ap = argparse.ArgumentParser()
+    ap.add_argument("--industry", default="finance")
     ap.add_argument("--region", default="us-east-1")
     ap.add_argument("--skip-kb", action="store_true")
     args = ap.parse_args()
 
     outputs = json.loads((OUTPUTS / "cdk-outputs.json").read_text())
-    seed_portfolio(args.region, outputs["AgenticFinanceData"]["PortfolioTableName"])
+    if args.industry == "finance":  # only finance has demo tables to seed
+        seed_portfolio(args.region, outputs["AgenticFinanceData"]["PortfolioTableName"])
     if not args.skip_kb:
-        tools_out = outputs["AgenticFinanceTools"]
+        tools_out = outputs[INDUSTRIES[args.industry]["stack"]]
         ingest_kb(
             args.region, tools_out["KnowledgeBaseId"], tools_out["KbDataSourceId"]
         )

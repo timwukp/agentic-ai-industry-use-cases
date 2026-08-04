@@ -12,6 +12,8 @@ export function newSessionId(): string {
 interface InvokeOptions {
   /** Cognito sub of the signed-in user, forwarded as actorId. */
   actorId?: string
+  /** Harness ARN override (per-industry); defaults to config.harnessArn. */
+  harnessArn?: string
   signal?: AbortSignal
 }
 
@@ -124,7 +126,8 @@ export async function* invokeAgent(
 ): AsyncGenerator<string> {
   const url =
     `${config.agentEndpoint}/harnesses/invoke` +
-    `?harnessArn=${encodeURIComponent(config.harnessArn)}&qualifier=DEFAULT`
+    `?harnessArn=${encodeURIComponent(options.harnessArn ?? config.harnessArn)}` +
+    `&qualifier=DEFAULT`
 
   const response = await fetch(url, {
     method: 'POST',

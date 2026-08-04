@@ -36,6 +36,18 @@ test('chat streams a reply from the harness', async ({ page }) => {
 
 test('disabled industries show coming soon', async ({ page }) => {
   await login(page);
-  await page.goto('/healthcare-medical/dashboard');
+  await page.goto('/insurance-claims/dashboard');
   await expect(page.getByText(/coming soon/i)).toBeVisible();
+});
+
+test('healthcare chat streams from its own harness', async ({ page }) => {
+  await login(page);
+  await page.goto('/healthcare-medical/chat');
+  const input = page.getByPlaceholder(/message|ask/i).locator('visible=true').first();
+  await input.fill('In one sentence: what clinical tools do you have?');
+  await page.getByRole('button', { name: /send/i }).locator('visible=true').first().click();
+  const assistant = page.locator('[data-role="assistant"]').last();
+  await expect(assistant).toBeVisible({ timeout: 60_000 });
+  await expect(assistant).not.toHaveText('', { timeout: 60_000 });
+  await page.screenshot({ path: 'screenshots/healthcare-chat.png', fullPage: true });
 });

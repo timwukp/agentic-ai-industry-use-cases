@@ -39,16 +39,26 @@ CORE_STACKS = [
 
 def run(cmd: list[str], cwd: Path = REPO) -> None:
     print(f"\n>>> {' '.join(str(c) for c in cmd)}")
-    subprocess.run(cmd, cwd=cwd, check=True)
+    env = os.environ.copy()
+    # cdk.json runs `python3 app.py`; make sure the repo venv wins on PATH
+    env["PATH"] = f"{Path(PY).parent}:{env['PATH']}"
+    subprocess.run(cmd, cwd=cwd, check=True, env=env)
 
 
-def step_cdk(_args) -> None:
+def step_cdk(args) -> None:
+    sys.path.insert(0, str(REPO / "deploy"))
+    from industries import INDUSTRIES
+
+    stacks = list(CORE_STACKS)
+    industry_stack = INDUSTRIES[args.industry]["stack"]
+    if industry_stack not in stacks:
+        stacks.append(industry_stack)
     cdk_bin = REPO / "node_modules" / ".bin" / "cdk"
     run(
         [
             str(cdk_bin),
             "deploy",
-            *CORE_STACKS,
+            *stacks,
             "--require-approval",
             "never",
             "--outputs-file",
@@ -59,7 +69,16 @@ def step_cdk(_args) -> None:
 
 
 def step_seed(args) -> None:
-    run([PY, str(REPO / "deploy" / "seed_data.py"), "--region", args.region])
+    run(
+        [
+            PY,
+            str(REPO / "deploy" / "seed_data.py"),
+            "--industry",
+            args.industry,
+            "--region",
+            args.region,
+        ]
+    )
 
 
 def step_gateway(args) -> None:
@@ -100,8 +119,12 @@ def _harness_config(args) -> dict:
     return json.loads((OUTPUTS / f"harness-{args.industry}.json").read_text())
 
 
-def _tools_outputs() -> dict:
-    return json.loads((OUTPUTS / "cdk-outputs.json").read_text())["AgenticFinanceTools"]
+def _tools_outputs(args) -> dict:
+    sys.path.insert(0, str(REPO / "deploy"))
+    from industries import INDUSTRIES
+
+    stack = INDUSTRIES[args.industry]["stack"]
+    return json.loads((OUTPUTS / "cdk-outputs.json").read_text())[stack]
 
 
 def step_harness(args) -> None:
@@ -112,7 +135,7 @@ def step_harness(args) -> None:
             "--config",
             str(OUTPUTS / f"harness-{args.industry}.json"),
             "--role-arn",
-            _tools_outputs()["HarnessRoleArn"],
+            _tools_outputs(args)["HarnessRoleArn"],
             "--region",
             args.region,
         ]
@@ -131,7 +154,7 @@ def step_memory(args) -> None:
             "--harness-id",
             harness_id,
             "--role-arn",
-            _tools_outputs()["HarnessRoleArn"],
+            _tools_outputs(args)["HarnessRoleArn"],
             "--memory-name",
             memory_cfg["memoryName"],
             "--region",
@@ -154,13 +177,25 @@ def step_observability(args) -> None:
     )
 
 
-def step_smoke(args) -> None:
-    harness_arn = _find_harness_arn(args)
-    for prompt in [
-        "List the names of every tool you have access to, grouped by category.",
+SMOKE_PROMPTS = {
+    "finance": [
         "Get a quote for AAPL, then show my default portfolio positions and total value.",
         "What does our margin policy say about leveraged ETFs?",
-    ]:
+    ],
+    "healthcare": [
+        "Check drug interactions between warfarin and aspirin.",
+        "What does our medication safety policy require before dispensing high-alert drugs?",
+    ],
+}
+
+
+def step_smoke(args) -> None:
+    harness_arn = _find_harness_arn(args)
+    prompts = [
+        "List the names of every tool you have access to, grouped by category.",
+        *SMOKE_PROMPTS.get(args.industry, []),
+    ]
+    for prompt in prompts:
         run(
             [
                 PY,

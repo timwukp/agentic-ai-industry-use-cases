@@ -13,6 +13,7 @@ Writes the gateway ARN to deploy/outputs/gateway-<industry>.json.
 """
 import argparse
 import json
+import sys
 import time
 import uuid
 from pathlib import Path
@@ -21,24 +22,8 @@ import boto3
 
 REPO = Path(__file__).resolve().parents[1]
 OUTPUTS = REPO / "deploy" / "outputs"
-
-# schema file stem -> {lambda output key} per industry
-INDUSTRY_CONFIG = {
-    "finance": {
-        "gateway_name": "finance-trading-gw",
-        "stack": "AgenticFinanceTools",
-        "role_output": "GatewayRoleArn",
-        # target name must match ([0-9a-zA-Z][-]?){1,100} — no underscores;
-        # keys are (targetName, schemaFileStem)
-        "targets": {
-            ("market-data", "market_data"): "ToolLambdaMarketDataArn",
-            ("portfolio", "portfolio"): "ToolLambdaPortfolioArn",
-            ("risk", "risk"): "ToolLambdaRiskArn",
-            ("trading", "trading"): "ToolLambdaTradingArn",
-            ("kb", "kb"): "ToolLambdaKbSearchArn",
-        },
-    },
-}
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from industries import INDUSTRIES  # noqa: E402
 
 
 def load_outputs(stack: str) -> dict:
@@ -71,9 +56,9 @@ def main() -> None:
     ap.add_argument("--dry-run", action="store_true")
     args = ap.parse_args()
 
-    cfg = INDUSTRY_CONFIG[args.industry]
+    cfg = INDUSTRIES[args.industry]
     outputs = load_outputs(cfg["stack"])
-    role_arn = outputs[cfg["role_output"]]
+    role_arn = outputs["GatewayRoleArn"]
     client = boto3.client("bedrock-agentcore-control", region_name=args.region)
 
     gw = find_gateway(client, cfg["gateway_name"])
@@ -96,7 +81,7 @@ def main() -> None:
     gateway_id = gw["gatewayId"]
     have = existing_targets(client, gateway_id)
 
-    for (target_name, schema_stem), lambda_key in cfg["targets"].items():
+    for target_name, (schema_stem, lambda_key) in cfg["targets"].items():
         if target_name in have:
             print(f"Target exists: {target_name}")
             continue
@@ -130,18 +115,10 @@ def main() -> None:
     if args.dry_run:
         return
 
-    # targetIdList accepts exactly one id per call
+    # Lambda targets don't support (or need) explicit synchronization —
+    # they go READY on their own; the status poll below is the real gate.
     for tname, tinfo in existing_targets(client, gateway_id).items():
-        if tinfo.get("status") == "READY":
-            print(f"Target READY: {tname}")
-            continue
-        try:
-            client.synchronize_gateway_targets(
-                gatewayIdentifier=gateway_id, targetIdList=[tinfo["targetId"]]
-            )
-            print(f"Synchronize requested: {tname}")
-        except Exception as exc:  # noqa: BLE001 — status poll below is the gate
-            print(f"Synchronize skipped for {tname}: {exc}")
+        print(f"Target {tinfo.get('status')}: {tname}")
 
     for _ in range(30):
         gw_state = client.get_gateway(gatewayIdentifier=gateway_id)
@@ -159,7 +136,7 @@ def main() -> None:
         "gatewayId": gateway_id,
         "gatewayArn": gw_state["gatewayArn"],
         "gatewayUrl": gw_state.get("gatewayUrl"),
-        "targets": sorted(t for t, _ in cfg["targets"]),
+        "targets": sorted(cfg["targets"]),
     }
     out_file = OUTPUTS / f"gateway-{args.industry}.json"
     out_file.write_text(json.dumps(result, indent=2))
