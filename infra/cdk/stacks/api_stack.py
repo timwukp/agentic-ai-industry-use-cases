@@ -1,4 +1,5 @@
 """HTTP API + Cognito JWT authorizer for dashboard REST endpoints."""
+
 import json
 from pathlib import Path
 
@@ -18,11 +19,16 @@ ROUTES = [
 
 
 class ApiStack(cdk.Stack):
-    def __init__(self, scope: Construct, construct_id: str, *,
-                 user_pool: cognito.IUserPool,
-                 user_pool_client: cognito.IUserPoolClient,
-                 dashboard_lambda: lambda_.IFunction,
-                 **kwargs) -> None:
+    def __init__(
+        self,
+        scope: Construct,
+        construct_id: str,
+        *,
+        user_pool: cognito.IUserPool,
+        user_pool_client: cognito.IUserPoolClient,
+        dashboard_lambda: lambda_.IFunction,
+        **kwargs,
+    ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
         authorizer = authorizers.HttpUserPoolAuthorizer(
@@ -38,25 +44,33 @@ class ApiStack(cdk.Stack):
                 # localhost for dev + the CloudFront origin once WebStack has
                 # deployed (read back from deploy outputs on the next synth)
                 allow_origins=["http://localhost:5173", *self._web_origins()],
-                allow_methods=[apigwv2.CorsHttpMethod.GET,
-                               apigwv2.CorsHttpMethod.OPTIONS],
+                allow_methods=[
+                    apigwv2.CorsHttpMethod.GET,
+                    apigwv2.CorsHttpMethod.OPTIONS,
+                ],
                 allow_headers=["Authorization", "Content-Type"],
                 max_age=cdk.Duration.hours(1),
             ),
         )
 
-        integration = integrations.HttpLambdaIntegration("DashboardIntegration",
-                                                         dashboard_lambda)
+        integration = integrations.HttpLambdaIntegration(
+            "DashboardIntegration", dashboard_lambda
+        )
         for path in ROUTES:
-            self.http_api.add_routes(path=path, methods=[apigwv2.HttpMethod.GET],
-                                     integration=integration)
+            self.http_api.add_routes(
+                path=path, methods=[apigwv2.HttpMethod.GET], integration=integration
+            )
 
         cdk.CfnOutput(self, "ApiUrl", value=self.http_api.api_endpoint)
 
     @staticmethod
     def _web_origins() -> list[str]:
-        outputs = (Path(__file__).resolve().parents[3] / "deploy" / "outputs"
-                   / "web-outputs.json")
+        outputs = (
+            Path(__file__).resolve().parents[3]
+            / "deploy"
+            / "outputs"
+            / "web-outputs.json"
+        )
         if not outputs.exists():
             return []
         url = json.loads(outputs.read_text()).get("AgenticWeb", {}).get("CloudFrontUrl")

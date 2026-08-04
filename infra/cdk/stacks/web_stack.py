@@ -4,6 +4,7 @@ The /agent/* behavior reverse-proxies the AgentCore data plane so the browser
 calls same-origin (no CORS). Authorization passes through because caching is
 disabled and the origin request policy forwards all viewer headers except Host.
 """
+
 import aws_cdk as cdk
 from aws_cdk import (
     aws_cloudfront as cloudfront,
@@ -14,8 +15,9 @@ from constructs import Construct
 
 
 class WebStack(cdk.Stack):
-    def __init__(self, scope: Construct, construct_id: str, *,
-                 web_acl_arn: str, **kwargs) -> None:
+    def __init__(
+        self, scope: Construct, construct_id: str, *, web_acl_arn: str, **kwargs
+    ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
         self.site_bucket = s3.Bucket(
@@ -52,7 +54,9 @@ class WebStack(cdk.Stack):
             self,
             "Distribution",
             default_behavior=cloudfront.BehaviorOptions(
-                origin=origins.S3BucketOrigin.with_origin_access_control(self.site_bucket),
+                origin=origins.S3BucketOrigin.with_origin_access_control(
+                    self.site_bucket
+                ),
                 viewer_protocol_policy=cloudfront.ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
                 cache_policy=cloudfront.CachePolicy.CACHING_OPTIMIZED,
                 compress=True,
@@ -64,24 +68,32 @@ class WebStack(cdk.Stack):
                     allowed_methods=cloudfront.AllowedMethods.ALLOW_ALL,
                     cache_policy=cloudfront.CachePolicy.CACHING_DISABLED,
                     origin_request_policy=cloudfront.OriginRequestPolicy.ALL_VIEWER_EXCEPT_HOST_HEADER,
-                    function_associations=[cloudfront.FunctionAssociation(
-                        function=strip_prefix_fn,
-                        event_type=cloudfront.FunctionEventType.VIEWER_REQUEST,
-                    )],
+                    function_associations=[
+                        cloudfront.FunctionAssociation(
+                            function=strip_prefix_fn,
+                            event_type=cloudfront.FunctionEventType.VIEWER_REQUEST,
+                        )
+                    ],
                 ),
             },
             default_root_object="index.html",
             web_acl_id=web_acl_arn,
             error_responses=[
-                cloudfront.ErrorResponse(http_status=code, response_http_status=200,
-                                         response_page_path="/index.html",
-                                         ttl=cdk.Duration.seconds(0))
+                cloudfront.ErrorResponse(
+                    http_status=code,
+                    response_http_status=200,
+                    response_page_path="/index.html",
+                    ttl=cdk.Duration.seconds(0),
+                )
                 for code in (403, 404)
             ],
             price_class=cloudfront.PriceClass.PRICE_CLASS_100,
         )
 
         cdk.CfnOutput(self, "SiteBucketName", value=self.site_bucket.bucket_name)
-        cdk.CfnOutput(self, "CloudFrontUrl",
-                      value=f"https://{self.distribution.distribution_domain_name}")
+        cdk.CfnOutput(
+            self,
+            "CloudFrontUrl",
+            value=f"https://{self.distribution.distribution_domain_name}",
+        )
         cdk.CfnOutput(self, "DistributionId", value=self.distribution.distribution_id)

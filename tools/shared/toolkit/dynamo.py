@@ -1,4 +1,5 @@
 """DynamoDB helpers for the demo trading system."""
+
 import os
 from decimal import Decimal
 

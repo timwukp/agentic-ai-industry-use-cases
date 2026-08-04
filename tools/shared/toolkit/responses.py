@@ -3,6 +3,7 @@
 Gateway Lambda targets must return JSON-serializable values. Every simulated
 payload carries a "source" marker so the agent can disclose data provenance.
 """
+
 import json
 from typing import Any
 

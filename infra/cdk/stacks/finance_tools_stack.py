@@ -3,6 +3,7 @@
 Lambda assets are staged at synth time: each function bundle = its handler.py
 plus the shared toolkit package (stdlib + boto3 only, no pip install needed).
 """
+
 import shutil
 from pathlib import Path
 
@@ -41,11 +42,16 @@ def _stage(name: str, extra_modules: dict[str, Path] | None = None) -> str:
 
 
 class FinanceToolsStack(cdk.Stack):
-    def __init__(self, scope: Construct, construct_id: str, *,
-                 kms_key: kms.IKey,
-                 portfolio_table: dynamodb.ITable,
-                 orders_table: dynamodb.ITable,
-                 **kwargs) -> None:
+    def __init__(
+        self,
+        scope: Construct,
+        construct_id: str,
+        *,
+        kms_key: kms.IKey,
+        portfolio_table: dynamodb.ITable,
+        orders_table: dynamodb.ITable,
+        **kwargs,
+    ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
         # ---------------- Knowledge Base: S3 docs + S3 Vectors + Bedrock KB ---------
@@ -61,7 +67,9 @@ class FinanceToolsStack(cdk.Stack):
         s3_deploy.BucketDeployment(
             self,
             "KbSeedDocs",
-            sources=[s3_deploy.Source.asset(str(REPO_ROOT / "kb" / "finance" / "seed-docs"))],
+            sources=[
+                s3_deploy.Source.asset(str(REPO_ROOT / "kb" / "finance" / "seed-docs"))
+            ],
             destination_bucket=docs_bucket,
             destination_key_prefix="finance/",
         )
@@ -78,8 +86,10 @@ class FinanceToolsStack(cdk.Stack):
             metadata_configuration=s3vectors.CfnIndex.MetadataConfigurationProperty(
                 # both must be non-filterable: filterable metadata caps at 2048 bytes
                 # and Bedrock's chunk text/attribution routinely exceed it
-                non_filterable_metadata_keys=["AMAZON_BEDROCK_TEXT",
-                                              "AMAZON_BEDROCK_METADATA"],
+                non_filterable_metadata_keys=[
+                    "AMAZON_BEDROCK_TEXT",
+                    "AMAZON_BEDROCK_METADATA",
+                ],
             ),
         )
 
@@ -92,15 +102,27 @@ class FinanceToolsStack(cdk.Stack):
             ),
         )
         docs_bucket.grant_read(kb_role)
-        kb_role.add_to_policy(iam.PolicyStatement(
-            actions=["bedrock:InvokeModel"],
-            resources=[f"arn:aws:bedrock:{self.region}::foundation-model/{EMBEDDING_MODEL}"],
-        ))
-        kb_role.add_to_policy(iam.PolicyStatement(
-            actions=["s3vectors:GetIndex", "s3vectors:QueryVectors", "s3vectors:PutVectors",
-                     "s3vectors:GetVectors", "s3vectors:DeleteVectors", "s3vectors:ListVectors"],
-            resources=[vector_index.attr_index_arn],
-        ))
+        kb_role.add_to_policy(
+            iam.PolicyStatement(
+                actions=["bedrock:InvokeModel"],
+                resources=[
+                    f"arn:aws:bedrock:{self.region}::foundation-model/{EMBEDDING_MODEL}"
+                ],
+            )
+        )
+        kb_role.add_to_policy(
+            iam.PolicyStatement(
+                actions=[
+                    "s3vectors:GetIndex",
+                    "s3vectors:QueryVectors",
+                    "s3vectors:PutVectors",
+                    "s3vectors:GetVectors",
+                    "s3vectors:DeleteVectors",
+                    "s3vectors:ListVectors",
+                ],
+                resources=[vector_index.attr_index_arn],
+            )
+        )
 
         knowledge_base = bedrock.CfnKnowledgeBase(
             self,
@@ -158,9 +180,14 @@ class FinanceToolsStack(cdk.Stack):
                 f"Tool{name.title().replace('_', '')}",
                 function_name=f"finance-tool-{name.replace('_', '-')}",
                 code=lambda_.Code.from_asset(_stage(name)),
-                environment={**common_env,
-                             **({"KNOWLEDGE_BASE_ID": knowledge_base.attr_knowledge_base_id}
-                                if name == "kb_search" else {})},
+                environment={
+                    **common_env,
+                    **(
+                        {"KNOWLEDGE_BASE_ID": knowledge_base.attr_knowledge_base_id}
+                        if name == "kb_search"
+                        else {}
+                    ),
+                },
                 **runtime_kwargs,
             )
             self.tool_lambdas[name] = fn
@@ -168,23 +195,30 @@ class FinanceToolsStack(cdk.Stack):
         portfolio_table.grant_read_data(self.tool_lambdas["portfolio"])
         portfolio_table.grant_read_write_data(self.tool_lambdas["trading"])
         orders_table.grant_read_write_data(self.tool_lambdas["trading"])
-        self.tool_lambdas["kb_search"].add_to_role_policy(iam.PolicyStatement(
-            actions=["bedrock:Retrieve"],
-            resources=[knowledge_base.attr_knowledge_base_arn],
-        ))
+        self.tool_lambdas["kb_search"].add_to_role_policy(
+            iam.PolicyStatement(
+                actions=["bedrock:Retrieve"],
+                resources=[knowledge_base.attr_knowledge_base_arn],
+            )
+        )
 
         # ---------------- Dashboard REST Lambda (API Gateway target) ----------------
         self.dashboard_lambda = lambda_.Function(
             self,
             "DashboardApi",
             function_name="finance-dashboard-api",
-            code=lambda_.Code.from_asset(_stage(
-                "dashboard_api",
-                extra_modules={
-                    "portfolio_tools": TOOLS / "finance" / "portfolio" / "handler.py",
-                    "trading_tools": TOOLS / "finance" / "trading" / "handler.py",
-                },
-            )),
+            code=lambda_.Code.from_asset(
+                _stage(
+                    "dashboard_api",
+                    extra_modules={
+                        "portfolio_tools": TOOLS
+                        / "finance"
+                        / "portfolio"
+                        / "handler.py",
+                        "trading_tools": TOOLS / "finance" / "trading" / "handler.py",
+                    },
+                )
+            ),
             environment=common_env,
             **runtime_kwargs,
         )
@@ -214,40 +248,71 @@ class FinanceToolsStack(cdk.Stack):
                 conditions={"StringEquals": {"aws:SourceAccount": self.account}},
             ),
         )
-        self.harness_role.add_to_policy(iam.PolicyStatement(
-            sid="InvokeModel",
-            actions=["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"],
-            resources=[
-                "arn:aws:bedrock:*::foundation-model/*",
-                f"arn:aws:bedrock:*:{self.account}:inference-profile/*",
-            ],
-        ))
-        self.harness_role.add_to_policy(iam.PolicyStatement(
-            sid="InvokeGatewayTools",
-            actions=["bedrock-agentcore:*Gateway*"],
-            resources=[f"arn:aws:bedrock-agentcore:{self.region}:{self.account}:gateway/*"],
-        ))
-        self.harness_role.add_to_policy(iam.PolicyStatement(
-            sid="ManagedMemoryEvents",
-            actions=["bedrock-agentcore:CreateEvent", "bedrock-agentcore:GetEvent",
-                     "bedrock-agentcore:ListEvents", "bedrock-agentcore:ListSessions",
-                     "bedrock-agentcore:ListActors", "bedrock-agentcore:ListMemoryRecords",
-                     "bedrock-agentcore:RetrieveMemoryRecords"],
-            resources=[f"arn:aws:bedrock-agentcore:{self.region}:{self.account}:memory/*"],
-        ))
-        self.harness_role.add_to_policy(iam.PolicyStatement(
-            sid="ObservabilityLogs",
-            actions=["logs:CreateLogStream", "logs:PutLogEvents",
-                     "logs:DescribeLogGroups", "logs:DescribeLogStreams"],
-            resources=[f"arn:aws:logs:{self.region}:{self.account}:log-group:/aws/bedrock-agentcore/*"],
-        ))
+        self.harness_role.add_to_policy(
+            iam.PolicyStatement(
+                sid="InvokeModel",
+                actions=[
+                    "bedrock:InvokeModel",
+                    "bedrock:InvokeModelWithResponseStream",
+                ],
+                resources=[
+                    "arn:aws:bedrock:*::foundation-model/*",
+                    f"arn:aws:bedrock:*:{self.account}:inference-profile/*",
+                ],
+            )
+        )
+        self.harness_role.add_to_policy(
+            iam.PolicyStatement(
+                sid="InvokeGatewayTools",
+                actions=["bedrock-agentcore:*Gateway*"],
+                resources=[
+                    f"arn:aws:bedrock-agentcore:{self.region}:{self.account}:gateway/*"
+                ],
+            )
+        )
+        self.harness_role.add_to_policy(
+            iam.PolicyStatement(
+                sid="ManagedMemoryEvents",
+                actions=[
+                    "bedrock-agentcore:CreateEvent",
+                    "bedrock-agentcore:GetEvent",
+                    "bedrock-agentcore:ListEvents",
+                    "bedrock-agentcore:ListSessions",
+                    "bedrock-agentcore:ListActors",
+                    "bedrock-agentcore:ListMemoryRecords",
+                    "bedrock-agentcore:RetrieveMemoryRecords",
+                ],
+                resources=[
+                    f"arn:aws:bedrock-agentcore:{self.region}:{self.account}:memory/*"
+                ],
+            )
+        )
+        self.harness_role.add_to_policy(
+            iam.PolicyStatement(
+                sid="ObservabilityLogs",
+                actions=[
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents",
+                    "logs:DescribeLogGroups",
+                    "logs:DescribeLogStreams",
+                ],
+                resources=[
+                    f"arn:aws:logs:{self.region}:{self.account}:log-group:/aws/bedrock-agentcore/*"
+                ],
+            )
+        )
 
         # ---------------- Outputs -----------------------------------------------------
-        cdk.CfnOutput(self, "KnowledgeBaseId", value=knowledge_base.attr_knowledge_base_id)
+        cdk.CfnOutput(
+            self, "KnowledgeBaseId", value=knowledge_base.attr_knowledge_base_id
+        )
         cdk.CfnOutput(self, "KbDataSourceId", value=data_source.attr_data_source_id)
         cdk.CfnOutput(self, "KbDocsBucketName", value=docs_bucket.bucket_name)
         cdk.CfnOutput(self, "GatewayRoleArn", value=self.gateway_role.role_arn)
         cdk.CfnOutput(self, "HarnessRoleArn", value=self.harness_role.role_arn)
         for name, fn in self.tool_lambdas.items():
-            cdk.CfnOutput(self, f"ToolLambda{name.title().replace('_', '')}Arn",
-                          value=fn.function_arn)
+            cdk.CfnOutput(
+                self,
+                f"ToolLambda{name.title().replace('_', '')}Arn",
+                value=fn.function_arn,
+            )

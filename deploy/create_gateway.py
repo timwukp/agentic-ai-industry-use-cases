@@ -101,7 +101,9 @@ def main() -> None:
             print(f"Target exists: {target_name}")
             continue
         schema = json.loads(
-            (REPO / "tools" / args.industry / "schemas" / f"{schema_stem}.json").read_text()
+            (
+                REPO / "tools" / args.industry / "schemas" / f"{schema_stem}.json"
+            ).read_text()
         )
         params = dict(
             gatewayIdentifier=gateway_id,
@@ -134,8 +136,9 @@ def main() -> None:
             print(f"Target READY: {tname}")
             continue
         try:
-            client.synchronize_gateway_targets(gatewayIdentifier=gateway_id,
-                                               targetIdList=[tinfo["targetId"]])
+            client.synchronize_gateway_targets(
+                gatewayIdentifier=gateway_id, targetIdList=[tinfo["targetId"]]
+            )
             print(f"Synchronize requested: {tname}")
         except Exception as exc:  # noqa: BLE001 — status poll below is the gate
             print(f"Synchronize skipped for {tname}: {exc}")
@@ -147,7 +150,9 @@ def main() -> None:
         if status == "READY":
             break
         if status in ("FAILED", "DELETING"):
-            raise SystemExit(f"Gateway entered {status}: {gw_state.get('statusReasons')}")
+            raise SystemExit(
+                f"Gateway entered {status}: {gw_state.get('statusReasons')}"
+            )
         time.sleep(10)
 
     result = {

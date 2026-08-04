@@ -4,6 +4,7 @@ Reference data (interaction DB, guideline DB, triage rules) is curated and
 hardcoded. Any sampled values are seeded from the function inputs, so the
 same call always returns the same payload.
 """
+
 import hashlib
 import random
 
@@ -70,19 +71,45 @@ INTERACTION_DB = {
     },
 }
 
-EMERGENCY_SYMPTOMS = {"chest pain", "difficulty breathing", "severe bleeding", "loss of consciousness",
-                      "sudden severe headache", "stroke symptoms", "anaphylaxis", "seizure",
-                      "shortness of breath", "crushing chest pressure"}
-URGENT_SYMPTOMS = {"high fever", "persistent vomiting", "severe abdominal pain", "head injury",
-                   "deep laceration", "blood in stool", "severe dehydration", "confusion",
-                   "suicidal ideation", "severe allergic reaction"}
+EMERGENCY_SYMPTOMS = {
+    "chest pain",
+    "difficulty breathing",
+    "severe bleeding",
+    "loss of consciousness",
+    "sudden severe headache",
+    "stroke symptoms",
+    "anaphylaxis",
+    "seizure",
+    "shortness of breath",
+    "crushing chest pressure",
+}
+URGENT_SYMPTOMS = {
+    "high fever",
+    "persistent vomiting",
+    "severe abdominal pain",
+    "head injury",
+    "deep laceration",
+    "blood in stool",
+    "severe dehydration",
+    "confusion",
+    "suicidal ideation",
+    "severe allergic reaction",
+}
 
 DIFFERENTIAL_DB = {
     "chest pain": [
-        {"condition": "Acute Coronary Syndrome", "icd10": "I21.9", "probability": "age-dependent"},
+        {
+            "condition": "Acute Coronary Syndrome",
+            "icd10": "I21.9",
+            "probability": "age-dependent",
+        },
         {"condition": "Costochondritis", "icd10": "M94.0", "probability": "moderate"},
         {"condition": "GERD", "icd10": "K21.0", "probability": "moderate"},
-        {"condition": "Anxiety/Panic Attack", "icd10": "F41.0", "probability": "moderate"},
+        {
+            "condition": "Anxiety/Panic Attack",
+            "icd10": "F41.0",
+            "probability": "moderate",
+        },
         {"condition": "Pulmonary Embolism", "icd10": "I26.99", "probability": "low"},
     ],
     "headache": [
@@ -95,18 +122,34 @@ DIFFERENTIAL_DB = {
         {"condition": "Gastroenteritis", "icd10": "K52.9", "probability": "high"},
         {"condition": "Appendicitis", "icd10": "K35.80", "probability": "moderate"},
         {"condition": "Cholecystitis", "icd10": "K81.9", "probability": "moderate"},
-        {"condition": "Peptic Ulcer Disease", "icd10": "K27.9", "probability": "moderate"},
+        {
+            "condition": "Peptic Ulcer Disease",
+            "icd10": "K27.9",
+            "probability": "moderate",
+        },
     ],
     "fever": [
-        {"condition": "Upper Respiratory Infection", "icd10": "J06.9", "probability": "high"},
-        {"condition": "Urinary Tract Infection", "icd10": "N39.0", "probability": "moderate"},
+        {
+            "condition": "Upper Respiratory Infection",
+            "icd10": "J06.9",
+            "probability": "high",
+        },
+        {
+            "condition": "Urinary Tract Infection",
+            "icd10": "N39.0",
+            "probability": "moderate",
+        },
         {"condition": "Influenza", "icd10": "J11.1", "probability": "moderate"},
         {"condition": "COVID-19", "icd10": "U07.1", "probability": "moderate"},
     ],
     "cough": [
         {"condition": "Acute Bronchitis", "icd10": "J20.9", "probability": "high"},
         {"condition": "Pneumonia", "icd10": "J18.9", "probability": "moderate"},
-        {"condition": "Asthma Exacerbation", "icd10": "J45.901", "probability": "moderate"},
+        {
+            "condition": "Asthma Exacerbation",
+            "icd10": "J45.901",
+            "probability": "moderate",
+        },
         {"condition": "Post-nasal Drip", "icd10": "R09.82", "probability": "moderate"},
     ],
 }
@@ -123,15 +166,38 @@ GUIDELINES_DB = {
             "Random plasma glucose >= 200 mg/dL with classic hyperglycemia symptoms",
         ],
         "treatment_algorithm": [
-            {"step": 1, "therapy": "Lifestyle modification (diet, exercise, weight management)", "a1c_target": "<7.0%"},
-            {"step": 2, "therapy": "Metformin monotherapy (first-line pharmacologic)", "a1c_target": "<7.0%"},
-            {"step": 3, "therapy": "Add second agent: GLP-1 RA (preferred if CVD/CKD) or SGLT2i or DPP-4i or sulfonylurea", "a1c_target": "<7.0%"},
-            {"step": 4, "therapy": "Triple therapy or add basal insulin", "a1c_target": "Individualized"},
-            {"step": 5, "therapy": "Intensify insulin regimen (basal-bolus or premixed)", "a1c_target": "Individualized"},
+            {
+                "step": 1,
+                "therapy": "Lifestyle modification (diet, exercise, weight management)",
+                "a1c_target": "<7.0%",
+            },
+            {
+                "step": 2,
+                "therapy": "Metformin monotherapy (first-line pharmacologic)",
+                "a1c_target": "<7.0%",
+            },
+            {
+                "step": 3,
+                "therapy": "Add second agent: GLP-1 RA (preferred if CVD/CKD) or SGLT2i or DPP-4i or sulfonylurea",
+                "a1c_target": "<7.0%",
+            },
+            {
+                "step": 4,
+                "therapy": "Triple therapy or add basal insulin",
+                "a1c_target": "Individualized",
+            },
+            {
+                "step": 5,
+                "therapy": "Intensify insulin regimen (basal-bolus or premixed)",
+                "a1c_target": "Individualized",
+            },
         ],
         "monitoring": [
             {"test": "HbA1c", "frequency": "Every 3-6 months"},
-            {"test": "Fasting glucose / CGM", "frequency": "Daily self-monitoring if on insulin"},
+            {
+                "test": "Fasting glucose / CGM",
+                "frequency": "Daily self-monitoring if on insulin",
+            },
             {"test": "Lipid panel", "frequency": "Annually"},
             {"test": "eGFR and UACR", "frequency": "Annually"},
             {"test": "Dilated eye exam", "frequency": "Annually"},
@@ -157,16 +223,45 @@ GUIDELINES_DB = {
             "Hypertensive Crisis: Systolic >180 and/or Diastolic >120 mmHg",
         ],
         "treatment_algorithm": [
-            {"step": 1, "therapy": "Lifestyle modifications: DASH diet, sodium <2300mg/day, exercise 150 min/week, weight loss", "bp_target": "<130/80"},
-            {"step": 2, "therapy": "Monotherapy: ACEi or ARB (first-line), CCB, or thiazide diuretic", "bp_target": "<130/80"},
-            {"step": 3, "therapy": "Dual therapy: ACEi/ARB + CCB or ACEi/ARB + thiazide", "bp_target": "<130/80"},
-            {"step": 4, "therapy": "Triple therapy: ACEi/ARB + CCB + thiazide", "bp_target": "<130/80"},
-            {"step": 5, "therapy": "Add spironolactone or beta-blocker for resistant hypertension", "bp_target": "<130/80"},
+            {
+                "step": 1,
+                "therapy": "Lifestyle modifications: DASH diet, sodium <2300mg/day, exercise 150 min/week, weight loss",
+                "bp_target": "<130/80",
+            },
+            {
+                "step": 2,
+                "therapy": "Monotherapy: ACEi or ARB (first-line), CCB, or thiazide diuretic",
+                "bp_target": "<130/80",
+            },
+            {
+                "step": 3,
+                "therapy": "Dual therapy: ACEi/ARB + CCB or ACEi/ARB + thiazide",
+                "bp_target": "<130/80",
+            },
+            {
+                "step": 4,
+                "therapy": "Triple therapy: ACEi/ARB + CCB + thiazide",
+                "bp_target": "<130/80",
+            },
+            {
+                "step": 5,
+                "therapy": "Add spironolactone or beta-blocker for resistant hypertension",
+                "bp_target": "<130/80",
+            },
         ],
         "monitoring": [
-            {"test": "Blood pressure", "frequency": "Monthly until controlled, then every 3-6 months"},
-            {"test": "Basic metabolic panel", "frequency": "1-2 weeks after starting ACEi/ARB, then annually"},
-            {"test": "Potassium level", "frequency": "With BMP if on ACEi/ARB or diuretic"},
+            {
+                "test": "Blood pressure",
+                "frequency": "Monthly until controlled, then every 3-6 months",
+            },
+            {
+                "test": "Basic metabolic panel",
+                "frequency": "1-2 weeks after starting ACEi/ARB, then annually",
+            },
+            {
+                "test": "Potassium level",
+                "frequency": "With BMP if on ACEi/ARB or diuretic",
+            },
             {"test": "Renal function (eGFR)", "frequency": "Annually"},
         ],
         "quality_measures": [
@@ -177,8 +272,10 @@ GUIDELINES_DB = {
     },
 }
 
-DISCLAIMER = ("This tool is for clinical decision support only and does not replace "
-              "clinical judgment. Always consult a licensed physician.")
+DISCLAIMER = (
+    "This tool is for clinical decision support only and does not replace "
+    "clinical judgment. Always consult a licensed physician."
+)
 
 
 def _rng(*parts) -> random.Random:
@@ -189,8 +286,15 @@ def _rng(*parts) -> random.Random:
 def check_drug_interactions(medications: str) -> dict:
     med_list, err = parse_json_arg(medications, "medications")
     if err:
-        med_list = [m.strip() for m in str(medications).replace("[", "").replace("]", "")
-                    .replace('"', "").split(",") if m.strip()]
+        med_list = [
+            m.strip()
+            for m in str(medications)
+            .replace("[", "")
+            .replace("]", "")
+            .replace('"', "")
+            .split(",")
+            if m.strip()
+        ]
     if not isinstance(med_list, list) or len(med_list) < 2:
         return tool_error("Provide at least two medication names as a JSON array")
     med_list = [str(m).strip() for m in med_list]
@@ -207,22 +311,30 @@ def check_drug_interactions(medications: str) -> dict:
 
     major = sum(1 for x in interactions_found if x["severity"] == "major")
     moderate = sum(1 for x in interactions_found if x["severity"] == "moderate")
-    return tool_ok({
-        "medications_checked": med_list,
-        "pairs_analyzed": pairs_checked,
-        "interactions_found": len(interactions_found),
-        "interactions": interactions_found,
-        "severity_summary": {
-            "major": major,
-            "moderate": moderate,
-            "minor": len(interactions_found) - major - moderate,
-        },
-        "overall_risk": ("HIGH - Major interactions detected. Physician review required." if major
-                         else "MODERATE - Review recommended." if moderate
-                         else "LOW - No significant interactions detected in the reference database."),
-        "database_note": "Curated reference database of common interactions; not exhaustive.",
-        "disclaimer": DISCLAIMER,
-    })
+    return tool_ok(
+        {
+            "medications_checked": med_list,
+            "pairs_analyzed": pairs_checked,
+            "interactions_found": len(interactions_found),
+            "interactions": interactions_found,
+            "severity_summary": {
+                "major": major,
+                "moderate": moderate,
+                "minor": len(interactions_found) - major - moderate,
+            },
+            "overall_risk": (
+                "HIGH - Major interactions detected. Physician review required."
+                if major
+                else (
+                    "MODERATE - Review recommended."
+                    if moderate
+                    else "LOW - No significant interactions detected in the reference database."
+                )
+            ),
+            "database_note": "Curated reference database of common interactions; not exhaustive.",
+            "disclaimer": DISCLAIMER,
+        }
+    )
 
 
 def assess_symptoms(symptoms: str, patient_age: int, patient_sex: str) -> dict:
@@ -259,39 +371,63 @@ def assess_symptoms(symptoms: str, patient_age: int, patient_sex: str) -> dict:
                     differentials.append(entry)
     if not differentials:
         differentials = [
-            {"condition": "Unspecified symptom complex", "icd10": "R68.89", "probability": "uncertain"},
-            {"condition": "Further evaluation needed", "icd10": "Z71.1", "probability": "N/A"},
+            {
+                "condition": "Unspecified symptom complex",
+                "icd10": "R68.89",
+                "probability": "uncertain",
+            },
+            {
+                "condition": "Further evaluation needed",
+                "icd10": "Z71.1",
+                "probability": "N/A",
+            },
         ]
 
     red_flags = []
-    if patient_age >= 65 and any(s in ("chest pain", "shortness of breath") for s in symptom_list):
-        red_flags.append("Age >65 with cardiac symptoms - high risk for acute coronary event")
+    if patient_age >= 65 and any(
+        s in ("chest pain", "shortness of breath") for s in symptom_list
+    ):
+        red_flags.append(
+            "Age >65 with cardiac symptoms - high risk for acute coronary event"
+        )
     if "fever" in joined and patient_age <= 3:
-        red_flags.append("Infant/toddler with fever - requires immediate pediatric evaluation")
+        red_flags.append(
+            "Infant/toddler with fever - requires immediate pediatric evaluation"
+        )
     if any(s in symptom_list for s in ("confusion", "loss of consciousness")):
-        red_flags.append("Altered mental status - requires emergent neurological assessment")
+        red_flags.append(
+            "Altered mental status - requires emergent neurological assessment"
+        )
     if "chest pain" in joined and "shortness of breath" in joined:
-        red_flags.append("Combined chest pain and dyspnea - rule out ACS, PE, pneumothorax")
+        red_flags.append(
+            "Combined chest pain and dyspnea - rule out ACS, PE, pneumothorax"
+        )
 
-    return tool_ok({
-        "assessment": {
-            "urgency_level": urgency,
-            "triage_color": color,
-            "recommended_action": action,
-        },
-        "patient_info": {"age": patient_age, "sex": patient_sex, "reported_symptoms": symptom_list},
-        "differential_diagnoses": differentials[:6],
-        "red_flags": red_flags or ["No critical red flags identified"],
-        "recommended_workup": [
-            "Vital signs assessment",
-            "Focused physical examination",
-            "Point-of-care testing as indicated",
-            "ECG if cardiac symptoms present",
-            "Basic laboratory panel if systemic symptoms",
-        ],
-        "disposition": action,
-        "disclaimer": DISCLAIMER,
-    })
+    return tool_ok(
+        {
+            "assessment": {
+                "urgency_level": urgency,
+                "triage_color": color,
+                "recommended_action": action,
+            },
+            "patient_info": {
+                "age": patient_age,
+                "sex": patient_sex,
+                "reported_symptoms": symptom_list,
+            },
+            "differential_diagnoses": differentials[:6],
+            "red_flags": red_flags or ["No critical red flags identified"],
+            "recommended_workup": [
+                "Vital signs assessment",
+                "Focused physical examination",
+                "Point-of-care testing as indicated",
+                "ECG if cardiac symptoms present",
+                "Basic laboratory panel if systemic symptoms",
+            ],
+            "disposition": action,
+            "disclaimer": DISCLAIMER,
+        }
+    )
 
 
 def get_clinical_guidelines(condition: str) -> dict:
@@ -309,19 +445,41 @@ def get_clinical_guidelines(condition: str) -> dict:
                 "Differential diagnosis consideration",
             ],
             "treatment_algorithm": [
-                {"step": 1, "therapy": "Comprehensive evaluation and diagnosis confirmation"},
-                {"step": 2, "therapy": "Evidence-based first-line therapy per current guidelines"},
-                {"step": 3, "therapy": "Adjunctive therapies and monitoring as indicated"},
-                {"step": 4, "therapy": "Specialist referral if refractory to initial treatment"},
+                {
+                    "step": 1,
+                    "therapy": "Comprehensive evaluation and diagnosis confirmation",
+                },
+                {
+                    "step": 2,
+                    "therapy": "Evidence-based first-line therapy per current guidelines",
+                },
+                {
+                    "step": 3,
+                    "therapy": "Adjunctive therapies and monitoring as indicated",
+                },
+                {
+                    "step": 4,
+                    "therapy": "Specialist referral if refractory to initial treatment",
+                },
             ],
             "monitoring": [
-                {"test": "Disease-specific markers", "frequency": "Per guideline recommendations"},
-                {"test": "Treatment response assessment", "frequency": "4-8 weeks after initiation"},
+                {
+                    "test": "Disease-specific markers",
+                    "frequency": "Per guideline recommendations",
+                },
+                {
+                    "test": "Treatment response assessment",
+                    "frequency": "4-8 weeks after initiation",
+                },
             ],
-            "quality_measures": [f"Refer to HEDIS/CMS quality measures for {condition}"],
+            "quality_measures": [
+                f"Refer to HEDIS/CMS quality measures for {condition}"
+            ],
             "coverage_note": "Condition not in the local guideline database; generic framework returned.",
         }
-    return tool_ok({**guideline, "last_reviewed": "2025-01-15", "disclaimer": DISCLAIMER})
+    return tool_ok(
+        {**guideline, "last_reviewed": "2025-01-15", "disclaimer": DISCLAIMER}
+    )
 
 
 def calculate_risk_score(patient_id: str, risk_type: str) -> dict:
@@ -356,57 +514,104 @@ def calculate_risk_score(patient_id: str, risk_type: str) -> dict:
                 "diabetes": r.choice([True, False]),
                 "smoker": r.choice([True, False]),
             },
-            "risk_factors_present": [f for f in [
-                "Hypertension" if systolic >= 140 else None,
-                "Low HDL" if hdl < 40 else None,
-                "Elevated total cholesterol" if total_chol > 200 else None,
-                "Age >55" if age > 55 else None,
-            ] if f],
-            "recommendations": [f for f in [
-                "Initiate statin therapy (moderate-to-high intensity)" if score >= 7.5
-                else "Consider statin therapy based on risk enhancers",
-                "Aspirin 81mg daily if benefit outweighs bleeding risk" if score >= 10.0
-                else "Aspirin not routinely recommended at this risk level",
-                "Blood pressure management to target <130/80 mmHg",
-                "Lifestyle modifications: Mediterranean diet, 150 min/week moderate exercise",
-                "Consider coronary artery calcium (CAC) score for risk reclassification"
-                if 5.0 <= score < 20.0 else None,
-            ] if f],
+            "risk_factors_present": [
+                f
+                for f in [
+                    "Hypertension" if systolic >= 140 else None,
+                    "Low HDL" if hdl < 40 else None,
+                    "Elevated total cholesterol" if total_chol > 200 else None,
+                    "Age >55" if age > 55 else None,
+                ]
+                if f
+            ],
+            "recommendations": [
+                f
+                for f in [
+                    (
+                        "Initiate statin therapy (moderate-to-high intensity)"
+                        if score >= 7.5
+                        else "Consider statin therapy based on risk enhancers"
+                    ),
+                    (
+                        "Aspirin 81mg daily if benefit outweighs bleeding risk"
+                        if score >= 10.0
+                        else "Aspirin not routinely recommended at this risk level"
+                    ),
+                    "Blood pressure management to target <130/80 mmHg",
+                    "Lifestyle modifications: Mediterranean diet, 150 min/week moderate exercise",
+                    (
+                        "Consider coronary artery calcium (CAC) score for risk reclassification"
+                        if 5.0 <= score < 20.0
+                        else None
+                    ),
+                ]
+                if f
+            ],
         }
     elif risk_type == "diabetes":
         score = r.randint(0, 10)
-        interpretation = "LOW RISK" if score <= 2 else "MODERATE RISK" if score <= 4 else "HIGH RISK"
+        interpretation = (
+            "LOW RISK" if score <= 2 else "MODERATE RISK" if score <= 4 else "HIGH RISK"
+        )
         result = {
             "risk_model": "ADA Type 2 Diabetes Risk Test",
             "score": score,
             "unit": "points (0-10 scale)",
             "interpretation": interpretation,
             "risk_category": f"Score {score}/10 - "
-                             f"{'screening recommended' if score >= 5 else 'routine monitoring'}",
+            f"{'screening recommended' if score >= 5 else 'routine monitoring'}",
             "input_parameters": {
                 "age": r.choice(["<40", "40-49", "50-59", "60+"]),
                 "sex": r.choice(["Male", "Female"]),
                 "family_history_diabetes": r.choice([True, False]),
                 "hypertension": r.choice([True, False]),
                 "physically_active": r.choice([True, False]),
-                "bmi_category": r.choice(["Normal", "Overweight", "Obese Class I", "Obese Class II+"]),
+                "bmi_category": r.choice(
+                    ["Normal", "Overweight", "Obese Class I", "Obese Class II+"]
+                ),
             },
-            "recommendations": [f for f in [
-                "Order HbA1c and fasting glucose for screening" if score >= 5 else "Rescreen in 3 years",
-                "Diabetes Prevention Program referral" if score >= 5 else "Encourage healthy lifestyle",
-                "Weight management counseling (target 5-7% weight loss)" if score >= 3 else None,
-                "Increase physical activity to 150 min/week" if score >= 3 else None,
-                "Annual screening if risk factors persist",
-            ] if f],
+            "recommendations": [
+                f
+                for f in [
+                    (
+                        "Order HbA1c and fasting glucose for screening"
+                        if score >= 5
+                        else "Rescreen in 3 years"
+                    ),
+                    (
+                        "Diabetes Prevention Program referral"
+                        if score >= 5
+                        else "Encourage healthy lifestyle"
+                    ),
+                    (
+                        "Weight management counseling (target 5-7% weight loss)"
+                        if score >= 3
+                        else None
+                    ),
+                    (
+                        "Increase physical activity to 150 min/week"
+                        if score >= 3
+                        else None
+                    ),
+                    "Annual screening if risk factors persist",
+                ]
+                if f
+            ],
         }
     elif risk_type == "falls":
         score = r.randint(0, 125)
         if score <= 24:
             interpretation, fall_risk = "LOW RISK", "No intervention required"
         elif score <= 50:
-            interpretation, fall_risk = "MODERATE RISK", "Implement standard fall prevention protocol"
+            interpretation, fall_risk = (
+                "MODERATE RISK",
+                "Implement standard fall prevention protocol",
+            )
         else:
-            interpretation, fall_risk = "HIGH RISK", "Implement high-risk fall prevention interventions"
+            interpretation, fall_risk = (
+                "HIGH RISK",
+                "Implement high-risk fall prevention interventions",
+            )
         result = {
             "risk_model": "Morse Fall Scale",
             "score": score,
@@ -416,27 +621,62 @@ def calculate_risk_score(patient_id: str, risk_type: str) -> dict:
             "input_parameters": {
                 "history_of_falling": r.choice(["Yes (25 pts)", "No (0 pts)"]),
                 "secondary_diagnosis": r.choice(["Yes (15 pts)", "No (0 pts)"]),
-                "ambulatory_aid": r.choice(["None (0 pts)", "Crutches/Cane/Walker (15 pts)",
-                                            "Furniture (30 pts)"]),
+                "ambulatory_aid": r.choice(
+                    [
+                        "None (0 pts)",
+                        "Crutches/Cane/Walker (15 pts)",
+                        "Furniture (30 pts)",
+                    ]
+                ),
                 "iv_therapy": r.choice(["Yes (20 pts)", "No (0 pts)"]),
-                "gait": r.choice(["Normal (0 pts)", "Weak (10 pts)", "Impaired (20 pts)"]),
-                "mental_status": r.choice(["Oriented to own ability (0 pts)",
-                                           "Overestimates/forgets limitations (15 pts)"]),
+                "gait": r.choice(
+                    ["Normal (0 pts)", "Weak (10 pts)", "Impaired (20 pts)"]
+                ),
+                "mental_status": r.choice(
+                    [
+                        "Oriented to own ability (0 pts)",
+                        "Overestimates/forgets limitations (15 pts)",
+                    ]
+                ),
             },
-            "recommendations": [f for f in [
-                "Bed alarm and non-slip footwear" if score > 50 else "Standard precautions",
-                "Physical therapy referral for balance and gait training" if score > 24 else None,
-                "Medication review for fall-risk-increasing drugs (FRIDs)" if score > 24 else None,
-                "Environmental safety assessment" if score > 50 else None,
-                "Vitamin D supplementation (800-1000 IU daily)" if score > 24 else None,
-                "Reassess fall risk with each status change",
-            ] if f],
+            "recommendations": [
+                f
+                for f in [
+                    (
+                        "Bed alarm and non-slip footwear"
+                        if score > 50
+                        else "Standard precautions"
+                    ),
+                    (
+                        "Physical therapy referral for balance and gait training"
+                        if score > 24
+                        else None
+                    ),
+                    (
+                        "Medication review for fall-risk-increasing drugs (FRIDs)"
+                        if score > 24
+                        else None
+                    ),
+                    "Environmental safety assessment" if score > 50 else None,
+                    (
+                        "Vitamin D supplementation (800-1000 IU daily)"
+                        if score > 24
+                        else None
+                    ),
+                    "Reassess fall risk with each status change",
+                ]
+                if f
+            ],
         }
     else:
-        return tool_error(f"Risk type '{risk_type}' not recognized.",
-                          supported_risk_types=["cardiovascular", "diabetes", "falls"])
+        return tool_error(
+            f"Risk type '{risk_type}' not recognized.",
+            supported_risk_types=["cardiovascular", "diabetes", "falls"],
+        )
 
-    return tool_ok({"patient_id": patient_id, **result, "disclaimer": DISCLAIMER}, simulated=True)
+    return tool_ok(
+        {"patient_id": patient_id, **result, "disclaimer": DISCLAIMER}, simulated=True
+    )
 
 
 TOOLS = {

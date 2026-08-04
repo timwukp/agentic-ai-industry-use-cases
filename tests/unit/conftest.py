@@ -39,10 +39,14 @@ def ddb_tables():
         ddb = boto3.resource("dynamodb", region_name="us-east-1")
         ddb.create_table(
             TableName=os.environ["PORTFOLIO_TABLE"],
-            KeySchema=[{"AttributeName": "portfolioId", "KeyType": "HASH"},
-                       {"AttributeName": "sk", "KeyType": "RANGE"}],
-            AttributeDefinitions=[{"AttributeName": "portfolioId", "AttributeType": "S"},
-                                  {"AttributeName": "sk", "AttributeType": "S"}],
+            KeySchema=[
+                {"AttributeName": "portfolioId", "KeyType": "HASH"},
+                {"AttributeName": "sk", "KeyType": "RANGE"},
+            ],
+            AttributeDefinitions=[
+                {"AttributeName": "portfolioId", "AttributeType": "S"},
+                {"AttributeName": "sk", "AttributeType": "S"},
+            ],
             BillingMode="PAY_PER_REQUEST",
         )
         ddb.create_table(
@@ -53,22 +57,37 @@ def ddb_tables():
                 {"AttributeName": "portfolioId", "AttributeType": "S"},
                 {"AttributeName": "createdAt", "AttributeType": "S"},
             ],
-            GlobalSecondaryIndexes=[{
-                "IndexName": "byPortfolio",
-                "KeySchema": [{"AttributeName": "portfolioId", "KeyType": "HASH"},
-                              {"AttributeName": "createdAt", "KeyType": "RANGE"}],
-                "Projection": {"ProjectionType": "ALL"},
-            }],
+            GlobalSecondaryIndexes=[
+                {
+                    "IndexName": "byPortfolio",
+                    "KeySchema": [
+                        {"AttributeName": "portfolioId", "KeyType": "HASH"},
+                        {"AttributeName": "createdAt", "KeyType": "RANGE"},
+                    ],
+                    "Projection": {"ProjectionType": "ALL"},
+                }
+            ],
             BillingMode="PAY_PER_REQUEST",
         )
         # reset cached boto3 resources inside the toolkit between tests
         import toolkit.dynamo as tdyn
+
         tdyn._resource = None
         seed = ddb.Table(os.environ["PORTFOLIO_TABLE"])
-        for sym, qty, cost in [("AAPL", 100, 185.50), ("MSFT", 50, 380.20),
-                               ("NVDA", 30, 490.00), ("JPM", 80, 195.00)]:
-            seed.put_item(Item={"portfolioId": "default", "sk": f"POSITION#{sym}",
-                                "symbol": sym, "quantity": qty,
-                                "avgCost": __import__("decimal").Decimal(str(cost))})
+        for sym, qty, cost in [
+            ("AAPL", 100, 185.50),
+            ("MSFT", 50, 380.20),
+            ("NVDA", 30, 490.00),
+            ("JPM", 80, 195.00),
+        ]:
+            seed.put_item(
+                Item={
+                    "portfolioId": "default",
+                    "sk": f"POSITION#{sym}",
+                    "symbol": sym,
+                    "quantity": qty,
+                    "avgCost": __import__("decimal").Decimal(str(cost)),
+                }
+            )
         yield ddb
         tdyn._resource = None

@@ -1,4 +1,5 @@
 """CDK assertions: the security regressions from the old repo stay fixed."""
+
 import sys
 from pathlib import Path
 
@@ -15,7 +16,7 @@ from stacks.finance_data_stack import FinanceDataStack  # noqa: E402
 from stacks.finance_tools_stack import FinanceToolsStack  # noqa: E402
 from stacks.web_stack import WebStack  # noqa: E402
 
-ENV = cdk.Environment(account="111111111111", region="us-east-1")
+ENV = cdk.Environment(account="123456789012", region="us-east-1")
 
 
 @pytest.fixture(scope="module")
@@ -24,21 +25,43 @@ def templates():
     shared = SharedSecurityStack(app, "S", env=ENV)
     auth = AuthStack(app, "A", env=ENV)
     data = FinanceDataStack(app, "D", env=ENV, kms_key=shared.kms_key)
-    tools = FinanceToolsStack(app, "T", env=ENV, kms_key=shared.kms_key,
-                              portfolio_table=data.portfolio_table,
-                              orders_table=data.orders_table)
-    web = WebStack(app, "W", env=ENV, web_acl_arn="arn:aws:wafv2:us-east-1:111111111111:global/webacl/x/y")
-    return {name: Template.from_stack(stack)
-            for name, stack in [("shared", shared), ("auth", auth), ("data", data),
-                                ("tools", tools), ("web", web)]}
+    tools = FinanceToolsStack(
+        app,
+        "T",
+        env=ENV,
+        kms_key=shared.kms_key,
+        portfolio_table=data.portfolio_table,
+        orders_table=data.orders_table,
+    )
+    web = WebStack(
+        app,
+        "W",
+        env=ENV,
+        web_acl_arn="arn:aws:wafv2:us-east-1:123456789012:global/webacl/x/y",
+    )
+    return {
+        name: Template.from_stack(stack)
+        for name, stack in [
+            ("shared", shared),
+            ("auth", auth),
+            ("data", data),
+            ("tools", tools),
+            ("web", web),
+        ]
+    }
 
 
 def test_waf_is_attached_to_cloudfront(templates):
-    templates["web"].has_resource_properties("AWS::CloudFront::Distribution", {
-        "DistributionConfig": Match.object_like({
-            "WebACLId": "arn:aws:wafv2:us-east-1:111111111111:global/webacl/x/y",
-        })
-    })
+    templates["web"].has_resource_properties(
+        "AWS::CloudFront::Distribution",
+        {
+            "DistributionConfig": Match.object_like(
+                {
+                    "WebACLId": "arn:aws:wafv2:us-east-1:123456789012:global/webacl/x/y",
+                }
+            )
+        },
+    )
 
 
 def test_no_wrong_agentcore_principal(templates):
@@ -47,15 +70,19 @@ def test_no_wrong_agentcore_principal(templates):
     for name, role in roles.items():
         for stmt in role["Properties"]["AssumeRolePolicyDocument"]["Statement"]:
             principal = stmt.get("Principal", {}).get("Service", "")
-            if "agentcore" in name.lower() or name.startswith(("GatewayRole", "HarnessRole")):
+            if "agentcore" in name.lower() or name.startswith(
+                ("GatewayRole", "HarnessRole")
+            ):
                 assert principal == "bedrock-agentcore.amazonaws.com", name
 
 
 def test_harness_and_gateway_roles_exist(templates):
     roles = templates["tools"].find_resources("AWS::IAM::Role")
-    services = {s.get("Principal", {}).get("Service")
-                for r in roles.values()
-                for s in r["Properties"]["AssumeRolePolicyDocument"]["Statement"]}
+    services = {
+        s.get("Principal", {}).get("Service")
+        for r in roles.values()
+        for s in r["Properties"]["AssumeRolePolicyDocument"]["Statement"]
+    }
     assert "bedrock-agentcore.amazonaws.com" in services
 
 
@@ -64,22 +91,30 @@ def test_tables_use_kms_and_pitr(templates):
     assert len(tables) == 2
     for t in tables.values():
         assert t["Properties"]["SSESpecification"]["SSEType"] == "KMS"
-        assert t["Properties"]["PointInTimeRecoverySpecification"]["PointInTimeRecoveryEnabled"]
+        assert t["Properties"]["PointInTimeRecoverySpecification"][
+            "PointInTimeRecoveryEnabled"
+        ]
 
 
 def test_kb_uses_s3_vectors(templates):
-    templates["tools"].has_resource_properties("AWS::Bedrock::KnowledgeBase", {
-        "StorageConfiguration": Match.object_like({"Type": "S3_VECTORS"}),
-    })
+    templates["tools"].has_resource_properties(
+        "AWS::Bedrock::KnowledgeBase",
+        {
+            "StorageConfiguration": Match.object_like({"Type": "S3_VECTORS"}),
+        },
+    )
     templates["tools"].resource_count_is("AWS::S3Vectors::VectorBucket", 1)
     templates["tools"].resource_count_is("AWS::S3Vectors::Index", 1)
 
 
 def test_cognito_hardening(templates):
-    templates["auth"].has_resource_properties("AWS::Cognito::UserPool", {
-        "Policies": {"PasswordPolicy": Match.object_like({"MinimumLength": 12})},
-        "MfaConfiguration": "OPTIONAL",
-    })
+    templates["auth"].has_resource_properties(
+        "AWS::Cognito::UserPool",
+        {
+            "Policies": {"PasswordPolicy": Match.object_like({"MinimumLength": 12})},
+            "MfaConfiguration": "OPTIONAL",
+        },
+    )
     # SPA client: no secret
     clients = templates["auth"].find_resources("AWS::Cognito::UserPoolClient")
     for c in clients.values():
@@ -88,8 +123,11 @@ def test_cognito_hardening(templates):
 
 def test_five_tool_lambdas(templates):
     fns = templates["tools"].find_resources("AWS::Lambda::Function")
-    tool_fns = [f for f in fns.values()
-                if f["Properties"].get("FunctionName", "").startswith("finance-tool-")]
+    tool_fns = [
+        f
+        for f in fns.values()
+        if f["Properties"].get("FunctionName", "").startswith("finance-tool-")
+    ]
     assert len(tool_fns) == 5
 
 

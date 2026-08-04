@@ -12,7 +12,10 @@ def test_var_math():
     res = risk.calculate_var(1_000_000, 0.95, 1, 0.18)
     # z * daily_vol: 1.645 * 0.18/sqrt(252) ≈ 1.865%
     assert abs(res["var"]["percentage"] - 1.87) < 0.05
-    assert res["all_levels"]["var_99"]["var_amount"] > res["all_levels"]["var_95"]["var_amount"]
+    assert (
+        res["all_levels"]["var_99"]["var_amount"]
+        > res["all_levels"]["var_95"]["var_amount"]
+    )
 
 
 def test_stress_all_and_single():
@@ -25,11 +28,15 @@ def test_stress_all_and_single():
 
 
 def test_analyze_positions():
-    res = risk.analyze_portfolio_risk('[{"symbol": "AAPL", "value": 50000}, {"symbol": "JPM", "value": 50000}]')
+    res = risk.analyze_portfolio_risk(
+        '[{"symbol": "AAPL", "value": 50000}, {"symbol": "JPM", "value": 50000}]'
+    )
     assert res["num_positions"] == 2
     assert abs(sum(p["weight_pct"] for p in res["positions"]) - 100) < 0.1
     # deterministic: same call, same result
-    assert res == risk.analyze_portfolio_risk('[{"symbol": "AAPL", "value": 50000}, {"symbol": "JPM", "value": 50000}]')
+    assert res == risk.analyze_portfolio_risk(
+        '[{"symbol": "AAPL", "value": 50000}, {"symbol": "JPM", "value": 50000}]'
+    )
     assert "error" in risk.analyze_portfolio_risk("nope")
     assert "error" in risk.analyze_portfolio_risk("[]")
 

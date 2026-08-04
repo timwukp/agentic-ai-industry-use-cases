@@ -3,6 +3,7 @@
 Catches schema/handler drift before it becomes a deployed 'Unknown tool' error.
 Covers all industries: finance plus the five templates ported from the old apps.
 """
+
 import importlib
 import json
 from pathlib import Path
@@ -80,6 +81,7 @@ ALLOWED_INPUT_SCHEMA_KEYS = {"type", "properties", "required", "items", "descrip
 def _load_handler(industry: str, module_dir: str):
     """Import tools/<industry>/<module_dir>/handler.py in isolation."""
     import sys
+
     sys.path.insert(0, str(TOOLS_DIR / industry / module_dir))
     try:
         handler = importlib.import_module("handler")
@@ -110,11 +112,13 @@ def test_all_schemas_have_required_fields(industry):
     for f in schema_files:
         for tool in json.loads(f.read_text()):
             assert tool.get("name"), f"{industry}/{f.name}: tool missing name"
-            assert tool.get("description"), \
-                f"{industry}/{f.name}:{tool['name']} missing description"
+            assert tool.get(
+                "description"
+            ), f"{industry}/{f.name}:{tool['name']} missing description"
             input_schema = tool.get("inputSchema", {})
-            assert input_schema.get("type") == "object", \
-                f"{industry}/{f.name}:{tool['name']} inputSchema must be type object"
+            assert (
+                input_schema.get("type") == "object"
+            ), f"{industry}/{f.name}:{tool['name']} inputSchema must be type object"
 
 
 def _assert_allowed_keys(node: dict, location: str):
@@ -131,12 +135,15 @@ def test_input_schemas_use_only_gateway_supported_keys(industry):
     """Gateway inlinePayload rejects enum/default/etc; those live in descriptions."""
     for f in (TOOLS_DIR / industry / "schemas").glob("*.json"):
         for tool in json.loads(f.read_text()):
-            _assert_allowed_keys(tool["inputSchema"],
-                                 f"{industry}/{f.name}:{tool['name']}")
+            _assert_allowed_keys(
+                tool["inputSchema"], f"{industry}/{f.name}:{tool['name']}"
+            )
 
 
 @pytest.mark.parametrize("industry,expected", sorted(EXPECTED_TOOL_COUNTS.items()))
 def test_total_tool_count(industry, expected):
-    total = sum(len(json.loads(f.read_text()))
-                for f in (TOOLS_DIR / industry / "schemas").glob("*.json"))
+    total = sum(
+        len(json.loads(f.read_text()))
+        for f in (TOOLS_DIR / industry / "schemas").glob("*.json")
+    )
     assert total == expected, f"{industry}: expected {expected} tools, found {total}"

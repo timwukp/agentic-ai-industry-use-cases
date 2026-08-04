@@ -1,4 +1,5 @@
 """Trading + portfolio handlers against moto DynamoDB — real state mutations."""
+
 import importlib
 import sys
 from pathlib import Path
@@ -33,8 +34,11 @@ def test_buy_averages_cost_basis(ddb_tables):
     trading = _load("trading")
     trading.place_order("AAPL", "BUY", 100, "MARKET", 0, "default")
     portfolio = _load("portfolio")
-    aapl = next(p for p in portfolio.get_portfolio_positions("default")["positions"]
-                if p["symbol"] == "AAPL")
+    aapl = next(
+        p
+        for p in portfolio.get_portfolio_positions("default")["positions"]
+        if p["symbol"] == "AAPL"
+    )
     assert aapl["quantity"] == 200  # seeded 100 + bought 100
     assert aapl["avg_cost"] != 185.50  # weighted average moved
 
@@ -50,7 +54,9 @@ def test_sell_all_removes_position(ddb_tables):
     res = trading.place_order("JPM", "SELL", 80, "MARKET", 0, "default")
     assert res["status"] == "FILLED"
     portfolio = _load("portfolio")
-    symbols = {p["symbol"] for p in portfolio.get_portfolio_positions("default")["positions"]}
+    symbols = {
+        p["symbol"] for p in portfolio.get_portfolio_positions("default")["positions"]
+    }
     assert "JPM" not in symbols
 
 
@@ -109,8 +115,9 @@ def test_pnl_periods(ddb_tables):
 
 def test_dispatch_routing(ddb_tables, gateway_context):
     trading = _load("trading")
-    out = trading.lambda_handler({"symbol": "AAPL", "side": "BUY", "quantity": 1},
-                                 gateway_context("place_order"))
+    out = trading.lambda_handler(
+        {"symbol": "AAPL", "side": "BUY", "quantity": 1}, gateway_context("place_order")
+    )
     assert out["status"] == "FILLED"
     unknown = trading.lambda_handler({}, gateway_context("no_such_tool"))
     assert "error" in unknown

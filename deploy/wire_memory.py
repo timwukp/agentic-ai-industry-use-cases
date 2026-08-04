@@ -20,11 +20,17 @@ REPO = Path(__file__).resolve().parents[1]
 OUTPUTS = REPO / "deploy" / "outputs"
 INDUSTRY_DIRS = {"finance": "finance-trading"}
 
-EVENT_ACTIONS = ["bedrock-agentcore:CreateEvent", "bedrock-agentcore:GetEvent",
-                 "bedrock-agentcore:ListEvents", "bedrock-agentcore:ListSessions",
-                 "bedrock-agentcore:ListActors"]
-RETRIEVAL_ACTIONS = ["bedrock-agentcore:ListMemoryRecords",
-                     "bedrock-agentcore:RetrieveMemoryRecords"]
+EVENT_ACTIONS = [
+    "bedrock-agentcore:CreateEvent",
+    "bedrock-agentcore:GetEvent",
+    "bedrock-agentcore:ListEvents",
+    "bedrock-agentcore:ListSessions",
+    "bedrock-agentcore:ListActors",
+]
+RETRIEVAL_ACTIONS = [
+    "bedrock-agentcore:ListMemoryRecords",
+    "bedrock-agentcore:RetrieveMemoryRecords",
+]
 
 
 def main() -> None:
@@ -33,11 +39,13 @@ def main() -> None:
     ap.add_argument("--region", default="us-east-1")
     args = ap.parse_args()
 
-    cfg = json.loads((REPO / "harnesses" / INDUSTRY_DIRS[args.industry] /
-                      "memory.json").read_text())
+    cfg = json.loads(
+        (REPO / "harnesses" / INDUSTRY_DIRS[args.industry] / "memory.json").read_text()
+    )
     harness = json.loads((OUTPUTS / f"harness-id-{args.industry}.json").read_text())
     role_arn = json.loads((OUTPUTS / "cdk-outputs.json").read_text())[
-        "AgenticFinanceTools"]["HarnessRoleArn"]
+        "AgenticFinanceTools"
+    ]["HarnessRoleArn"]
     role_name = role_arn.split("/")[-1]
 
     control = boto3.client("bedrock-agentcore-control", region_name=args.region)
@@ -87,36 +95,54 @@ def main() -> None:
     control.update_harness(
         harnessId=harness["harnessId"],
         clientToken=uuid.uuid4().hex + uuid.uuid4().hex[:8],
-        memory={"optionalValue": {"agentCoreMemoryConfiguration": {
-            "arn": memory_arn,
-            "actorId": "web-user",
-            "messagesCount": 20,
-            "retrievalConfig": retrieval,
-        }}},
+        memory={
+            "optionalValue": {
+                "agentCoreMemoryConfiguration": {
+                    "arn": memory_arn,
+                    "actorId": "web-user",
+                    "messagesCount": 20,
+                    "retrievalConfig": retrieval,
+                }
+            }
+        },
     )
     print("Harness updated with memory config")
 
     # 3. IAM grant on the execution role (namespace placeholders -> globs)
-    globs = [ns.replace("{actorId}", "*").replace("{sessionId}", "*") for ns in retrieval]
+    globs = [
+        ns.replace("{actorId}", "*").replace("{sessionId}", "*") for ns in retrieval
+    ]
     policy = {
         "Version": "2012-10-17",
         "Statement": [
-            {"Sid": "MemoryEvents", "Effect": "Allow",
-             "Action": EVENT_ACTIONS, "Resource": memory_arn},
-            {"Sid": "MemoryRetrieval", "Effect": "Allow",
-             "Action": RETRIEVAL_ACTIONS, "Resource": memory_arn,
-             "Condition": {"StringLike": {"bedrock-agentcore:namespace": globs}}},
+            {
+                "Sid": "MemoryEvents",
+                "Effect": "Allow",
+                "Action": EVENT_ACTIONS,
+                "Resource": memory_arn,
+            },
+            {
+                "Sid": "MemoryRetrieval",
+                "Effect": "Allow",
+                "Action": RETRIEVAL_ACTIONS,
+                "Resource": memory_arn,
+                "Condition": {"StringLike": {"bedrock-agentcore:namespace": globs}},
+            },
         ],
     }
     boto3.client("iam").put_role_policy(
-        RoleName=role_name, PolicyName=f"memory-{cfg['memoryName']}",
+        RoleName=role_name,
+        PolicyName=f"memory-{cfg['memoryName']}",
         PolicyDocument=json.dumps(policy),
     )
     print(f"IAM policy attached to {role_name}")
 
-    (OUTPUTS / f"memory-{args.industry}.json").write_text(json.dumps(
-        {"memoryId": memory_id, "memoryArn": memory_arn, "strategies": strategies},
-        indent=2))
+    (OUTPUTS / f"memory-{args.industry}.json").write_text(
+        json.dumps(
+            {"memoryId": memory_id, "memoryArn": memory_arn, "strategies": strategies},
+            indent=2,
+        )
+    )
     print("Done.")
 
 

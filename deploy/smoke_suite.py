@@ -21,13 +21,21 @@ REGION = "us-east-1"
 
 
 def invoke(url: str, token: str, sub: str, prompt: str, session: str) -> str:
-    body = json.dumps({"messages": [{"role": "user", "content": [{"text": prompt}]}],
-                       "actorId": sub}).encode()
-    req = urllib.request.Request(url, data=body, method="POST", headers={
-        "Authorization": f"Bearer {token}", "Content-Type": "application/json",
-        "X-Amzn-Bedrock-AgentCore-Runtime-Session-Id": session})
+    body = json.dumps(
+        {"messages": [{"role": "user", "content": [{"text": prompt}]}], "actorId": sub}
+    ).encode()
+    req = urllib.request.Request(
+        url,
+        data=body,
+        method="POST",
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "X-Amzn-Bedrock-AgentCore-Runtime-Session-Id": session,
+        },
+    )
     buf, text = EventStreamBuffer(), []
-    with urllib.request.urlopen(req, timeout=310) as resp:
+    with urllib.request.urlopen(req, timeout=310) as resp:  # nosec B310
         while True:
             chunk = resp.read(8192)
             if not chunk:
@@ -40,9 +48,12 @@ def invoke(url: str, token: str, sub: str, prompt: str, session: str) -> str:
                     e = json.loads(event.payload.decode("utf-8", "replace"))
                 except json.JSONDecodeError:
                     continue
-                d = (e.get("contentBlockDelta", {}).get("delta", {}).get("text")
-                     or e.get("delta", {}).get("text") or e.get("text")
-                     or (e.get("message") and f"[ERROR] {e['message']}"))
+                d = (
+                    e.get("contentBlockDelta", {}).get("delta", {}).get("text")
+                    or e.get("delta", {}).get("text")
+                    or e.get("text")
+                    or (e.get("message") and f"[ERROR] {e['message']}")
+                )
                 if d:
                     text.append(d)
     return "".join(text)
@@ -51,9 +62,11 @@ def invoke(url: str, token: str, sub: str, prompt: str, session: str) -> str:
 def main() -> None:
     harness = json.loads((OUTPUTS / "harness-id-finance.json").read_text())
     token, sub = get_token(REGION)
-    url = (f"https://bedrock-agentcore.{REGION}.amazonaws.com/harnesses/invoke"
-           f"?harnessArn={urllib.parse.quote(harness['harnessArn'], safe='')}"
-           f"&qualifier=DEFAULT")
+    url = (
+        f"https://bedrock-agentcore.{REGION}.amazonaws.com/harnesses/invoke"
+        f"?harnessArn={urllib.parse.quote(harness['harnessArn'], safe='')}"
+        f"&qualifier=DEFAULT"
+    )
 
     checks = []
 
@@ -67,27 +80,33 @@ def main() -> None:
         print(out[:600].strip())
         return session, out
 
-    run("gateway market data tool",
+    run(
+        "gateway market data tool",
         "Use your market data tool to get a quote for AAPL. Report the price.",
-        ["AAPL"])
+        ["AAPL"],
+    )
 
-    run("gateway portfolio tool (DynamoDB)",
+    run(
+        "gateway portfolio tool (DynamoDB)",
         "Show my default portfolio positions. How many positions and what total market value?",
-        ["NVDA", "position"])
+        ["NVDA", "position"],
+    )
 
-    run("knowledge base retrieval",
+    run(
+        "knowledge base retrieval",
         "Search the knowledge base: what is the maintenance margin for leveraged ETFs?",
-        ["50", "leveraged"])
+        ["50", "leveraged"],
+    )
 
-    mem_session, _ = run("memory write",
+    mem_session, _ = run(
+        "memory write",
         "Remember this preference: my risk tolerance is conservative and I prefer dividend stocks.",
-        ["conservative", "preference", "remember", "noted", "got it"])
+        ["conservative", "preference", "remember", "noted", "got it"],
+    )
 
     print("\nWaiting 90s for memory extraction...")
     time.sleep(90)
-    run("memory recall (new session)",
-        "What is my risk tolerance?",
-        ["conservative"])
+    run("memory recall (new session)", "What is my risk tolerance?", ["conservative"])
 
     print("\n===== SUMMARY =====")
     failed = 0

@@ -23,7 +23,7 @@ jobs:
           cache: 'pip'
 
       - name: Install tools
-        run: pip install pip-licenses==5.0.0 cyclonedx-bom==4.6.7
+        run: pip install pip-licenses==5.0.0 cyclonedx-bom==7.3.1
 
       - name: Install project dependencies
         run: |

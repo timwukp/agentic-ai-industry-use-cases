@@ -6,7 +6,6 @@ mismatch is visible. Usage: python deploy/publish_web.py [--region us-east-1]
 """
 import argparse
 import json
-import mimetypes
 import subprocess
 from pathlib import Path
 
@@ -29,8 +28,19 @@ def main() -> None:
     if not dist_dir.exists():
         raise SystemExit("web/dist not found — run `npm run build` in web/ first")
 
-    subprocess.run(["aws", "s3", "sync", str(dist_dir), f"s3://{bucket}/",
-                    "--delete", "--region", args.region], check=True)
+    subprocess.run(
+        [
+            "aws",
+            "s3",
+            "sync",
+            str(dist_dir),
+            f"s3://{bucket}/",
+            "--delete",
+            "--region",
+            args.region,
+        ],
+        check=True,
+    )
 
     cf = boto3.client("cloudfront")
     cf.create_invalidation(

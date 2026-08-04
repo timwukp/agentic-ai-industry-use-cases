@@ -19,13 +19,22 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[1]
 OUTPUTS = REPO / "deploy" / "outputs"
-SKILL_DIR = Path(os.environ.get(
-    "HARNESS_SKILL_DIR", str(Path.home() / "Downloads" / "agentcore-harness-builder")))
+SKILL_DIR = Path(
+    os.environ.get(
+        "HARNESS_SKILL_DIR",
+        str(Path.home() / "Downloads" / "agentcore-harness-builder"),
+    )
+)
 PY = sys.executable
 REGION = os.environ.get("AWS_REGION", "us-east-1")
 
-CORE_STACKS = ["AgenticSharedSecurity", "AgenticAuth", "AgenticFinanceData",
-               "AgenticFinanceTools", "AgenticApi"]
+CORE_STACKS = [
+    "AgenticSharedSecurity",
+    "AgenticAuth",
+    "AgenticFinanceData",
+    "AgenticFinanceTools",
+    "AgenticApi",
+]
 
 
 def run(cmd: list[str], cwd: Path = REPO) -> None:
@@ -35,9 +44,18 @@ def run(cmd: list[str], cwd: Path = REPO) -> None:
 
 def step_cdk(_args) -> None:
     cdk_bin = REPO / "node_modules" / ".bin" / "cdk"
-    run([str(cdk_bin), "deploy", *CORE_STACKS, "--require-approval", "never",
-         "--outputs-file", str(OUTPUTS / "cdk-outputs.json")],
-        cwd=REPO / "infra" / "cdk")
+    run(
+        [
+            str(cdk_bin),
+            "deploy",
+            *CORE_STACKS,
+            "--require-approval",
+            "never",
+            "--outputs-file",
+            str(OUTPUTS / "cdk-outputs.json"),
+        ],
+        cwd=REPO / "infra" / "cdk",
+    )
 
 
 def step_seed(args) -> None:
@@ -45,15 +63,37 @@ def step_seed(args) -> None:
 
 
 def step_gateway(args) -> None:
-    run([PY, str(REPO / "deploy" / "create_gateway.py"),
-         "--industry", args.industry, "--region", args.region])
+    run(
+        [
+            PY,
+            str(REPO / "deploy" / "create_gateway.py"),
+            "--industry",
+            args.industry,
+            "--region",
+            args.region,
+        ]
+    )
 
 
 def step_render(args) -> None:
-    run([PY, str(REPO / "deploy" / "render_harness.py"),
-         "--industry", args.industry, "--region", args.region])
-    run([PY, str(SKILL_DIR / "scripts" / "validate_config.py"),
-         "--config", str(OUTPUTS / f"harness-{args.industry}.json")])
+    run(
+        [
+            PY,
+            str(REPO / "deploy" / "render_harness.py"),
+            "--industry",
+            args.industry,
+            "--region",
+            args.region,
+        ]
+    )
+    run(
+        [
+            PY,
+            str(SKILL_DIR / "scripts" / "validate_config.py"),
+            "--config",
+            str(OUTPUTS / f"harness-{args.industry}.json"),
+        ]
+    )
 
 
 def _harness_config(args) -> dict:
@@ -65,27 +105,53 @@ def _tools_outputs() -> dict:
 
 
 def step_harness(args) -> None:
-    run([PY, str(SKILL_DIR / "scripts" / "create_harness.py"),
-         "--config", str(OUTPUTS / f"harness-{args.industry}.json"),
-         "--role-arn", _tools_outputs()["HarnessRoleArn"],
-         "--region", args.region])
+    run(
+        [
+            PY,
+            str(SKILL_DIR / "scripts" / "create_harness.py"),
+            "--config",
+            str(OUTPUTS / f"harness-{args.industry}.json"),
+            "--role-arn",
+            _tools_outputs()["HarnessRoleArn"],
+            "--region",
+            args.region,
+        ]
+    )
 
 
 def step_memory(args) -> None:
     harness_id = _find_harness_id(args)
     memory_cfg = json.loads(
-        (REPO / "harnesses" / "finance-trading" / "memory.json").read_text())
-    run([PY, str(SKILL_DIR / "scripts" / "wire_memory.py"),
-         "--harness-id", harness_id,
-         "--role-arn", _tools_outputs()["HarnessRoleArn"],
-         "--memory-name", memory_cfg["memoryName"],
-         "--region", args.region])
+        (REPO / "harnesses" / "finance-trading" / "memory.json").read_text()
+    )
+    run(
+        [
+            PY,
+            str(SKILL_DIR / "scripts" / "wire_memory.py"),
+            "--harness-id",
+            harness_id,
+            "--role-arn",
+            _tools_outputs()["HarnessRoleArn"],
+            "--memory-name",
+            memory_cfg["memoryName"],
+            "--region",
+            args.region,
+        ]
+    )
 
 
 def step_observability(args) -> None:
     harness_id = _find_harness_id(args)
-    run([PY, str(SKILL_DIR / "scripts" / "setup_observability.py"),
-         "--harness-id", harness_id, "--region", args.region])
+    run(
+        [
+            PY,
+            str(SKILL_DIR / "scripts" / "setup_observability.py"),
+            "--harness-id",
+            harness_id,
+            "--region",
+            args.region,
+        ]
+    )
 
 
 def step_smoke(args) -> None:
@@ -95,12 +161,23 @@ def step_smoke(args) -> None:
         "Get a quote for AAPL, then show my default portfolio positions and total value.",
         "What does our margin policy say about leveraged ETFs?",
     ]:
-        run([PY, str(SKILL_DIR / "scripts" / "invoke_harness.py"),
-             "--harness-arn", harness_arn, "--prompt", prompt, "--region", args.region])
+        run(
+            [
+                PY,
+                str(SKILL_DIR / "scripts" / "invoke_harness.py"),
+                "--harness-arn",
+                harness_arn,
+                "--prompt",
+                prompt,
+                "--region",
+                args.region,
+            ]
+        )
 
 
 def _client(args):
     import boto3
+
     return boto3.client("bedrock-agentcore-control", region_name=args.region)
 
 
@@ -124,9 +201,14 @@ def _find_harness_arn(args) -> str:
 
 
 STEPS = [
-    ("cdk", step_cdk), ("seed", step_seed), ("gateway", step_gateway),
-    ("render", step_render), ("harness", step_harness), ("memory", step_memory),
-    ("observability", step_observability), ("smoke", step_smoke),
+    ("cdk", step_cdk),
+    ("seed", step_seed),
+    ("gateway", step_gateway),
+    ("render", step_render),
+    ("harness", step_harness),
+    ("memory", step_memory),
+    ("observability", step_observability),
+    ("smoke", step_smoke),
 ]
 
 

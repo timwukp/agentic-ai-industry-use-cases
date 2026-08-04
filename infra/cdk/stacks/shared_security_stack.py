@@ -1,4 +1,5 @@
 """Shared security primitives: KMS key + WAF WebACL (attached by WebStack)."""
+
 import aws_cdk as cdk
 from aws_cdk import aws_kms as kms, aws_wafv2 as wafv2
 from constructs import Construct
@@ -63,7 +64,8 @@ class SharedSecurityStack(cdk.Stack):
                     override_action=wafv2.CfnWebACL.OverrideActionProperty(none={}),
                     statement=wafv2.CfnWebACL.StatementProperty(
                         managed_rule_group_statement=wafv2.CfnWebACL.ManagedRuleGroupStatementProperty(
-                            vendor_name="AWS", name="AWSManagedRulesKnownBadInputsRuleSet"
+                            vendor_name="AWS",
+                            name="AWSManagedRulesKnownBadInputsRuleSet",
                         )
                     ),
                     visibility_config=wafv2.CfnWebACL.VisibilityConfigProperty(

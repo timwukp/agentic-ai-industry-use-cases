@@ -5,6 +5,7 @@ Routes:
   GET /api/finance/orders           — recent orders
   GET /api/finance/market/overview  — indices, VIX, treasury, sectors
 """
+
 import json
 
 from portfolio_tools import get_portfolio_positions  # aliased at packaging time
@@ -17,7 +18,11 @@ CORS_HEADERS_BASE = {
 
 
 def _response(status: int, body: dict) -> dict:
-    return {"statusCode": status, "headers": CORS_HEADERS_BASE, "body": json.dumps(body)}
+    return {
+        "statusCode": status,
+        "headers": CORS_HEADERS_BASE,
+        "body": json.dumps(body),
+    }
 
 
 def lambda_handler(event, context):
@@ -32,7 +37,12 @@ def lambda_handler(event, context):
         return _response(200, get_trade_history(portfolio_id, days))
     if route == "GET /api/finance/market/overview":
         sim = MarketSim()
-        return _response(200, {**sim.market_overview(),
-                               "sectors": sim.sector_performance(),
-                               "source": "simulated"})
+        return _response(
+            200,
+            {
+                **sim.market_overview(),
+                "sectors": sim.sector_performance(),
+                "source": "simulated",
+            },
+        )
     return _response(404, {"error": f"Unknown route: {route}"})

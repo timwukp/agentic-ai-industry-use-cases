@@ -39,21 +39,30 @@ def invoke(prompt: str, session_id: str, region: str) -> None:
     harness = json.loads((OUTPUTS / "harness-id-finance.json").read_text())
     token, sub = get_token(region)
 
-    url = (f"https://bedrock-agentcore.{region}.amazonaws.com/harnesses/invoke"
-           f"?harnessArn={urllib.parse.quote(harness['harnessArn'], safe='')}"
-           f"&qualifier=DEFAULT")
-    body = json.dumps({
-        "messages": [{"role": "user", "content": [{"text": prompt}]}],
-        "actorId": sub,
-    }).encode()
-    req = urllib.request.Request(url, data=body, method="POST", headers={
-        "Authorization": f"Bearer {token}",
-        "Content-Type": "application/json",
-        "Accept": "text/event-stream",
-        "X-Amzn-Bedrock-AgentCore-Runtime-Session-Id": session_id,
-    })
+    url = (
+        f"https://bedrock-agentcore.{region}.amazonaws.com/harnesses/invoke"
+        f"?harnessArn={urllib.parse.quote(harness['harnessArn'], safe='')}"
+        f"&qualifier=DEFAULT"
+    )
+    body = json.dumps(
+        {
+            "messages": [{"role": "user", "content": [{"text": prompt}]}],
+            "actorId": sub,
+        }
+    ).encode()
+    req = urllib.request.Request(
+        url,
+        data=body,
+        method="POST",
+        headers={
+            "Authorization": f"Bearer {token}",
+            "Content-Type": "application/json",
+            "Accept": "text/event-stream",
+            "X-Amzn-Bedrock-AgentCore-Runtime-Session-Id": session_id,
+        },
+    )
     print(f"POST {url[:100]}...")
-    with urllib.request.urlopen(req, timeout=310) as resp:
+    with urllib.request.urlopen(req, timeout=310) as resp:  # nosec B310
         print("HTTP", resp.status, resp.headers.get("content-type"))
         text_parts = []
         for raw in resp:
@@ -65,8 +74,11 @@ def invoke(prompt: str, session_id: str, region: str) -> None:
                 event = json.loads(payload)
             except json.JSONDecodeError:
                 continue
-            delta = (event.get("contentBlockDelta", {}).get("delta", {}).get("text")
-                     or event.get("delta", {}).get("text") or event.get("text"))
+            delta = (
+                event.get("contentBlockDelta", {}).get("delta", {}).get("text")
+                or event.get("delta", {}).get("text")
+                or event.get("text")
+            )
             if delta:
                 text_parts.append(delta)
                 sys.stdout.write(delta)

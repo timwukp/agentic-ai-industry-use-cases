@@ -4,6 +4,7 @@ AgentCore Gateway invokes the target Lambda with the tool arguments as the
 event and the fully-qualified tool name ("<target>___<tool>") in
 context.client_context.custom["bedrockAgentCoreToolName"].
 """
+
 from typing import Callable
 
 TOOL_NAME_KEY = "bedrockAgentCoreToolName"

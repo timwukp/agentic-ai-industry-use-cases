@@ -3,6 +3,7 @@
 Data is a deterministic simulation (toolkit.MarketSim); payloads are labeled
 "source": "simulated" so the agent can disclose provenance.
 """
+
 from toolkit import MarketSim, tool_ok
 from toolkit.dispatch import dispatch
 
@@ -18,8 +19,11 @@ def get_market_overview() -> dict:
 def get_historical_prices(symbol: str, days: int = 30) -> dict:
     sim = MarketSim()
     return tool_ok(
-        {"symbol": symbol.upper(), "period_days": min(int(days), 252),
-         "data": sim.historical(symbol, int(days))},
+        {
+            "symbol": symbol.upper(),
+            "period_days": min(int(days), 252),
+            "data": sim.historical(symbol, int(days)),
+        },
         simulated=True,
     )
 

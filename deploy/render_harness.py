@@ -43,7 +43,9 @@ def main() -> None:
     print(f"Wrote {out_file}")
     print(f"  harnessName: {rendered['harnessName']}")
     print(f"  gateway:     {gateway['gatewayArn']}")
-    print(f"  jwt clients: {rendered['authorizerConfiguration']['customJWTAuthorizer']['allowedClients']}")
+    print(
+        f"  jwt clients: {rendered['authorizerConfiguration']['customJWTAuthorizer']['allowedClients']}"
+    )
 
 
 if __name__ == "__main__":

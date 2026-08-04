@@ -48,7 +48,7 @@ jobs:
 
       - name: Bandit security scan
         run: |
-          bandit -r apps/ packages/ infra/ -ll -ii -f json -o /tmp/bandit-report.json
+          bandit -r tools/ deploy/ infra/ -ll -ii -f json -o /tmp/bandit-report.json
           echo "✅ Bandit scan passed (no medium+ findings)"
 
       - name: Install project dependencies

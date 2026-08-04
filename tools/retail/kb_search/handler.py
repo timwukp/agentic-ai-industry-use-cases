@@ -1,4 +1,5 @@
 """Gateway target: kb — knowledge base search over inventory policy and supplier SLAs."""
+
 import os
 
 import boto3
@@ -31,7 +32,9 @@ def search_knowledge_base(query: str, max_results: int = 5) -> dict:
         {
             "content": r["content"]["text"],
             "score": r.get("score"),
-            "source": (r.get("location", {}).get("s3Location", {}) or {}).get("uri", "unknown"),
+            "source": (r.get("location", {}).get("s3Location", {}) or {}).get(
+                "uri", "unknown"
+            ),
         }
         for r in resp.get("retrievalResults", [])
     ]

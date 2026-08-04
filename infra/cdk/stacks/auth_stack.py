@@ -1,4 +1,5 @@
 """Cognito user pool + SPA client. Single pool shared by all industry modules."""
+
 import aws_cdk as cdk
 from aws_cdk import aws_cognito as cognito
 from constructs import Construct
@@ -42,9 +43,14 @@ class AuthStack(cdk.Stack):
             auth_flows=cognito.AuthFlow(user_srp=True, user_password=True),
             o_auth=cognito.OAuthSettings(
                 flows=cognito.OAuthFlows(authorization_code_grant=True),
-                scopes=[cognito.OAuthScope.OPENID, cognito.OAuthScope.EMAIL,
-                        cognito.OAuthScope.PROFILE],
-                callback_urls=["http://localhost:5173/"],  # CloudFront URL added post-deploy
+                scopes=[
+                    cognito.OAuthScope.OPENID,
+                    cognito.OAuthScope.EMAIL,
+                    cognito.OAuthScope.PROFILE,
+                ],
+                callback_urls=[
+                    "http://localhost:5173/"
+                ],  # CloudFront URL added post-deploy
                 logout_urls=["http://localhost:5173/"],
             ),
             prevent_user_existence_errors=True,
@@ -59,6 +65,8 @@ class AuthStack(cdk.Stack):
         )
 
         cdk.CfnOutput(self, "UserPoolId", value=self.user_pool.user_pool_id)
-        cdk.CfnOutput(self, "UserPoolClientId", value=self.user_pool_client.user_pool_client_id)
+        cdk.CfnOutput(
+            self, "UserPoolClientId", value=self.user_pool_client.user_pool_client_id
+        )
         cdk.CfnOutput(self, "DiscoveryUrl", value=discovery_url)
         cdk.CfnOutput(self, "HostedUiDomain", value=self.domain.base_url())
