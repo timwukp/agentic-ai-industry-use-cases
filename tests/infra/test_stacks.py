@@ -16,6 +16,7 @@ from stacks.finance_data_stack import FinanceDataStack  # noqa: E402
 from stacks.finance_tools_stack import FinanceToolsStack  # noqa: E402
 from stacks.web_stack import WebStack  # noqa: E402
 
+# Dummy synth-only account (AWS's documented example id) — not a real account.
 ENV = cdk.Environment(account="123456789012", region="us-east-1")
 
 

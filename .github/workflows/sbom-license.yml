@@ -33,7 +33,8 @@ jobs:
 
       - name: Generate SBOM (CycloneDX)
         run: |
-          cyclonedx-py environment -o sbom.json --format json
+          # cyclonedx-bom 7.x: JSON is selected via --output-format (no --format flag)
+          cyclonedx-py environment -o sbom.json --output-format JSON
           if [ ! -s sbom.json ]; then
             echo "❌ SBOM generation failed — file is empty"
             exit 1
