@@ -1,0 +1,85 @@
+[
+  {
+    "name": "schedule_appointment",
+    "description": "Schedule a medical appointment for a patient with a specific provider. Books a slot near the preferred date and returns confirmation with location, duration, and preparation instructions.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "patient_id": {
+          "type": "string",
+          "description": "Patient identifier (e.g., 'PAT-001234')"
+        },
+        "provider_id": {
+          "type": "string",
+          "description": "Provider identifier (e.g., 'DR-CHEN', 'DR-PATEL', 'NP-RODRIGUEZ')"
+        },
+        "appointment_type": {
+          "type": "string",
+          "description": "Type of appointment (One of: follow-up, annual-physical, urgent, specialist-referral, telehealth, lab-work, procedure)"
+        },
+        "preferred_date": {
+          "type": "string",
+          "description": "Preferred appointment date in YYYY-MM-DD format"
+        }
+      },
+      "required": [
+        "patient_id",
+        "provider_id",
+        "appointment_type",
+        "preferred_date"
+      ]
+    }
+  },
+  {
+    "name": "get_provider_availability",
+    "description": "Check provider availability for scheduling within a date range. Returns open appointment slots grouped by date with slot type (in-person or telehealth).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "provider_id": {
+          "type": "string",
+          "description": "Provider identifier (e.g., 'DR-CHEN', 'DR-PATEL')"
+        },
+        "date_range": {
+          "type": "string",
+          "description": "Date range in 'YYYY-MM-DD to YYYY-MM-DD' format or number of days ahead (Default: 7)"
+        }
+      },
+      "required": [
+        "provider_id"
+      ]
+    }
+  },
+  {
+    "name": "get_upcoming_appointments",
+    "description": "Get all upcoming scheduled appointments for a patient sorted by date, including provider, type, location, and reminder status.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "patient_id": {
+          "type": "string",
+          "description": "Patient identifier (e.g., 'PAT-001234')"
+        }
+      },
+      "required": [
+        "patient_id"
+      ]
+    }
+  },
+  {
+    "name": "send_appointment_reminder",
+    "description": "Send a reminder notification for an upcoming appointment via the patient's preferred channel (SMS, email, or patient portal). Returns delivery confirmation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "appointment_id": {
+          "type": "string",
+          "description": "Appointment identifier (e.g., 'APT-1A2B3C4D')"
+        }
+      },
+      "required": [
+        "appointment_id"
+      ]
+    }
+  }
+]

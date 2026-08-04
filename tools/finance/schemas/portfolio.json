@@ -1,0 +1,65 @@
+[
+  {
+    "name": "get_portfolio_positions",
+    "description": "Get all current positions in a portfolio from the demo trading system: symbol, quantity, cost basis, market value, unrealized P&L, plus portfolio totals.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "portfolio_id": {
+          "type": "string",
+          "description": "Portfolio identifier (Default: default)"
+        }
+      }
+    }
+  },
+  {
+    "name": "calculate_pnl",
+    "description": "Calculate profit and loss for a portfolio over a period (today/week/month/quarter/ytd/year) including unrealized P&L, dividends, and period return.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "portfolio_id": {
+          "type": "string",
+          "description": "Portfolio identifier (Default: default)"
+        },
+        "period": {
+          "type": "string",
+          "description": "One of: today, week, month, quarter, ytd, year; Default: month"
+        }
+      }
+    }
+  },
+  {
+    "name": "get_portfolio_allocation",
+    "description": "Get the portfolio's sector allocation breakdown with concentration metrics (top position weight, Herfindahl index) computed from live demo positions.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "portfolio_id": {
+          "type": "string",
+          "description": "Portfolio identifier (Default: default)"
+        }
+      }
+    }
+  },
+  {
+    "name": "suggest_rebalancing",
+    "description": "Suggest trades to move the portfolio toward a target sector allocation. Provide target_allocation as a JSON object mapping sector name to target percent, e.g. {\"Technology\": 30, \"Healthcare\": 20}.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "portfolio_id": {
+          "type": "string",
+          "description": "Portfolio identifier (Default: default)"
+        },
+        "target_allocation": {
+          "type": "string",
+          "description": "JSON object of sector name to target percent"
+        }
+      },
+      "required": [
+        "target_allocation"
+      ]
+    }
+  }
+]

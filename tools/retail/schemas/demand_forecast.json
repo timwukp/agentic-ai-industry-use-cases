@@ -1,0 +1,67 @@
+[
+  {
+    "name": "forecast_demand",
+    "description": "Generate a daily demand forecast for a product SKU with confidence intervals, seasonal factors, peak day, and accuracy metrics (MAPE, RMSE, bias).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "sku": {
+          "type": "string",
+          "description": "Product SKU to forecast"
+        },
+        "days_ahead": {
+          "type": "integer",
+          "description": "Number of days to forecast, e.g. 7, 14, 30, 60, 90 (max 90) (Default: 30)"
+        }
+      },
+      "required": [
+        "sku"
+      ]
+    }
+  },
+  {
+    "name": "get_demand_trends",
+    "description": "Analyze demand trends for a category over a period: units/revenue/AOV growth, weekly sales data, top growing and declining SKUs, and seasonality index.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category (e.g., electronics, apparel, grocery, home, sports, all)"
+        },
+        "period": {
+          "type": "string",
+          "description": "Analysis period (One of: week, month, quarter, year; Default: month)"
+        }
+      },
+      "required": [
+        "category"
+      ]
+    }
+  },
+  {
+    "name": "auto_reorder",
+    "description": "Calculate an automatic reorder recommendation for a SKU using the Economic Order Quantity (EOQ) model with safety stock, reorder point, lead time, and annual cost analysis.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "sku": {
+          "type": "string",
+          "description": "Product SKU to calculate reorder for"
+        }
+      },
+      "required": [
+        "sku"
+      ]
+    }
+  },
+  {
+    "name": "get_abc_analysis",
+    "description": "Perform ABC analysis on inventory classifying items by value contribution (A: top 20% SKUs / 80% revenue, B, C) with fill rates, turnover, and optimization recommendations.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  }
+]

@@ -1,0 +1,89 @@
+[
+  {
+    "name": "calculate_settlement",
+    "description": "Calculate a recommended settlement amount for a claim from the damage assessment, deductible, depreciation, and policy limit. Returns a breakdown, comparable settlements, and approve/review recommendation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "description": "The claim identifier"
+        },
+        "damage_assessment": {
+          "type": "string",
+          "description": "Summary of damage findings"
+        },
+        "coverage_limit": {
+          "type": "number",
+          "description": "Maximum coverage limit from the policy in USD"
+        }
+      },
+      "required": [
+        "claim_id",
+        "damage_assessment",
+        "coverage_limit"
+      ]
+    }
+  },
+  {
+    "name": "approve_settlement",
+    "description": "Approve a settlement for payment processing. Returns payment reference, estimated payment date, and compliance check results. Settlements over $25,000 require supervisor approval.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "description": "The claim identifier"
+        },
+        "amount": {
+          "type": "number",
+          "description": "Settlement amount in USD"
+        },
+        "approver_notes": {
+          "type": "string",
+          "description": "Notes from the approver documenting the decision rationale"
+        }
+      },
+      "required": [
+        "claim_id",
+        "amount",
+        "approver_notes"
+      ]
+    }
+  },
+  {
+    "name": "get_settlement_analytics",
+    "description": "Get settlement analytics and performance metrics for the current month: KPIs, breakdown by claim type, and month-over-month trends.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "estimate_reserve",
+    "description": "Estimate the loss reserve for an open claim using severity-based actuarial modeling (Chain-Ladder with Bornhuetter-Ferguson). Returns reserve estimate with P10/P50/P90 confidence interval and component breakdown.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "description": "The claim identifier"
+        },
+        "claim_type": {
+          "type": "string",
+          "description": "Type of claim (e.g., auto, home, health, property, liability)"
+        },
+        "severity": {
+          "type": "string",
+          "description": "Claim severity (One of: low, medium, high, catastrophic)"
+        }
+      },
+      "required": [
+        "claim_id",
+        "claim_type",
+        "severity"
+      ]
+    }
+  }
+]

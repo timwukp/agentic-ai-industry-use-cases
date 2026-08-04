@@ -1,0 +1,24 @@
+{
+  "memoryName": "healthcare_medical_memory",
+  "eventExpiryDuration": 90,
+  "strategies": [
+    {
+      "userPreferenceMemoryStrategy": {
+        "name": "user_preferences",
+        "namespaces": ["/users/{actorId}/preferences"]
+      }
+    },
+    {
+      "semanticMemoryStrategy": {
+        "name": "facts",
+        "namespaces": ["/users/{actorId}/facts"]
+      }
+    },
+    {
+      "summaryMemoryStrategy": {
+        "name": "session_summaries",
+        "namespaces": ["/summaries/{actorId}/{sessionId}"]
+      }
+    }
+  ]
+}

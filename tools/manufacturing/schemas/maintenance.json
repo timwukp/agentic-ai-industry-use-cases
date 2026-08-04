@@ -1,0 +1,92 @@
+[
+  {
+    "name": "schedule_maintenance",
+    "description": "Schedule a maintenance activity for equipment with technician assignment, required permits (LOTO, confined space, hot work), production impact estimate, and safety requirements. Priority drives lead time (critical: same day, low: ~2 weeks).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "equipment_id": {
+          "type": "string",
+          "description": "Equipment identifier (e.g., 'EQ-CNC-001')"
+        },
+        "maintenance_type": {
+          "type": "string",
+          "description": "Type of maintenance (One of: preventive, predictive, corrective)"
+        },
+        "priority": {
+          "type": "string",
+          "description": "Priority level (One of: critical, high, medium, low)"
+        }
+      },
+      "required": [
+        "equipment_id",
+        "maintenance_type",
+        "priority"
+      ]
+    }
+  },
+  {
+    "name": "generate_work_order",
+    "description": "Create a maintenance work order with sequenced task breakdown, parts list, labor and cost estimates, skills required, and approval status (critical/high priority auto-approves).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "equipment_id": {
+          "type": "string",
+          "description": "Equipment identifier (e.g., 'EQ-CNC-001')"
+        },
+        "description": {
+          "type": "string",
+          "description": "Description of the maintenance work needed"
+        },
+        "priority": {
+          "type": "string",
+          "description": "Priority level (One of: critical, high, medium, low)"
+        }
+      },
+      "required": [
+        "equipment_id",
+        "description",
+        "priority"
+      ]
+    }
+  },
+  {
+    "name": "get_maintenance_history",
+    "description": "Get historical maintenance records for equipment: work orders by type (preventive/predictive/corrective/emergency), cost and downtime summary, reactive maintenance percentage, and failure pattern analysis.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "equipment_id": {
+          "type": "string",
+          "description": "Equipment identifier (e.g., 'EQ-CNC-001')"
+        },
+        "months": {
+          "type": "integer",
+          "description": "Number of months of history to retrieve (1-24) (Default: 12)"
+        }
+      },
+      "required": [
+        "equipment_id"
+      ]
+    }
+  },
+  {
+    "name": "get_maintenance_calendar",
+    "description": "Get the upcoming maintenance schedule for a facility: scheduled activities, weekly capacity, technician utilization, and scheduling conflicts.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "facility_id": {
+          "type": "string",
+          "description": "Facility identifier (e.g., 'FAC-NORTH', 'all') (Default: all)"
+        },
+        "days": {
+          "type": "integer",
+          "description": "Number of days ahead to show (1-90) (Default: 30)"
+        }
+      },
+      "required": []
+    }
+  }
+]

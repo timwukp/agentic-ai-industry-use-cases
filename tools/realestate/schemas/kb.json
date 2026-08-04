@@ -1,0 +1,22 @@
+[
+  {
+    "name": "search_knowledge_base",
+    "description": "Search the brokerage's knowledge base (appraisal methodology guide, fair housing compliance policy) and return the most relevant passages with source documents. Use for any question about valuation approaches, adjustment standards, USPAP principles, or fair housing rules.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Natural-language search query"
+        },
+        "max_results": {
+          "type": "integer",
+          "description": "Maximum passages to return (max 20) (Default: 5)"
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+  }
+]

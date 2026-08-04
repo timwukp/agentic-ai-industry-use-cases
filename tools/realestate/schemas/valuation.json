@@ -1,0 +1,119 @@
+[
+  {
+    "name": "estimate_property_value",
+    "description": "Automated Valuation Model (AVM): estimate market value using comparable sales with age, bed/bath, and lot-size adjustments. Returns value, confidence range, comparables used, and methodology breakdown. Not a formal appraisal.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Full property address (e.g., '123 Main St, Austin, TX 78701')"
+        },
+        "property_type": {
+          "type": "string",
+          "description": "Type of property (One of: single_family, condo, townhouse, multi_family, land)"
+        },
+        "bedrooms": {
+          "type": "integer",
+          "description": "Number of bedrooms"
+        },
+        "bathrooms": {
+          "type": "integer",
+          "description": "Number of bathrooms"
+        },
+        "sqft": {
+          "type": "integer",
+          "description": "Living area in square feet"
+        },
+        "lot_sqft": {
+          "type": "integer",
+          "description": "Lot size in square feet"
+        },
+        "year_built": {
+          "type": "integer",
+          "description": "Year the property was constructed"
+        }
+      },
+      "required": [
+        "address",
+        "property_type",
+        "bedrooms",
+        "bathrooms",
+        "sqft",
+        "lot_sqft",
+        "year_built"
+      ]
+    }
+  },
+  {
+    "name": "get_comparables",
+    "description": "Find comparable property sales near an address, ordered by similarity score, with per-comp adjustments (sqft, beds, baths, time) and summary statistics.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Subject property address to find comparables for"
+        },
+        "radius_miles": {
+          "type": "number",
+          "description": "Search radius in miles, e.g. 0.5, 1.0, 3.0 (Default: 1.0)"
+        },
+        "max_results": {
+          "type": "integer",
+          "description": "Maximum number of comparable properties to return (1-20) (Default: 10)"
+        }
+      },
+      "required": [
+        "address"
+      ]
+    }
+  },
+  {
+    "name": "generate_cma_report",
+    "description": "Generate a full Comparative Market Analysis (CMA) report: subject property, 5 comparable sales with itemized adjustments, active listings, value reconciliation, and suggested list/competitive/aspirational pricing.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Full address of the subject property"
+        }
+      },
+      "required": [
+        "address"
+      ]
+    }
+  },
+  {
+    "name": "calculate_replacement_cost",
+    "description": "Estimate property value using the cost approach: replacement cost new, physical/functional/external depreciation, land value, and site improvements. Most reliable for newer or unique structures.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "property_type": {
+          "type": "string",
+          "description": "Type of property (One of: single_family, condo, townhouse, multi_family, commercial)"
+        },
+        "sqft": {
+          "type": "integer",
+          "description": "Building area in square feet"
+        },
+        "quality_grade": {
+          "type": "string",
+          "description": "Construction quality (One of: economy, standard, good, excellent, luxury)"
+        },
+        "year_built": {
+          "type": "integer",
+          "description": "Year the structure was built"
+        }
+      },
+      "required": [
+        "property_type",
+        "sqft",
+        "quality_grade",
+        "year_built"
+      ]
+    }
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "name": "get_market_conditions",
+    "description": "Get current local real estate market conditions for a zip code: median price, days on market, inventory, months of supply, buyer/seller market indicator, sale-to-list ratio, and per-property-type breakdown.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "zipcode": {
+          "type": "string",
+          "description": "Five-digit US zip code (e.g., '78701', '90210')"
+        }
+      },
+      "required": [
+        "zipcode"
+      ]
+    }
+  },
+  {
+    "name": "get_neighborhood_analysis",
+    "description": "Get neighborhood analysis for an address: walk/transit/bike scores, school ratings, crime statistics, demographics, nearby amenities, and growth trends.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Full property address to analyze the surrounding neighborhood"
+        }
+      },
+      "required": [
+        "address"
+      ]
+    }
+  },
+  {
+    "name": "get_market_forecast",
+    "description": "Forecast home price trends for a zip code: monthly forecasted median prices with widening confidence intervals, total and annualized change, risk factors, and positive drivers.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "zipcode": {
+          "type": "string",
+          "description": "Five-digit US zip code"
+        },
+        "months": {
+          "type": "integer",
+          "description": "Forecast horizon in months (1-36) (Default: 12)"
+        }
+      },
+      "required": [
+        "zipcode"
+      ]
+    }
+  },
+  {
+    "name": "get_market_trends",
+    "description": "Get historical real estate market trends for a zip code: monthly time-series of median price, price/sqft, sales volume, days on market, and inventory, with change summary.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "zipcode": {
+          "type": "string",
+          "description": "Five-digit US zip code"
+        },
+        "period": {
+          "type": "string",
+          "description": "Time period for trend data (One of: 3m, 6m, 1y, 3y, 5y; Default: 1y)"
+        }
+      },
+      "required": [
+        "zipcode"
+      ]
+    }
+  }
+]

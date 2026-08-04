@@ -1,0 +1,22 @@
+[
+  {
+    "name": "search_knowledge_base",
+    "description": "Search the carrier's knowledge base (claims handling manual, fraud indicator guide) and return the most relevant passages with source documents. Use for any question about claims procedure, fair claims practices, escalation thresholds, or fraud referral criteria.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Natural-language search query"
+        },
+        "max_results": {
+          "type": "integer",
+          "description": "Maximum passages to return (max 20) (Default: 5)"
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+  }
+]

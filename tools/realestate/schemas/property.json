@@ -1,0 +1,66 @@
+[
+  {
+    "name": "get_property_details",
+    "description": "Get comprehensive property details for an address: physical characteristics, features, tax information and history, ownership records, and parcel/legal description.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Full property address (e.g., '456 Oak Dr, Denver, CO 80202')"
+        }
+      },
+      "required": [
+        "address"
+      ]
+    }
+  },
+  {
+    "name": "check_zoning",
+    "description": "Check zoning for a property: classification code, permitted/conditional/prohibited uses, development standards (height, FAR, setbacks, parking), overlay districts, and development potential (ADU, subdivision).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Full property address to check zoning for"
+        }
+      },
+      "required": [
+        "address"
+      ]
+    }
+  },
+  {
+    "name": "get_tax_assessment",
+    "description": "Get property tax assessment: land and improvement values, tax rate breakdown by jurisdiction, exemptions, assessment history, appeal information, and payment schedule.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Full property address to look up tax assessment"
+        }
+      },
+      "required": [
+        "address"
+      ]
+    }
+  },
+  {
+    "name": "search_properties",
+    "description": "Search for property listings matching criteria (price range, beds, baths, zip code, property type). Returns matching listings with summary statistics.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "criteria": {
+          "type": "string",
+          "description": "JSON object of search criteria, e.g. '{\"min_price\": 300000, \"max_price\": 600000, \"beds_min\": 3, \"baths_min\": 2, \"zipcode\": \"78701\", \"property_type\": \"single_family\"}'"
+        }
+      },
+      "required": [
+        "criteria"
+      ]
+    }
+  }
+]

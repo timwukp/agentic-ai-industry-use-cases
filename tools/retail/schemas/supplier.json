@@ -1,0 +1,62 @@
+[
+  {
+    "name": "get_supplier_performance",
+    "description": "Get a supplier performance scorecard: on-time delivery, quality acceptance, lead time and variability, cost competitiveness, defect rate (PPM), spend, contract status, and risk assessment.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "supplier_id": {
+          "type": "string",
+          "description": "Supplier identifier (e.g., 'SUP-101')"
+        }
+      },
+      "required": [
+        "supplier_id"
+      ]
+    }
+  },
+  {
+    "name": "list_suppliers",
+    "description": "List suppliers ranked by overall score for a product category (or all), with on-time %, quality %, lead time, status, and YTD spend.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category or 'all' for all suppliers (Default: all)"
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "name": "create_purchase_order",
+    "description": "Create a purchase order for a supplier with line items. Returns PO confirmation with totals (tax, shipping), payment terms, and estimated delivery.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "supplier_id": {
+          "type": "string",
+          "description": "Supplier identifier"
+        },
+        "items": {
+          "type": "string",
+          "description": "JSON array of items to order, e.g. '[{\"sku\": \"SKU-001\", \"quantity\": 100, \"unit_price\": 25.99}]'"
+        }
+      },
+      "required": [
+        "supplier_id",
+        "items"
+      ]
+    }
+  },
+  {
+    "name": "get_supplier_risk_report",
+    "description": "Get a supply chain risk assessment: single-source dependencies, geographic concentration, financial health watch list, lead-time risk, top risks with mitigations, and recommendations.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  }
+]

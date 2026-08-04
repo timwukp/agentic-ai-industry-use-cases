@@ -1,0 +1,64 @@
+[
+  {
+    "name": "analyze_fraud_risk",
+    "description": "Analyze a claim for potential fraud indicators using multi-factor analysis (pattern matching, anomaly detection, behavioral and network analysis). Returns fraud risk score, flagged indicators with severity, and a recommendation (STANDARD_PROCESSING, ENHANCED_REVIEW, or REFER_TO_SIU).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "description": "The claim identifier to analyze"
+        }
+      },
+      "required": [
+        "claim_id"
+      ]
+    }
+  },
+  {
+    "name": "check_fraud_patterns",
+    "description": "Check a claimant's history for fraud patterns across all claims: claim frequency, flagged claims, detected patterns, and watch-list status.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "claimant_id": {
+          "type": "string",
+          "description": "The claimant/policyholder identifier"
+        }
+      },
+      "required": [
+        "claimant_id"
+      ]
+    }
+  },
+  {
+    "name": "generate_fraud_report",
+    "description": "Generate a formal fraud investigation report for SIU (Special Investigation Unit) review, including evidence summary, risk indicators, financial impact, and recommendation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "description": "The claim under investigation"
+        },
+        "investigation_findings": {
+          "type": "string",
+          "description": "Summary of investigation findings for the executive summary"
+        }
+      },
+      "required": [
+        "claim_id",
+        "investigation_findings"
+      ]
+    }
+  },
+  {
+    "name": "get_fraud_dashboard",
+    "description": "Get fraud detection dashboard metrics and KPIs for the current month: screening volume, detection rate, false positive rate, savings, and top fraud types.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  }
+]

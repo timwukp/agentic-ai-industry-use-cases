@@ -1,0 +1,64 @@
+[
+  {
+    "name": "check_spare_parts",
+    "description": "Check spare part availability: stock levels by warehouse location with bin numbers, reorder status, EOQ, lead time, criticality, alternative parts, and usage rate.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "part_number": {
+          "type": "string",
+          "description": "Part number identifier (e.g., 'BRG-6205', 'SEL-3500', 'FLT-0047'). Prefix determines category: BRG, SEL, FLT, BLT, LUB, VLV"
+        }
+      },
+      "required": [
+        "part_number"
+      ]
+    }
+  },
+  {
+    "name": "order_spare_parts",
+    "description": "Create a spare parts purchase order. Returns order confirmation, cost breakdown (subtotal, shipping, tax), supplier, estimated delivery, and approval status (orders under $1,000 auto-approve).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "part_number": {
+          "type": "string",
+          "description": "Part number to order (e.g., 'BRG-6205')"
+        },
+        "quantity": {
+          "type": "integer",
+          "description": "Number of units to order (positive integer)"
+        }
+      },
+      "required": [
+        "part_number",
+        "quantity"
+      ]
+    }
+  },
+  {
+    "name": "get_parts_forecast",
+    "description": "Forecast spare parts needed for an equipment over the next 90 days by cross-referencing failure predictions, maintenance schedules, and consumption. Returns parts with need-by dates, stock sufficiency, and procurement summary.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "equipment_id": {
+          "type": "string",
+          "description": "Equipment identifier (e.g., 'EQ-CNC-001')"
+        }
+      },
+      "required": [
+        "equipment_id"
+      ]
+    }
+  },
+  {
+    "name": "get_parts_inventory_report",
+    "description": "Get the overall spare parts inventory health report: value and stockouts by category, critical stockouts with affected equipment, KPIs (turnover, fill rate, dead stock, carrying cost), and recommendations.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  }
+]

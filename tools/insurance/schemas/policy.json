@@ -1,0 +1,76 @@
+[
+  {
+    "name": "verify_policy",
+    "description": "Verify an insurance policy and retrieve its details: status, policy type, policyholder, coverage limits, premium, deductible, and endorsements.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "policy_number": {
+          "type": "string",
+          "description": "The policy number to verify (e.g., 'POL-2024-001234')"
+        }
+      },
+      "required": [
+        "policy_number"
+      ]
+    }
+  },
+  {
+    "name": "check_coverage",
+    "description": "Check if a claim is covered under a policy and compute the payable amount given coverage limits, deductible, and exclusions.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "policy_number": {
+          "type": "string",
+          "description": "The policy number"
+        },
+        "claim_type": {
+          "type": "string",
+          "description": "Type of coverage being claimed (e.g., collision, dwelling, liability)"
+        },
+        "claimed_amount": {
+          "type": "number",
+          "description": "Amount being claimed in USD"
+        }
+      },
+      "required": [
+        "policy_number",
+        "claim_type",
+        "claimed_amount"
+      ]
+    }
+  },
+  {
+    "name": "get_policy_history",
+    "description": "Get claims history for a policy: past claims with amounts claimed and paid, loss ratio, policy changes, and renewal recommendation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "policy_number": {
+          "type": "string",
+          "description": "The policy number"
+        }
+      },
+      "required": [
+        "policy_number"
+      ]
+    }
+  },
+  {
+    "name": "search_policies",
+    "description": "Search for policies by policyholder name, policy number, or claim ID. Returns matching policies with status and premium.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "search_term": {
+          "type": "string",
+          "description": "Name, policy number, or claim ID to search for"
+        }
+      },
+      "required": [
+        "search_term"
+      ]
+    }
+  }
+]

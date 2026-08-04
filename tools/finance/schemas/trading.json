@@ -1,0 +1,89 @@
+[
+  {
+    "name": "place_order",
+    "description": "Place a trading order in the demo order book. MARKET orders fill immediately at the simulated market price and mutate real portfolio positions; LIMIT orders fill only if marketable, otherwise stay OPEN. Always confirm details with the user before calling.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "symbol": {
+          "type": "string",
+          "description": "Stock ticker symbol"
+        },
+        "side": {
+          "type": "string",
+          "description": "One of: BUY, SELL"
+        },
+        "quantity": {
+          "type": "integer",
+          "description": "Number of shares (positive integer)"
+        },
+        "order_type": {
+          "type": "string",
+          "description": "One of: MARKET, LIMIT, STOP, STOP_LIMIT; Default: MARKET"
+        },
+        "limit_price": {
+          "type": "number",
+          "description": "Limit price for LIMIT/STOP_LIMIT orders; 0 for MARKET (Default: 0)"
+        },
+        "portfolio_id": {
+          "type": "string",
+          "description": "Portfolio identifier (Default: default)"
+        }
+      },
+      "required": [
+        "symbol",
+        "side",
+        "quantity"
+      ]
+    }
+  },
+  {
+    "name": "cancel_order",
+    "description": "Cancel an OPEN order in the demo order book by order ID.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "order_id": {
+          "type": "string",
+          "description": "Order ID from place_order, e.g. 'ORD-A1B2C3D4'"
+        }
+      },
+      "required": [
+        "order_id"
+      ]
+    }
+  },
+  {
+    "name": "get_order_status",
+    "description": "Get the current status and fill details of an order by order ID.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "order_id": {
+          "type": "string",
+          "description": "Order ID to check"
+        }
+      },
+      "required": [
+        "order_id"
+      ]
+    }
+  },
+  {
+    "name": "get_trade_history",
+    "description": "Get recent order/trade history for a portfolio with buy/sell value and commission summary (max 90 days).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "portfolio_id": {
+          "type": "string",
+          "description": "Portfolio identifier (Default: default)"
+        },
+        "days": {
+          "type": "integer",
+          "description": "Days of history (max 90) (Default: 30)"
+        }
+      }
+    }
+  }
+]

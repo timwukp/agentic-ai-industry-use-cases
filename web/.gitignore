@@ -1,0 +1,8 @@
+node_modules
+dist
+dev-dist
+.env
+.env.local
+*.local
+.DS_Store
+.env.production

@@ -1,0 +1,93 @@
+[
+  {
+    "name": "submit_claim",
+    "description": "Submit a new insurance claim for processing. Registers the claim, assigns an adjuster, and returns next steps and required documents. Writes to the demo claims table when configured.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "policy_number": {
+          "type": "string",
+          "description": "The insurance policy number (e.g., 'POL-2024-001234')"
+        },
+        "claim_type": {
+          "type": "string",
+          "description": "Type of claim (One of: auto, home, health, life, property, liability)"
+        },
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the incident or loss"
+        },
+        "incident_date": {
+          "type": "string",
+          "description": "Date of the incident in YYYY-MM-DD format"
+        }
+      },
+      "required": [
+        "policy_number",
+        "claim_type",
+        "description",
+        "incident_date"
+      ]
+    }
+  },
+  {
+    "name": "get_claim_status",
+    "description": "Get the current status, stage progress, timeline, documentation status, and fraud risk score of an insurance claim.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "description": "The claim identifier (e.g., 'CLM-2024-A1B2C3')"
+        }
+      },
+      "required": [
+        "claim_id"
+      ]
+    }
+  },
+  {
+    "name": "assess_damage",
+    "description": "AI-assisted damage assessment for a claim. Estimates repair cost range, severity rating, and confidence based on submitted evidence, and recommends fast-track, standard review, or detailed investigation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "claim_id": {
+          "type": "string",
+          "description": "The claim identifier"
+        },
+        "damage_type": {
+          "type": "string",
+          "description": "Type of damage (One of: vehicle, structural, water, fire, medical, theft)"
+        },
+        "photos_submitted": {
+          "type": "integer",
+          "description": "Number of photos/evidence files submitted"
+        }
+      },
+      "required": [
+        "claim_id",
+        "damage_type",
+        "photos_submitted"
+      ]
+    }
+  },
+  {
+    "name": "list_claims",
+    "description": "List claims with an optional status filter and lookback window. Returns claim summaries with amounts, priority, fraud risk, and portfolio totals.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "status_filter": {
+          "type": "string",
+          "description": "Filter by status (One of: all, open, pending, closed, flagged; Default: all)"
+        },
+        "days": {
+          "type": "integer",
+          "description": "Number of days to look back (max 90) (Default: 30)"
+        }
+      },
+      "required": []
+    }
+  }
+]

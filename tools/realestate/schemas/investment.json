@@ -1,0 +1,96 @@
+[
+  {
+    "name": "calculate_cap_rate",
+    "description": "Calculate capitalization rate and related investment metrics: cap rate, gross rent multiplier, price per unit, operating expense ratio, and comparison to market average cap rates.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "purchase_price": {
+          "type": "number",
+          "description": "Property purchase price or current market value in dollars"
+        },
+        "annual_noi": {
+          "type": "number",
+          "description": "Annual Net Operating Income in dollars (gross income minus operating expenses)"
+        }
+      },
+      "required": [
+        "purchase_price",
+        "annual_noi"
+      ]
+    }
+  },
+  {
+    "name": "analyze_rental_income",
+    "description": "Analyze rental income potential for a property: estimated rent, vacancy rate, itemized operating expenses, NOI, cash flow after mortgage, and rent comparables.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string",
+          "description": "Property address to analyze"
+        },
+        "property_type": {
+          "type": "string",
+          "description": "Type of property (One of: single_family, condo, townhouse, multi_family, duplex)"
+        }
+      },
+      "required": [
+        "address",
+        "property_type"
+      ]
+    }
+  },
+  {
+    "name": "calculate_roi",
+    "description": "Calculate comprehensive ROI for a property: cash-on-cash return, cap rate, mortgage amortization (30-year), equity buildup, tax benefits (27.5-year depreciation), and 5-year projection.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "purchase_price": {
+          "type": "number",
+          "description": "Total property purchase price in dollars"
+        },
+        "down_payment_pct": {
+          "type": "number",
+          "description": "Down payment percentage, e.g. 20.0 for 20%"
+        },
+        "interest_rate": {
+          "type": "number",
+          "description": "Annual mortgage interest rate percentage, e.g. 6.5 for 6.5%"
+        },
+        "rental_income": {
+          "type": "number",
+          "description": "Expected annual gross rental income in dollars"
+        },
+        "expenses": {
+          "type": "number",
+          "description": "Expected annual operating expenses in dollars"
+        }
+      },
+      "required": [
+        "purchase_price",
+        "down_payment_pct",
+        "interest_rate",
+        "rental_income",
+        "expenses"
+      ]
+    }
+  },
+  {
+    "name": "get_investment_comparison",
+    "description": "Compare multiple investment properties side by side, ranked by total estimated return: cap rate, cash-on-cash return, NOI, cash flow, price-to-rent ratio, and risk level.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "properties": {
+          "type": "string",
+          "description": "JSON array of properties to compare, e.g. '[{\"address\": \"123 Main St\", \"price\": 500000}]'"
+        }
+      },
+      "required": [
+        "properties"
+      ]
+    }
+  }
+]
