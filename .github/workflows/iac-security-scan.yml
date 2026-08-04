@@ -27,7 +27,9 @@ jobs:
       - name: Scan CDK infrastructure
         run: |
           echo "=== Scanning infrastructure code ==="
-          checkov -d infra/ --framework python --quiet --compact
+          # 'python' is not a valid checkov framework; 'cdk' covers CDK
+          # constructs (sast_* frameworks need a Prisma Cloud API key)
+          checkov -d infra/ --framework cdk --quiet --compact
 
       - name: Scan deployment configs
         run: |

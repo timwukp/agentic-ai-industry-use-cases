@@ -1,0 +1,98 @@
+[
+  {
+    "name": "calculate_var",
+    "description": "Calculate parametric Value-at-Risk (variance-covariance method) for a portfolio at a confidence level over a time horizon. Returns VaR at 90/95/99% levels with plain-language interpretation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "portfolio_value": {
+          "type": "number",
+          "description": "Total portfolio value in USD"
+        },
+        "confidence_level": {
+          "type": "number",
+          "description": "Confidence as decimal: 0.90, 0.95, or 0.99 (Default: 0.95)"
+        },
+        "time_horizon_days": {
+          "type": "integer",
+          "description": "Trading days for the VaR horizon (1=daily, 10=two weeks) (Default: 1)"
+        },
+        "annual_volatility": {
+          "type": "number",
+          "description": "Annualized portfolio volatility as decimal, e.g. 0.18 (Default: 0.18)"
+        }
+      },
+      "required": [
+        "portfolio_value"
+      ]
+    }
+  },
+  {
+    "name": "stress_test_portfolio",
+    "description": "Stress-test a portfolio against historical crisis scenarios (2008 crisis, COVID crash, dot-com bubble, Black Monday, rate shock) and report estimated losses and recovery times.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "portfolio_value": {
+          "type": "number",
+          "description": "Total portfolio value in USD"
+        },
+        "scenario": {
+          "type": "string",
+          "description": "One of: 2008_financial_crisis, covid_crash_2020, dot_com_bubble, black_monday_1987, interest_rate_shock, all; Default: all"
+        }
+      },
+      "required": [
+        "portfolio_value"
+      ]
+    }
+  },
+  {
+    "name": "analyze_portfolio_risk",
+    "description": "Analyze risk for a set of positions: per-position beta and volatility, portfolio beta, portfolio volatility, and concentration metrics. Provide positions as a JSON array like [{\"symbol\": \"AAPL\", \"value\": 50000}].",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "positions": {
+          "type": "string",
+          "description": "JSON array of {symbol, value} objects"
+        }
+      },
+      "required": [
+        "positions"
+      ]
+    }
+  },
+  {
+    "name": "monte_carlo_simulation",
+    "description": "Run a Monte Carlo (geometric Brownian motion) simulation of portfolio value over N years. Returns percentile outcomes, probability of loss, and probability of doubling.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "portfolio_value": {
+          "type": "number",
+          "description": "Starting portfolio value in USD"
+        },
+        "annual_return": {
+          "type": "number",
+          "description": "Expected annual return as decimal, e.g. 0.08 (Default: 0.08)"
+        },
+        "annual_volatility": {
+          "type": "number",
+          "description": "Expected annual volatility as decimal, e.g. 0.15 (Default: 0.15)"
+        },
+        "years": {
+          "type": "integer",
+          "description": "Years to simulate (max 50) (Default: 10)"
+        },
+        "num_simulations": {
+          "type": "integer",
+          "description": "Number of simulation paths (max 5000) (Default: 1000)"
+        }
+      },
+      "required": [
+        "portfolio_value"
+      ]
+    }
+  }
+]

@@ -1,0 +1,66 @@
+[
+  {
+    "name": "get_equipment_status",
+    "description": "Get real-time equipment health status with live sensor readings (temperature, vibration, RPM, oil pressure, power), a computed health score (0-100), operating state, and ISO 10816-based alert flags.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "equipment_id": {
+          "type": "string",
+          "description": "Equipment identifier (e.g., 'EQ-CNC-001', 'EQ-PUMP-014'). Prefix determines type: CNC, PUMP, COMP, CONV, TURB, MOTOR"
+        }
+      },
+      "required": [
+        "equipment_id"
+      ]
+    }
+  },
+  {
+    "name": "get_equipment_list",
+    "description": "List all equipment in a facility with status summary: per-machine health score, criticality, last/next maintenance dates, facility-wide status counts, and critical machines below health threshold.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "facility_id": {
+          "type": "string",
+          "description": "Facility identifier (e.g., 'FAC-NORTH', 'FAC-SOUTH', 'all') (Default: all)"
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "name": "get_sensor_data",
+    "description": "Get historical sensor time-series data for an equipment with statistics (mean, min, max, std dev), trend direction, and warning/critical threshold breach counts.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "equipment_id": {
+          "type": "string",
+          "description": "Equipment identifier (e.g., 'EQ-CNC-001')"
+        },
+        "sensor_type": {
+          "type": "string",
+          "description": "Sensor type (One of: temperature, vibration, rpm, oil_pressure, power)"
+        },
+        "hours": {
+          "type": "integer",
+          "description": "Number of hours of history to retrieve (1-720) (Default: 24)"
+        }
+      },
+      "required": [
+        "equipment_id",
+        "sensor_type"
+      ]
+    }
+  },
+  {
+    "name": "get_equipment_alerts",
+    "description": "Get all active alerts across all equipment in the facility, prioritized by severity (CRITICAL/WARNING/INFO), with recommended actions and acknowledgment status.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  }
+]

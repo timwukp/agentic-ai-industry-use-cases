@@ -1,0 +1,54 @@
+[
+  {
+    "name": "get_stock_quote",
+    "description": "Get the current stock quote for a ticker symbol: price, daily change, volume, market cap, P/E, 52-week range. Data is a deterministic simulation labeled source=simulated.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "symbol": {
+          "type": "string",
+          "description": "Stock ticker symbol, e.g. 'AAPL', 'MSFT'"
+        }
+      },
+      "required": [
+        "symbol"
+      ]
+    }
+  },
+  {
+    "name": "get_market_overview",
+    "description": "Get major market indices (S&P 500, NASDAQ, DOW, Russell 2000), VIX volatility, treasury yields, and sentiment indicators.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "get_historical_prices",
+    "description": "Get historical daily OHLCV (open/high/low/close/volume) prices for a stock over the last N trading days (max 252).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "symbol": {
+          "type": "string",
+          "description": "Stock ticker symbol"
+        },
+        "days": {
+          "type": "integer",
+          "description": "Number of trading days of history (max 252) (Default: 30)"
+        }
+      },
+      "required": [
+        "symbol"
+      ]
+    }
+  },
+  {
+    "name": "get_sector_performance",
+    "description": "Get daily and year-to-date performance for all 11 GICS market sectors.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  }
+]

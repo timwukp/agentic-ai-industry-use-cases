@@ -1,0 +1,74 @@
+{
+  "harnessName": "manufacturing_maintenance_assistant",
+  "model": {
+    "bedrockModelConfig": {
+      "modelId": "global.anthropic.claude-sonnet-4-6",
+      "apiFormat": "converse_stream",
+      "maxTokens": 8192,
+      "temperature": 0.3
+    }
+  },
+  "systemPrompt": [{"text": "{{SYSTEM_PROMPT}}"}],
+  "tools": [
+    {
+      "type": "agentcore_gateway",
+      "name": "manufacturing_tools",
+      "config": {
+        "agentCoreGateway": {
+          "gatewayArn": "{{GATEWAY_ARN}}",
+          "outboundAuth": {"awsIam": {}}
+        }
+      }
+    },
+    {
+      "type": "agentcore_browser",
+      "name": "browser",
+      "config": {
+        "agentCoreBrowser": {
+          "browserArn": "arn:aws:bedrock-agentcore:{{REGION}}:aws:browser/aws.browser.v1"
+        }
+      }
+    },
+    {
+      "type": "agentcore_code_interpreter",
+      "name": "code_interpreter",
+      "config": {
+        "agentCoreCodeInterpreter": {
+          "codeInterpreterArn": "arn:aws:bedrock-agentcore:{{REGION}}:aws:code-interpreter/aws.codeinterpreter.v1"
+        }
+      }
+    }
+  ],
+  "allowedTools": ["*"],
+  "authorizerConfiguration": {
+    "customJWTAuthorizer": {
+      "discoveryUrl": "{{COGNITO_DISCOVERY_URL}}",
+      "allowedClients": ["{{COGNITO_CLIENT_ID}}"]
+    }
+  },
+  "maxIterations": 40,
+  "maxTokens": 8192,
+  "timeoutSeconds": 300,
+  "truncation": {
+    "strategy": "sliding_window",
+    "config": {"slidingWindow": {"messagesCount": 60}}
+  },
+  "environmentVariables": {
+    "OTEL_TRACES_SAMPLER": "always_on"
+  },
+  "environment": {
+    "agentCoreRuntimeEnvironment": {
+      "networkConfiguration": {"networkMode": "PUBLIC"},
+      "lifecycleConfiguration": {
+        "idleRuntimeSessionTimeout": 600,
+        "maxLifetime": 3600
+      }
+    }
+  },
+  "tags": {
+    "project": "agentic-ai-industry-use-cases",
+    "industry": "manufacturing",
+    "env": "demo",
+    "agent-type": "harness"
+  }
+}

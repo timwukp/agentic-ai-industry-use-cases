@@ -1,144 +1,66 @@
-# Agentic AI Industry Use Cases - Build & Deploy Orchestration
+# Agentic AI Industry Use Cases — AgentCore Harness build & deploy
 SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
-ifeq ($(OS),Windows_NT)
-    VENV := .venv/Scripts
-    PYTHON := $(VENV)/python
-    PIP := $(VENV)/pip
-else
-    VENV := .venv
-    PYTHON := $(VENV)/bin/python
-    PIP := $(VENV)/bin/pip
-endif
+VENV    := .venv
+PYTHON  := $(VENV)/bin/python
+PIP     := $(VENV)/bin/pip
+CDK     := node_modules/.bin/cdk
+export JSII_SILENCE_WARNING_UNTESTED_NODE_VERSION := 1
 
 # ============================================================
 # Setup
 # ============================================================
 
 .PHONY: setup
-setup: venv install-deps ## Full project setup
-
-.PHONY: venv
-venv: ## Create Python virtual environment
+setup: ## Create venv, install python deps + CDK CLI
 	python3 -m venv $(VENV)
 	$(PIP) install --upgrade pip
-
-.PHONY: install-deps
-install-deps: ## Install all Python dependencies
-	$(PIP) install -e '.[dev]'
+	$(PIP) install -e '.[dev,infra]'
+	npm install --no-save aws-cdk@latest
 
 # ============================================================
-# Finance Trading Assistant
-# ============================================================
-
-.PHONY: run-finance
-run-finance: ## Run Finance Trading agent locally
-	cd apps/finance-trading && $(PYTHON) agent/app.py
-
-.PHONY: build-finance-frontend
-build-finance-frontend: ## Build Finance Trading React frontend
-	cd apps/finance-trading/frontend && npm install && npm run build
-
-.PHONY: dev-finance-frontend
-dev-finance-frontend: ## Run Finance Trading frontend dev server
-	cd apps/finance-trading/frontend && npm install && npm run dev
-
-# ============================================================
-# All Industry Apps
-# ============================================================
-
-.PHONY: run-insurance
-run-insurance: ## Run Insurance Claims agent locally
-	cd apps/insurance-claims && $(PYTHON) agent/app.py
-
-.PHONY: run-retail
-run-retail: ## Run Retail Inventory agent locally
-	cd apps/retail-inventory && $(PYTHON) agent/app.py
-
-.PHONY: run-healthcare
-run-healthcare: ## Run Healthcare Medical agent locally
-	cd apps/healthcare-medical && $(PYTHON) agent/app.py
-
-.PHONY: run-manufacturing
-run-manufacturing: ## Run Manufacturing Maintenance agent locally
-	cd apps/manufacturing-maintenance && $(PYTHON) agent/app.py
-
-.PHONY: run-realestate
-run-realestate: ## Run Real Estate Valuation agent locally
-	cd apps/real-estate-valuation && $(PYTHON) agent/app.py
-
-# ============================================================
-# CDK Infrastructure
-# ============================================================
-
-.PHONY: cdk-synth
-cdk-synth: ## Synthesize CDK CloudFormation templates
-	cd infra/cdk && cdk synth
-
-.PHONY: cdk-deploy-shared
-cdk-deploy-shared: ## Deploy shared infrastructure (VPC, WAF, KMS)
-	cd infra/cdk && cdk deploy SharedInfra
-
-.PHONY: cdk-deploy-finance
-cdk-deploy-finance: ## Deploy Finance Trading infrastructure
-	cd infra/cdk && cdk deploy FinanceTrading
-
-.PHONY: cdk-deploy-all
-cdk-deploy-all: ## Deploy all CDK stacks
-	cd infra/cdk && cdk deploy --all
-
-# ============================================================
-# Quality & Testing
+# Test
 # ============================================================
 
 .PHONY: test
-test: ## Run all tests
-	$(PYTHON) -m pytest tests/ -v
+test: ## Unit + infra tests
+	$(PYTHON) -m pytest tests/unit tests/infra -q
 
 .PHONY: lint
-lint: ## Run linters
-	$(PYTHON) -m ruff check .
-	$(PYTHON) -m black --check .
-
-.PHONY: format
-format: ## Auto-format code
-	$(PYTHON) -m black .
-	$(PYTHON) -m ruff check --fix .
-
-.PHONY: typecheck
-typecheck: ## Run type checking with mypy
-	$(PYTHON) -m mypy packages/ --ignore-missing-imports
-
-.PHONY: lock
-lock: ## Generate requirements.txt from current environment
-	$(PIP) freeze > requirements.txt
+lint: ## Ruff lint on tools/ deploy/ infra/
+	$(PYTHON) -m ruff check tools deploy infra tests
 
 # ============================================================
-# Docker
+# Deploy (flagship: finance). Steps are idempotent.
 # ============================================================
 
-.PHONY: docker-build-finance
-docker-build-finance: ## Build Finance Trading Docker image
-	docker build -t agenticai-finance-trading -f apps/finance-trading/agent/Dockerfile .
+.PHONY: deploy-finance
+deploy-finance: ## Full end-to-end deploy: CDK -> seed -> gateway -> harness -> smoke
+	$(PYTHON) deploy/deploy.py --industry finance
 
-.PHONY: docker-run-finance
-docker-run-finance: ## Run Finance Trading in Docker
-	docker run -p 8080:8080 -e AWS_REGION=us-west-2 agenticai-finance-trading
+.PHONY: deploy-step
+deploy-step: ## Run one step: make deploy-step STEP=gateway
+	$(PYTHON) deploy/deploy.py --industry finance --only $(STEP)
 
-.PHONY: docker-build-all
-docker-build-all: ## Build Docker images for all agents
-	docker build -t agenticai-finance-trading -f apps/finance-trading/agent/Dockerfile .
-	docker build -t agenticai-insurance-claims -f apps/insurance-claims/agent/Dockerfile .
-	docker build -t agenticai-retail-inventory -f apps/retail-inventory/agent/Dockerfile .
-	docker build -t agenticai-healthcare-medical -f apps/healthcare-medical/agent/Dockerfile .
-	docker build -t agenticai-manufacturing-maintenance -f apps/manufacturing-maintenance/agent/Dockerfile .
-	docker build -t agenticai-real-estate-valuation -f apps/real-estate-valuation/agent/Dockerfile .
+.PHONY: deploy-web
+deploy-web: ## Build PWA + deploy WebStack + sync assets
+	cd web && npm install && npm run build
+	cd infra/cdk && PATH="$(PWD)/$(VENV)/bin:$$PATH" ../../$(CDK) deploy AgenticWeb --require-approval never --outputs-file ../../deploy/outputs/web-outputs.json
+	$(PYTHON) deploy/publish_web.py
 
 # ============================================================
-# Help
+# Local dev
 # ============================================================
+
+.PHONY: dev-web
+dev-web: ## Run the PWA dev server
+	cd web && npm run dev
+
+.PHONY: synth
+synth: ## cdk synth all stacks
+	cd infra/cdk && PATH="$(PWD)/$(VENV)/bin:$$PATH" ../../$(CDK) synth -q
 
 .PHONY: help
-help: ## Show this help
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+help:
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-18s\033[0m %s\n", $$1, $$2}'

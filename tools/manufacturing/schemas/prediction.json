@@ -1,0 +1,70 @@
+[
+  {
+    "name": "predict_failure",
+    "description": "ML-based failure prediction for equipment: remaining useful life (RUL) in days, failure probability, predicted failure mode and component, confidence interval, degradation trend, and recommended action.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "equipment_id": {
+          "type": "string",
+          "description": "Equipment identifier (e.g., 'EQ-CNC-001', 'EQ-PUMP-014')"
+        }
+      },
+      "required": [
+        "equipment_id"
+      ]
+    }
+  },
+  {
+    "name": "analyze_vibration",
+    "description": "FFT vibration spectrum analysis: bearing defect frequencies (BPFO, BPFI, BSF, FTF), frequency peaks with diagnoses (imbalance, misalignment, race defects), and ISO 10816 severity zone classification (A-D).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "equipment_id": {
+          "type": "string",
+          "description": "Equipment identifier (e.g., 'EQ-CNC-001')"
+        }
+      },
+      "required": [
+        "equipment_id"
+      ]
+    }
+  },
+  {
+    "name": "detect_anomalies",
+    "description": "Detect anomalies in recent multi-sensor data using z-score, moving average deviation, and isolation forest methods. Returns anomalies with severity, cross-sensor correlation patterns, and possible causes.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "equipment_id": {
+          "type": "string",
+          "description": "Equipment identifier (e.g., 'EQ-CNC-001')"
+        },
+        "hours": {
+          "type": "integer",
+          "description": "Number of hours of recent data to analyze (1-168) (Default: 24)"
+        }
+      },
+      "required": [
+        "equipment_id"
+      ]
+    }
+  },
+  {
+    "name": "get_reliability_metrics",
+    "description": "Get equipment reliability and performance metrics: MTBF, MTTR, availability, OEE breakdown (availability x performance x quality), failure history, trends, and industry benchmarks.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "equipment_id": {
+          "type": "string",
+          "description": "Equipment identifier (e.g., 'EQ-CNC-001')"
+        }
+      },
+      "required": [
+        "equipment_id"
+      ]
+    }
+  }
+]

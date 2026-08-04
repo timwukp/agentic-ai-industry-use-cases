@@ -1,0 +1,81 @@
+[
+  {
+    "name": "check_drug_interactions",
+    "description": "Check for drug-drug interactions between a list of medications against a curated interaction database (e.g., Warfarin+Aspirin, Sertraline+Tramadol, Omeprazole+Clopidogrel). Returns severity (major/moderate/minor), mechanism, clinical effects, and management recommendations.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "medications": {
+          "type": "string",
+          "description": "JSON array of medication names, e.g. '[\"Metformin\", \"Lisinopril\", \"Warfarin\"]' (at least two)"
+        }
+      },
+      "required": [
+        "medications"
+      ]
+    }
+  },
+  {
+    "name": "assess_symptoms",
+    "description": "Triage assessment based on reported symptoms, age, and sex. Returns urgency level (EMERGENCY/URGENT/ROUTINE), triage color, differential diagnoses with ICD-10 codes, red flags, and recommended workup. Decision support only.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "symptoms": {
+          "type": "string",
+          "description": "Comma-separated list of symptoms (e.g., 'chest pain, shortness of breath, sweating')"
+        },
+        "patient_age": {
+          "type": "integer",
+          "description": "Patient age in years"
+        },
+        "patient_sex": {
+          "type": "string",
+          "description": "Patient sex (One of: male, female)"
+        }
+      },
+      "required": [
+        "symptoms",
+        "patient_age",
+        "patient_sex"
+      ]
+    }
+  },
+  {
+    "name": "get_clinical_guidelines",
+    "description": "Retrieve evidence-based clinical guidelines for a condition: diagnostic criteria, stepwise treatment algorithm, monitoring schedule, and quality measures. Detailed guidelines available for type 2 diabetes and hypertension; other conditions return a generic framework.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "condition": {
+          "type": "string",
+          "description": "Medical condition name (e.g., 'type 2 diabetes', 'hypertension', 'heart failure', 'asthma')"
+        }
+      },
+      "required": [
+        "condition"
+      ]
+    }
+  },
+  {
+    "name": "calculate_risk_score",
+    "description": "Calculate a clinical risk score for a patient: ASCVD 10-year cardiovascular risk, ADA diabetes risk test, or Morse Fall Scale. Returns score, interpretation, contributing factors, and recommendations.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "patient_id": {
+          "type": "string",
+          "description": "Patient identifier (e.g., 'PAT-001234')"
+        },
+        "risk_type": {
+          "type": "string",
+          "description": "Type of risk assessment (One of: cardiovascular, diabetes, falls)"
+        }
+      },
+      "required": [
+        "patient_id",
+        "risk_type"
+      ]
+    }
+  }
+]

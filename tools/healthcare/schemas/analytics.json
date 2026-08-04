@@ -1,0 +1,59 @@
+[
+  {
+    "name": "get_patient_analytics",
+    "description": "Get 12-month patient health trend analytics: blood pressure, BMI, HbA1c, weight, and LDL trends with targets, status, trend direction, and clinical insights.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "patient_id": {
+          "type": "string",
+          "description": "Patient identifier (e.g., 'PAT-001234')"
+        }
+      },
+      "required": [
+        "patient_id"
+      ]
+    }
+  },
+  {
+    "name": "get_population_health_metrics",
+    "description": "Get population-level health metrics for the practice panel: chronic disease prevalence, HEDIS quality measure performance vs targets and national averages, utilization metrics, and improvement opportunities.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "get_readmission_risk",
+    "description": "Predict 30-day hospital readmission risk for a patient using clinical factors, social determinants, and utilization history (LACE+ enhanced model). Returns risk score, contributing factors, and intervention recommendations.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "patient_id": {
+          "type": "string",
+          "description": "Patient identifier (e.g., 'PAT-001234')"
+        }
+      },
+      "required": [
+        "patient_id"
+      ]
+    }
+  },
+  {
+    "name": "get_care_gap_analysis",
+    "description": "Identify gaps in preventive care for a patient: overdue screenings, vaccinations, and wellness checks against evidence-based guidelines, with HEDIS quality measure impact and recommended actions.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "patient_id": {
+          "type": "string",
+          "description": "Patient identifier (e.g., 'PAT-001234')"
+        }
+      },
+      "required": [
+        "patient_id"
+      ]
+    }
+  }
+]

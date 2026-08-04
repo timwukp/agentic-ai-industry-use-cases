@@ -1,0 +1,62 @@
+[
+  {
+    "name": "get_pricing_analysis",
+    "description": "Get pricing analysis for a SKU: current price, cost, margin, competitor prices (Amazon, Walmart, Target, Best Buy, Costco), market position, price elasticity, and recommended price.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "sku": {
+          "type": "string",
+          "description": "Product SKU to analyze"
+        }
+      },
+      "required": [
+        "sku"
+      ]
+    }
+  },
+  {
+    "name": "optimize_pricing",
+    "description": "Calculate optimal pricing for a SKU based on demand elasticity and a business objective. Returns recommended price with projected units, revenue, and margin impact.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "sku": {
+          "type": "string",
+          "description": "Product SKU"
+        },
+        "objective": {
+          "type": "string",
+          "description": "Pricing objective (One of: maximize_revenue, maximize_margin, competitive_match, clearance)"
+        }
+      },
+      "required": [
+        "sku",
+        "objective"
+      ]
+    }
+  },
+  {
+    "name": "get_competitive_intelligence",
+    "description": "Get competitive pricing intelligence across all monitored products: price position distribution, pricing opportunities (increase/match/clearance), and recent competitor moves.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  },
+  {
+    "name": "get_margin_report",
+    "description": "Get a margin analysis report by product category: gross/net margin, revenue, COGS, margin trend, and SKUs below target.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category or 'all' (Default: all)"
+        }
+      },
+      "required": []
+    }
+  }
+]

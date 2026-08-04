@@ -1,0 +1,22 @@
+[
+  {
+    "name": "search_knowledge_base",
+    "description": "Search the firm's knowledge base (margin lending policy, suitability standards, restricted securities list, managed portfolio product guide) and return the most relevant passages with source documents. Use for any question about firm policy, compliance rules, margin requirements, or products.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "Natural-language search query"
+        },
+        "max_results": {
+          "type": "integer",
+          "description": "Maximum passages to return (max 20) (Default: 5)"
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+  }
+]

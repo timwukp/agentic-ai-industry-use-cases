@@ -1,0 +1,75 @@
+[
+  {
+    "name": "get_patient_summary",
+    "description": "Get a comprehensive patient summary including demographics, active conditions (ICD-10 coded), current medications, allergies, recent visits, and last recorded vitals. Access is audit-logged per HIPAA.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "patient_id": {
+          "type": "string",
+          "description": "Patient identifier (e.g., 'PAT-001234', 'MRN-567890')"
+        }
+      },
+      "required": [
+        "patient_id"
+      ]
+    }
+  },
+  {
+    "name": "search_medical_records",
+    "description": "Search a patient's medical records by keyword, condition, or clinical term. Full-text search across clinical notes, labs, imaging reports, procedures, referrals, and discharge summaries, sorted by relevance.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "patient_id": {
+          "type": "string",
+          "description": "Patient identifier (e.g., 'PAT-001234')"
+        },
+        "query": {
+          "type": "string",
+          "description": "Search keyword or clinical term (e.g., 'diabetes', 'chest pain', 'MRI', 'hemoglobin')"
+        }
+      },
+      "required": [
+        "patient_id",
+        "query"
+      ]
+    }
+  },
+  {
+    "name": "get_medication_list",
+    "description": "Get the current medication reconciliation for a patient with dosage, frequency, route, drug class, indication, prescriber, pharmacy, refill status, and adherence rate. Flags refills needed and polypharmacy.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "patient_id": {
+          "type": "string",
+          "description": "Patient identifier (e.g., 'PAT-001234')"
+        }
+      },
+      "required": [
+        "patient_id"
+      ]
+    }
+  },
+  {
+    "name": "get_lab_results",
+    "description": "Get recent lab results for a patient with reference ranges and HIGH/LOW/BORDERLINE flags. Covers metabolic panel, CBC, lipid panel, HbA1c, and thyroid panel. Highlights critical values requiring provider notification.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "patient_id": {
+          "type": "string",
+          "description": "Patient identifier (e.g., 'PAT-001234')"
+        },
+        "days": {
+          "type": "integer",
+          "description": "Number of days to look back for lab results, e.g. 30, 90, 365 (Default: 90)"
+        }
+      },
+      "required": [
+        "patient_id"
+      ]
+    }
+  }
+]

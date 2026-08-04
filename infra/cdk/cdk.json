@@ -1,0 +1,10 @@
+{
+  "app": "python3 app.py",
+  "_comment": "Run via Makefile / deploy.py which activate the repo venv; or: CDK_PYTHON=../../.venv/bin/python",
+  "context": {
+    "@aws-cdk/aws-iam:minimizePolicies": true,
+    "@aws-cdk/core:checkSecretUsage": true,
+    "@aws-cdk/aws-s3:createDefaultLoggingPolicy": true,
+    "@aws-cdk/aws-apigateway:disableCloudWatchRole": false
+  }
+}

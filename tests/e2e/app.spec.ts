@@ -1,0 +1,41 @@
+import { test, expect } from '@playwright/test';
+
+const EMAIL = process.env.E2E_EMAIL!;
+const PASSWORD = process.env.E2E_PASSWORD!;
+
+async function login(page) {
+  await page.goto('/');
+  await page.getByRole('textbox', { name: /email/i }).fill(EMAIL);
+  await page.getByRole('textbox', { name: /password/i }).fill(PASSWORD);
+  await page.getByRole('button', { name: /sign in/i }).click();
+  await expect(page).not.toHaveURL(/login/, { timeout: 30_000 });
+}
+
+test('login and see finance dashboard with live data', async ({ page }) => {
+  await login(page);
+  // dashboard cards render from live API (not empty/skeleton)
+  await expect(page.getByText(/total return/i).first()).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText('AAPL').first()).toBeVisible({ timeout: 30_000 });
+  await page.screenshot({ path: 'screenshots/dashboard.png', fullPage: true });
+});
+
+test('chat streams a reply from the harness', async ({ page }) => {
+  await login(page);
+  // navigate directly — the "Chat" control differs per viewport (link vs
+  // bottom-tab button vs header panel toggle)
+  await page.goto('/finance/chat');
+  const input = page.getByPlaceholder(/message|ask/i).locator('visible=true').first();
+  await input.fill('In one short sentence, what can you help me with?');
+  await page.getByRole('button', { name: /send/i }).locator('visible=true').first().click();
+  // assistant bubble appears and grows (streaming)
+  const assistant = page.locator('[data-role="assistant"]').last();
+  await expect(assistant).toBeVisible({ timeout: 60_000 });
+  await expect(assistant).not.toHaveText('', { timeout: 60_000 });
+  await page.screenshot({ path: 'screenshots/chat.png', fullPage: true });
+});
+
+test('disabled industries show coming soon', async ({ page }) => {
+  await login(page);
+  await page.goto('/healthcare-medical/dashboard');
+  await expect(page.getByText(/coming soon/i)).toBeVisible();
+});

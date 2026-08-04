@@ -1,0 +1,72 @@
+[
+  {
+    "name": "check_inventory",
+    "description": "Check inventory levels for a product SKU across all locations: on-hand, reserved, available-to-sell, in-transit, location breakdown, days of supply, reorder point, and ABC class.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "sku": {
+          "type": "string",
+          "description": "Product SKU identifier (e.g., 'SKU-ELEC-001', 'SKU-APRL-042')"
+        }
+      },
+      "required": [
+        "sku"
+      ]
+    }
+  },
+  {
+    "name": "get_inventory_summary",
+    "description": "Get inventory health summary for a product category or all categories: in-stock rate, stockout and overstock counts, inventory value, turnover, and alerts.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "category": {
+          "type": "string",
+          "description": "Product category (One of: all, electronics, apparel, grocery, home, sports; Default: all)"
+        }
+      },
+      "required": []
+    }
+  },
+  {
+    "name": "transfer_stock",
+    "description": "Initiate an inter-location stock transfer between warehouses/stores. Returns transfer confirmation with estimated delivery.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "sku": {
+          "type": "string",
+          "description": "Product SKU to transfer"
+        },
+        "from_location": {
+          "type": "string",
+          "description": "Source warehouse/store ID (e.g., 'DC-East', 'Store-142')"
+        },
+        "to_location": {
+          "type": "string",
+          "description": "Destination warehouse/store ID"
+        },
+        "quantity": {
+          "type": "integer",
+          "description": "Number of units to transfer (positive integer)"
+        }
+      },
+      "required": [
+        "sku",
+        "from_location",
+        "to_location",
+        "quantity"
+      ]
+    }
+  },
+  {
+    "name": "get_stockout_report",
+    "description": "Get the current stockout and low-stock report across all locations with estimated revenue impact per item, reorder status, and prioritization recommendation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {},
+      "required": []
+    }
+  }
+]
