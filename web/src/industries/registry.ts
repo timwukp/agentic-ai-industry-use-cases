@@ -29,6 +29,7 @@ function placeholder(
   description: string,
   icon: LucideIcon,
   accentClass: string,
+  chatLive = false,
 ): ComponentType {
   return function ComingSoon() {
     return createElement(PlaceholderDashboard, {
@@ -36,6 +37,7 @@ function placeholder(
       description,
       icon,
       accentClass,
+      chatLive,
     })
   }
 }
@@ -63,9 +65,10 @@ export const industries: IndustryModule[] = [
     harnessArn: import.meta.env.VITE_HARNESS_ARN_HEALTHCARE as string | undefined,
     Dashboard: placeholder(
       'Healthcare & Medical',
-      'Chat is live (drug interactions, clinical guidelines, KB search). Dashboard widgets coming soon.',
+      'Ask about drug interactions, clinical guidelines, scheduling, or search the medication safety knowledge base.',
       HeartPulse,
       'text-rose-400',
+      Boolean(import.meta.env.VITE_HARNESS_ARN_HEALTHCARE),
     ),
   },
   {
