@@ -120,8 +120,6 @@ for industry, targets in INDUSTRIES.items():
     )
 
 for industry, paths in DASHBOARD_ROUTES.items():
-    api.add_industry_routes(
-        industry, paths, industry_stacks[industry].dashboard_lambda
-    )
+    api.add_industry_routes(industry, paths, industry_stacks[industry].dashboard_lambda)
 
 app.synth()
