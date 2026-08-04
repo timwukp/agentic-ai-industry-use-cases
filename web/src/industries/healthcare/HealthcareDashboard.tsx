@@ -1,9 +1,15 @@
+import { useState } from 'react'
 import { SimulatedBadge } from '../finance/widgets'
-import AvailabilitySection from './AvailabilitySection'
+import PracticePulseSection from './PracticePulseSection'
 import PatientSection from './PatientSection'
-import PopulationSection from './PopulationSection'
+import SchedulingSection from './SchedulingSection'
+
+const DEFAULT_PATIENT_ID = 'PT-1001'
 
 export default function HealthcareDashboard() {
+  // Lifted so Patient 360 and Scheduling share the same active patient.
+  const [patientId, setPatientId] = useState(DEFAULT_PATIENT_ID)
+
   return (
     <div className="h-full overflow-y-auto">
       <div className="p-4 lg:p-6 space-y-6 @container">
@@ -14,9 +20,9 @@ export default function HealthcareDashboard() {
           <SimulatedBadge />
         </div>
 
-        <PopulationSection />
-        <PatientSection />
-        <AvailabilitySection />
+        <PracticePulseSection />
+        <PatientSection patientId={patientId} onPatientChange={setPatientId} />
+        <SchedulingSection patientId={patientId} />
       </div>
     </div>
   )

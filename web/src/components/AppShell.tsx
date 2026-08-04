@@ -12,6 +12,7 @@ import {
   X,
 } from 'lucide-react'
 import { getIndustry, industries, DEFAULT_INDUSTRY_ID } from '../industries/registry'
+import { AGENT_PROMPT_EVENT } from '../lib/promptBus'
 import { useAuth } from '../lib/AuthContext'
 import ChatPanel from './ChatPanel'
 
@@ -37,6 +38,21 @@ export default function AppShell({ view }: { view: ShellView }) {
   useEffect(() => {
     setIndustriesOpen(false)
   }, [industryId])
+
+  // Prompt bus: an "Ask agent" click reveals the chat pane — un-collapse on
+  // desktop, and below lg (where dashboard/chat are separate views) switch to
+  // the chat view so the prefilled input is visible.
+  useEffect(() => {
+    const onPrompt = () => {
+      setChatCollapsed(false)
+      const belowLg = !window.matchMedia('(min-width: 1024px)').matches
+      if (belowLg && view !== 'chat' && industry) {
+        navigate(`/${industry.id}/chat`)
+      }
+    }
+    window.addEventListener(AGENT_PROMPT_EVENT, onPrompt)
+    return () => window.removeEventListener(AGENT_PROMPT_EVENT, onPrompt)
+  }, [view, industry, navigate])
 
   if (!industry) {
     return <Navigate to={`/${DEFAULT_INDUSTRY_ID}/dashboard`} replace />

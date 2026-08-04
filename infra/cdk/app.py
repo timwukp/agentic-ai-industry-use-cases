@@ -66,7 +66,12 @@ WebStack(
 
 # industries with a dashboard_api handler expose REST widgets too
 DASHBOARD_MODULES = {
-    "healthcare": {"analytics_tools": "analytics", "scheduling_tools": "scheduling"},
+    "healthcare": {
+        "analytics_tools": "analytics",
+        "scheduling_tools": "scheduling",
+        "records_tools": "records",
+        "clinical_tools": "clinical",
+    },
 }
 
 industry_stacks = {}
@@ -83,7 +88,7 @@ for industry, targets in INDUSTRIES.items():
 
 api.add_industry_routes(
     "healthcare",
-    ["population", "patient", "availability"],
+    ["population", "patient", "labs", "risk", "availability"],
     industry_stacks["healthcare"].dashboard_lambda,
 )
 

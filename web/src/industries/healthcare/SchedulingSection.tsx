@@ -2,33 +2,43 @@ import { useState } from 'react'
 import { MapPin, Video } from 'lucide-react'
 import { useApi } from '../../lib/api'
 import { Card, ErrorPane, LoadingPane } from '../finance/widgets'
+import { AskAgentButton, SectionHeader } from './widgets'
 import type { AvailabilityResponse } from './types'
 
+/** Mirrors PROVIDER_DIRECTORY in tools/healthcare/scheduling/handler.py. */
 const PROVIDERS = [
-  { id: 'DR-SMITH', label: 'Dr. Smith' },
-  { id: 'DR-JONES', label: 'Dr. Jones' },
-  { id: 'DR-PATEL', label: 'Dr. Patel' },
+  { id: 'DR-CHEN', label: 'Dr. Sarah Chen — Internal Medicine' },
+  { id: 'DR-PATEL', label: 'Dr. Priya Patel — Pulmonology' },
+  { id: 'DR-WILSON', label: 'Dr. James Wilson — Gastroenterology' },
+  { id: 'DR-KIM', label: 'Dr. Lisa Kim — Psychiatry' },
+  { id: 'DR-GARCIA', label: 'Dr. Carlos Garcia — Cardiology' },
+  { id: 'NP-RODRIGUEZ', label: 'Maria Rodriguez, NP — Primary Care' },
 ]
 
-export default function AvailabilitySection() {
+export default function SchedulingSection({ patientId }: { patientId: string }) {
   const [providerId, setProviderId] = useState(PROVIDERS[0].id)
   const { data, loading, error, reload } = useApi<AvailabilityResponse>(
     `/api/healthcare/availability?providerId=${encodeURIComponent(providerId)}&days=5`,
   )
 
-  const providerSelect = (
-    <select
-      value={providerId}
-      onChange={(e) => setProviderId(e.target.value)}
-      aria-label="Provider"
-      className="px-2.5 py-1.5 text-xs rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-rose-500/60"
-    >
-      {PROVIDERS.map((p) => (
-        <option key={p.id} value={p.id}>
-          {p.label}
-        </option>
-      ))}
-    </select>
+  const headerAction = (
+    <div className="flex items-center gap-1">
+      <AskAgentButton
+        prompt={`Book a follow-up for ${patientId} with ${providerId} at the earliest available slot`}
+      />
+      <select
+        value={providerId}
+        onChange={(e) => setProviderId(e.target.value)}
+        aria-label="Provider"
+        className="max-w-[240px] px-2.5 py-1.5 text-xs rounded-lg bg-slate-800 border border-slate-700 text-slate-200 focus:outline-none focus:border-rose-500/60"
+      >
+        {PROVIDERS.map((p) => (
+          <option key={p.id} value={p.id}>
+            {p.label}
+          </option>
+        ))}
+      </select>
+    </div>
   )
 
   const provider = data?.provider
@@ -39,10 +49,8 @@ export default function AvailabilitySection() {
 
   return (
     <section className="space-y-4 @container">
-      <h3 className="text-sm font-semibold uppercase tracking-wider text-rose-400">
-        Provider Availability
-      </h3>
-      <Card title={title} action={providerSelect}>
+      <SectionHeader title="Scheduling" />
+      <Card title={title} action={headerAction}>
         {loading ? (
           <LoadingPane label="Loading availability…" />
         ) : error || !data || data.error ? (
