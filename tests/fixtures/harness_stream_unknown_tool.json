@@ -7,7 +7,7 @@
   "start": {
    "toolUse": {
     "name": "skills",
-    "toolUseId": "tooluse_6r87XZVK80jJFQQG8ypNp9",
+    "toolUseId": "tooluse_fixture_01",
     "type": "tool_use"
    }
   }
@@ -76,7 +76,7 @@
   "start": {
    "toolResult": {
     "status": "success",
-    "toolUseId": "tooluse_6r87XZVK80jJFQQG8ypNp9"
+    "toolUseId": "tooluse_fixture_01"
    }
   }
  },
@@ -114,7 +114,7 @@
   "start": {
    "toolUse": {
     "name": "market___get_market_overview",
-    "toolUseId": "tooluse_fQHqkLs5smBLi5d3SQ5N1k",
+    "toolUseId": "tooluse_fixture_02",
     "type": "tool_use"
    }
   }
@@ -135,7 +135,7 @@
   "start": {
    "toolUse": {
     "name": "market___get_sector_performance",
-    "toolUseId": "tooluse_6gePZzkZsevtuHJYseV7Pf",
+    "toolUseId": "tooluse_fixture_03",
     "type": "tool_use"
    }
   }
@@ -172,7 +172,7 @@
   "start": {
    "toolResult": {
     "status": "error",
-    "toolUseId": "tooluse_fQHqkLs5smBLi5d3SQ5N1k"
+    "toolUseId": "tooluse_fixture_02"
    }
   }
  },
@@ -194,7 +194,7 @@
   "start": {
    "toolResult": {
     "status": "error",
-    "toolUseId": "tooluse_6gePZzkZsevtuHJYseV7Pf"
+    "toolUseId": "tooluse_fixture_03"
    }
   }
  },
@@ -222,7 +222,7 @@
   "start": {
    "toolUse": {
     "name": "market__get_market_overview",
-    "toolUseId": "tooluse_Oqf9nUE9WraHCSD8JDnDE3",
+    "toolUseId": "tooluse_fixture_04",
     "type": "tool_use"
    }
   }
@@ -243,7 +243,7 @@
   "start": {
    "toolUse": {
     "name": "market__get_sector_performance",
-    "toolUseId": "tooluse_MLhMJ6OLFnB5iBXImoUQAh",
+    "toolUseId": "tooluse_fixture_05",
     "type": "tool_use"
    }
   }
@@ -280,7 +280,7 @@
   "start": {
    "toolResult": {
     "status": "error",
-    "toolUseId": "tooluse_Oqf9nUE9WraHCSD8JDnDE3"
+    "toolUseId": "tooluse_fixture_04"
    }
   }
  },
@@ -302,7 +302,7 @@
   "start": {
    "toolResult": {
     "status": "error",
-    "toolUseId": "tooluse_MLhMJ6OLFnB5iBXImoUQAh"
+    "toolUseId": "tooluse_fixture_05"
    }
   }
  },
@@ -330,7 +330,7 @@
   "start": {
    "toolUse": {
     "name": "get_market_overview",
-    "toolUseId": "tooluse_2570dYpKSbIj1yso5gUVUf",
+    "toolUseId": "tooluse_fixture_06",
     "type": "tool_use"
    }
   }
@@ -351,7 +351,7 @@
   "start": {
    "toolUse": {
     "name": "get_sector_performance",
-    "toolUseId": "tooluse_KnDaDb9KgsLCaNbVAqZqHI",
+    "toolUseId": "tooluse_fixture_07",
     "type": "tool_use"
    }
   }
@@ -388,7 +388,7 @@
   "start": {
    "toolResult": {
     "status": "error",
-    "toolUseId": "tooluse_2570dYpKSbIj1yso5gUVUf"
+    "toolUseId": "tooluse_fixture_06"
    }
   }
  },
@@ -410,7 +410,7 @@
   "start": {
    "toolResult": {
     "status": "error",
-    "toolUseId": "tooluse_KnDaDb9KgsLCaNbVAqZqHI"
+    "toolUseId": "tooluse_fixture_07"
    }
   }
  },
