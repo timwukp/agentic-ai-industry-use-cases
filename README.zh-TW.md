@@ -96,6 +96,21 @@ agent 在聊天中引用的數字出自同一個函數，而非兩套實作。
 或是 `YoY +8.8%`（年同比）瓷磚上方的圖表標題，對同樣的十二個月寫著 `+8.1% over period`。
 `tests/unit/test_industry_dashboard_apis.py` 為上述每一項都建立了回歸測試。
 
+### 引導式起始問題（Starter Questions）
+
+每個行業的 AI Assistant 對話面板在空白狀態下會列出 3–5 個起始問題
+（`web/src/industries/starterPrompts.ts`），讓初次訪問者一進來就有地方可點。措辭模擬該職位
+真實從業者的問法，並把唯讀查詢排在前面，確保第一次點擊不會改動任何狀態；點擊後**直接送出**
+（不同於 dashboard 的 **Ask agent** 按鈕——那些是預填，因為它們是在對話進行中才觸發的）。
+
+問題文字裡的每個實體 ID 與 enum 值都對應真實工具資料。這件事比聽起來重要：共享基準
+（basis）遇到不存在的 ID 是**編造**而非報錯，所以 `sku_basis("SKU-1001")` 會回傳一個看似
+合理的「Product 1001」，而 agent 會理直氣壯地回答一個在 app 其他地方根本不存在的商品。
+`tests/unit/test_starter_prompts.py` 直接解析 TypeScript 原始檔（而非複製一份問題清單——
+複製必然會漂移），逐一斷言所有 SKU、設備資產、醫師、病人、市場郵遞區號與股票代號都存在於
+共享目錄中，每個明示的 enum 值都在處理器自己接受的集合內，並實際呼叫全部 26 條工具路徑
+確認都回傳有內容的資料。
+
 ## 數據誠實原則
 
 行情數據是**確定性模擬**（`tools/shared/toolkit/market_sim.py`）——同一交易日內穩定、

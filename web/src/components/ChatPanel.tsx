@@ -3,6 +3,7 @@ import { Bot, Loader2, RefreshCw, Send, User } from 'lucide-react'
 import { invokeAgent, newSessionId } from '../lib/agentClient'
 import { AGENT_PROMPT_EVENT } from '../lib/promptBus'
 import { industries } from '../industries/registry'
+import { starterPrompts, type StarterPrompt } from '../industries/starterPrompts'
 import { useAuth } from '../lib/AuthContext'
 
 interface ChatMessage {
@@ -57,7 +58,12 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
     setStreaming(false)
   }, [industryId])
 
+  // Follow the conversation, but only once there is one. On an empty pane this
+  // fired on mount and scrolled the starter list to the bottom of its scroller,
+  // pushing the first two questions above the visible top (measured: the pane
+  // began at y=24 inside a viewport starting at y=117).
   useEffect(() => {
+    if (messages.length === 0) return
     endRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
@@ -168,13 +174,12 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 && (
-          <div className="h-full flex flex-col items-center justify-center text-center gap-3 text-slate-500">
-            <Bot className="w-8 h-8" />
-            <p className="text-sm max-w-[240px]">
-              {industries.find((i) => i.id === industryId)?.description ??
-                'Ask the agent anything about this industry.'}
-            </p>
-          </div>
+          <StarterPane
+            description={industries.find((i) => i.id === industryId)?.description}
+            prompts={starterPrompts(industryId)}
+            disabled={streaming}
+            onPick={(prompt) => void send(prompt)}
+          />
         )}
         {messages.map((msg) => (
           <MessageBubble key={msg.id} message={msg} />
@@ -221,6 +226,75 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
           </button>
         </div>
       </form>
+    </div>
+  )
+}
+
+/** Empty-pane starter questions.
+ *
+ * A click sends straight away rather than prefilling: this pane only ever shows
+ * on an empty conversation, so there is no in-progress thought to interrupt and
+ * one click is the whole point. (The dashboard "Ask agent" buttons do prefill —
+ * those fire mid-conversation, where silently sending would hijack the turn.)
+ *
+ * Laid out as a scrollable column, not a vertically-centred block: five starters
+ * plus the description overflow a short mobile pane, and centring clipped the
+ * last one with no way to reach it.
+ *
+ * The header is deliberately small. Measured on a 390x664 viewport the pane is
+ * 404px tall; a centred 32px robot plus a 3-line centred description took 172px
+ * of it (43%), leaving one and a half cards above the fold — the starters are the
+ * point of this pane, so the branding gives way to them. Icon and text now sit on
+ * one row, and the description is clamped to two lines.
+ */
+function StarterPane({
+  description,
+  prompts,
+  disabled,
+  onPick,
+}: {
+  description?: string
+  prompts: StarterPrompt[]
+  disabled: boolean
+  onPick: (prompt: string) => void
+}) {
+  return (
+    <div
+      data-testid="starter-pane"
+      className="flex flex-col items-center gap-3 pt-1 pb-2"
+    >
+      <div className="w-full max-w-[340px] flex items-start gap-2.5">
+        <Bot className="w-5 h-5 text-slate-500 shrink-0 mt-0.5" />
+        <p className="text-xs leading-snug text-slate-500 line-clamp-2">
+          {description ?? 'Ask the agent anything about this industry.'}
+        </p>
+      </div>
+
+      {prompts.length > 0 && (
+        <div className="w-full max-w-[340px] flex flex-col gap-2">
+          <p className="text-[11px] uppercase tracking-wide text-slate-600 font-medium">
+            Try asking
+          </p>
+          {prompts.map((starter) => (
+            <button
+              key={starter.label}
+              type="button"
+              disabled={disabled}
+              onClick={() => onPick(starter.prompt)}
+              data-testid="starter-prompt"
+              title={starter.prompt}
+              className="group w-full text-left px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-600 hover:bg-slate-800/70 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <span className="block text-xs font-medium text-slate-200">
+                {starter.label}
+              </span>
+              <span className="block mt-0.5 text-[11px] leading-snug text-slate-500 group-hover:text-slate-400">
+                {starter.prompt}
+              </span>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   )
 }

@@ -101,6 +101,22 @@ tile labelled `Median $/Sq Ft` showing a rate no row in the table beneath it con
 `YoY +8.8%` tile above a chart headed `+8.1% over period` for the same twelve months.
 `tests/unit/test_industry_dashboard_apis.py` pins each of these as a regression.
 
+### Starter questions
+
+Each industry's empty AI Assistant pane offers 3–5 starter questions
+(`web/src/industries/starterPrompts.ts`) so a first-time visitor has somewhere to click. They
+are worded as a practitioner in that seat would ask, read-only first so the opening click never
+mutates state, and clicking one sends it immediately (unlike the dashboard's **Ask agent**
+buttons, which prefill because they fire mid-conversation).
+
+Every entity id and enum value in a prompt is grounded in the real tool data. This matters more
+than it sounds: the shared bases fabricate rather than fail, so `sku_basis("SKU-1001")` returns a
+plausible "Product 1001" and the agent confidently answers about an item that exists nowhere else
+in the app. `tests/unit/test_starter_prompts.py` parses the TypeScript (rather than duplicating
+the list, which would drift) and asserts every SKU, asset, provider, patient, market and ticker
+against the shared catalogs, every stated enum against the handler's own accepted set, and calls
+all 26 tool paths to confirm each returns populated data.
+
 ## Data honesty
 
 Market data is a **deterministic simulation** (`tools/shared/toolkit/market_sim.py`) — stable
