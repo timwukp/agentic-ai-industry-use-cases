@@ -39,10 +39,22 @@ const SERIES = '#34d399' // emerald-400
 const SERIES_2 = '#38bdf8' // sky-400
 const HOVER = 'hover:text-emerald-300'
 
-const SKU_CHOICES = ['SKU-1001', 'SKU-1002', 'SKU-2001', 'SKU-3001']
+// Real catalog SKUs from toolkit.retail_basis.CATALOG, not `SKU-1001`-style
+// invention. The basis falls back to a synthetic "Product 1001 / Electronics /
+// class B" for any unknown id, so the old picker looked fine while the stockout
+// report beside it named SKU-ELEC-1001 "Wireless Earbuds" — the forecast card
+// was describing a product that exists nowhere else in the app. One per
+// category, and each is A-class, so the forecast has real velocity to show.
+const SKU_CHOICES = [
+  { sku: 'SKU-ELEC-1001', label: 'SKU-ELEC-1001 · Wireless Earbuds' },
+  { sku: 'SKU-APRL-2001', label: 'SKU-APRL-2001 · Winter Jacket' },
+  { sku: 'SKU-GROC-3001', label: 'SKU-GROC-3001 · Organic Coffee' },
+  { sku: 'SKU-HOME-4001', label: 'SKU-HOME-4001 · Air Purifier' },
+  { sku: 'SKU-SPRT-5001', label: 'SKU-SPRT-5001 · Running Shoes' },
+] as const
 
 export default function RetailDashboard() {
-  const [sku, setSku] = useState(SKU_CHOICES[0])
+  const [sku, setSku] = useState<string>(SKU_CHOICES[0].sku)
 
   return (
     <div className="h-full overflow-y-auto">
@@ -508,8 +520,8 @@ function DemandSection({
               aria-label="Forecast SKU"
             >
               {SKU_CHOICES.map((choice) => (
-                <option key={choice} value={choice}>
-                  {choice}
+                <option key={choice.sku} value={choice.sku}>
+                  {choice.label}
                 </option>
               ))}
             </select>
