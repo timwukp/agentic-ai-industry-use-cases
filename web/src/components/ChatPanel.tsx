@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { Bot, Loader2, RefreshCw, Send, User } from 'lucide-react'
 import { invokeAgent, newSessionId } from '../lib/agentClient'
-import { AGENT_PROMPT_EVENT } from '../lib/promptBus'
+import Markdown from './Markdown'
+import { ChartCard } from './AnswerChartPanel'
+import { chartFor, type ChartSpec } from '../lib/chartSpec'
+import { AGENT_PROMPT_EVENT, publishAnswerCharts } from '../lib/promptBus'
 import { industries } from '../industries/registry'
 import { starterPrompts, type StarterPrompt } from '../industries/starterPrompts'
 import { useAuth } from '../lib/AuthContext'
@@ -11,6 +14,8 @@ interface ChatMessage {
   role: 'user' | 'assistant'
   content: string
   streaming?: boolean
+  /** Charts built from the tool payloads behind this answer. */
+  charts?: ChartSpec[]
 }
 
 function sessionKey(industryId: string): string {
@@ -56,7 +61,14 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
     setError(null)
     abortRef.current?.abort()
     setStreaming(false)
+    // Finance charts must not linger over the healthcare dashboard.
+    publishAnswerCharts([])
   }, [industryId])
+
+  // Unmounting takes the overlay with it: below lg the chat pane unmounts when
+  // the user navigates to the dashboard view, and a panel left behind would
+  // outlive the conversation that produced it.
+  useEffect(() => () => publishAnswerCharts([]), [])
 
   // Follow the conversation, but only once there is one. On an empty pane this
   // fired on mount and scrolled the starter list to the bottom of its scroller,
@@ -77,6 +89,7 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
     setMessages([])
     setError(null)
     setStreaming(false)
+    publishAnswerCharts([])
   }, [industryId])
 
   const send = useCallback(
@@ -96,6 +109,10 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
         { id: assistantId, role: 'assistant', content: '', streaming: true },
       ])
       setStreaming(true)
+      // The previous answer's charts describe the previous question. Leaving them
+      // up while a new answer streams is the one way this panel could actively
+      // mislead, so they go before the new request starts.
+      publishAnswerCharts([])
 
       const controller = new AbortController()
       abortRef.current = controller
@@ -104,11 +121,31 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
         const token = await getToken()
         if (!token) throw new Error('Session expired — please sign in again.')
 
+        // Charts for THIS answer only. Accumulated locally rather than in state
+        // so a second tool arriving does not re-render the whole message list
+        // mid-stream; the finished set is committed to the message below.
+        const specs: ChartSpec[] = []
+
         let received = false
         for await (const chunk of invokeAgent(prompt.trim(), sessionId, token, {
           actorId: user?.sub,
           harnessArn: industries.find((i) => i.id === industryId)?.harnessArn,
           signal: controller.signal,
+          onToolCall: (call) => {
+            const spec = chartFor(call.tool, call.payload)
+            // Most tools have nothing worth plotting; chartFor returns null and
+            // no panel appears. Duplicate titles are dropped so an agent that
+            // retries a call does not paginate the same chart twice.
+            if (!spec || specs.some((s) => s.title === spec.title)) return
+            specs.push(spec)
+            // Published as it arrives so the panel opens while prose streams.
+            publishAnswerCharts([...specs])
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === assistantId ? { ...m, charts: [...specs] } : m,
+              ),
+            )
+          },
         })) {
           received = true
           setMessages((prev) =>
@@ -309,19 +346,51 @@ function MessageBubble({ message }: { message: ChatMessage }) {
           <Bot className="w-4 h-4 text-white" />
         </div>
       )}
+      {/* Assistant bubbles run wider than user bubbles: they carry tables, and at
+          80% of a 620px pane a five-column table is already scrolling. min-w-0 is
+          required for the table's overflow-x-auto to work at all — without it the
+          flex item sizes to its content and the table pushes the bubble past the
+          pane instead of scrolling inside it. */}
       <div
-        className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
+        className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
           isUser
-            ? 'bg-blue-600 text-white rounded-br-md'
-            : 'bg-slate-800 text-slate-200 rounded-bl-md border border-slate-700'
+            ? 'max-w-[80%] bg-blue-600 text-white rounded-br-md'
+            : 'max-w-[92%] min-w-0 bg-slate-800 text-slate-200 rounded-bl-md border border-slate-700'
         }`}
       >
-        <div className="whitespace-pre-wrap break-words">
-          {message.content}
-          {message.streaming && (
-            <span className="inline-block w-1.5 h-4 ml-0.5 align-text-bottom bg-slate-400 animate-pulse rounded-sm" />
-          )}
-        </div>
+        {isUser ? (
+          <div className="whitespace-pre-wrap break-words">{message.content}</div>
+        ) : (
+          <>
+            {/* Parsing is skipped while streaming: half-arrived Markdown reparses
+                on every chunk and a table renders as a flickering pile of pipes
+                until its separator row lands. Plain text until the stream ends,
+                then one clean parse. */}
+            {message.streaming ? (
+              <div className="whitespace-pre-wrap break-words">{message.content}</div>
+            ) : (
+              <Markdown>{message.content}</Markdown>
+            )}
+            {message.streaming && (
+              <span className="inline-block w-1.5 h-4 ml-0.5 align-text-bottom bg-slate-400 animate-pulse rounded-sm" />
+            )}
+            {/* Inline charts, below lg only. At lg+ the same specs are drawn in
+                the overlay above the dashboard, so rendering both would show the
+                chart twice side by side. Below lg the dashboard is a separate
+                view the user is not currently looking at, so the chart has to
+                live with the message that produced it. */}
+            {message.charts && message.charts.length > 0 && (
+              <div
+                data-testid="inline-answer-charts"
+                className="lg:hidden mt-3 -mx-1 space-y-4 border-t border-slate-700 pt-3"
+              >
+                {message.charts.map((spec) => (
+                  <ChartCard key={spec.title} spec={spec} />
+                ))}
+              </div>
+            )}
+          </>
+        )}
       </div>
       {isUser && (
         <div className="w-7 h-7 bg-slate-700 rounded-lg flex items-center justify-center shrink-0 mt-0.5">
