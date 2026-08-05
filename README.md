@@ -64,9 +64,22 @@ lives elsewhere.
 ### Verify
 
 ```bash
+make test                                   # unit (pytest + moto) + infra + web (node --test)
 .venv/bin/python deploy/smoke_suite.py      # gateway tools, KB, memory (JWT end-user path)
+make verify-harnesses                       # every LIVE harness can actually reach its tools
 cd tests/e2e && BASE_URL=https://<cloudfront> E2E_EMAIL=... E2E_PASSWORD=... npx playwright test
 ```
+
+`make verify-harnesses` exists because of a failure nothing else caught. The live harnesses had
+drifted to an `allowedTools` pattern list that matched nothing, so each agent could see only its
+`skills` tool — and instead of refusing, it answered from memory and invented market data
+(reporting the S&P 500 at 5,248 when the tool returns 6,120.35). The gateway was `READY`, all
+targets `READY`, all 17 tools worked when called directly over MCP, IAM simulated as `allowed`,
+and every deploy step exited 0. The only trace was `"Unknown tool: …"` inside a tool-result event
+that both the smoke script and the web client discarded. So the check asks a live harness to
+*use* a tool and reads the **tool-result events, not the prose** — an agent cut off from its
+tools produces confident-looking text, which is why asserting on wording would be worse than no
+check at all.
 
 ## The six industries
 

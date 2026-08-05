@@ -43,6 +43,14 @@ deploy-finance: ## Full end-to-end deploy: CDK -> seed -> gateway -> harness -> 
 deploy-step: ## Run one step: make deploy-step STEP=gateway
 	$(PYTHON) deploy/deploy.py --industry finance --only $(STEP)
 
+# Live check, not covered by `make test`: the unit tests read the templates, and
+# the failure worth catching is the LIVE config drifting away from them. Reads
+# tool-result events rather than the agent's prose, because an agent cut off from
+# its tools writes confident text with invented numbers.
+.PHONY: verify-harnesses
+verify-harnesses: ## Assert every deployed harness can reach its gateway tools
+	$(PYTHON) deploy/verify_harness.py
+
 .PHONY: deploy-web
 deploy-web: ## Build PWA + deploy WebStack + sync assets
 	cd web && npm install && npm run build

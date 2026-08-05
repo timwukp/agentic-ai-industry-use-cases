@@ -1,0 +1,1022 @@
+[
+ {
+  "role": "assistant"
+ },
+ {
+  "contentBlockIndex": 0,
+  "start": {
+   "toolUse": {
+    "name": "skills",
+    "toolUseId": "tooluse_fixture_01",
+    "type": "tool_use"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "toolUse": {
+    "input": ""
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "toolUse": {
+    "input": "{\"skill_nam"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "toolUse": {
+    "input": "e\":"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "toolUse": {
+    "input": " \"finance"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "toolUse": {
+    "input": "-analysis\"}"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0
+ },
+ {
+  "stopReason": "tool_use"
+ },
+ {
+  "metrics": {
+   "latencyMs": 1574
+  },
+  "usage": {
+   "inputTokens": 2773,
+   "outputTokens": 56,
+   "totalTokens": 2829
+  }
+ },
+ {
+  "role": "user"
+ },
+ {
+  "contentBlockIndex": 0,
+  "start": {
+   "toolResult": {
+    "status": "success",
+    "toolUseId": "tooluse_fixture_01"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "toolResult": [
+    {
+     "text": "# Finance Analysis Methodology\n\n## Risk analysis workflow\n\n1. Fetch current positions (`portfolio___get_portfolio_positions`) before any risk calculation \u2014\n   never assume portfolio value.\n2. Compute VaR at both 95% and 99% (`risk___calculate_var`). Present as: dollar amount, percentage,\n   and one plain-language sentence (\"With 95% confidence, losses will not exceed X over Y days\").\n3. For any portfolio over $100k, also run `risk___stress_test_portfolio` with scenario \"all\" and\n   highlight the worst case.\n4. Cross-check concentration: if the top position exceeds 25% of portfolio weight, flag it\n   explicitly as concentration risk.\n\n## Trade recommendation rules\n\n- Every recommendation must include: rationale, estimated cost/proceeds, risk warning, and the\n  reminder that simulated market data is in use.\n- Before calling `trading___place_order`, restate symbol/side/quantity/type and get explicit user\n  confirmation in the conversation.\n- After placing an order, report the order ID and suggest checking status"
+    }
+   ]
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "toolResult": [
+    {
+     "text": " with\n  `trading___get_order_status`.\n\n## Compliance framing\n\n- Search the knowledge base (`kb___search_knowledge_base`) for margin, suitability, or restricted-\n  list questions before answering from general knowledge; cite the document title.\n- Never present simulated prices as live market data. Every price mention carries the simulation\n  disclosure once per conversation.\n- No guaranteed-return language. Use ranges and probabilities (Monte Carlo percentiles).\n\n## Presentation\n\n- Tables for positions/allocations; bullet summaries for risk metrics.\n- Lead with the answer, then methodology.\n- Round dollar values to 2 decimals, percentages to 1\u20132 decimals.\n\n---\nLocation: .agents/skills/git/finance-analysis/skills/finance-analysis/SKILL.md"
+    }
+   ]
+  }
+ },
+ {
+  "contentBlockIndex": 0
+ },
+ {
+  "stopReason": "tool_result"
+ },
+ {
+  "role": "assistant"
+ },
+ {
+  "contentBlockIndex": 0,
+  "start": {
+   "toolUse": {
+    "name": "market___get_market_overview",
+    "toolUseId": "tooluse_fixture_02",
+    "type": "tool_use"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "toolUse": {
+    "input": ""
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0
+ },
+ {
+  "contentBlockIndex": 1,
+  "start": {
+   "toolUse": {
+    "name": "market___get_sector_performance",
+    "toolUseId": "tooluse_fixture_03",
+    "type": "tool_use"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 1,
+  "delta": {
+   "toolUse": {
+    "input": ""
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 1
+ },
+ {
+  "stopReason": "tool_use"
+ },
+ {
+  "metrics": {
+   "latencyMs": 1248
+  },
+  "usage": {
+   "inputTokens": 3265,
+   "outputTokens": 63,
+   "totalTokens": 3328
+  }
+ },
+ {
+  "role": "user"
+ },
+ {
+  "contentBlockIndex": 0,
+  "start": {
+   "toolResult": {
+    "status": "error",
+    "toolUseId": "tooluse_fixture_02"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "toolResult": [
+    {
+     "text": "Unknown tool: market___get_market_overview"
+    }
+   ]
+  }
+ },
+ {
+  "contentBlockIndex": 0
+ },
+ {
+  "contentBlockIndex": 1,
+  "start": {
+   "toolResult": {
+    "status": "error",
+    "toolUseId": "tooluse_fixture_03"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 1,
+  "delta": {
+   "toolResult": [
+    {
+     "text": "Unknown tool: market___get_sector_performance"
+    }
+   ]
+  }
+ },
+ {
+  "contentBlockIndex": 1
+ },
+ {
+  "stopReason": "tool_result"
+ },
+ {
+  "role": "assistant"
+ },
+ {
+  "contentBlockIndex": 0,
+  "start": {
+   "toolUse": {
+    "name": "market__get_market_overview",
+    "toolUseId": "tooluse_fixture_04",
+    "type": "tool_use"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "toolUse": {
+    "input": ""
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0
+ },
+ {
+  "contentBlockIndex": 1,
+  "start": {
+   "toolUse": {
+    "name": "market__get_sector_performance",
+    "toolUseId": "tooluse_fixture_05",
+    "type": "tool_use"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 1,
+  "delta": {
+   "toolUse": {
+    "input": ""
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 1
+ },
+ {
+  "stopReason": "tool_use"
+ },
+ {
+  "metrics": {
+   "latencyMs": 1726
+  },
+  "usage": {
+   "inputTokens": 3419,
+   "outputTokens": 63,
+   "totalTokens": 3482
+  }
+ },
+ {
+  "role": "user"
+ },
+ {
+  "contentBlockIndex": 0,
+  "start": {
+   "toolResult": {
+    "status": "error",
+    "toolUseId": "tooluse_fixture_04"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "toolResult": [
+    {
+     "text": "Unknown tool: market__get_market_overview"
+    }
+   ]
+  }
+ },
+ {
+  "contentBlockIndex": 0
+ },
+ {
+  "contentBlockIndex": 1,
+  "start": {
+   "toolResult": {
+    "status": "error",
+    "toolUseId": "tooluse_fixture_05"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 1,
+  "delta": {
+   "toolResult": [
+    {
+     "text": "Unknown tool: market__get_sector_performance"
+    }
+   ]
+  }
+ },
+ {
+  "contentBlockIndex": 1
+ },
+ {
+  "stopReason": "tool_result"
+ },
+ {
+  "role": "assistant"
+ },
+ {
+  "contentBlockIndex": 0,
+  "start": {
+   "toolUse": {
+    "name": "get_market_overview",
+    "toolUseId": "tooluse_fixture_06",
+    "type": "tool_use"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "toolUse": {
+    "input": ""
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0
+ },
+ {
+  "contentBlockIndex": 1,
+  "start": {
+   "toolUse": {
+    "name": "get_sector_performance",
+    "toolUseId": "tooluse_fixture_07",
+    "type": "tool_use"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 1,
+  "delta": {
+   "toolUse": {
+    "input": ""
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 1
+ },
+ {
+  "stopReason": "tool_use"
+ },
+ {
+  "metrics": {
+   "latencyMs": 1358
+  },
+  "usage": {
+   "inputTokens": 3573,
+   "outputTokens": 59,
+   "totalTokens": 3632
+  }
+ },
+ {
+  "role": "user"
+ },
+ {
+  "contentBlockIndex": 0,
+  "start": {
+   "toolResult": {
+    "status": "error",
+    "toolUseId": "tooluse_fixture_06"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "toolResult": [
+    {
+     "text": "Unknown tool: get_market_overview"
+    }
+   ]
+  }
+ },
+ {
+  "contentBlockIndex": 0
+ },
+ {
+  "contentBlockIndex": 1,
+  "start": {
+   "toolResult": {
+    "status": "error",
+    "toolUseId": "tooluse_fixture_07"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 1,
+  "delta": {
+   "toolResult": [
+    {
+     "text": "Unknown tool: get_sector_performance"
+    }
+   ]
+  }
+ },
+ {
+  "contentBlockIndex": 1
+ },
+ {
+  "stopReason": "tool_result"
+ },
+ {
+  "role": "assistant"
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "I"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "'m"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " unable"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " to retrieve the data"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " \u2014"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " the `"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "get_market_overview` and `"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "get_sector_performance` tools"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " are not resol"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "ving in"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " this"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " session"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": ". This"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " appears"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " to be a tool"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "-"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "availability"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " issue on"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " the backend"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": ".\n\nHere"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "'s what I'd"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " suggest"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": ":\n\n1. **"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "Refresh"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " /"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " retry"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "**"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " \u2014"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " reload"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " the session"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " and"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " try again;"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " tool"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " routing"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " occasionally"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " drops"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " connections"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "."
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "\n2. **Check individual"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " quotes"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "** \u2014 I"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " *"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "can* call"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " `get_stock"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "_quote` for specific"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " t"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "ickers ("
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "NV"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "DA, MSFT, "
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "AAPL, GOOGL, JP"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "M, AMZN) as"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " a wor"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "karound while"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " the"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " market"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "-"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "overview tools"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " are unav"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "ailable.\n3. **Portfolio"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " snapshot"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "** \u2014 I"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " can pull"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " your"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " current positions"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " via"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " the"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " portfolio"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " tool"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " if"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " that"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "'s more"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " immediately"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " useful.\n\nWould you like me to"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " try one of those"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " alternatives"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": ","
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " or would you prefer to retry"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " the"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " market"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " overview"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " request"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "?\n\n>"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " "
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "\u26a0\ufe0f **"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "Disclosure"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": ":** All"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " prices"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " in"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " this system"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " are simulated (`"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "\""
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "source"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "\": \"simulated\""
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "`) and do not represent live"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " market data."
+  }
+ },
+ {
+  "contentBlockIndex": 0
+ },
+ {
+  "stopReason": "end_turn"
+ },
+ {
+  "metrics": {
+   "latencyMs": 5762
+  },
+  "usage": {
+   "inputTokens": 3715,
+   "outputTokens": 231,
+   "totalTokens": 3946
+  }
+ }
+]
