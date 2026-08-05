@@ -1,0 +1,205 @@
+[
+ {
+  "role": "assistant"
+ },
+ {
+  "contentBlockIndex": 0,
+  "start": {
+   "toolUse": {
+    "name": "market-data___get_market_overview",
+    "toolUseId": "tooluse_fixture_01",
+    "type": "tool_use"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "toolUse": {
+    "input": ""
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0
+ },
+ {
+  "contentBlockIndex": 1,
+  "start": {
+   "toolUse": {
+    "name": "market-data___get_sector_performance",
+    "toolUseId": "tooluse_fixture_02",
+    "type": "tool_use"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 1,
+  "delta": {
+   "toolUse": {
+    "input": ""
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 1
+ },
+ {
+  "stopReason": "tool_use"
+ },
+ {
+  "metrics": {
+   "latencyMs": 1738
+  },
+  "usage": {
+   "inputTokens": 15155,
+   "outputTokens": 68,
+   "totalTokens": 15223
+  }
+ },
+ {
+  "role": "user"
+ },
+ {
+  "contentBlockIndex": 0,
+  "start": {
+   "toolResult": {
+    "status": "success",
+    "toolUseId": "tooluse_fixture_01"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "toolResult": [
+    {
+     "text": "{\"indices\":{\"SP500\":{\"value\":6120.35,\"change_pct\":-1.12},\"NASDAQ\":{\"value\":19845.2,\"change_pct\":0.25},\"DOW\":{\"value\":44250.8,\"change_pct\":-0.87},\"RUSSELL2000\":{\"value\":2285.4,\"change_pct\":-0.4}},\"volatility\":{\"VIX\":19.6,\"VIX_status\":\"normal\"},\"treasury\":{\"2Y\":4.51,\"10Y\":4.32,\"30Y\":4.29},\"sentiment\":{\"fear_greed_index\":80,\"label\":\"Extreme Greed\"},\"timestamp\":\"2026-08-05T05:17:48.367061+00:00\",\"source\":\"simulated\"}"
+    }
+   ]
+  }
+ },
+ {
+  "contentBlockIndex": 0
+ },
+ {
+  "contentBlockIndex": 1,
+  "start": {
+   "toolResult": {
+    "status": "success",
+    "toolUseId": "tooluse_fixture_02"
+   }
+  }
+ },
+ {
+  "contentBlockIndex": 1,
+  "delta": {
+   "toolResult": [
+    {
+     "text": "{\"sectors\":[{\"name\":\"Technology\",\"daily_change_pct\":1.22,\"ytd_change_pct\":-1.71,\"market_cap_trillions\":13.1},{\"name\":\"Healthcare\",\"daily_change_pct\":0.18,\"ytd_change_pct\":6.15,\"market_cap_trillions\":5.7},{\"name\":\"Financials\",\"daily_change_pct\":-0.99,\"ytd_change_pct\":4.18,\"market_cap_trillions\":10.0},{\"name\":\"Consumer Discretionary\",\"daily_change_pct\":0.42,\"ytd_change_pct\":13.21,\"market_cap_trillions\":6.4},{\"name\":\"Communication Services\",\"daily_change_pct\":1.47,\"ytd_change_pct\":2.93,\"market_cap_trillions\":10.2},{\"name\":\"Industrials\",\"daily_change_pct\":-0.87,\"ytd_change_pct\":2.39,\"market_cap_trillions\":13.9},{\"name\":\"Consumer Staples\",\"daily_change_pct\":-1.68,\"ytd_change_pct\":3.5,\"market_cap_trillions\":6.7},{\"name\":\"Energy\",\"daily_change_pct\":-0.81,\"ytd_change_pct\":14.27,\"market_cap_trillions\":9.4},{\"name\":\"Utilities\",\"daily_change_pct\":-0.42,\"ytd_change_pct\":-1.58,\"market_cap_trillions\":14.4},{\"name\":\"Real Estate\",\"daily_change_pct\":1.0,\"ytd_change_pct\":1.9,\"market_cap_trillions\":9.5},{\"name\":\"Materials\",\"dai"
+    }
+   ]
+  }
+ },
+ {
+  "contentBlockIndex": 1,
+  "delta": {
+   "toolResult": [
+    {
+     "text": "ly_change_pct\":-0.36,\"ytd_change_pct\":18.63,\"market_cap_trillions\":9.7}],\"source\":\"simulated\"}"
+    }
+   ]
+  }
+ },
+ {
+  "contentBlockIndex": 1
+ },
+ {
+  "stopReason": "tool_result"
+ },
+ {
+  "role": "assistant"
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "*("
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "Data"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " source"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": ": simulated)*\n\n**"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "S&P 500:**"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " 6,120.35"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "\n\n**Leading Sector ("
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "Daily"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "):** Communication"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": " Services +"
+  }
+ },
+ {
+  "contentBlockIndex": 0,
+  "delta": {
+   "text": "1.47%"
+  }
+ },
+ {
+  "contentBlockIndex": 0
+ },
+ {
+  "stopReason": "end_turn"
+ },
+ {
+  "metrics": {
+   "latencyMs": 1694
+  },
+  "usage": {
+   "inputTokens": 15957,
+   "outputTokens": 40,
+   "totalTokens": 15997
+  }
+ }
+]

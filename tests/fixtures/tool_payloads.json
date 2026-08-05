@@ -1,0 +1,2157 @@
+{
+ "forecast_demand": {
+  "accuracy_metrics": {
+   "forecast_bias": -2.6,
+   "mape": 5.2,
+   "rmse": 5.9
+  },
+  "avg_daily_demand": 102.3,
+  "factors": {
+   "promotional_impact": "None currently active",
+   "seasonality": "Moderate - weekend spike pattern",
+   "trend": "Slightly upward (+0.1%/day)"
+  },
+  "forecast_period_days": 30,
+  "forecasts": [
+   {
+    "confidence": 0.85,
+    "date": "2026-08-06",
+    "lower_bound": 69,
+    "predicted_units": 99,
+    "upper_bound": 139
+   },
+   {
+    "confidence": 0.85,
+    "date": "2026-08-07",
+    "lower_bound": 90,
+    "predicted_units": 128,
+    "upper_bound": 180
+   },
+   {
+    "confidence": 0.85,
+    "date": "2026-08-08",
+    "lower_bound": 78,
+    "predicted_units": 112,
+    "upper_bound": 157
+   },
+   {
+    "confidence": 0.85,
+    "date": "2026-08-09",
+    "lower_bound": 73,
+    "predicted_units": 105,
+    "upper_bound": 147
+   },
+   {
+    "confidence": 0.85,
+    "date": "2026-08-10",
+    "lower_bound": 50,
+    "predicted_units": 71,
+    "upper_bound": 99
+   },
+   {
+    "confidence": 0.85,
+    "date": "2026-08-11",
+    "lower_bound": 75,
+    "predicted_units": 108,
+    "upper_bound": 151
+   },
+   {
+    "confidence": 0.85,
+    "date": "2026-08-12",
+    "lower_bound": 63,
+    "predicted_units": 90,
+    "upper_bound": 125
+   },
+   {
+    "confidence": 0.85,
+    "date": "2026-08-13",
+    "lower_bound": 69,
+    "predicted_units": 98,
+    "upper_bound": 137
+   },
+   {
+    "confidence": 0.85,
+    "date": "2026-08-14",
+    "lower_bound": 83,
+    "predicted_units": 119,
+    "upper_bound": 167
+   },
+   {
+    "confidence": 0.85,
+    "date": "2026-08-15",
+    "lower_bound": 98,
+    "predicted_units": 140,
+    "upper_bound": 195
+   },
+   {
+    "confidence": 0.85,
+    "date": "2026-08-16",
+    "lower_bound": 71,
+    "predicted_units": 101,
+    "upper_bound": 141
+   },
+   {
+    "confidence": 0.85,
+    "date": "2026-08-17",
+    "lower_bound": 51,
+    "predicted_units": 73,
+    "upper_bound": 102
+   },
+   {
+    "confidence": 0.85,
+    "date": "2026-08-18",
+    "lower_bound": 65,
+    "predicted_units": 94,
+    "upper_bound": 131
+   },
+   {
+    "confidence": 0.85,
+    "date": "2026-08-19",
+    "lower_bound": 62,
+    "predicted_units": 89,
+    "upper_bound": 124
+   }
+  ],
+  "model": "Gradient boosting + seasonal decomposition (demo simulation)",
+  "peak_day": "2026-08-15",
+  "product_name": "Wireless Earbuds",
+  "sku": "SKU-ELEC-1001",
+  "source": "simulated",
+  "total_predicted_demand": 3068
+ },
+ "get_comparables": {
+  "comparables": [
+   {
+    "address": "4653 Spruce Blvd",
+    "adjusted_price": 843000,
+    "adjustments": {
+     "bathrooms": 0,
+     "bedrooms": 0,
+     "sqft": -6090,
+     "time": 12958,
+     "total": 6868
+    },
+    "baths": 4,
+    "beds": 6,
+    "days_on_market": 14,
+    "distance_miles": 0.55,
+    "lot_sqft": 5849,
+    "price_per_sqft": 229.46,
+    "property_type": "condo",
+    "sale_date": "2026-03-03",
+    "sale_price": 836000,
+    "similarity_score": 92.2,
+    "sqft": 3644,
+    "year_built": 2013
+   },
+   {
+    "address": "4196 Cherry Ln",
+    "adjusted_price": 904000,
+    "adjustments": {
+     "bathrooms": 0,
+     "bedrooms": 0,
+     "sqft": -21314,
+     "time": 27209,
+     "total": 5895
+    },
+    "baths": 4,
+    "beds": 6,
+    "days_on_market": 8,
+    "distance_miles": 0.55,
+    "lot_sqft": 11741,
+    "price_per_sqft": 238.66,
+    "property_type": "single_family",
+    "sale_date": "2025-10-06",
+    "sale_price": 898000,
+    "similarity_score": 86.9,
+    "sqft": 3764,
+    "year_built": 2000
+   },
+   {
+    "address": "7162 Oak Dr",
+    "adjusted_price": 916000,
+    "adjustments": {
+     "bathrooms": 9298,
+     "bedrooms": 0,
+     "sqft": 22202,
+     "time": 16058,
+     "total": 47558
+    },
+    "baths": 3,
+    "beds": 6,
+    "days_on_market": 15,
+    "distance_miles": 0.47,
+    "lot_sqft": 17625,
+    "price_per_sqft": 253.86,
+    "property_type": "townhouse",
+    "sale_date": "2026-02-01",
+    "sale_price": 868000,
+    "similarity_score": 86.6,
+    "sqft": 3421,
+    "year_built": 2006
+   },
+   {
+    "address": "2631 Cedar Ln",
+    "adjusted_price": 872000,
+    "adjustments": {
+     "bathrooms": 18392,
+     "bedrooms": 14382,
+     "sqft": 3552,
+     "time": 16216,
+     "total": 52542
+    },
+    "baths": 3,
+    "beds": 5,
+    "days_on_market": 26,
+    "distance_miles": 0.35,
+    "lot_sqft": 11330,
+    "price_per_sqft": 229.52,
+    "property_type": "single_family",
+    "sale_date": "2026-01-19",
+    "sale_price": 819000,
+    "similarity_score": 86.1,
+    "sqft": 3568,
+    "year_built": 2022
+   },
+   {
+    "address": "5444 Oak Dr",
+    "adjusted_price": 1022000,
+    "adjustments": {
+     "bathrooms": 0,
+     "bedrooms": 0,
+     "sqft": -74980,
+     "time": 26643,
+     "total": -48337
+    },
+    "baths": 4,
+    "beds": 6,
+    "days_on_market": 99,
+    "distance_miles": 0.73,
+    "lot_sqft": 18292,
+    "price_per_sqft": 255.59,
+    "property_type": "single_family",
+    "sale_date": "2025-11-29",
+    "sale_price": 1070000,
+    "similarity_score": 80.5,
+    "sqft": 4187,
+    "year_built": 2021
+   },
+   {
+    "address": "1817 Willow Ct",
+    "adjusted_price": 799000,
+    "adjustments": {
+     "bathrooms": 15748,
+     "bedrooms": 18234,
+     "sqft": 55950,
+     "time": 19774,
+     "total": 109706
+    },
+    "baths": 3,
+    "beds": 4,
+    "days_on_market": 82,
+    "distance_miles": 0.62,
+    "lot_sqft": 9754,
+    "price_per_sqft": 218.44,
+    "property_type": "condo",
+    "sale_date": "2025-10-22",
+    "sale_price": 689000,
+    "similarity_score": 73.5,
+    "sqft": 3155,
+    "year_built": 2003
+   }
+  ],
+  "search_radius_miles": 1.0,
+  "source": "simulated",
+  "subject_address": "123 Main St, Austin TX",
+  "subject_property": {
+   "baths": 4,
+   "beds": 6,
+   "indicated_value": 912000,
+   "price_per_sqft": 253.74,
+   "sqft": 3596,
+   "year_built": 1994
+  },
+  "summary": {
+   "avg_days_on_market": 41,
+   "median_adjusted_price": 904000,
+   "median_price_per_sqft": 238.66,
+   "median_sale_price": 868000
+  },
+  "total_found": 6
+ },
+ "get_demand_trends": {
+  "category": "all",
+  "declining_skus": [
+   {
+    "decline_pct": -29.4,
+    "sku": "SKU-345"
+   },
+   {
+    "decline_pct": -17.1,
+    "sku": "SKU-411"
+   },
+   {
+    "decline_pct": -17.8,
+    "sku": "SKU-899"
+   }
+  ],
+  "period": "month",
+  "seasonality_index": 1.24,
+  "source": "simulated",
+  "top_growing_skus": [
+   {
+    "growth_pct": 17.8,
+    "sku": "SKU-348"
+   },
+   {
+    "growth_pct": 48.4,
+    "sku": "SKU-309"
+   },
+   {
+    "growth_pct": 22.5,
+    "sku": "SKU-278"
+   },
+   {
+    "growth_pct": 47.6,
+    "sku": "SKU-374"
+   },
+   {
+    "growth_pct": 29.0,
+    "sku": "SKU-697"
+   }
+  ],
+  "trends": {
+   "aov_change_pct": -1.2,
+   "revenue_growth_pct": -4.1,
+   "units_growth_pct": -2.9
+  },
+  "weekly_data": [
+   {
+    "avg_order_value": 118.33,
+    "revenue": 316177.76,
+    "units_sold": 2672,
+    "week": "2026-W28"
+   },
+   {
+    "avg_order_value": 118.76,
+    "revenue": 305925.76,
+    "units_sold": 2576,
+    "week": "2026-W29"
+   },
+   {
+    "avg_order_value": 118.21,
+    "revenue": 307109.58,
+    "units_sold": 2598,
+    "week": "2026-W30"
+   },
+   {
+    "avg_order_value": 116.88,
+    "revenue": 303186.72,
+    "units_sold": 2594,
+    "week": "2026-W31"
+   }
+  ]
+ },
+ "get_equipment_list": {
+  "avg_health_score": 75.5,
+  "critical_equipment_below_threshold": [],
+  "equipment": [
+   {
+    "criticality": "HIGH",
+    "department": "Machining",
+    "equipment_id": "EQ-CNC-001",
+    "health_score": 78.6,
+    "last_maintenance": "2026-03-16",
+    "name": "CNC Milling Machine #1",
+    "next_scheduled_maintenance": "2026-10-14",
+    "status": "RUNNING"
+   },
+   {
+    "criticality": "MEDIUM",
+    "department": "Machining",
+    "equipment_id": "EQ-CNC-002",
+    "health_score": 78.3,
+    "last_maintenance": "2026-04-15",
+    "name": "CNC Milling Machine #2",
+    "next_scheduled_maintenance": "2026-10-14",
+    "status": "RUNNING"
+   },
+   {
+    "criticality": "HIGH",
+    "department": "Machining",
+    "equipment_id": "EQ-CNC-003",
+    "health_score": 81.9,
+    "last_maintenance": "2026-04-01",
+    "name": "CNC Lathe",
+    "next_scheduled_maintenance": "2026-10-17",
+    "status": "RUNNING"
+   },
+   {
+    "criticality": "HIGH",
+    "department": "Forming",
+    "equipment_id": "EQ-PUMP-001",
+    "health_score": 87.0,
+    "last_maintenance": "2026-05-01",
+    "name": "Hydraulic Press Pump",
+    "next_scheduled_maintenance": "2026-10-22",
+    "status": "RUNNING"
+   },
+   {
+    "criticality": "MEDIUM",
+    "department": "Utilities",
+    "equipment_id": "EQ-PUMP-002",
+    "health_score": 78.9,
+    "last_maintenance": "2026-05-24",
+    "name": "Coolant Circulation Pump",
+    "next_scheduled_maintenance": "2026-10-15",
+    "status": "RUNNING"
+   },
+   {
+    "criticality": "HIGH",
+    "department": "Utilities",
+    "equipment_id": "EQ-COMP-001",
+    "health_score": 62.8,
+    "last_maintenance": "2026-02-12",
+    "name": "Main Air Compressor",
+    "next_scheduled_maintenance": "2026-09-30",
+    "status": "DEGRADED"
+   },
+   {
+    "criticality": "LOW",
+    "department": "Utilities",
+    "equipment_id": "EQ-COMP-002",
+    "health_score": 66.7,
+    "last_maintenance": "2026-02-09",
+    "name": "Backup Air Compressor",
+    "next_scheduled_maintenance": "2026-10-04",
+    "status": "RUNNING"
+   },
+   {
+    "criticality": "HIGH",
+    "department": "Assembly",
+    "equipment_id": "EQ-CONV-001",
+    "health_score": 91.7,
+    "last_maintenance": "2026-06-09",
+    "name": "Assembly Line Conveyor A",
+    "next_scheduled_maintenance": "2026-10-26",
+    "status": "RUNNING"
+   },
+   {
+    "criticality": "MEDIUM",
+    "department": "Assembly",
+    "equipment_id": "EQ-CONV-002",
+    "health_score": 60.3,
+    "last_maintenance": "2026-03-15",
+    "name": "Assembly Line Conveyor B",
+    "next_scheduled_maintenance": "2026-09-28",
+    "status": "DEGRADED"
+   },
+   {
+    "criticality": "MEDIUM",
+    "department": "Packaging",
+    "equipment_id": "EQ-CONV-003",
+    "health_score": 48.6,
+    "last_maintenance": "2026-03-20",
+    "name": "Packaging Conveyor",
+    "next_scheduled_maintenance": "2026-09-18",
+    "status": "DEGRADED"
+   },
+   {
+    "criticality": "HIGH",
+    "department": "Power",
+    "equipment_id": "EQ-TURB-001",
+    "health_score": 67.5,
+    "last_maintenance": "2026-07-05",
+    "name": "Steam Turbine Generator",
+    "next_scheduled_maintenance": "2026-10-05",
+    "status": "RUNNING"
+   },
+   {
+    "criticality": "HIGH",
+    "department": "Machining",
+    "equipment_id": "EQ-MOTOR-001",
+    "health_score": 76.4,
+    "last_maintenance": "2026-04-12",
+    "name": "Main Drive Motor",
+    "next_scheduled_maintenance": "2026-10-12",
+    "status": "RUNNING"
+   },
+   {
+    "criticality": "LOW",
+    "department": "HVAC",
+    "equipment_id": "EQ-MOTOR-002",
+    "health_score": 86.8,
+    "last_maintenance": "2026-07-30",
+    "name": "Ventilation Fan Motor",
+    "next_scheduled_maintenance": "2026-10-22",
+    "status": "RUNNING"
+   },
+   {
+    "criticality": "MEDIUM",
+    "department": "Utilities",
+    "equipment_id": "EQ-MOTOR-003",
+    "health_score": 91.6,
+    "last_maintenance": "2026-05-04",
+    "name": "Cooling Tower Motor",
+    "next_scheduled_maintenance": "2026-10-26",
+    "status": "RUNNING"
+   }
+  ],
+  "facility_id": "all",
+  "source": "simulated",
+  "status_summary": {
+   "degraded": 3,
+   "running": 11,
+   "stopped": 0
+  },
+  "total_equipment": 14
+ },
+ "get_fraud_dashboard": {
+  "metrics": {
+   "confirmed_fraud": 17,
+   "detection_rate_pct": 94.4,
+   "false_positive_rate_pct": 3.7,
+   "false_positives": 56,
+   "flagged_for_review": 73,
+   "missed_fraud_estimate": 1,
+   "savings_from_detection": 426237.54,
+   "total_claims_screened": 1511
+  },
+  "period": "current_month",
+  "source": "simulated",
+  "top_fraud_types": [
+   {
+    "count": 5,
+    "pct": 29.4,
+    "type": "Staged accidents"
+   },
+   {
+    "count": 5,
+    "pct": 29.4,
+    "type": "Inflated claims"
+   },
+   {
+    "count": 4,
+    "pct": 23.5,
+    "type": "Phantom damage"
+   },
+   {
+    "count": 3,
+    "pct": 17.6,
+    "type": "Identity fraud"
+   }
+  ],
+  "trend": "IMPROVING"
+ },
+ "get_historical_prices": {
+  "data": [
+   {
+    "close": 256.6,
+    "date": "2026-07-06",
+    "high": 256.76,
+    "low": 255.74,
+    "open": 255.68,
+    "volume": 5256913
+   },
+   {
+    "close": 256.31,
+    "date": "2026-07-07",
+    "high": 256.56,
+    "low": 255.52,
+    "open": 255.21,
+    "volume": 47513834
+   },
+   {
+    "close": 245.8,
+    "date": "2026-07-08",
+    "high": 248.24,
+    "low": 241.47,
+    "open": 244.9,
+    "volume": 12499392
+   },
+   {
+    "close": 244.52,
+    "date": "2026-07-09",
+    "high": 245.84,
+    "low": 243.85,
+    "open": 246.79,
+    "volume": 19003056
+   },
+   {
+    "close": 241.02,
+    "date": "2026-07-10",
+    "high": 242.98,
+    "low": 240.42,
+    "open": 240.52,
+    "volume": 40241951
+   },
+   {
+    "close": 243.34,
+    "date": "2026-07-11",
+    "high": 244.42,
+    "low": 240.54,
+    "open": 242.75,
+    "volume": 26501364
+   },
+   {
+    "close": 252.83,
+    "date": "2026-07-12",
+    "high": 253.0,
+    "low": 252.58,
+    "open": 251.32,
+    "volume": 35857528
+   },
+   {
+    "close": 249.88,
+    "date": "2026-07-13",
+    "high": 251.77,
+    "low": 249.88,
+    "open": 250.22,
+    "volume": 43186908
+   },
+   {
+    "close": 253.54,
+    "date": "2026-07-14",
+    "high": 254.01,
+    "low": 249.96,
+    "open": 253.58,
+    "volume": 26505965
+   },
+   {
+    "close": 254.54,
+    "date": "2026-07-15",
+    "high": 256.65,
+    "low": 249.1,
+    "open": 253.8,
+    "volume": 25315224
+   },
+   {
+    "close": 255.01,
+    "date": "2026-07-16",
+    "high": 258.36,
+    "low": 254.58,
+    "open": 253.86,
+    "volume": 49687708
+   },
+   {
+    "close": 252.54,
+    "date": "2026-07-17",
+    "high": 253.28,
+    "low": 250.81,
+    "open": 253.83,
+    "volume": 16196914
+   },
+   {
+    "close": 246.05,
+    "date": "2026-07-18",
+    "high": 246.85,
+    "low": 246.03,
+    "open": 247.27,
+    "volume": 29874730
+   },
+   {
+    "close": 237.7,
+    "date": "2026-07-19",
+    "high": 239.72,
+    "low": 236.41,
+    "open": 236.87,
+    "volume": 22915091
+   },
+   {
+    "close": 234.0,
+    "date": "2026-07-20",
+    "high": 236.25,
+    "low": 233.85,
+    "open": 233.07,
+    "volume": 22449363
+   },
+   {
+    "close": 248.2,
+    "date": "2026-07-21",
+    "high": 252.12,
+    "low": 243.54,
+    "open": 248.64,
+    "volume": 59181640
+   },
+   {
+    "close": 251.17,
+    "date": "2026-07-22",
+    "high": 251.82,
+    "low": 249.53,
+    "open": 251.76,
+    "volume": 45415597
+   },
+   {
+    "close": 251.02,
+    "date": "2026-07-23",
+    "high": 252.27,
+    "low": 248.52,
+    "open": 250.7,
+    "volume": 51510210
+   },
+   {
+    "close": 248.23,
+    "date": "2026-07-24",
+    "high": 248.24,
+    "low": 244.17,
+    "open": 249.62,
+    "volume": 12940850
+   },
+   {
+    "close": 255.19,
+    "date": "2026-07-25",
+    "high": 256.26,
+    "low": 250.39,
+    "open": 254.12,
+    "volume": 54100703
+   },
+   {
+    "close": 255.53,
+    "date": "2026-07-26",
+    "high": 257.88,
+    "low": 254.0,
+    "open": 254.76,
+    "volume": 37009675
+   },
+   {
+    "close": 252.36,
+    "date": "2026-07-27",
+    "high": 253.44,
+    "low": 249.59,
+    "open": 251.54,
+    "volume": 35482684
+   },
+   {
+    "close": 258.29,
+    "date": "2026-07-28",
+    "high": 262.94,
+    "low": 255.87,
+    "open": 254.36,
+    "volume": 29309110
+   },
+   {
+    "close": 259.3,
+    "date": "2026-07-29",
+    "high": 261.48,
+    "low": 259.23,
+    "open": 258.67,
+    "volume": 22979395
+   },
+   {
+    "close": 261.97,
+    "date": "2026-07-30",
+    "high": 262.34,
+    "low": 261.01,
+    "open": 263.69,
+    "volume": 16716051
+   },
+   {
+    "close": 262.45,
+    "date": "2026-07-31",
+    "high": 264.51,
+    "low": 261.03,
+    "open": 261.57,
+    "volume": 7710887
+   },
+   {
+    "close": 264.49,
+    "date": "2026-08-01",
+    "high": 265.01,
+    "low": 262.73,
+    "open": 264.51,
+    "volume": 5582476
+   },
+   {
+    "close": 255.1,
+    "date": "2026-08-02",
+    "high": 255.55,
+    "low": 254.66,
+    "open": 254.53,
+    "volume": 45107289
+   },
+   {
+    "close": 256.88,
+    "date": "2026-08-03",
+    "high": 257.79,
+    "low": 254.92,
+    "open": 257.34,
+    "volume": 7103616
+   },
+   {
+    "close": 255.6,
+    "date": "2026-08-04",
+    "high": 256.07,
+    "low": 255.5,
+    "open": 256.48,
+    "volume": 9750452
+   }
+  ],
+  "period_days": 30,
+  "source": "simulated",
+  "symbol": "AAPL"
+ },
+ "get_inventory_summary": {
+  "alerts": [
+   {
+    "message": "15 A-class SKUs below safety stock",
+    "severity": "HIGH",
+    "type": "STOCKOUT_RISK"
+   },
+   {
+    "message": "$3,402K excess inventory across 1,300 SKUs",
+    "severity": "MEDIUM",
+    "type": "OVERSTOCK"
+   }
+  ],
+  "filter": "all",
+  "overall": {
+   "avg_in_stock_rate": 97.1,
+   "total_excess_value": 3402243.84,
+   "total_inventory_value": 14515784.29,
+   "total_overstock": 1300,
+   "total_skus": 5460,
+   "total_stockouts": 157
+  },
+  "source": "simulated",
+  "summary": [
+   {
+    "avg_days_of_supply": 81.4,
+    "category": "Electronics",
+    "excess_value": 664112.7,
+    "in_stock_pct": 96.3,
+    "inventory_turnover": 4.5,
+    "overstock_skus": 322,
+    "stockout_skus": 48,
+    "total_skus": 1288,
+    "total_value": 2656450.82
+   },
+   {
+    "avg_days_of_supply": 53.0,
+    "category": "Apparel",
+    "excess_value": 561967.21,
+    "in_stock_pct": 97.5,
+    "inventory_turnover": 6.9,
+    "overstock_skus": 161,
+    "stockout_skus": 23,
+    "total_skus": 904,
+    "total_value": 3155393.51
+   },
+   {
+    "avg_days_of_supply": 63.4,
+    "category": "Grocery",
+    "excess_value": 1020868.71,
+    "in_stock_pct": 96.9,
+    "inventory_turnover": 5.8,
+    "overstock_skus": 301,
+    "stockout_skus": 37,
+    "total_skus": 1205,
+    "total_value": 4086866.42
+   },
+   {
+    "avg_days_of_supply": 69.4,
+    "category": "Home & Garden",
+    "excess_value": 806782.52,
+    "in_stock_pct": 98.1,
+    "inventory_turnover": 5.3,
+    "overstock_skus": 402,
+    "stockout_skus": 31,
+    "total_skus": 1609,
+    "total_value": 3229136.99
+   },
+   {
+    "avg_days_of_supply": 87.8,
+    "category": "Sports",
+    "excess_value": 348512.7,
+    "in_stock_pct": 96.0,
+    "inventory_turnover": 4.2,
+    "overstock_skus": 114,
+    "stockout_skus": 18,
+    "total_skus": 454,
+    "total_value": 1387936.55
+   }
+  ]
+ },
+ "get_market_forecast": {
+  "current_median_price": 528000,
+  "disclaimer": "Forecasts are based on historical trends and current market indicators. Actual results may vary significantly.",
+  "forecast": [
+   {
+    "confidence_high": 544267,
+    "confidence_low": 517717,
+    "date": "2026-09",
+    "forecasted_median_price": 530992,
+    "month": 1,
+    "month_over_month_pct": 0.57
+   },
+   {
+    "confidence_high": 551011,
+    "confidence_low": 518913,
+    "date": "2026-10",
+    "forecasted_median_price": 534962,
+    "month": 2,
+    "month_over_month_pct": 0.75
+   },
+   {
+    "confidence_high": 554333,
+    "confidence_low": 516841,
+    "date": "2026-11",
+    "forecasted_median_price": 535587,
+    "month": 3,
+    "month_over_month_pct": 0.12
+   },
+   {
+    "confidence_high": 564303,
+    "confidence_low": 520895,
+    "date": "2026-12",
+    "forecasted_median_price": 542599,
+    "month": 4,
+    "month_over_month_pct": 1.31
+   },
+   {
+    "confidence_high": 569693,
+    "confidence_low": 520629,
+    "date": "2027-01",
+    "forecasted_median_price": 545161,
+    "month": 5,
+    "month_over_month_pct": 0.47
+   },
+   {
+    "confidence_high": 575761,
+    "confidence_low": 520927,
+    "date": "2027-02",
+    "forecasted_median_price": 548344,
+    "month": 6,
+    "month_over_month_pct": 0.58
+   },
+   {
+    "confidence_high": 585356,
+    "confidence_low": 524324,
+    "date": "2027-03",
+    "forecasted_median_price": 554840,
+    "month": 7,
+    "month_over_month_pct": 1.18
+   },
+   {
+    "confidence_high": 594995,
+    "confidence_low": 527637,
+    "date": "2027-04",
+    "forecasted_median_price": 561316,
+    "month": 8,
+    "month_over_month_pct": 1.17
+   },
+   {
+    "confidence_high": 600134,
+    "confidence_low": 526878,
+    "date": "2027-05",
+    "forecasted_median_price": 563506,
+    "month": 9,
+    "month_over_month_pct": 0.39
+   },
+   {
+    "confidence_high": 609144,
+    "confidence_low": 529442,
+    "date": "2027-06",
+    "forecasted_median_price": 569293,
+    "month": 10,
+    "month_over_month_pct": 1.03
+   },
+   {
+    "confidence_high": 620761,
+    "confidence_low": 534143,
+    "date": "2027-07",
+    "forecasted_median_price": 577452,
+    "month": 11,
+    "month_over_month_pct": 1.43
+   },
+   {
+    "confidence_high": 627304,
+    "confidence_low": 534370,
+    "date": "2027-08",
+    "forecasted_median_price": 580837,
+    "month": 12,
+    "month_over_month_pct": 0.59
+   }
+  ],
+  "forecast_horizon_months": 12,
+  "market_type": "Balanced Market",
+  "positive_drivers": [
+   "Prices up 8.8% year over year",
+   "Tech sector expansion nearby",
+   "Population in-migration trends"
+  ],
+  "risk_factors": [
+   "Interest rate volatility",
+   "Regulatory changes (zoning, rent control)"
+  ],
+  "source": "simulated",
+  "summary": {
+   "annualized_growth_rate": 10.0,
+   "forecast_confidence": "Moderate",
+   "projected_end_price": 580837,
+   "total_price_change_pct": 10.0
+  },
+  "trailing_yoy_pct": 8.8,
+  "zipcode": "78701"
+ },
+ "get_market_overview": {
+  "indices": {
+   "DOW": {
+    "change_pct": -0.87,
+    "value": 44250.8
+   },
+   "NASDAQ": {
+    "change_pct": 0.25,
+    "value": 19845.2
+   },
+   "RUSSELL2000": {
+    "change_pct": -0.4,
+    "value": 2285.4
+   },
+   "SP500": {
+    "change_pct": -1.12,
+    "value": 6120.35
+   }
+  },
+  "sentiment": {
+   "fear_greed_index": 80,
+   "label": "Extreme Greed"
+  },
+  "source": "simulated",
+  "timestamp": "2026-08-05T05:24:42.478117+00:00",
+  "treasury": {
+   "10Y": 4.32,
+   "2Y": 4.51,
+   "30Y": 4.29
+  },
+  "volatility": {
+   "VIX": 19.6,
+   "VIX_status": "normal"
+  }
+ },
+ "get_market_trends": {
+  "current_median_price": 528000,
+  "data_points": 13,
+  "market_type": "Balanced Market",
+  "period": "1y",
+  "source": "simulated",
+  "summary": {
+   "annualized_change_pct": 8.8,
+   "avg_monthly_volume": 132,
+   "end_median_price": 528000,
+   "peak_price": 528000,
+   "start_median_price": 485196,
+   "total_price_change_pct": 8.8,
+   "trough_price": 485196,
+   "volume_trend": "Increasing"
+  },
+  "trends": [
+   {
+    "avg_days_on_market": 103,
+    "closed_sales": 129,
+    "date": "2025-08",
+    "inventory": 722,
+    "median_price_per_sqft": 282.0,
+    "median_sale_price": 485196,
+    "new_listings": 146,
+    "sale_to_list_ratio": 1.005
+   },
+   {
+    "avg_days_on_market": 100,
+    "closed_sales": 113,
+    "date": "2025-09",
+    "inventory": 633,
+    "median_price_per_sqft": 285.24,
+    "median_sale_price": 490779,
+    "new_listings": 128,
+    "sale_to_list_ratio": 1.002
+   },
+   {
+    "avg_days_on_market": 97,
+    "closed_sales": 121,
+    "date": "2025-10",
+    "inventory": 678,
+    "median_price_per_sqft": 288.04,
+    "median_sale_price": 495599,
+    "new_listings": 137,
+    "sale_to_list_ratio": 0.999
+   },
+   {
+    "avg_days_on_market": 84,
+    "closed_sales": 131,
+    "date": "2025-11",
+    "inventory": 734,
+    "median_price_per_sqft": 290.79,
+    "median_sale_price": 500324,
+    "new_listings": 148,
+    "sale_to_list_ratio": 0.999
+   },
+   {
+    "avg_days_on_market": 100,
+    "closed_sales": 103,
+    "date": "2025-12",
+    "inventory": 577,
+    "median_price_per_sqft": 292.52,
+    "median_sale_price": 503301,
+    "new_listings": 116,
+    "sale_to_list_ratio": 1.008
+   },
+   {
+    "avg_days_on_market": 95,
+    "closed_sales": 130,
+    "date": "2026-01",
+    "inventory": 728,
+    "median_price_per_sqft": 292.18,
+    "median_sale_price": 502724,
+    "new_listings": 147,
+    "sale_to_list_ratio": 1.008
+   },
+   {
+    "avg_days_on_market": 90,
+    "closed_sales": 132,
+    "date": "2026-02",
+    "inventory": 739,
+    "median_price_per_sqft": 293.55,
+    "median_sale_price": 505079,
+    "new_listings": 149,
+    "sale_to_list_ratio": 0.998
+   },
+   {
+    "avg_days_on_market": 104,
+    "closed_sales": 108,
+    "date": "2026-03",
+    "inventory": 605,
+    "median_price_per_sqft": 295.53,
+    "median_sale_price": 508494,
+    "new_listings": 122,
+    "sale_to_list_ratio": 1.003
+   },
+   {
+    "avg_days_on_market": 104,
+    "closed_sales": 167,
+    "date": "2026-04",
+    "inventory": 935,
+    "median_price_per_sqft": 295.49,
+    "median_sale_price": 508420,
+    "new_listings": 189,
+    "sale_to_list_ratio": 1.001
+   },
+   {
+    "avg_days_on_market": 103,
+    "closed_sales": 138,
+    "date": "2026-05",
+    "inventory": 773,
+    "median_price_per_sqft": 299.67,
+    "median_sale_price": 515619,
+    "new_listings": 156,
+    "sale_to_list_ratio": 1.007
+   },
+   {
+    "avg_days_on_market": 86,
+    "closed_sales": 148,
+    "date": "2026-06",
+    "inventory": 829,
+    "median_price_per_sqft": 301.35,
+    "median_sale_price": 518510,
+    "new_listings": 167,
+    "sale_to_list_ratio": 1.001
+   },
+   {
+    "avg_days_on_market": 97,
+    "closed_sales": 161,
+    "date": "2026-07",
+    "inventory": 902,
+    "median_price_per_sqft": 305.84,
+    "median_sale_price": 526240,
+    "new_listings": 182,
+    "sale_to_list_ratio": 1.003
+   },
+   {
+    "avg_days_on_market": 82,
+    "closed_sales": 130,
+    "date": "2026-08",
+    "inventory": 728,
+    "median_price_per_sqft": 306.86,
+    "median_sale_price": 528000,
+    "new_listings": 147,
+    "sale_to_list_ratio": 1.004
+   }
+  ],
+  "zipcode": "78701"
+ },
+ "get_patient_analytics": {
+  "analysis_period": "2025-08 to 2026-07",
+  "clinical_insights": [
+   "Blood pressure remains above target - consider medication adjustment",
+   "A1C at goal",
+   "BMI 26.5 - weight management counseling recommended",
+   "Weight change: +3 lbs over 12 months"
+  ],
+  "hipaa_notice": "Analytics access audit-logged.",
+  "patient_id": "PT-1001",
+  "source": "simulated",
+  "trends": {
+   "blood_pressure": {
+    "current": "146/80 mmHg",
+    "data": [
+     {
+      "diastolic": 79,
+      "month": "2025-08",
+      "systolic": 140
+     },
+     {
+      "diastolic": 78,
+      "month": "2025-09",
+      "systolic": 137
+     },
+     {
+      "diastolic": 75,
+      "month": "2025-10",
+      "systolic": 149
+     },
+     {
+      "diastolic": 78,
+      "month": "2025-11",
+      "systolic": 148
+     },
+     {
+      "diastolic": 76,
+      "month": "2025-12",
+      "systolic": 140
+     },
+     {
+      "diastolic": 75,
+      "month": "2026-01",
+      "systolic": 135
+     },
+     {
+      "diastolic": 75,
+      "month": "2026-02",
+      "systolic": 137
+     },
+     {
+      "diastolic": 83,
+      "month": "2026-03",
+      "systolic": 140
+     },
+     {
+      "diastolic": 80,
+      "month": "2026-04",
+      "systolic": 143
+     },
+     {
+      "diastolic": 74,
+      "month": "2026-05",
+      "systolic": 143
+     },
+     {
+      "diastolic": 74,
+      "month": "2026-06",
+      "systolic": 137
+     },
+     {
+      "diastolic": 80,
+      "month": "2026-07",
+      "systolic": 146
+     }
+    ],
+    "status": "ABOVE TARGET",
+    "target": "<130/80 mmHg",
+    "trend_direction": "worsening"
+   },
+   "bmi": {
+    "classification": "Overweight",
+    "current": 26.5,
+    "data": [
+     {
+      "month": "2025-08",
+      "value": 26.8
+     },
+     {
+      "month": "2025-09",
+      "value": 26.4
+     },
+     {
+      "month": "2025-10",
+      "value": 26.7
+     },
+     {
+      "month": "2025-11",
+      "value": 26.4
+     },
+     {
+      "month": "2025-12",
+      "value": 26.2
+     },
+     {
+      "month": "2026-01",
+      "value": 26.7
+     },
+     {
+      "month": "2026-02",
+      "value": 26.7
+     },
+     {
+      "month": "2026-03",
+      "value": 26.4
+     },
+     {
+      "month": "2026-04",
+      "value": 26.2
+     },
+     {
+      "month": "2026-05",
+      "value": 26.1
+     },
+     {
+      "month": "2026-06",
+      "value": 26.5
+     },
+     {
+      "month": "2026-07",
+      "value": 26.5
+     }
+    ],
+    "trend_direction": "improving"
+   },
+   "hemoglobin_a1c": {
+    "current": 6.4,
+    "data": [
+     {
+      "month": "2025-08",
+      "value": 6.5
+     },
+     {
+      "month": "2025-11",
+      "value": 6.8
+     },
+     {
+      "month": "2026-02",
+      "value": 6.6
+     },
+     {
+      "month": "2026-05",
+      "value": 6.4
+     }
+    ],
+    "status": "AT TARGET",
+    "target": "<7.0%",
+    "trend_direction": "improving"
+   },
+   "ldl_cholesterol": {
+    "current": "120 mg/dL",
+    "data": [
+     {
+      "month": "2025-08",
+      "value": 128
+     },
+     {
+      "month": "2026-02",
+      "value": 120
+     }
+    ],
+    "status": "ABOVE TARGET",
+    "target": "<100 mg/dL (with diabetes/CVD risk)"
+   },
+   "weight": {
+    "change_12mo": "+3 lbs",
+    "current": "205 lbs",
+    "data": [
+     {
+      "month": "2025-08",
+      "value": 202
+     },
+     {
+      "month": "2025-09",
+      "value": 201
+     },
+     {
+      "month": "2025-10",
+      "value": 204
+     },
+     {
+      "month": "2025-11",
+      "value": 203
+     },
+     {
+      "month": "2025-12",
+      "value": 201
+     },
+     {
+      "month": "2026-01",
+      "value": 203
+     },
+     {
+      "month": "2026-02",
+      "value": 205
+     },
+     {
+      "month": "2026-03",
+      "value": 203
+     },
+     {
+      "month": "2026-04",
+      "value": 205
+     },
+     {
+      "month": "2026-05",
+      "value": 201
+     },
+     {
+      "month": "2026-06",
+      "value": 205
+     },
+     {
+      "month": "2026-07",
+      "value": 205
+     }
+    ],
+    "trend_direction": "increasing"
+   }
+  }
+ },
+ "get_population_health_metrics": {
+  "chronic_disease_prevalence": {
+   "asthma_copd": {
+    "count": 239,
+    "rate": "8.8%"
+   },
+   "depression_anxiety": {
+    "count": 478,
+    "rate": "14.4%"
+   },
+   "diabetes_type_2": {
+    "count": 620,
+    "rate": "15.5%"
+   },
+   "heart_failure": {
+    "count": 87,
+    "rate": "7.7%"
+   },
+   "hyperlipidemia": {
+    "count": 469,
+    "rate": "34.3%"
+   },
+   "hypertension": {
+    "count": 678,
+    "rate": "40.0%"
+   },
+   "obesity_bmi_30_plus": {
+    "count": 1161,
+    "rate": "37.2%"
+   }
+  },
+  "improvement_opportunities": [
+   {
+    "area": "Diabetes Management",
+    "gap": "A1C testing overdue for 12% of diabetic patients",
+    "impact": "HIGH"
+   },
+   {
+    "area": "Preventive Screening",
+    "gap": "Colorectal cancer screening below national target",
+    "impact": "HIGH"
+   },
+   {
+    "area": "Chronic Care",
+    "gap": "15% of hypertensive patients without BP reading in 6 months",
+    "impact": "MEDIUM"
+   },
+   {
+    "area": "Immunizations",
+    "gap": "Flu vaccination rate below organizational target",
+    "impact": "MEDIUM"
+   },
+   {
+    "area": "Behavioral Health",
+    "gap": "Depression screening gap in 20% of eligible patients",
+    "impact": "MEDIUM"
+   }
+  ],
+  "practice_panel": {
+   "average_age": 52.2,
+   "new_patients_30d": 146,
+   "sex_distribution": {
+    "female": "54%",
+    "male": "46%"
+   },
+   "total_active_patients": 2555
+  },
+  "quality_measures_hedis": {
+   "blood_pressure_control": {
+    "national_avg": "68%",
+    "performance": "77%",
+    "target": "70%"
+   },
+   "breast_cancer_screening": {
+    "national_avg": "73%",
+    "performance": "61%",
+    "target": "75%"
+   },
+   "colorectal_cancer_screening": {
+    "national_avg": "65%",
+    "performance": "72%",
+    "target": "70%"
+   },
+   "depression_screening": {
+    "national_avg": "65%",
+    "performance": "82%",
+    "target": "80%"
+   },
+   "diabetes_a1c_control_lt8": {
+    "national_avg": "72%",
+    "performance": "81%",
+    "target": "75%"
+   },
+   "flu_vaccination_rate": {
+    "national_avg": "52%",
+    "performance": "65%",
+    "target": "70%"
+   }
+  },
+  "report_period": "2026-05-07 to 2026-08-05",
+  "source": "simulated",
+  "utilization_metrics": {
+   "avg_encounters_per_patient_year": 5.0,
+   "ed_visits_per_1000": 249,
+   "hospital_admissions_per_1000": 101,
+   "readmission_rate_30d": "11.9%",
+   "telehealth_utilization": "16%"
+  }
+ },
+ "get_reliability_metrics": {
+  "benchmarks": {
+   "industry_avg_mtbf_hours": 3000,
+   "industry_avg_oee": 65.0,
+   "vs_industry_mtbf": 13.5,
+   "vs_industry_oee": 11.0
+  },
+  "equipment_id": "EQ-CNC-001",
+  "failure_history": {
+   "planned_downtime_hours": 12.8,
+   "top_failure_modes": [
+    {
+     "avg_repair_hours": 4.2,
+     "count": 1,
+     "mode": "Bearing failure"
+    },
+    {
+     "avg_repair_hours": 3.2,
+     "count": 1,
+     "mode": "Seal leak"
+    },
+    {
+     "avg_repair_hours": 1.6,
+     "count": 1,
+     "mode": "Electrical fault"
+    }
+   ],
+   "total_downtime_hours": 9.0,
+   "total_failures_12m": 3,
+   "unplanned_downtime_pct": 41.3
+  },
+  "oee_breakdown": {
+   "availability_pct": 91.92,
+   "oee_class": "Good",
+   "oee_pct": 76.0,
+   "performance_rate_pct": 85.2,
+   "quality_rate_pct": 97.0
+  },
+  "period": "Last 12 months",
+  "reliability_metrics": {
+   "failure_rate_per_1000h": 0.294,
+   "mtbf_days": 141.9,
+   "mtbf_hours": 3405,
+   "mttr_hours": 3.0
+  },
+  "source": "simulated",
+  "trends": {
+   "mtbf_change_pct": 1.9,
+   "mtbf_trend": "STABLE",
+   "oee_change_pct": 0.9,
+   "oee_trend": "STABLE"
+  }
+ },
+ "get_sector_performance": {
+  "sectors": [
+   {
+    "daily_change_pct": 1.22,
+    "market_cap_trillions": 13.1,
+    "name": "Technology",
+    "ytd_change_pct": -1.71
+   },
+   {
+    "daily_change_pct": 0.18,
+    "market_cap_trillions": 5.7,
+    "name": "Healthcare",
+    "ytd_change_pct": 6.15
+   },
+   {
+    "daily_change_pct": -0.99,
+    "market_cap_trillions": 10.0,
+    "name": "Financials",
+    "ytd_change_pct": 4.18
+   },
+   {
+    "daily_change_pct": 0.42,
+    "market_cap_trillions": 6.4,
+    "name": "Consumer Discretionary",
+    "ytd_change_pct": 13.21
+   },
+   {
+    "daily_change_pct": 1.47,
+    "market_cap_trillions": 10.2,
+    "name": "Communication Services",
+    "ytd_change_pct": 2.93
+   },
+   {
+    "daily_change_pct": -0.87,
+    "market_cap_trillions": 13.9,
+    "name": "Industrials",
+    "ytd_change_pct": 2.39
+   },
+   {
+    "daily_change_pct": -1.68,
+    "market_cap_trillions": 6.7,
+    "name": "Consumer Staples",
+    "ytd_change_pct": 3.5
+   },
+   {
+    "daily_change_pct": -0.81,
+    "market_cap_trillions": 9.4,
+    "name": "Energy",
+    "ytd_change_pct": 14.27
+   },
+   {
+    "daily_change_pct": -0.42,
+    "market_cap_trillions": 14.4,
+    "name": "Utilities",
+    "ytd_change_pct": -1.58
+   },
+   {
+    "daily_change_pct": 1.0,
+    "market_cap_trillions": 9.5,
+    "name": "Real Estate",
+    "ytd_change_pct": 1.9
+   },
+   {
+    "daily_change_pct": -0.36,
+    "market_cap_trillions": 9.7,
+    "name": "Materials",
+    "ytd_change_pct": 18.63
+   }
+  ],
+  "source": "simulated"
+ },
+ "get_sensor_data": {
+  "data_points": 96,
+  "equipment_id": "EQ-CNC-001",
+  "period_hours": 24,
+  "readings": [
+   {
+    "timestamp": "2026-08-04T11:30:00+00:00",
+    "value": 3.85
+   },
+   {
+    "timestamp": "2026-08-04T11:45:00+00:00",
+    "value": 3.33
+   },
+   {
+    "timestamp": "2026-08-04T12:00:00+00:00",
+    "value": 4.11
+   },
+   {
+    "timestamp": "2026-08-04T12:15:00+00:00",
+    "value": 3.7
+   },
+   {
+    "timestamp": "2026-08-04T12:30:00+00:00",
+    "value": 3.83
+   },
+   {
+    "timestamp": "2026-08-04T12:45:00+00:00",
+    "value": 4.13
+   },
+   {
+    "timestamp": "2026-08-04T13:00:00+00:00",
+    "value": 3.25
+   },
+   {
+    "timestamp": "2026-08-04T13:15:00+00:00",
+    "value": 3.99
+   },
+   {
+    "timestamp": "2026-08-04T13:30:00+00:00",
+    "value": 3.63
+   },
+   {
+    "timestamp": "2026-08-04T13:45:00+00:00",
+    "value": 3.81
+   },
+   {
+    "timestamp": "2026-08-04T14:00:00+00:00",
+    "value": 3.87
+   },
+   {
+    "timestamp": "2026-08-04T14:15:00+00:00",
+    "value": 3.54
+   },
+   {
+    "timestamp": "2026-08-04T14:30:00+00:00",
+    "value": 3.92
+   },
+   {
+    "timestamp": "2026-08-04T14:45:00+00:00",
+    "value": 3.94
+   },
+   {
+    "timestamp": "2026-08-04T15:00:00+00:00",
+    "value": 4.49
+   },
+   {
+    "timestamp": "2026-08-04T15:15:00+00:00",
+    "value": 3.73
+   },
+   {
+    "timestamp": "2026-08-04T15:30:00+00:00",
+    "value": 3.81
+   },
+   {
+    "timestamp": "2026-08-04T15:45:00+00:00",
+    "value": 4.13
+   },
+   {
+    "timestamp": "2026-08-04T16:00:00+00:00",
+    "value": 4.38
+   },
+   {
+    "timestamp": "2026-08-04T16:15:00+00:00",
+    "value": 2.63
+   },
+   {
+    "timestamp": "2026-08-04T16:30:00+00:00",
+    "value": 3.95
+   },
+   {
+    "timestamp": "2026-08-04T16:45:00+00:00",
+    "value": 4.12
+   },
+   {
+    "timestamp": "2026-08-04T17:00:00+00:00",
+    "value": 3.52
+   },
+   {
+    "timestamp": "2026-08-04T17:15:00+00:00",
+    "value": 4.28
+   },
+   {
+    "timestamp": "2026-08-04T17:30:00+00:00",
+    "value": 3.75
+   },
+   {
+    "timestamp": "2026-08-04T17:45:00+00:00",
+    "value": 3.87
+   },
+   {
+    "timestamp": "2026-08-04T18:00:00+00:00",
+    "value": 4.03
+   },
+   {
+    "timestamp": "2026-08-04T18:15:00+00:00",
+    "value": 3.32
+   },
+   {
+    "timestamp": "2026-08-04T18:30:00+00:00",
+    "value": 3.55
+   },
+   {
+    "timestamp": "2026-08-04T18:45:00+00:00",
+    "value": 3.6
+   },
+   {
+    "timestamp": "2026-08-04T19:00:00+00:00",
+    "value": 3.72
+   },
+   {
+    "timestamp": "2026-08-04T19:15:00+00:00",
+    "value": 3.33
+   },
+   {
+    "timestamp": "2026-08-04T19:30:00+00:00",
+    "value": 3.43
+   },
+   {
+    "timestamp": "2026-08-04T19:45:00+00:00",
+    "value": 3.99
+   },
+   {
+    "timestamp": "2026-08-04T20:00:00+00:00",
+    "value": 3.6
+   },
+   {
+    "timestamp": "2026-08-04T20:15:00+00:00",
+    "value": 3.45
+   },
+   {
+    "timestamp": "2026-08-04T20:30:00+00:00",
+    "value": 3.42
+   },
+   {
+    "timestamp": "2026-08-04T20:45:00+00:00",
+    "value": 3.62
+   },
+   {
+    "timestamp": "2026-08-04T21:00:00+00:00",
+    "value": 3.63
+   },
+   {
+    "timestamp": "2026-08-04T21:15:00+00:00",
+    "value": 3.62
+   },
+   {
+    "timestamp": "2026-08-04T21:30:00+00:00",
+    "value": 3.45
+   },
+   {
+    "timestamp": "2026-08-04T21:45:00+00:00",
+    "value": 4.0
+   },
+   {
+    "timestamp": "2026-08-04T22:00:00+00:00",
+    "value": 3.88
+   },
+   {
+    "timestamp": "2026-08-04T22:15:00+00:00",
+    "value": 4.01
+   },
+   {
+    "timestamp": "2026-08-04T22:30:00+00:00",
+    "value": 3.5
+   },
+   {
+    "timestamp": "2026-08-04T22:45:00+00:00",
+    "value": 3.44
+   },
+   {
+    "timestamp": "2026-08-04T23:00:00+00:00",
+    "value": 3.02
+   },
+   {
+    "timestamp": "2026-08-04T23:15:00+00:00",
+    "value": 3.18
+   },
+   {
+    "timestamp": "2026-08-04T23:30:00+00:00",
+    "value": 3.43
+   },
+   {
+    "timestamp": "2026-08-04T23:45:00+00:00",
+    "value": 3.7
+   }
+  ],
+  "sensor_type": "vibration",
+  "source": "simulated",
+  "statistics": {
+   "max": 4.54,
+   "mean": 3.73,
+   "min": 2.63,
+   "std_dev": 0.36,
+   "trend": "STABLE",
+   "trend_rate_per_hour": -0.001
+  },
+  "thresholds": {
+   "breach_direction": "ABOVE",
+   "breaches_critical": 0,
+   "breaches_warning": 0,
+   "critical": 11.0,
+   "warning": 7.1
+  },
+  "unit": "mm/s"
+ },
+ "get_settlement_analytics": {
+  "by_claim_type": {
+   "auto": {
+    "avg_amount": 8927.06,
+    "count": 97
+   },
+   "health": {
+    "avg_amount": 13208.41,
+    "count": 49
+   },
+   "home": {
+    "avg_amount": 18880.24,
+    "count": 60
+   },
+   "property": {
+    "avg_amount": 5044.76,
+    "count": 22
+   }
+  },
+  "kpis": {
+   "average_settlement": 12091.82,
+   "avg_processing_days": 17.2,
+   "customer_satisfaction": 4.3,
+   "median_settlement": 10801.32,
+   "straight_through_rate_pct": 58.3,
+   "total_amount_paid": 2756936.03,
+   "total_settlements": 228
+  },
+  "period": "current_month",
+  "source": "simulated",
+  "trend": {
+   "avg_amount_vs_prior_month": 3.4,
+   "processing_time_vs_prior_month": 4.3,
+   "settlements_vs_prior_month": -9.9
+  }
+ },
+ "get_stockout_report": {
+  "a_class_stockouts": 5,
+  "items": [
+   {
+    "abc_class": "A",
+    "category": "Electronics",
+    "days_out_of_stock": 8,
+    "estimated_daily_revenue_loss": 34473.26,
+    "estimated_total_loss": 275786.08,
+    "eta": "2026-08-19",
+    "product_name": "Wireless Earbuds",
+    "reorder_status": "ON_ORDER",
+    "sku": "SKU-ELEC-1001"
+   },
+   {
+    "abc_class": "A",
+    "category": "Apparel",
+    "days_out_of_stock": 6,
+    "estimated_daily_revenue_loss": 23667.74,
+    "estimated_total_loss": 142006.44,
+    "eta": "2026-08-16",
+    "product_name": "Winter Jacket",
+    "reorder_status": "ON_ORDER",
+    "sku": "SKU-APRL-2001"
+   },
+   {
+    "abc_class": "A",
+    "category": "Home & Garden",
+    "days_out_of_stock": 7,
+    "estimated_daily_revenue_loss": 17764.24,
+    "estimated_total_loss": 124349.68,
+    "eta": "2026-08-08",
+    "product_name": "Air Purifier",
+    "reorder_status": "ON_ORDER",
+    "sku": "SKU-HOME-4001"
+   },
+   {
+    "abc_class": "B",
+    "category": "Home & Garden",
+    "days_out_of_stock": 13,
+    "estimated_daily_revenue_loss": 3314.1,
+    "estimated_total_loss": 43083.3,
+    "eta": "2026-08-18",
+    "product_name": "Cast Iron Skillet",
+    "reorder_status": "ON_ORDER",
+    "sku": "SKU-HOME-4002"
+   },
+   {
+    "abc_class": "C",
+    "category": "Electronics",
+    "days_out_of_stock": 13,
+    "estimated_daily_revenue_loss": 2511.63,
+    "estimated_total_loss": 32651.19,
+    "eta": "2026-08-07",
+    "product_name": "USB-C Cable",
+    "reorder_status": "ON_ORDER",
+    "sku": "SKU-ELEC-1002"
+   },
+   {
+    "abc_class": "A",
+    "category": "Sports",
+    "days_out_of_stock": 6,
+    "estimated_daily_revenue_loss": 4725.06,
+    "estimated_total_loss": 28350.36,
+    "eta": "2026-08-18",
+    "product_name": "Running Shoes",
+    "reorder_status": "ON_ORDER",
+    "sku": "SKU-SPRT-5001"
+   },
+   {
+    "abc_class": "B",
+    "category": "Sports",
+    "days_out_of_stock": 4,
+    "estimated_daily_revenue_loss": 6158.7,
+    "estimated_total_loss": 24634.8,
+    "eta": null,
+    "product_name": "Trail Backpack",
+    "reorder_status": "PENDING",
+    "sku": "SKU-SPRT-5003"
+   },
+   {
+    "abc_class": "A",
+    "category": "Grocery",
+    "days_out_of_stock": 3,
+    "estimated_daily_revenue_loss": 3218.25,
+    "estimated_total_loss": 9654.75,
+    "eta": "2026-08-14",
+    "product_name": "Organic Coffee",
+    "reorder_status": "ON_ORDER",
+    "sku": "SKU-GROC-3001"
+   }
+  ],
+  "network_stockouts": 157,
+  "recommendation": "Prioritize A-class items for expedited reorder. Consider safety stock adjustment.",
+  "scope": "8 tracked catalog SKUs out of stock, of 157 network-wide",
+  "source": "simulated",
+  "total_revenue_impact": 680516.6,
+  "total_stockouts": 8
+ },
+ "list_claims": {
+  "claims": [
+   {
+    "amount": 65163.85,
+    "claim_id": "CLM-2026-B6CA9F",
+    "claim_type": "home",
+    "filed_date": "2026-07-28",
+    "fraud_risk": 0.51,
+    "priority": "HIGH",
+    "status": "UNDER_REVIEW"
+   },
+   {
+    "amount": 52728.38,
+    "claim_id": "CLM-2026-804807",
+    "claim_type": "health",
+    "filed_date": "2026-07-27",
+    "fraud_risk": 0.42,
+    "priority": "MEDIUM",
+    "status": "INVESTIGATION"
+   },
+   {
+    "amount": 33955.09,
+    "claim_id": "CLM-2026-2B190F",
+    "claim_type": "home",
+    "filed_date": "2026-07-24",
+    "fraud_risk": 0.61,
+    "priority": "MEDIUM",
+    "status": "SETTLEMENT_OFFERED"
+   },
+   {
+    "amount": 55599.0,
+    "claim_id": "CLM-2026-6D4AC1",
+    "claim_type": "property",
+    "filed_date": "2026-07-23",
+    "fraud_risk": 0.32,
+    "priority": "MEDIUM",
+    "status": "CLOSED"
+   },
+   {
+    "amount": 36091.99,
+    "claim_id": "CLM-2026-0C8BED",
+    "claim_type": "health",
+    "filed_date": "2026-07-22",
+    "fraud_risk": 0.91,
+    "priority": "HIGH",
+    "status": "CLOSED"
+   },
+   {
+    "amount": 16867.18,
+    "claim_id": "CLM-2026-76C6C4",
+    "claim_type": "property",
+    "filed_date": "2026-07-22",
+    "fraud_risk": 0.25,
+    "priority": "LOW",
+    "status": "SETTLEMENT_OFFERED"
+   },
+   {
+    "amount": 53157.51,
+    "claim_id": "CLM-2026-BF8968",
+    "claim_type": "liability",
+    "filed_date": "2026-07-20",
+    "fraud_risk": 0.81,
+    "priority": "MEDIUM",
+    "status": "SETTLEMENT_OFFERED"
+   },
+   {
+    "amount": 45581.71,
+    "claim_id": "CLM-2026-D99B8F",
+    "claim_type": "health",
+    "filed_date": "2026-07-17",
+    "fraud_risk": 0.29,
+    "priority": "MEDIUM",
+    "status": "INVESTIGATION"
+   },
+   {
+    "amount": 1988.64,
+    "claim_id": "CLM-2026-B9A707",
+    "claim_type": "property",
+    "filed_date": "2026-07-16",
+    "fraud_risk": 0.57,
+    "priority": "MEDIUM",
+    "status": "ASSESSMENT"
+   },
+   {
+    "amount": 63379.62,
+    "claim_id": "CLM-2026-1FF9DF",
+    "claim_type": "property",
+    "filed_date": "2026-07-16",
+    "fraud_risk": 0.99,
+    "priority": "HIGH",
+    "status": "CLOSED"
+   },
+   {
+    "amount": 70417.3,
+    "claim_id": "CLM-2026-462C0F",
+    "claim_type": "home",
+    "filed_date": "2026-07-15",
+    "fraud_risk": 0.66,
+    "priority": "HIGH",
+    "status": "SETTLEMENT_OFFERED"
+   },
+   {
+    "amount": 57575.57,
+    "claim_id": "CLM-2026-D98BD9",
+    "claim_type": "home",
+    "filed_date": "2026-07-13",
+    "fraud_risk": 0.92,
+    "priority": "HIGH",
+    "status": "CLOSED"
+   },
+   {
+    "amount": 68959.47,
+    "claim_id": "CLM-2026-B1C9D8",
+    "claim_type": "property",
+    "filed_date": "2026-07-10",
+    "fraud_risk": 0.62,
+    "priority": "HIGH",
+    "status": "SUBMITTED"
+   },
+   {
+    "amount": 59780.78,
+    "claim_id": "CLM-2026-8CB220",
+    "claim_type": "auto",
+    "filed_date": "2026-07-07",
+    "fraud_risk": 0.12,
+    "priority": "MEDIUM",
+    "status": "UNDER_REVIEW"
+   },
+   {
+    "amount": 46718.29,
+    "claim_id": "CLM-2026-4BBB4F",
+    "claim_type": "auto",
+    "filed_date": "2026-07-07",
+    "fraud_risk": 0.66,
+    "priority": "MEDIUM",
+    "status": "INVESTIGATION"
+   }
+  ],
+  "filter": "all",
+  "open_claims": 11,
+  "period_days": 30,
+  "source": "simulated",
+  "summary": {
+   "avg_amount": 48530.96,
+   "avg_open_amount": 46847.11,
+   "flagged_fraud": 4,
+   "high_priority": 6,
+   "reserve_exposure": 515318.2,
+   "total_amount": 727964.38
+  },
+  "total_claims": 15
+ }
+}

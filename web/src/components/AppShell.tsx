@@ -12,8 +12,10 @@ import {
   X,
 } from 'lucide-react'
 import { getIndustry, industries, DEFAULT_INDUSTRY_ID } from '../industries/registry'
-import { AGENT_PROMPT_EVENT } from '../lib/promptBus'
+import { AGENT_PROMPT_EVENT, ANSWER_CHARTS_EVENT } from '../lib/promptBus'
 import { useAuth } from '../lib/AuthContext'
+import AnswerChartPanel from './AnswerChartPanel'
+import type { ChartSpec } from '../lib/chartSpec'
 import ChatPanel from './ChatPanel'
 
 export type ShellView = 'dashboard' | 'chat'
@@ -29,6 +31,10 @@ export default function AppShell({ view }: { view: ShellView }) {
   const [chatCollapsed, setChatCollapsed] = useState(false)
   const [railExpanded, setRailExpanded] = useState(false)
   const [industriesOpen, setIndustriesOpen] = useState(false)
+  // Charts extracted from the current answer, published by ChatPanel. Held here
+  // rather than in the dashboard because the dashboard is per-industry and would
+  // lose them on any remount; the panel belongs to the conversation, not the view.
+  const [answerCharts, setAnswerCharts] = useState<ChartSpec[]>([])
 
   // Navigating to the chat tab always reveals the chat pane on desktop too.
   useEffect(() => {
@@ -53,6 +59,17 @@ export default function AppShell({ view }: { view: ShellView }) {
     window.addEventListener(AGENT_PROMPT_EVENT, onPrompt)
     return () => window.removeEventListener(AGENT_PROMPT_EVENT, onPrompt)
   }, [view, industry, navigate])
+
+  // Answer charts: the reverse channel. An empty array is the dismiss signal, so
+  // clearing goes through the same listener rather than a second event.
+  useEffect(() => {
+    const onCharts = (event: Event) => {
+      const detail = (event as CustomEvent<unknown>).detail
+      setAnswerCharts(Array.isArray(detail) ? (detail as ChartSpec[]) : [])
+    }
+    window.addEventListener(ANSWER_CHARTS_EVENT, onCharts)
+    return () => window.removeEventListener(ANSWER_CHARTS_EVENT, onCharts)
+  }, [])
 
   if (!industry) {
     return <Navigate to={`/${DEFAULT_INDUSTRY_ID}/dashboard`} replace />
@@ -199,13 +216,33 @@ export default function AppShell({ view }: { view: ShellView }) {
 
         {/* Main area */}
         <main className="flex-1 flex min-w-0 pb-14 md:pb-0">
-          {/* Dashboard pane: active view below lg; always present at lg+ */}
+          {/* Dashboard pane: active view below lg; always present at lg+.
+              A column so the answer-chart overlay can take the space it needs at
+              the top while the dashboard keeps its own scroller below — the
+              dashboard is the standing view and must not be pushed off-screen. */}
           <div
-            className={`flex-1 min-w-0 @container ${
-              view === 'dashboard' ? 'block' : 'hidden'
-            } lg:block`}
+            className={`flex-1 min-w-0 flex flex-col @container ${
+              view === 'dashboard' ? 'flex' : 'hidden'
+            } lg:flex`}
           >
-            <Dashboard />
+            {/* lg+ only: below lg the same charts render inline under the message
+                (see ChatPanel), because there the dashboard is a different view.
+
+                The cap is 55%, not 45%: the tallest recognized chart is the
+                11-row sector ranking at ~330px (see chartHeight), and at 45% of a
+                720px window it was clipped mid-bar. overflow-y-auto is the
+                backstop for a shorter window, not the normal case — a chart the
+                user must scroll to finish reading is only marginally better than
+                the table it replaced. */}
+            <div className="hidden lg:block shrink-0 max-h-[55%] overflow-y-auto">
+              <AnswerChartPanel
+                specs={answerCharts}
+                onDismiss={() => setAnswerCharts([])}
+              />
+            </div>
+            <div className="flex-1 min-h-0">
+              <Dashboard />
+            </div>
           </div>
 
           {/* Chat pane: active view below lg; right split (collapsible) at lg+ */}

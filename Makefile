@@ -24,8 +24,16 @@ setup: ## Create venv, install python deps + CDK CLI
 # ============================================================
 
 .PHONY: test
-test: ## Unit + infra tests
+test: ## Unit + infra tests (python + web)
 	$(PYTHON) -m pytest tests/unit tests/infra -q
+	$(MAKE) test-web
+
+# Node runs the .ts test directly via native type stripping (>=22.6), so the web
+# app gains no test runner or transpiler for this. Wired into `test` because a
+# suite nothing invokes is a suite that rots.
+.PHONY: test-web
+test-web: ## Front-end unit tests (node:test, no extra deps)
+	node --test tests/unit/*.test.ts
 
 .PHONY: lint
 lint: ## Ruff lint on tools/ deploy/ infra/
