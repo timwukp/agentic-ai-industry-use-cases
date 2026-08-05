@@ -7,6 +7,12 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // Emit the registration inside the app bundle instead of the standalone
+      // registerSW.js, so src/lib/swUpdate.ts can react to a waiting worker.
+      // Without this, `autoUpdate` installs the new SW but the open tab keeps
+      // rendering the precached index.html until the user hard-reloads — the
+      // reason a shipped feature stayed invisible after a successful deploy.
+      injectRegister: null,
       includeAssets: ['icons/icon.svg'],
       manifest: {
         name: 'Agentic AI Industry Use Cases',
