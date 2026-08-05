@@ -9,7 +9,7 @@ import math
 import random
 from datetime import datetime, timedelta, timezone
 
-from toolkit import tool_ok, tool_error
+from toolkit import abc_breakdown, category_rows, sku_basis, tool_ok, tool_error
 from toolkit.dispatch import dispatch
 
 
@@ -26,8 +26,12 @@ def _today() -> datetime:
 def forecast_demand(sku: str, days_ahead: int = 30) -> dict:
     days_ahead = min(max(1, int(days_ahead)), 90)
     today = _today()
-    r = _rng("forecast_demand", sku.upper(), days_ahead, today.strftime("%Y-%m-%d"))
-    base_demand = r.uniform(10, 200)
+    basis = sku_basis(sku)
+    r = _rng("forecast_demand", basis.sku, days_ahead, today.strftime("%Y-%m-%d"))
+    # The SKU's own velocity, so the forecast agrees with the days-of-supply and
+    # reorder point check_inventory reports for it. Drawn over (10, 200) here, a
+    # C-class item forecast at 180 units/day sat beside a 6 units/day average.
+    base_demand = float(basis.avg_daily_units)
 
     forecasts = []
     for i in range(days_ahead):
@@ -49,23 +53,35 @@ def forecast_demand(sku: str, days_ahead: int = 30) -> dict:
             }
         )
     total = sum(f["predicted_units"] for f in forecasts)
+    avg_daily = total / days_ahead
+    # Only the first 14 points are returned, and the chart plots exactly those —
+    # so the peak has to be the peak of what is plotted. Taken over all 30 it
+    # named a date past the right edge of its own chart.
+    shown = forecasts[:14] if days_ahead > 14 else forecasts
+    mape = round(r.uniform(5, 15), 1)
 
     return tool_ok(
         {
-            "sku": sku,
+            "sku": basis.sku,
+            "product_name": basis.name,
             "forecast_period_days": days_ahead,
             "model": "Gradient boosting + seasonal decomposition (demo simulation)",
             "total_predicted_demand": total,
-            "avg_daily_demand": round(total / days_ahead, 1),
-            "peak_day": max(forecasts, key=lambda f: f["predicted_units"])["date"],
-            "forecasts": forecasts[:14] if days_ahead > 14 else forecasts,
+            "avg_daily_demand": round(avg_daily, 1),
+            "peak_day": max(shown, key=lambda f: f["predicted_units"])["date"],
+            "forecasts": shown,
             "accuracy_metrics": {
-                "mape": round(r.uniform(5, 15), 1),
-                "rmse": round(r.uniform(3, 20), 1),
+                "mape": mape,
+                # RMSE is an absolute unit error, so it must scale with the
+                # SKU's volume: drawn over (3, 20) beside a 6 units/day item it
+                # claimed an error three times the quantity being forecast.
+                "rmse": round(avg_daily * mape / 100 * r.uniform(0.9, 1.3), 1),
                 "forecast_bias": round(r.uniform(-3, 3), 1),
             },
             "factors": {
                 "seasonality": "Moderate - weekend spike pattern",
+                # The series applies a +0.1%/day trend above; stating a
+                # different figure here would contradict the plotted line.
                 "trend": "Slightly upward (+0.1%/day)",
                 "promotional_impact": "None currently active",
             },
@@ -83,29 +99,53 @@ def get_demand_trends(category: str, period: str = "month") -> dict:
     today = _today()
     r = _rng("demand_trends", category.lower(), period, today.strftime("%Y-%W"))
 
+    # A week-over-week trend has to be a walk, not 12 independent draws: the
+    # headline growth percentages below are computed FROM this series, so an
+    # independent randint per week produced "units +6.6%" over a line that
+    # visibly fell. Units follow a drift plus noise; revenue follows units at a
+    # slowly-moving average order value, so the two lines agree.
     num_weeks = min(days // 7, 52)
     weekly_data = []
+    units = r.randint(1500, 4000)
+    aov = r.uniform(35, 120)
+    # Units and AOV drift independently — that is what makes the revenue line
+    # worth plotting next to units. With AOV nearly fixed, revenue is a scaled
+    # copy of units and the two lines render as one.
+    units_drift = r.uniform(-0.03, 0.04)
+    # signed magnitude, never ~0: a flat AOV makes revenue an exact scaled copy
+    # of units, and the two plotted lines land on top of each other
+    aov_drift = r.choice([-1, 1]) * r.uniform(0.004, 0.018)
     for i in range(num_weeks):
         week_start = today - timedelta(weeks=num_weeks - i)
+        units = max(400, round(units * (1 + units_drift) * r.uniform(0.92, 1.08)))
+        aov = round(max(20.0, aov * (1 + aov_drift) * r.uniform(0.97, 1.03)), 2)
         weekly_data.append(
             {
                 "week": week_start.strftime("%Y-W%V"),
-                "units_sold": r.randint(500, 5000),
-                "revenue": round(r.uniform(10000, 100000), 2),
-                "avg_order_value": round(r.uniform(25, 150), 2),
+                "units_sold": units,
+                "revenue": round(units * aov, 2),
+                "avg_order_value": aov,
             }
         )
+
+    window = weekly_data[-12:]
+
+    def _growth(key: str) -> float:
+        """First-to-last change across the returned window, in percent."""
+        if len(window) < 2 or not window[0][key]:
+            return 0.0
+        return round((window[-1][key] / window[0][key] - 1) * 100, 1)
 
     return tool_ok(
         {
             "category": category,
             "period": period,
             "trends": {
-                "units_growth_pct": round(r.uniform(-5, 20), 1),
-                "revenue_growth_pct": round(r.uniform(-3, 25), 1),
-                "aov_change_pct": round(r.uniform(-2, 8), 1),
+                "units_growth_pct": _growth("units_sold"),
+                "revenue_growth_pct": _growth("revenue"),
+                "aov_change_pct": _growth("avg_order_value"),
             },
-            "weekly_data": weekly_data[-12:],
+            "weekly_data": window,
             "top_growing_skus": [
                 {
                     "sku": f"SKU-{r.randint(100, 999)}",
@@ -128,10 +168,14 @@ def get_demand_trends(category: str, period: str = "month") -> dict:
 
 def auto_reorder(sku: str) -> dict:
     today = _today()
-    r = _rng("auto_reorder", sku.upper())
-    avg_daily = r.uniform(10, 200)
+    basis = sku_basis(sku)
+    r = _rng("auto_reorder", basis.sku)
+    # Velocity and unit cost come from the shared basis: an EOQ computed from a
+    # different cost and demand than check_inventory reports for the same SKU is
+    # an order quantity the agent cannot justify from the numbers on screen.
+    avg_daily = float(basis.avg_daily_units)
+    unit_cost = basis.unit_cost
     lead_time_days = r.randint(3, 21)
-    unit_cost = round(r.uniform(5, 200), 2)
     ordering_cost = round(r.uniform(25, 100), 2)
     holding_cost_pct = r.uniform(0.15, 0.30)
 
@@ -144,21 +188,19 @@ def auto_reorder(sku: str) -> dict:
 
     return tool_ok(
         {
-            "sku": sku,
+            "sku": basis.sku,
+            "product_name": basis.name,
             "recommendation": "REORDER",
             "order_details": {
                 "quantity": eoq,
                 "unit_cost": unit_cost,
                 "total_cost": round(eoq * unit_cost, 2),
-                "supplier": f"SUP-{r.randint(100, 999)}",
-                "supplier_name": r.choice(
-                    [
-                        "GlobalSupply Co",
-                        "Pacific Distributors",
-                        "Premier Wholesale",
-                        "Atlas Trading",
-                    ]
-                ),
+                # The vendor that actually serves this category, so the id and
+                # the name agree with the supplier directory. Minted from a free
+                # randint beside a name from its own list, this recommended
+                # "SUP-457 / Pacific Distributors" — an id in no directory.
+                "supplier": basis.supplier_id,
+                "supplier_name": basis.supplier_name,
             },
             "calculations": {
                 "eoq": eoq,
@@ -187,42 +229,18 @@ def auto_reorder(sku: str) -> dict:
 
 def get_abc_analysis() -> dict:
     today = _today()
-    r = _rng("abc_analysis", today.strftime("%Y-%m-%d"))
+    day = today.strftime("%Y-%m-%d")
+    # The classes are shares of the same network the inventory summary reports.
+    # Drawn independently, this card showed 212 + 363 + 512 = 1,087 SKUs directly
+    # beside a "Total SKUs 5,501" tile, and put every class "On target" on a day
+    # the network was at 94.1% in stock against a 95% goal.
+    rows = category_rows(day)
+    classification = abc_breakdown(rows)
     return tool_ok(
         {
-            "analysis_date": today.strftime("%Y-%m-%d"),
-            "classification": {
-                "A": {
-                    "description": "High value - top 20% of SKUs, 80% of revenue",
-                    "sku_count": r.randint(150, 300),
-                    "sku_pct": 18.5,
-                    "revenue_pct": 79.2,
-                    "inventory_value": round(r.uniform(2000000, 5000000), 2),
-                    "avg_turnover": round(r.uniform(8, 15), 1),
-                    "target_fill_rate": 98.0,
-                    "current_fill_rate": round(r.uniform(95, 99), 1),
-                },
-                "B": {
-                    "description": "Medium value - next 30% of SKUs, 15% of revenue",
-                    "sku_count": r.randint(300, 600),
-                    "sku_pct": 31.2,
-                    "revenue_pct": 15.3,
-                    "inventory_value": round(r.uniform(500000, 1500000), 2),
-                    "avg_turnover": round(r.uniform(5, 8), 1),
-                    "target_fill_rate": 95.0,
-                    "current_fill_rate": round(r.uniform(90, 97), 1),
-                },
-                "C": {
-                    "description": "Low value - bottom 50% of SKUs, 5% of revenue",
-                    "sku_count": r.randint(500, 1000),
-                    "sku_pct": 50.3,
-                    "revenue_pct": 5.5,
-                    "inventory_value": round(r.uniform(100000, 500000), 2),
-                    "avg_turnover": round(r.uniform(2, 5), 1),
-                    "target_fill_rate": 90.0,
-                    "current_fill_rate": round(r.uniform(85, 95), 1),
-                },
-            },
+            "analysis_date": day,
+            "total_skus": sum(c.total_skus for c in rows),
+            "classification": classification,
             "recommendations": [
                 "Increase safety stock for A-class items below 98% fill rate",
                 "Review C-class items with turnover < 2x for potential discontinuation",

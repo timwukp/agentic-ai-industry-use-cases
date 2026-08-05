@@ -8,24 +8,15 @@ import hashlib
 import random
 from datetime import datetime, timedelta, timezone
 
-from toolkit import tool_ok, tool_error
+from toolkit import (
+    market_basis,
+    property_basis,
+    tool_ok,
+    tool_error,
+)
 from toolkit.dispatch import dispatch
+from toolkit.property_basis import STREETS
 from toolkit.responses import parse_json_arg
-
-STREETS = [
-    "Oak Dr",
-    "Maple Ave",
-    "Elm St",
-    "Cedar Ln",
-    "Pine Rd",
-    "Birch Ct",
-    "Walnut Way",
-    "Spruce Blvd",
-    "Willow Ct",
-    "Magnolia Dr",
-    "Hickory St",
-    "Cherry Ln",
-]
 
 ZONING_CODES = [
     ("R-1", "Single Family Residential"),
@@ -374,16 +365,22 @@ def search_properties(criteria: str) -> dict:
     if not isinstance(filters, dict):
         return tool_error("criteria must be a JSON object of search filters")
 
-    min_price = int(filters.get("min_price", 200000))
-    max_price = int(filters.get("max_price", 800000))
-    if min_price > max_price:
-        return tool_error("min_price cannot exceed max_price")
     beds_min = int(filters.get("beds_min", 2))
     baths_min = int(filters.get("baths_min", 1))
     zipcode = str(filters.get("zipcode", "00000"))
     property_type = str(filters.get("property_type", "single_family"))
-
     today = _today()
+    market = market_basis(zipcode, today.strftime("%Y-%m"))
+
+    # Default the price window to this market's own range rather than a flat
+    # $200K-$800K. Priced in-market, a $900K-median zipcode matched nothing
+    # against that fixed window and the page came back empty on a dashboard whose
+    # market tile said 340 homes were for sale.
+    min_price = int(filters.get("min_price", round(market.median_price * 0.4)))
+    max_price = int(filters.get("max_price", round(market.median_price * 2.0)))
+    if min_price > max_price:
+        return tool_error("min_price cannot exceed max_price")
+
     r = _rng(
         "search_properties",
         min_price,
@@ -394,29 +391,55 @@ def search_properties(criteria: str) -> dict:
         property_type,
         today.strftime("%Y-%m-%d"),
     )
-    total_results = r.randint(8, 50)
-    page_size = min(10, total_results)
+    page_size = 10
 
     listings = []
-    for _ in range(page_size):
-        price = r.randint(min_price, max_price)
-        sqft = r.randint(1000, 4000)
-        dom = r.randint(1, 90)
+    examined = 0
+    # bounded: narrow filters may admit nothing, and an empty page is a valid
+    # answer — never spin looking for a match that cannot exist
+    for _ in range(page_size * 60):
+        if len(listings) == page_size:
+            break
+        examined += 1
+        # Size, rooms and price come from the address-keyed shared basis, so a
+        # listing's price agrees with the comps and details routes for the same
+        # address. Only listing-specific facts (status, DOM, price cut) are
+        # drawn here. See toolkit.property_basis.
+        address = f"{r.randint(100, 9999)} {r.choice(STREETS)}, {zipcode}"
+        basis = property_basis(
+            address, current_year=today.year, market_ppsf=market.median_ppsf
+        )
+        # the basis is address-derived, so honour the caller's filters by
+        # rejecting properties that don't match rather than by overwriting them
+        if not min_price <= basis.value <= max_price:
+            continue
+        if basis.beds < beds_min or basis.baths < baths_min:
+            continue
+        price = basis.value
+        sqft = basis.sqft
+        # Days on market centre on the market's own average, so a 1.6-month
+        # seller's market does not list homes sitting 88 days unsold. Drawn over
+        # (1, 90) it did, beneath a tile reading "26 day average".
+        dom = max(1, round(market.average_dom * r.uniform(0.3, 1.8)))
+        # A price cut is what a listing that has sat does. Flipped on a coin
+        # regardless of DOM, a home listed 3 days ago showed a reduction while
+        # the market's own price-cut share said 18%.
+        cut_odds = min(0.75, dom / max(1, market.average_dom) * 0.35)
         original_price = (
-            round(price * r.uniform(1.0, 1.1)) if r.random() > 0.5 else price
+            round(price * r.uniform(1.02, 1.12)) if r.random() < cut_odds else price
         )
         listings.append(
             {
                 "listing_id": f"MLS-{r.randint(10000000, 99999999)}",
-                "address": f"{r.randint(100, 9999)} {r.choice(STREETS)}, {zipcode}",
+                "address": address,
                 "list_price": price,
                 "original_price": original_price,
                 "price_reduced": original_price != price,
-                "bedrooms": beds_min + r.choice([0, 0, 1, 1, 2]),
-                "bathrooms": baths_min + r.choice([0, 0, 0, 1]),
+                "bedrooms": basis.beds,
+                "bathrooms": basis.baths,
                 "sqft": sqft,
-                "lot_sqft": r.randint(3000, 20000),
-                "year_built": r.randint(1950, today.year),
+                "lot_sqft": basis.lot_sqft,
+                "year_built": basis.year_built,
                 "property_type": property_type.replace("_", " ").title(),
                 "status": r.choice(
                     ["Active", "Active", "Active", "Pending", "Coming Soon"]
@@ -442,30 +465,59 @@ def search_properties(criteria: str) -> dict:
     listings.sort(key=lambda x: x["list_price"])
     prices = [x["list_price"] for x in listings]
 
+    # The total is the market's active inventory scaled by the share of sampled
+    # addresses these filters actually admitted — so a filter that rejected 9 in
+    # 10 candidates cannot report the whole market as matching. Drawn as
+    # randint(8, 50) it claimed 41 matches on a market with 12 homes for sale,
+    # and reported a full page of results while the page held none.
+    hit_rate = len(listings) / examined if examined else 0.0
+    total_results = max(len(listings), round(market.active_listings * hit_rate))
+
+    # An empty page is a valid answer for narrow filters — the loop above says so
+    # — but min(prices) on it raises ValueError, so the route 500'd instead of
+    # returning "no listings match". A `min_price` above the market's top end
+    # reproduced it.
+    summary = (
+        {
+            "min_price": min(prices),
+            "max_price": max(prices),
+            "median_price": sorted(prices)[len(prices) // 2],
+            "avg_price_per_sqft": round(
+                sum(x["price_per_sqft"] for x in listings) / len(listings), 2
+            ),
+            "avg_days_on_market": round(
+                sum(x["days_on_market"] for x in listings) / len(listings)
+            ),
+            "pct_with_price_reduction": round(
+                sum(1 for x in listings if x["price_reduced"]) / len(listings) * 100,
+                1,
+            ),
+        }
+        if listings
+        else {
+            "min_price": None,
+            "max_price": None,
+            "median_price": None,
+            "avg_price_per_sqft": None,
+            "avg_days_on_market": None,
+            "pct_with_price_reduction": None,
+        }
+    )
+
     return tool_ok(
         {
             "search_criteria": filters,
+            "zipcode": zipcode,
+            # What the market carries in total, so "12 of 41 matching" reads
+            # against a number the market tile also reports.
+            "market_active_listings": market.active_listings,
+            "market_median_price": market.median_price,
+            "market_median_price_per_sqft": market.median_ppsf,
             "total_results": total_results,
             "page": 1,
             "page_size": page_size,
             "listings": listings,
-            "summary": {
-                "min_price": min(prices),
-                "max_price": max(prices),
-                "median_price": sorted(prices)[len(prices) // 2],
-                "avg_price_per_sqft": round(
-                    sum(x["price_per_sqft"] for x in listings) / len(listings), 2
-                ),
-                "avg_days_on_market": round(
-                    sum(x["days_on_market"] for x in listings) / len(listings)
-                ),
-                "pct_with_price_reduction": round(
-                    sum(1 for x in listings if x["price_reduced"])
-                    / len(listings)
-                    * 100,
-                    1,
-                ),
-            },
+            "summary": summary,
         },
         simulated=True,
     )

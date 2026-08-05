@@ -1,14 +1,17 @@
 """Gateway target: market — market conditions, neighborhood analysis, forecast, trends.
 
-Market data is a deterministic simulation seeded from the function inputs
-(stable within a calendar day for date-relative fields).
+The market's price level, pace and inventory come from the shared
+toolkit.market_basis, so the conditions tile, the history chart and the forecast
+base are one number. Drawn per route, one screen showed a "Median Sale Price
+$440.1K" tile above a history chart plotting $740K-$780K, above a forecast
+reading "projected from $777.1K".
 """
 
 import hashlib
 import random
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 
-from toolkit import tool_ok, tool_error
+from toolkit import market_basis, month_label, price_history, tool_ok, tool_error
 from toolkit.dispatch import dispatch
 
 
@@ -22,72 +25,137 @@ def _today() -> datetime:
     return datetime(now.year, now.month, now.day, tzinfo=timezone.utc)
 
 
+#: Drivers that hold in any market. The supply- and price-side ones are chosen
+#: from the basis instead, so a 7.4-month buyer's market is not handed "Limited
+#: housing inventory" as a tailwind on the card that calls it oversupplied.
+GENERIC_RISKS = (
+    "Interest rate volatility",
+    "Local employment market shifts",
+    "Regulatory changes (zoning, rent control)",
+    "Inflation and construction cost pressures",
+    "Seasonal demand fluctuations",
+)
+GENERIC_DRIVERS = (
+    "Strong job growth in metro area",
+    "Population in-migration trends",
+    "Infrastructure improvements planned",
+    "Tech sector expansion nearby",
+)
+
+
+def _risk_factors(basis, r: random.Random) -> list:
+    """Risks that follow this market's supply and price direction."""
+    out = []
+    if basis.months_supply >= 6.0:
+        out.append(f"Elevated inventory at {basis.months_supply} months of supply")
+    if basis.yoy_pct < 0:
+        out.append(f"Prices down {abs(basis.yoy_pct)}% year over year")
+    out.extend(r.sample(GENERIC_RISKS, k=r.randint(2, 3)))
+    return out
+
+
+def _positive_drivers(basis, r: random.Random) -> list:
+    """Tailwinds that follow this market's supply and price direction."""
+    out = []
+    if basis.months_supply < 4.0:
+        out.append(f"Tight inventory at {basis.months_supply} months of supply")
+    if basis.yoy_pct > 0:
+        out.append(f"Prices up {basis.yoy_pct}% year over year")
+    out.extend(r.sample(GENERIC_DRIVERS, k=2))
+    return out
+
+
 def get_market_conditions(zipcode: str) -> dict:
     today = _today()
-    r = _rng("market_conditions", zipcode, today.strftime("%Y-%m"))
-    median_price = r.randint(250000, 1200000)
-    yoy_change = round(r.uniform(-8, 15), 1)
-    avg_dom = r.randint(10, 90)
-    months_supply = round(r.uniform(0.8, 8.0), 1)
+    month = today.strftime("%Y-%m")
+    basis = market_basis(zipcode, month)
+    r = _rng("market_conditions", basis.zipcode, month)
 
-    if months_supply < 3:
-        market_type = "Strong Seller's Market"
-    elif months_supply < 5:
-        market_type = "Seller's Market"
-    elif months_supply < 7:
-        market_type = "Balanced Market"
-    else:
-        market_type = "Buyer's Market"
+    # Every indicator below is derived from months-of-supply and the price level.
+    # Drawn beside them, a 1.6-month "Strong Seller's Market" reported a 0.944
+    # sale-to-list ratio and a 90-day average time on market.
+    sale_to_list = basis.sale_to_list_ratio
 
-    sale_to_list = round(r.uniform(0.94, 1.06), 3)
-    pct_over_asking = (
-        round(r.uniform(10, 60), 1)
-        if sale_to_list > 1.0
-        else round(r.uniform(2, 25), 1)
-    )
+    # The three property types split the market's sales, so their shares sum to
+    # 100. Drawn over (40,70)/(15,35)/(5,20) they summed to 91.3 one day and
+    # 118.7 the next, on a card that reads as a breakdown.
+    #
+    # Two are drawn and the third is the residual, which makes the sum exact by
+    # construction rather than by a normalisation step. The ranges keep the
+    # residual comfortably positive: the worst case, 65 + 32, still leaves
+    # townhouses 3.0% of sales. An earlier version normalised by
+    # `100 / sum(shares)` on top of a `max(5.0, ...)` floor — with these ranges
+    # the floor never binds, so that scale factor was always exactly 1.0.
+    sf_pct = round(r.uniform(45, 65), 1)
+    condo_pct = round(r.uniform(18, 32), 1)
+    town_pct = round(100 - sf_pct - condo_pct, 1)
+
+    # Each type's median relative to the market's own median. Drawn as three free
+    # multipliers they share-weighted to $468K under a $528K headline median — the
+    # card reads as a decomposition of the number above it, and 83 of 300 markets
+    # blended more than 5% below their own headline. So the relatives are rescaled
+    # to make the share-weighted blend land on the headline: single-family carries
+    # a premium, condos a discount, townhouses between them, and the level is the
+    # market's.
+    relatives = {
+        "single_family": (r.uniform(1.05, 1.25), sf_pct),
+        "condo": (r.uniform(0.55, 0.8), condo_pct),
+        "townhouse": (r.uniform(0.75, 0.95), town_pct),
+    }
+    blend = sum(rel * pct for rel, pct in relatives.values()) / 100
+    type_medians = {
+        name: {
+            "median_price": round(basis.median_price * rel / blend),
+            "pct_of_sales": pct,
+        }
+        for name, (rel, pct) in relatives.items()
+    }
 
     return tool_ok(
         {
-            "zipcode": zipcode,
+            "zipcode": basis.zipcode,
+            "as_of": month,
             "market_snapshot": {
-                "median_sale_price": median_price,
-                "median_price_per_sqft": round(r.uniform(150, 600), 2),
-                "average_days_on_market": avg_dom,
-                "median_days_on_market": avg_dom - r.randint(0, 15),
-                "active_listings": r.randint(50, 800),
-                "new_listings_30d": r.randint(20, 200),
-                "closed_sales_30d": r.randint(15, 150),
-                "pending_sales": r.randint(10, 100),
-                "months_of_supply": months_supply,
+                "median_sale_price": basis.median_price,
+                "median_price_per_sqft": basis.median_ppsf,
+                # Implied by the two figures above; stated so a reader can see
+                # the $/sqft is consistent with the median rather than a separate
+                # draw that implied a 730 sqft median home.
+                "implied_median_sqft": round(basis.median_price / basis.median_ppsf),
+                "average_days_on_market": basis.average_dom,
+                # The median is always at or below the mean when a few stale
+                # listings drag the tail; drawn as avg - randint(0, 15) it could
+                # equal the average exactly.
+                "median_days_on_market": max(
+                    3, round(basis.average_dom * r.uniform(0.75, 0.92))
+                ),
+                "active_listings": basis.active_listings,
+                "new_listings_30d": basis.new_listings_30d,
+                "closed_sales_30d": basis.closed_sales_30d,
+                "pending_sales": basis.pending_sales,
+                "months_of_supply": basis.months_supply,
             },
             "price_trends": {
-                "year_over_year_pct": yoy_change,
-                "month_over_month_pct": round(r.uniform(-3, 4), 1),
-                "median_price_12mo_ago": round(median_price / (1 + yoy_change / 100)),
-                "price_per_sqft_trend": round(r.uniform(-5, 12), 1),
+                # Twelve months of the same drift the history chart walks, so the
+                # tile and the line agree on direction. A free draw put "-2.7%
+                # YoY" above a line that rose all year.
+                "year_over_year_pct": basis.yoy_pct,
+                "month_over_month_pct": round(basis.monthly_drift, 2),
+                "median_price_12mo_ago": basis.price_12mo_ago,
+                # Price per sqft rides the same price level, so it trends with it.
+                "price_per_sqft_trend": basis.yoy_pct,
             },
             "market_indicators": {
-                "market_type": market_type,
+                "market_type": basis.market_type,
                 "sale_to_list_ratio": sale_to_list,
-                "pct_sold_over_asking": pct_over_asking,
-                "pct_with_price_reduction": round(r.uniform(10, 50), 1),
-                "avg_price_reduction_pct": round(r.uniform(2, 8), 1),
-                "absorption_rate": round(r.uniform(15, 85), 1),
+                "pct_sold_over_asking": basis.pct_sold_over_asking,
+                "pct_with_price_reduction": basis.pct_with_price_reduction,
+                "avg_price_reduction_pct": round(
+                    max(1.5, (1.0 - sale_to_list) * 100 + 2.0), 1
+                ),
+                "absorption_rate": basis.absorption_rate,
             },
-            "property_types": {
-                "single_family": {
-                    "median_price": round(median_price * r.uniform(1.0, 1.3)),
-                    "pct_of_sales": round(r.uniform(40, 70), 1),
-                },
-                "condo": {
-                    "median_price": round(median_price * r.uniform(0.5, 0.85)),
-                    "pct_of_sales": round(r.uniform(15, 35), 1),
-                },
-                "townhouse": {
-                    "median_price": round(median_price * r.uniform(0.7, 0.95)),
-                    "pct_of_sales": round(r.uniform(5, 20), 1),
-                },
-            },
+            "property_types": type_medians,
         },
         simulated=True,
     )
@@ -95,68 +163,124 @@ def get_market_conditions(zipcode: str) -> dict:
 
 def get_neighborhood_analysis(address: str) -> dict:
     r = _rng("neighborhood", address.lower())
+
+    # Density is the variable the rest of the profile follows: a downtown block
+    # is walkable, transit-served, renter-heavy and thick with restaurants, and a
+    # rural one is none of those. Drawn apart, this card reported walk score 94
+    # and transit score 91 at 640 people/sq mi with 3 restaurants within a mile.
+    density = r.randint(500, 15000)
+    urban = min(1.0, max(0.0, (density - 500) / 12000))
+
+    def _scaled(low: int, high: int, jitter: float = 0.12) -> int:
+        """A score that follows how urban the block is, plus a little noise."""
+        span = high - low
+        return round(
+            min(high, max(low, low + span * (urban + r.uniform(-jitter, jitter))))
+        )
+
+    walk = _scaled(15, 98)
+    transit = _scaled(5, 95)
+    bike = _scaled(20, 90)
+
+    schools = [
+        ("Washington Elementary", "Elementary", (0.2, 2.0)),
+        ("Lincoln Middle School", "Middle", (0.3, 3.0)),
+        ("Jefferson High School", "High", (0.5, 4.0)),
+    ]
+    # Schools cluster where people do, so distances shrink as density rises.
+    nearby = [
+        {
+            "name": name,
+            "type": kind,
+            "rating": round(r.uniform(5, 10), 1),
+            "distance_miles": round(
+                max(0.1, lo + (hi - lo) * (1 - urban) * r.uniform(0.7, 1.15)), 1
+            ),
+        }
+        for name, kind, (lo, hi) in schools
+    ]
+
+    # One year of appreciation, and five years compounded off it. Drawn as an
+    # independent pair, the card showed 14.2% in the last year above 6.1% over
+    # five — the one-year figure alone exceeding the five-year total.
+    value_growth_1yr = round(r.uniform(-5, 18), 1)
+    value_growth_5yr = round(
+        ((1 + value_growth_1yr / 100 * r.uniform(0.6, 1.1)) ** 5 - 1) * 100, 1
+    )
+
+    violent = round(0.5 + 7.5 * urban * r.uniform(0.6, 1.3), 1)
+    property_crime = round(violent * r.uniform(4.5, 7.0), 1)
+    # A crime index is what the two rates above measure, so it cannot read "22 —
+    # Below Average" beside 7.1 violent crimes per 1,000.
+    crime_index = round(min(95, max(10, violent / 8.0 * 80 + r.uniform(-5, 5))))
+    growth_5yr = round(r.uniform(-2, 15), 1)
+
     return tool_ok(
         {
             "address": address,
             "scores": {
-                "overall_livability": r.randint(55, 95),
-                "walk_score": r.randint(15, 98),
-                "transit_score": r.randint(5, 95),
-                "bike_score": r.randint(10, 90),
+                # Livability is the blend of the three scores below plus safety,
+                # not a fifth draw that read 91 beside a walk score of 18.
+                "overall_livability": round(
+                    (walk + transit + bike) / 3 * 0.6 + (100 - crime_index) * 0.4
+                ),
+                "walk_score": walk,
+                "transit_score": transit,
+                "bike_score": bike,
             },
             "schools": {
-                "average_rating": round(r.uniform(4, 10), 1),
-                "nearby_schools": [
-                    {
-                        "name": "Washington Elementary",
-                        "type": "Elementary",
-                        "rating": round(r.uniform(5, 10), 1),
-                        "distance_miles": round(r.uniform(0.2, 2.0), 1),
-                    },
-                    {
-                        "name": "Lincoln Middle School",
-                        "type": "Middle",
-                        "rating": round(r.uniform(5, 10), 1),
-                        "distance_miles": round(r.uniform(0.3, 3.0), 1),
-                    },
-                    {
-                        "name": "Jefferson High School",
-                        "type": "High",
-                        "rating": round(r.uniform(4, 10), 1),
-                        "distance_miles": round(r.uniform(0.5, 4.0), 1),
-                    },
-                ],
+                # The mean of the schools listed beneath it. Drawn separately, the
+                # header said 5.2 above three schools rated 8.4, 9.1 and 7.7.
+                "average_rating": round(
+                    sum(s["rating"] for s in nearby) / len(nearby), 1
+                ),
+                "nearby_schools": nearby,
             },
             "safety": {
-                "crime_index": r.randint(15, 85),
-                "crime_trend": r.choice(
-                    ["Decreasing", "Stable", "Slightly Increasing"]
+                "crime_index": crime_index,
+                # Follows the five-year population growth: a shrinking
+                # neighborhood with rising crime is a different story from a
+                # booming one, and the two were drawn independently.
+                "crime_trend": (
+                    "Decreasing"
+                    if growth_5yr > 8
+                    else "Stable" if growth_5yr > 2 else "Slightly Increasing"
                 ),
-                "violent_crime_per_1000": round(r.uniform(0.5, 8.0), 1),
-                "property_crime_per_1000": round(r.uniform(5, 40), 1),
-                "national_comparison": r.choice(
-                    ["Below Average", "Average", "Above Average"]
+                "violent_crime_per_1000": violent,
+                "property_crime_per_1000": property_crime,
+                "national_comparison": (
+                    "Below Average"
+                    if crime_index < 35
+                    else "Average" if crime_index < 65 else "Above Average"
                 ),
             },
             "demographics": {
                 "median_household_income": r.randint(45000, 180000),
                 "median_age": round(r.uniform(28, 52), 1),
-                "population_density_per_sqmi": r.randint(500, 15000),
-                "owner_occupied_pct": round(r.uniform(35, 85), 1),
+                "population_density_per_sqmi": density,
+                # Dense blocks are renter-heavy; this ran to 85% owner-occupied
+                # at 14,000 people per square mile.
+                "owner_occupied_pct": round(85 - 45 * urban * r.uniform(0.8, 1.2), 1),
                 "college_educated_pct": round(r.uniform(20, 75), 1),
-                "population_growth_5yr_pct": round(r.uniform(-2, 15), 1),
+                "population_growth_5yr_pct": growth_5yr,
             },
             "amenities": {
-                "restaurants_within_1mi": r.randint(5, 80),
-                "grocery_stores_within_2mi": r.randint(1, 12),
-                "parks_within_1mi": r.randint(1, 8),
-                "hospitals_within_5mi": r.randint(1, 5),
-                "shopping_centers_within_3mi": r.randint(1, 10),
+                # Amenity counts are what density means on the ground.
+                "restaurants_within_1mi": max(
+                    1, round(5 + 75 * urban * r.uniform(0.7, 1.3))
+                ),
+                "grocery_stores_within_2mi": max(1, round(1 + 11 * urban)),
+                "parks_within_1mi": max(1, round(1 + 7 * urban * r.uniform(0.6, 1.2))),
+                "hospitals_within_5mi": max(1, round(1 + 4 * urban)),
+                "shopping_centers_within_3mi": max(1, round(1 + 9 * urban)),
             },
             "growth_trends": {
-                "home_value_growth_1yr_pct": round(r.uniform(-5, 18), 1),
-                "home_value_growth_5yr_pct": round(r.uniform(5, 80), 1),
-                "new_construction_permits_1yr": r.randint(10, 500),
+                "home_value_growth_1yr_pct": value_growth_1yr,
+                "home_value_growth_5yr_pct": value_growth_5yr,
+                # Permits track how fast the population is growing.
+                "new_construction_permits_1yr": max(
+                    5, round(10 + 490 * max(0.0, growth_5yr) / 15 * r.uniform(0.7, 1.3))
+                ),
                 "major_developments": r.sample(
                     [
                         "New transit line extension",
@@ -177,20 +301,31 @@ def get_neighborhood_analysis(address: str) -> dict:
 def get_market_forecast(zipcode: str, months: int = 12) -> dict:
     months = min(max(1, int(months)), 36)
     today = _today()
-    r = _rng("market_forecast", zipcode, months, today.strftime("%Y-%m"))
-    current_median = r.randint(300000, 1000000)
-    monthly_trend = r.uniform(-3, 12) / 12
+    month = today.strftime("%Y-%m")
+    basis = market_basis(zipcode, month)
+    r = _rng("market_forecast", basis.zipcode, months, month)
+    # The forecast starts where the history ends — that is what makes the two
+    # charts joinable. Drawn on its own, the card read "projected from $777.1K"
+    # beside a $440.1K median tile.
+    current_median = basis.median_price
+    # And it continues the trailing drift rather than a fresh (-3, 12) trend that
+    # projected +11%/yr for a market whose own history chart fell all year.
+    monthly_trend = basis.monthly_drift
 
     forecasts = []
     price = float(current_median)
     for m in range(1, months + 1):
-        monthly_change = monthly_trend + r.uniform(-1.5, 1.5)
+        # Noise scaled to the drift, so a flat market is not forecast to swing
+        # ±1.5%/month: at a 0.1%/month drift the sign of the projection was set
+        # by the noise, and month_over_month_pct contradicted the trend stated in
+        # the summary.
+        monthly_change = monthly_trend + r.gauss(0, 0.35)
         price = round(price * (1 + monthly_change / 100))
         confidence_spread = 0.02 + m * 0.005
         forecasts.append(
             {
                 "month": m,
-                "date": (today + timedelta(days=30 * m)).strftime("%Y-%m"),
+                "date": month_label(today, m),
                 "forecasted_median_price": price,
                 "confidence_low": round(price * (1 - confidence_spread)),
                 "confidence_high": round(price * (1 + confidence_spread)),
@@ -203,9 +338,11 @@ def get_market_forecast(zipcode: str, months: int = 12) -> dict:
 
     return tool_ok(
         {
-            "zipcode": zipcode,
+            "zipcode": basis.zipcode,
             "forecast_horizon_months": months,
             "current_median_price": current_median,
+            "trailing_yoy_pct": basis.yoy_pct,
+            "market_type": basis.market_type,
             "forecast": forecasts,
             "summary": {
                 "projected_end_price": forecasts[-1]["forecasted_median_price"],
@@ -215,29 +352,12 @@ def get_market_forecast(zipcode: str, months: int = 12) -> dict:
                     "High" if months <= 6 else "Moderate" if months <= 18 else "Low"
                 ),
             },
-            "risk_factors": r.sample(
-                [
-                    "Interest rate volatility",
-                    "Local employment market shifts",
-                    "New housing supply pipeline",
-                    "Regulatory changes (zoning, rent control)",
-                    "Inflation and construction cost pressures",
-                    "Remote work migration patterns",
-                    "Seasonal demand fluctuations",
-                ],
-                k=r.randint(2, 4),
-            ),
-            "positive_drivers": r.sample(
-                [
-                    "Strong job growth in metro area",
-                    "Limited housing inventory",
-                    "Population in-migration trends",
-                    "Infrastructure improvements planned",
-                    "Low mortgage rate environment",
-                    "Tech sector expansion nearby",
-                ],
-                k=r.randint(2, 3),
-            ),
+            # The supply-side driver has to match the market this zipcode is in.
+            # Sampled freely from one list, a 7.4-month buyer's market was handed
+            # "Limited housing inventory" as a positive driver on the same card
+            # that called it oversupplied.
+            "risk_factors": _risk_factors(basis, r),
+            "positive_drivers": _positive_drivers(basis, r),
             "disclaimer": (
                 "Forecasts are based on historical trends and current market "
                 "indicators. Actual results may vary significantly."
@@ -254,33 +374,14 @@ def get_market_trends(zipcode: str, period: str = "1y") -> dict:
         return tool_error(f"Invalid period: {period}", valid=sorted(period_map))
     period_months = period_map[period]
     today = _today()
-    r = _rng("market_trends", zipcode, period, today.strftime("%Y-%m"))
+    month = today.strftime("%Y-%m")
+    basis = market_basis(zipcode, month)
 
-    price = float(r.randint(300000, 900000))
-    ppsf = r.uniform(180, 500)
-    base_volume = r.randint(30, 200)
-
-    trend_data = []
-    for m in range(period_months, 0, -1):
-        month_date = today - timedelta(days=30 * m)
-        monthly_change = r.uniform(-2, 3)
-        price = round(price * (1 + monthly_change / 100))
-        ppsf = round(ppsf * (1 + monthly_change / 100), 2)
-        volume = max(5, base_volume + r.randint(-30, 30))
-        season_mult = 1.0 + 0.15 * (1 if month_date.month in (4, 5, 6, 7) else -0.1)
-        volume = round(volume * season_mult)
-        trend_data.append(
-            {
-                "date": month_date.strftime("%Y-%m"),
-                "median_sale_price": price,
-                "median_price_per_sqft": ppsf,
-                "closed_sales": volume,
-                "new_listings": volume + r.randint(-10, 20),
-                "avg_days_on_market": r.randint(15, 75),
-                "sale_to_list_ratio": round(r.uniform(0.95, 1.05), 3),
-                "inventory": r.randint(50, 500),
-            }
-        )
+    # Walked backwards from today's median, so the last point of this chart IS
+    # the median the conditions tile shows. Walked forwards from an independent
+    # start, the endpoint landed wherever the noise took it — which is how a
+    # $440.1K tile ended up above a chart topping out at $780K.
+    trend_data = price_history(basis, today, period_months)
 
     first_price = trend_data[0]["median_sale_price"]
     last_price = trend_data[-1]["median_sale_price"]
@@ -288,9 +389,11 @@ def get_market_trends(zipcode: str, period: str = "1y") -> dict:
 
     return tool_ok(
         {
-            "zipcode": zipcode,
+            "zipcode": basis.zipcode,
             "period": period,
             "data_points": len(trend_data),
+            "current_median_price": basis.median_price,
+            "market_type": basis.market_type,
             "trends": trend_data,
             "summary": {
                 "start_median_price": first_price,

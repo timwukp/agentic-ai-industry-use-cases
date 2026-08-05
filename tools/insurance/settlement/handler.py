@@ -99,38 +99,54 @@ def approve_settlement(claim_id: str, amount: float, approver_notes: str) -> dic
 
 
 def get_settlement_analytics() -> dict:
+    """Monthly settlement book, aggregated up from the per-claim-type mix.
+
+    The headline KPIs are computed FROM by_claim_type, not drawn beside it: the
+    card header renders "N settlements - $X paid" directly above the four
+    per-type rows, so an independent randint for the total produced "328
+    settlements" over rows summing to 232.
+    """
     now = datetime.now(timezone.utc)
     r = _rng("settlement_analytics", now.strftime("%Y-%m"))
+
+    # (count range, average settlement range) per claim type
+    mix = {
+        "auto": ((40, 150), (3000, 12000)),
+        "home": ((20, 80), (5000, 25000)),
+        "health": ((30, 120), (2000, 15000)),
+        "property": ((10, 50), (4000, 20000)),
+    }
+    by_claim_type = {
+        name: {
+            "count": r.randint(*counts),
+            "avg_amount": round(r.uniform(*amounts), 2),
+        }
+        for name, (counts, amounts) in mix.items()
+    }
+
+    total_settlements = sum(t["count"] for t in by_claim_type.values())
+    total_paid = round(
+        sum(t["count"] * t["avg_amount"] for t in by_claim_type.values()), 2
+    )
+    average_settlement = round(total_paid / total_settlements, 2)
+    # Claim amounts are right-skewed — a few large losses pull the mean above the
+    # median. Deriving the median as a fraction of the mean keeps that ordering;
+    # an independent draw let the median land above the average.
+    median_settlement = round(average_settlement * r.uniform(0.65, 0.9), 2)
+
     return tool_ok(
         {
             "period": "current_month",
             "kpis": {
-                "total_settlements": r.randint(100, 500),
-                "total_amount_paid": round(r.uniform(500000, 2000000), 2),
-                "average_settlement": round(r.uniform(3000, 15000), 2),
-                "median_settlement": round(r.uniform(2000, 10000), 2),
+                "total_settlements": total_settlements,
+                "total_amount_paid": total_paid,
+                "average_settlement": average_settlement,
+                "median_settlement": median_settlement,
                 "avg_processing_days": round(r.uniform(5, 20), 1),
                 "straight_through_rate_pct": round(r.uniform(55, 75), 1),
                 "customer_satisfaction": round(r.uniform(4.0, 4.8), 1),
             },
-            "by_claim_type": {
-                "auto": {
-                    "count": r.randint(40, 150),
-                    "avg_amount": round(r.uniform(3000, 12000), 2),
-                },
-                "home": {
-                    "count": r.randint(20, 80),
-                    "avg_amount": round(r.uniform(5000, 25000), 2),
-                },
-                "health": {
-                    "count": r.randint(30, 120),
-                    "avg_amount": round(r.uniform(2000, 15000), 2),
-                },
-                "property": {
-                    "count": r.randint(10, 50),
-                    "avg_amount": round(r.uniform(4000, 20000), 2),
-                },
-            },
+            "by_claim_type": by_claim_type,
             "trend": {
                 "settlements_vs_prior_month": round(r.uniform(-10, 15), 1),
                 "avg_amount_vs_prior_month": round(r.uniform(-5, 10), 1),
