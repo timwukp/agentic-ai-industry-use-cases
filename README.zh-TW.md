@@ -61,9 +61,20 @@ skill 的腳本（preflight、validate、create/update harness、invoke）；ski
 ### 驗證
 
 ```bash
+make test                                   # 單元（pytest + moto）+ 基礎設施 + 前端（node --test）
 .venv/bin/python deploy/smoke_suite.py      # gateway 工具、知識庫、記憶（JWT 終端用戶路徑）
+make verify-harnesses                       # 驗證每個「線上」harness 真的能呼叫到它的工具
 cd tests/e2e && BASE_URL=https://<cloudfront> E2E_EMAIL=... E2E_PASSWORD=... npx playwright test
 ```
+
+`make verify-harnesses` 之所以存在，是因為一次其他檢查全都沒抓到的故障。線上 harness 的
+`allowedTools` 漂移成了一組**匹配不到任何工具**的 pattern，導致每個 agent 只看得到自己的
+`skills` 工具——而它不是報錯拒答，是憑記憶回答並**編造行情數據**（工具回傳 S&P 500 為 6,120.35，
+它報 5,248）。當時 gateway 是 `READY`、所有 target 是 `READY`、17 個工具用 MCP 直接呼叫全部正常、
+IAM 模擬結果是 `allowed`、每個部署步驟 exit code 都是 0。唯一線索是藏在 tool-result 事件裡的
+`"Unknown tool: …"`，而 smoke 腳本和前端都把那個事件丟掉了。所以這個檢查是要求線上 harness
+**實際使用**一個工具，然後讀 **tool-result 事件而不是讀文字**——一個連不到工具的 agent 會產出
+看起來很有信心的文字，所以拿文字內容做斷言比不檢查更糟。
 
 ## 六個行業
 

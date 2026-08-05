@@ -136,19 +136,75 @@ def _tools_outputs(args) -> dict:
     return json.loads((OUTPUTS / "cdk-outputs.json").read_text())[stack]
 
 
+def _harness_exists(args) -> str | None:
+    """harnessId of the live harness with this config's name, or None."""
+    name = _harness_config(args)["harnessName"]
+    client = _client(args)
+    resp = client.list_harnesses()
+    key = next(k for k in resp if k not in ("ResponseMetadata", "nextToken"))
+    for harness in resp[key]:
+        if harness["harnessName"] == name:
+            return harness["harnessId"]
+    return None
+
+
 def step_harness(args) -> None:
+    """Create the harness, or update it in place if it already exists.
+
+    This step used to only ever call create_harness.py, which meant every re-run
+    against an existing harness died on `ConflictException: An agent with the
+    specified name already exists` — and, crucially, applied no config changes.
+    Editing a template or a system prompt and re-deploying therefore did nothing,
+    which is how the live `allowedTools` drifted away from the template and
+    silently cut every industry's agent off from its own tools for a full day.
+
+    Update is restricted to the fields this repo actually owns in the template.
+    A blanket update would also resend `memory`, which the separate memory step
+    wires with its own strategies, and `authorizerConfiguration`, whose live
+    value is derived at deploy time.
+    """
+    config_path = OUTPUTS / f"harness-{args.industry}.json"
+    harness_id = _harness_exists(args)
+
+    if harness_id is None:
+        run(
+            [
+                PY,
+                str(SKILL_DIR / "scripts" / "create_harness.py"),
+                "--config",
+                str(config_path),
+                "--role-arn",
+                _tools_outputs(args)["HarnessRoleArn"],
+                "--region",
+                args.region,
+            ]
+        )
+        return
+
+    print(f"harness {harness_id} exists — updating in place")
     run(
         [
             PY,
-            str(SKILL_DIR / "scripts" / "create_harness.py"),
+            str(SKILL_DIR / "scripts" / "update_harness.py"),
+            "--harness-id",
+            harness_id,
             "--config",
-            str(OUTPUTS / f"harness-{args.industry}.json"),
-            "--role-arn",
-            _tools_outputs(args)["HarnessRoleArn"],
+            str(config_path),
+            "--fields",
+            "systemPrompt",
+            "allowedTools",
+            "tools",
+            "model",
+            "skills",
+            "maxIterations",
+            "maxTokens",
+            "timeoutSeconds",
+            "truncation",
             "--region",
             args.region,
         ]
     )
+    _find_harness(args)  # block until it leaves UPDATING
 
 
 def step_memory(args) -> None:
@@ -240,6 +296,33 @@ def step_smoke(args) -> None:
         )
 
 
+def step_verify(args) -> None:
+    """Assert the deployed harness can actually reach its tools.
+
+    `smoke` is not enough, and the reason is worth stating: its first prompt is
+    literally "list every tool you have access to", and it prints the reply
+    without asserting on it. When every industry's live `allowedTools` had
+    drifted to patterns matching nothing, the agent answered that question with
+    "skills" — and the step passed. The agent then answered data questions from
+    memory with invented numbers rather than admitting it had no tools, so the
+    prose looked healthy too.
+
+    This step reads tool-result events instead of prose. It runs after smoke so a
+    hard failure here is the last word on the deploy.
+    """
+    _save_harness_id(args)
+    run(
+        [
+            PY,
+            str(REPO / "deploy" / "verify_harness.py"),
+            "--industry",
+            args.industry,
+            "--region",
+            args.region,
+        ]
+    )
+
+
 def _client(args):
     import boto3
 
@@ -299,6 +382,7 @@ STEPS = [
     ("memory", step_memory),
     ("observability", step_observability),
     ("smoke", step_smoke),
+    ("verify", step_verify),
 ]
 
 
