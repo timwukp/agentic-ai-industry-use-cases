@@ -151,9 +151,15 @@ The charts are drawn from the tool payload **the agent itself received**, extrac
 invoke event stream (`web/src/lib/toolTrace.ts`). It is deliberately not a re-fetch of the
 matching dashboard route: a re-fetch can return different numbers than the reply on screen
 (different arguments, a later timestamp), and a chart that silently disagrees with the text
-beside it is worse than no chart. Eighteen recognizers (`web/src/lib/chartSpec.ts`) each
-re-validate the shape they expect and return nothing on a mismatch, so an unrecognized tool
-produces no panel rather than a guess.
+beside it is worse than no chart. Forty-six recognizers (`web/src/lib/chartSpec.ts`) — enough
+that every starter question in every industry produces a panel (26/26, measured against the
+live app by `tests/e2e/starter-charts-audit.spec.ts`) — each re-validate the shape they expect
+and return nothing on a mismatch, so an unrecognized tool produces no panel rather than a
+guess. Threshold lines obey two more rules: a line recharts would silently drop for sitting
+outside the axis extends the axis instead (`ifOverflow="extendDomain"`), and a recognizer
+withholds a line so far out that the series itself would be squashed below a third of the plot
+— except a sensor chart's nearest limit, where the gap between the reading and the line *is*
+the answer.
 
 Correlating those events is the subtle part: a `toolResult` carries neither a tool name nor a
 `toolUseId`, so the name is recoverable only via `contentBlockIndex` → `toolUseId` → `name`, and

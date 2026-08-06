@@ -238,3 +238,137 @@ test('a Chinese question is answered in Chinese', async ({ page }, testInfo) => 
     fullPage: true,
   });
 });
+
+test('a threshold in the spec is actually drawn on a bar chart', async ({
+  page,
+}, testInfo) => {
+  // The bug this exists to catch shipped: `<ReferenceLine y={...}>` is correct on
+  // the line chart, but the bar charts use `layout="vertical"`, where the value
+  // axis is x. Every bar-chart threshold — the market median under listing
+  // prices, the upper reference limit on labs, reorder points, adherence targets
+  // — was silently not rendered while the spec carried it. The unit suite asserted
+  // the spec and could not see it; a screenshot showed a chart that looked fine.
+  //
+  // "Find 3-bed homes" is the case where the line carries the answer: the reply
+  // says which listings sit below the market median, and without the line the
+  // reader has no way to see which those are.
+  const desktop = testInfo.project.name === 'desktop';
+  await login(page);
+  await page.goto(desktop ? '/real-estate-valuation/dashboard' : '/real-estate-valuation/chat');
+
+  await ask(page, 'Find 3-bedroom homes for sale in 78701.');
+
+  const panel = desktop
+    ? page.locator('[data-testid="answer-chart-panel"]')
+    : page.locator('[data-testid="inline-answer-charts"]');
+  await expect(panel.first()).toBeVisible({ timeout: 30_000 });
+
+  const chart = panel.first().locator('[data-chart-title="Listing prices"]');
+  await expect(chart).toBeVisible({ timeout: 30_000 });
+  const line = chart.locator('.recharts-reference-line line');
+  await expect(line.first()).toBeAttached({ timeout: 15_000 });
+
+  // A line at x=0 would be attached while conveying nothing, so assert it sits
+  // inside the plot rather than pinned to the axis.
+  const box = await line.first().boundingBox();
+  const plot = await chart.locator('svg.recharts-surface').boundingBox();
+  expect(box, 'the reference line has no geometry').not.toBeNull();
+  expect(plot).not.toBeNull();
+  expect(
+    box!.x - plot!.x,
+    `the median line sits at the left edge (x=${box!.x}, plot starts ${plot!.x})`,
+  ).toBeGreaterThan(20);
+  // Vertical, not horizontal: a y-positioned line on this chart would span the
+  // full width, which is precisely the wrong axis.
+  expect(box!.height, 'the threshold line is horizontal, not vertical').toBeGreaterThan(
+    box!.width,
+  );
+
+  // And it must say what it is. An unlabelled dashed rule is worse than none
+  // here: the reply quotes the single-family median ($655K) while this line is
+  // the all-types median ($528K), so a reader with no label is free to read the
+  // line as the figure the prose names. `position: 'top'` put the text above the
+  // plot where the container clipped it — the line was there and the label was
+  // not, which no assertion on the line alone can distinguish.
+  const label = chart.locator('.recharts-reference-line .recharts-label');
+  await expect(label.first()).toBeVisible({ timeout: 10_000 });
+  const labelBox = await label.first().boundingBox();
+  expect(labelBox, 'the reference-line label has no geometry').not.toBeNull();
+  expect(
+    labelBox!.y,
+    `the label is clipped above the plot (label y=${labelBox!.y}, plot starts ${plot!.y})`,
+  ).toBeGreaterThanOrEqual(plot!.y - 1);
+  expect(labelBox!.y + labelBox!.height).toBeLessThanOrEqual(plot!.y + plot!.height + 1);
+  await expect(label.first()).toHaveText(/median/i);
+
+  await page.screenshot({
+    path: `screenshots/answer-chart-refline-${testInfo.project.name}.png`,
+    fullPage: true,
+  });
+});
+
+test('a threshold above every plotted value is still drawn', async ({ page }, testInfo) => {
+  // The second way a reference line disappears, and the one the unit suite cannot
+  // reach: recharts defaults `ifOverflow` to "discard", so a line outside the axis
+  // domain is dropped silently. The spec is identical either way — this is a
+  // property of the rendered component, so only a browser can tell the difference.
+  //
+  // CNC-001 vibration is the case that matters. Readings run 2.6–4.5 mm/s and the
+  // ISO 10816 Zone C warning limit is 7.1, i.e. above every plotted point, so the
+  // axis has to be extended to hold it. And it is the whole answer: "3.7 mm/s" says
+  // nothing to a reader who cannot see the limit it sits under, which is precisely
+  // the question ("is the vibration on CNC-001 a problem?") the chart is answering.
+  const desktop = testInfo.project.name === 'desktop';
+  await login(page);
+  await page.goto(
+    desktop ? '/manufacturing-maintenance/dashboard' : '/manufacturing-maintenance/chat',
+  );
+
+  await ask(page, 'Analyze the vibration readings on CNC-001 over the last 24 hours.');
+
+  const panel = desktop
+    ? page.locator('[data-testid="answer-chart-panel"]')
+    : page.locator('[data-testid="inline-answer-charts"]');
+  await expect(panel.first()).toBeVisible({ timeout: 30_000 });
+
+  // The vibration answer calls several tools, so the reading chart may not be the
+  // first page of the panel; find it by title.
+  const chart = panel.first().locator('[data-chart-title$="readings"]').first();
+  await expect(chart).toBeVisible({ timeout: 30_000 });
+
+  const line = chart.locator('.recharts-reference-line line');
+  await expect(line.first()).toBeAttached({ timeout: 15_000 });
+  const box = await line.first().boundingBox();
+  const plot = await chart.locator('svg.recharts-surface').boundingBox();
+  expect(box, 'the warning threshold was discarded for being outside the domain').not.toBeNull();
+  expect(plot).not.toBeNull();
+  // Horizontal on a line chart: the value axis is y here, the mirror image of the
+  // bar-chart case above.
+  expect(box!.width, 'the threshold line is vertical, not horizontal').toBeGreaterThan(
+    box!.height,
+  );
+  // Above the series, since every reading is below the limit — and inside the plot,
+  // not clipped to its top edge, which is what "extendDomain" buys.
+  expect(box!.y - plot!.y, 'the line is pinned to the top edge of the plot').toBeGreaterThan(4);
+  const dots = await chart.locator('.recharts-line-curve').boundingBox();
+  expect(dots, 'the series did not render').not.toBeNull();
+  expect(box!.y, 'a warning limit above every reading must plot above the series').toBeLessThan(
+    dots!.y,
+  );
+  // And the series must still be legible: extending the domain squashes it, and
+  // past a point the trend — the other half of the answer — is a flat smear. A
+  // third of the plot is the floor the recognizer enforces (MIN_DATA_SHARE).
+  expect(
+    dots!.height / plot!.height,
+    `the series occupies only ${((dots!.height / plot!.height) * 100).toFixed(0)}% of the plot`,
+  ).toBeGreaterThan(0.2);
+
+  await expect(chart.locator('.recharts-reference-line .recharts-label').first()).toHaveText(
+    /warning/i,
+  );
+
+  await page.screenshot({
+    path: `screenshots/answer-chart-overflow-${testInfo.project.name}.png`,
+    fullPage: true,
+  });
+});
