@@ -27,14 +27,14 @@ export const fil = {
     title: 'Mga Agentic AI Use Case',
     subtitle: 'Mag-sign in gamit ang iyong Cognito account',
     email: 'Email',
-    password: 'Password',
+    password: 'Password', // pragma: allowlist secret — UI label, not a credential
     signIn: 'Mag-sign in',
     totpHint: 'Ilagay ang 6-digit na code mula sa iyong authenticator app.',
     mfaCode: 'MFA code',
     verify: 'I-verify',
-    newPasswordHint: 'Kailangan ng bagong password ang iyong account bago magpatuloy.',
-    newPassword: 'Bagong password',
-    setPassword: 'Itakda ang password at mag-sign in',
+    newPasswordHint: 'Kailangan ng bagong password ang iyong account bago magpatuloy.', // pragma: allowlist secret — UI label, not a credential
+    newPassword: 'Bagong password', // pragma: allowlist secret — UI label, not a credential
+    setPassword: 'Itakda ang password at mag-sign in', // pragma: allowlist secret — UI label, not a credential
     unsupportedChallenge: 'Hindi suportadong sign-in challenge. Makipag-ugnayan sa iyong administrator.',
     signInFailed: 'Nabigo ang pag-sign in',
     footer: 'AWS AgentCore Harness · Cognito authenticated',

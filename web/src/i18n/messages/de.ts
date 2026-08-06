@@ -22,14 +22,14 @@ export const de = {
     title: 'Agentische KI-Anwendungsfälle',
     subtitle: 'Mit Ihrem Cognito-Konto anmelden',
     email: 'E-Mail',
-    password: 'Passwort',
+    password: 'Passwort', // pragma: allowlist secret — UI label, not a credential
     signIn: 'Anmelden',
     totpHint: 'Geben Sie den 6-stelligen Code aus Ihrer Authenticator-App ein.',
     mfaCode: 'MFA-Code',
     verify: 'Bestätigen',
-    newPasswordHint: 'Ihr Konto erfordert ein neues Passwort, bevor Sie fortfahren.',
-    newPassword: 'Neues Passwort',
-    setPassword: 'Passwort setzen & anmelden',
+    newPasswordHint: 'Ihr Konto erfordert ein neues Passwort, bevor Sie fortfahren.', // pragma: allowlist secret — UI label, not a credential
+    newPassword: 'Neues Passwort', // pragma: allowlist secret — UI label, not a credential
+    setPassword: 'Passwort setzen & anmelden', // pragma: allowlist secret — UI label, not a credential
     unsupportedChallenge: 'Nicht unterstützte Anmelde-Challenge. Wenden Sie sich an Ihren Administrator.',
     signInFailed: 'Anmeldung fehlgeschlagen',
     footer: 'AWS AgentCore Harness · Cognito-authentifiziert',

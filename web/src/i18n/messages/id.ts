@@ -22,14 +22,14 @@ export const id = {
     title: 'Kasus Penggunaan AI Agentik',
     subtitle: 'Masuk dengan akun Cognito Anda',
     email: 'Email',
-    password: 'Kata sandi',
+    password: 'Kata sandi', // pragma: allowlist secret — UI label, not a credential
     signIn: 'Masuk',
     totpHint: 'Masukkan kode 6 digit dari aplikasi autentikator Anda.',
     mfaCode: 'Kode MFA',
     verify: 'Verifikasi',
-    newPasswordHint: 'Akun Anda memerlukan kata sandi baru sebelum melanjutkan.',
-    newPassword: 'Kata sandi baru',
-    setPassword: 'Atur kata sandi & masuk',
+    newPasswordHint: 'Akun Anda memerlukan kata sandi baru sebelum melanjutkan.', // pragma: allowlist secret — UI label, not a credential
+    newPassword: 'Kata sandi baru', // pragma: allowlist secret — UI label, not a credential
+    setPassword: 'Atur kata sandi & masuk', // pragma: allowlist secret — UI label, not a credential
     unsupportedChallenge: 'Tantangan masuk tidak didukung. Hubungi administrator Anda.',
     signInFailed: 'Gagal masuk',
     footer: 'AWS AgentCore Harness · Terautentikasi Cognito',

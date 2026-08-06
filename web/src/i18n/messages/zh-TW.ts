@@ -22,14 +22,14 @@ export const zhTW = {
     title: 'Agentic AI 應用案例',
     subtitle: '使用您的 Cognito 帳戶登入',
     email: '電子郵件',
-    password: '密碼',
+    password: '密碼', // pragma: allowlist secret — UI label, not a credential
     signIn: '登入',
     totpHint: '請輸入驗證器 App 的 6 位數驗證碼。',
     mfaCode: 'MFA 驗證碼',
     verify: '驗證',
-    newPasswordHint: '您的帳戶需要設定新密碼後才能繼續。',
-    newPassword: '新密碼',
-    setPassword: '設定密碼並登入',
+    newPasswordHint: '您的帳戶需要設定新密碼後才能繼續。', // pragma: allowlist secret — UI label, not a credential
+    newPassword: '新密碼', // pragma: allowlist secret — UI label, not a credential
+    setPassword: '設定密碼並登入', // pragma: allowlist secret — UI label, not a credential
     unsupportedChallenge: '不支援的登入驗證方式。請聯絡您的管理員。',
     signInFailed: '登入失敗',
     footer: 'AWS AgentCore Harness · Cognito 驗證',

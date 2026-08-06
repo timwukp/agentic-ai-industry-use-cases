@@ -22,14 +22,14 @@ export const es = {
     title: 'Casos de uso de IA agéntica',
     subtitle: 'Inicie sesión con su cuenta de Cognito',
     email: 'Correo electrónico',
-    password: 'Contraseña',
+    password: 'Contraseña', // pragma: allowlist secret — UI label, not a credential
     signIn: 'Iniciar sesión',
     totpHint: 'Introduzca el código de 6 dígitos de su app de autenticación.',
     mfaCode: 'Código MFA',
     verify: 'Verificar',
-    newPasswordHint: 'Su cuenta requiere una nueva contraseña antes de continuar.',
-    newPassword: 'Nueva contraseña',
-    setPassword: 'Establecer contraseña e iniciar sesión',
+    newPasswordHint: 'Su cuenta requiere una nueva contraseña antes de continuar.', // pragma: allowlist secret — UI label, not a credential
+    newPassword: 'Nueva contraseña', // pragma: allowlist secret — UI label, not a credential
+    setPassword: 'Establecer contraseña e iniciar sesión', // pragma: allowlist secret — UI label, not a credential
     unsupportedChallenge: 'Desafío de inicio de sesión no compatible. Contacte a su administrador.',
     signInFailed: 'Error al iniciar sesión',
     footer: 'AWS AgentCore Harness · Autenticado con Cognito',

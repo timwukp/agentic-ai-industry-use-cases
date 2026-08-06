@@ -22,14 +22,14 @@ export const ko = {
     title: '에이전틱 AI 활용 사례',
     subtitle: 'Cognito 계정으로 로그인',
     email: '이메일',
-    password: '비밀번호',
+    password: '비밀번호', // pragma: allowlist secret — UI label, not a credential
     signIn: '로그인',
     totpHint: '인증 앱의 6자리 코드를 입력하세요.',
     mfaCode: 'MFA 코드',
     verify: '확인',
-    newPasswordHint: '계속하려면 새 비밀번호를 설정해야 합니다.',
-    newPassword: '새 비밀번호',
-    setPassword: '비밀번호 설정 후 로그인',
+    newPasswordHint: '계속하려면 새 비밀번호를 설정해야 합니다.', // pragma: allowlist secret — UI label, not a credential
+    newPassword: '새 비밀번호', // pragma: allowlist secret — UI label, not a credential
+    setPassword: '비밀번호 설정 후 로그인', // pragma: allowlist secret — UI label, not a credential
     unsupportedChallenge: '지원되지 않는 로그인 인증 방식입니다. 관리자에게 문의하세요.',
     signInFailed: '로그인 실패',
     footer: 'AWS AgentCore Harness · Cognito 인증',

@@ -22,14 +22,14 @@ export const th = {
     title: 'กรณีใช้งาน Agentic AI',
     subtitle: 'เข้าสู่ระบบด้วยบัญชี Cognito ของคุณ',
     email: 'อีเมล',
-    password: 'รหัสผ่าน',
+    password: 'รหัสผ่าน', // pragma: allowlist secret — UI label, not a credential
     signIn: 'เข้าสู่ระบบ',
     totpHint: 'กรอกรหัส 6 หลักจากแอปยืนยันตัวตนของคุณ',
     mfaCode: 'รหัส MFA',
     verify: 'ยืนยัน',
-    newPasswordHint: 'บัญชีของคุณต้องตั้งรหัสผ่านใหม่ก่อนดำเนินการต่อ',
-    newPassword: 'รหัสผ่านใหม่',
-    setPassword: 'ตั้งรหัสผ่านและเข้าสู่ระบบ',
+    newPasswordHint: 'บัญชีของคุณต้องตั้งรหัสผ่านใหม่ก่อนดำเนินการต่อ', // pragma: allowlist secret — UI label, not a credential
+    newPassword: 'รหัสผ่านใหม่', // pragma: allowlist secret — UI label, not a credential
+    setPassword: 'ตั้งรหัสผ่านและเข้าสู่ระบบ', // pragma: allowlist secret — UI label, not a credential
     unsupportedChallenge: 'ไม่รองรับขั้นตอนเข้าสู่ระบบนี้ โปรดติดต่อผู้ดูแลระบบ',
     signInFailed: 'เข้าสู่ระบบไม่สำเร็จ',
     footer: 'AWS AgentCore Harness · ยืนยันตัวตนด้วย Cognito',

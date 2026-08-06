@@ -35,14 +35,14 @@ export const en = {
     title: 'Agentic AI Use Cases',
     subtitle: 'Sign in with your Cognito account',
     email: 'Email',
-    password: 'Password',
+    password: 'Password', // pragma: allowlist secret — UI label, not a credential
     signIn: 'Sign in',
     totpHint: 'Enter the 6-digit code from your authenticator app.',
     mfaCode: 'MFA code',
     verify: 'Verify',
-    newPasswordHint: 'Your account requires a new password before continuing.',
-    newPassword: 'New password',
-    setPassword: 'Set password & sign in',
+    newPasswordHint: 'Your account requires a new password before continuing.', // pragma: allowlist secret — UI label, not a credential
+    newPassword: 'New password', // pragma: allowlist secret — UI label, not a credential
+    setPassword: 'Set password & sign in', // pragma: allowlist secret — UI label, not a credential
     unsupportedChallenge: 'Unsupported sign-in challenge. Contact your administrator.',
     signInFailed: 'Sign-in failed',
     footer: 'AWS AgentCore Harness · Cognito authenticated',

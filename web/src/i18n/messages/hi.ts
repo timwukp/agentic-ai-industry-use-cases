@@ -28,14 +28,14 @@ export const hi = {
     title: 'एजेंटिक AI उपयोग मामले',
     subtitle: 'अपने Cognito खाते से साइन इन करें',
     email: 'ईमेल',
-    password: 'पासवर्ड',
+    password: 'पासवर्ड', // pragma: allowlist secret — UI label, not a credential
     signIn: 'साइन इन',
     totpHint: 'अपने ऑथेंटिकेटर ऐप से 6-अंकीय कोड दर्ज करें।',
     mfaCode: 'MFA कोड',
     verify: 'सत्यापित करें',
-    newPasswordHint: 'जारी रखने से पहले आपके खाते के लिए नया पासवर्ड आवश्यक है।',
-    newPassword: 'नया पासवर्ड',
-    setPassword: 'पासवर्ड सेट करें और साइन इन करें',
+    newPasswordHint: 'जारी रखने से पहले आपके खाते के लिए नया पासवर्ड आवश्यक है।', // pragma: allowlist secret — UI label, not a credential
+    newPassword: 'नया पासवर्ड', // pragma: allowlist secret — UI label, not a credential
+    setPassword: 'पासवर्ड सेट करें और साइन इन करें', // pragma: allowlist secret — UI label, not a credential
     unsupportedChallenge: 'असमर्थित साइन-इन चैलेंज। अपने व्यवस्थापक से संपर्क करें।',
     signInFailed: 'साइन-इन विफल',
     footer: 'AWS AgentCore Harness · Cognito प्रमाणित',

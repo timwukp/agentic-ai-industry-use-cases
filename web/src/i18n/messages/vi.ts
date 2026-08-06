@@ -22,14 +22,14 @@ export const vi = {
     title: 'Trường hợp ứng dụng AI Tác tử',
     subtitle: 'Đăng nhập bằng tài khoản Cognito của bạn',
     email: 'Email',
-    password: 'Mật khẩu',
+    password: 'Mật khẩu', // pragma: allowlist secret — UI label, not a credential
     signIn: 'Đăng nhập',
     totpHint: 'Nhập mã 6 chữ số từ ứng dụng xác thực của bạn.',
     mfaCode: 'Mã MFA',
     verify: 'Xác minh',
-    newPasswordHint: 'Tài khoản của bạn cần mật khẩu mới trước khi tiếp tục.',
-    newPassword: 'Mật khẩu mới',
-    setPassword: 'Đặt mật khẩu & đăng nhập',
+    newPasswordHint: 'Tài khoản của bạn cần mật khẩu mới trước khi tiếp tục.', // pragma: allowlist secret — UI label, not a credential
+    newPassword: 'Mật khẩu mới', // pragma: allowlist secret — UI label, not a credential
+    setPassword: 'Đặt mật khẩu & đăng nhập', // pragma: allowlist secret — UI label, not a credential
     unsupportedChallenge: 'Bước đăng nhập không được hỗ trợ. Liên hệ quản trị viên.',
     signInFailed: 'Đăng nhập thất bại',
     footer: 'AWS AgentCore Harness · Xác thực bằng Cognito',

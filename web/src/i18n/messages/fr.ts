@@ -22,14 +22,14 @@ export const fr = {
     title: 'Cas d’usage IA agentique',
     subtitle: 'Connectez-vous avec votre compte Cognito',
     email: 'E-mail',
-    password: 'Mot de passe',
+    password: 'Mot de passe', // pragma: allowlist secret — UI label, not a credential
     signIn: 'Se connecter',
     totpHint: 'Saisissez le code à 6 chiffres de votre application d’authentification.',
     mfaCode: 'Code MFA',
     verify: 'Vérifier',
-    newPasswordHint: 'Votre compte requiert un nouveau mot de passe avant de continuer.',
-    newPassword: 'Nouveau mot de passe',
-    setPassword: 'Définir le mot de passe et se connecter',
+    newPasswordHint: 'Votre compte requiert un nouveau mot de passe avant de continuer.', // pragma: allowlist secret — UI label, not a credential
+    newPassword: 'Nouveau mot de passe', // pragma: allowlist secret — UI label, not a credential
+    setPassword: 'Définir le mot de passe et se connecter', // pragma: allowlist secret — UI label, not a credential
     unsupportedChallenge: 'Défi de connexion non pris en charge. Contactez votre administrateur.',
     signInFailed: 'Échec de la connexion',
     footer: 'AWS AgentCore Harness · Authentifié via Cognito',

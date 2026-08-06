@@ -22,14 +22,14 @@ export const ja = {
     title: 'エージェント型 AI ユースケース',
     subtitle: 'Cognito アカウントでサインイン',
     email: 'メールアドレス',
-    password: 'パスワード',
+    password: 'パスワード', // pragma: allowlist secret — UI label, not a credential
     signIn: 'サインイン',
     totpHint: '認証アプリの 6 桁コードを入力してください。',
     mfaCode: 'MFA コード',
     verify: '確認',
-    newPasswordHint: '続行するには新しいパスワードの設定が必要です。',
-    newPassword: '新しいパスワード',
-    setPassword: 'パスワードを設定してサインイン',
+    newPasswordHint: '続行するには新しいパスワードの設定が必要です。', // pragma: allowlist secret — UI label, not a credential
+    newPassword: '新しいパスワード', // pragma: allowlist secret — UI label, not a credential
+    setPassword: 'パスワードを設定してサインイン', // pragma: allowlist secret — UI label, not a credential
     unsupportedChallenge: '未対応のサインインチャレンジです。管理者にお問い合わせください。',
     signInFailed: 'サインインに失敗しました',
     footer: 'AWS AgentCore Harness · Cognito 認証',
