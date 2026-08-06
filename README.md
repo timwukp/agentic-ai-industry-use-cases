@@ -169,13 +169,27 @@ was never seen are all refused; during a gateway outage the agent wrote a confid
 summary with invented index levels, and charting *attempted* calls would have drawn an empty
 chart beside fabricated prose.
 
-**Reply language.** The agent answers in the language of the question. The system prompt alone
-was not enough: a stored memory record written in Chinese was injected every turn and read as a
-language signal, so English starter questions came back in Chinese. The current message is now
-made the authority explicitly (`web/src/lib/replyLanguage.ts`) — a CJK-vs-Latin script test with
-a margin, so technical Chinese full of English tickers stays Chinese and a stray CJK character in
-an English sentence stays English. Anything genuinely ambiguous sends no directive at all, since
-a wrong explicit instruction is worse than none.
+**UI language.** The interface is user-selectable across sixteen languages (English, Traditional
+and Simplified Chinese, Japanese, Korean, French, Spanish, Italian, Portuguese, German,
+Indonesian, Malay, Thai, Vietnamese, Filipino, Hindi) via a picker in the header and on the login
+page. The i18n layer is hand-rolled (`web/src/i18n/`): one TypeScript catalog per locale typed
+`satisfies Messages` against the English schema, so a missing translation key in any language is
+a compile error; English ships in the main bundle as the fallback and the other fifteen load as
+their own lazy chunks (~10 kB gzip each). Chart titles are translated at render time only — the
+spec's English strings remain its identity (dedupe, pagination, E2E hooks), pinned by a
+reconstruction test that rebuilds every English string from its catalog key and parameters
+(`tests/unit/chartI18n.test.ts`). Payload values (ids, enums, backend prose) deliberately pass
+through untranslated.
+
+**Reply language.** The agent answers in the language of the question, and the UI locale fills in
+where the text is ambiguous (`web/src/lib/replyLanguage.ts`). Two ranked signals: a decisive
+non-Latin script in the typed message wins outright (kana → Japanese, Hangul → Korean, Thai,
+Devanagari → Hindi; Han uses the picker as the Traditional-vs-Simplified tiebreaker), while Latin
+prose — which script alone cannot pin to one language — follows the picker, so a canned English
+starter question asked under a Thai UI is answered in Thai. Technical Chinese full of English
+tickers stays Chinese, a stray CJK character in an English sentence stays English, and with the
+untouched English default anything genuinely ambiguous still sends no directive at all, since a
+wrong explicit instruction is worse than none.
 
 ## Data honesty
 

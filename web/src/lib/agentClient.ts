@@ -1,3 +1,4 @@
+import { getCurrentLocale } from '../i18n/index.ts'
 import { config } from './config'
 import { languageDirective } from './replyLanguage'
 import { createToolTrace, type ToolCall } from './toolTrace'
@@ -149,10 +150,15 @@ export async function* invokeAgent(
     },
     // The language directive rides along with the sent text but is NOT what the
     // UI displays — ChatPanel keeps the user's own words in the bubble. Appended
-    // here rather than in the component so every call site gets it.
+    // here rather than in the component so every call site gets it. The UI
+    // locale comes from the module cell (written only by LocaleProvider), so
+    // this module stays React-free.
     body: JSON.stringify({
       messages: [
-        { role: 'user', content: [{ text: prompt + languageDirective(prompt) }] },
+        {
+          role: 'user',
+          content: [{ text: prompt + languageDirective(prompt, getCurrentLocale()) }],
+        },
       ],
       ...(options.actorId ? { actorId: options.actorId } : {}),
     }),

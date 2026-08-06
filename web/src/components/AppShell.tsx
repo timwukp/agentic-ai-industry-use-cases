@@ -12,11 +12,13 @@ import {
   X,
 } from 'lucide-react'
 import { getIndustry, industries, DEFAULT_INDUSTRY_ID } from '../industries/registry'
+import { useLocale } from '../i18n/LocaleContext'
 import { AGENT_PROMPT_EVENT, ANSWER_CHARTS_EVENT } from '../lib/promptBus'
 import { useAuth } from '../lib/AuthContext'
 import AnswerChartPanel from './AnswerChartPanel'
 import type { ChartSpec } from '../lib/chartSpec'
 import ChatPanel from './ChatPanel'
+import LocalePicker from './LocalePicker'
 
 export type ShellView = 'dashboard' | 'chat'
 
@@ -24,6 +26,7 @@ export default function AppShell({ view }: { view: ShellView }) {
   const { industryId } = useParams()
   const navigate = useNavigate()
   const { user, signOut } = useAuth()
+  const { t } = useLocale()
 
   const industry = getIndustry(industryId)
 
@@ -109,7 +112,7 @@ export default function AppShell({ view }: { view: ShellView }) {
             key={item.id}
             to={`/${item.id}/${view}`}
             onClick={onSelect}
-            title={item.name}
+            title={t(`industries.${item.id}.name`)}
             className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
               active
                 ? 'bg-slate-800 text-white'
@@ -120,13 +123,13 @@ export default function AppShell({ view }: { view: ShellView }) {
             <span
               className={`${railExpanded ? 'inline' : 'hidden'} lg:inline truncate flex-1`}
             >
-              {item.name}
+              {t(`industries.${item.id}.name`)}
             </span>
             {!item.enabled && (
               <span
                 className={`${railExpanded ? 'inline' : 'hidden'} lg:inline text-[10px] px-1.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-500`}
               >
-                soon
+                {t('chrome.soon')}
               </span>
             )}
           </Link>
@@ -143,7 +146,7 @@ export default function AppShell({ view }: { view: ShellView }) {
           <button
             onClick={() => setRailExpanded((v) => !v)}
             className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-            title={railExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
+            title={railExpanded ? t('chrome.collapseSidebar') : t('chrome.expandSidebar')}
           >
             {railExpanded ? (
               <PanelLeftClose className="w-5 h-5" />
@@ -154,29 +157,33 @@ export default function AppShell({ view }: { view: ShellView }) {
         </div>
         <div className="flex items-center gap-2.5 min-w-0">
           <IndustryIcon className={`w-5 h-5 shrink-0 ${industry.themeColor}`} />
-          <h1 className="text-sm font-semibold text-white truncate">{industry.name}</h1>
+          <h1 className="text-sm font-semibold text-white truncate">
+            {t(`industries.${industry.id}.name`)}
+          </h1>
         </div>
         <div className="flex-1" />
         {/* Desktop chat collapse toggle */}
         <button
           onClick={() => setChatCollapsed((v) => !v)}
           className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 transition-colors"
-          title={chatCollapsed ? 'Show chat' : 'Hide chat'}
+          title={chatCollapsed ? t('chrome.showChat') : t('chrome.hideChat')}
         >
           {chatCollapsed ? (
             <PanelRightOpen className="w-4 h-4" />
           ) : (
             <PanelRightClose className="w-4 h-4" />
           )}
-          Chat
+          {t('chrome.chat')}
         </button>
+        <LocalePicker />
         <div className="hidden sm:block text-xs text-slate-500 truncate max-w-[180px]">
           {user?.email ?? user?.username}
         </div>
         <button
           onClick={() => void handleSignOut()}
           className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
-          title="Sign out"
+          title={t('chrome.signOut')}
+          aria-label={t('chrome.signOut')}
         >
           <LogOut className="w-4 h-4" />
         </button>
@@ -195,11 +202,11 @@ export default function AppShell({ view }: { view: ShellView }) {
                 railExpanded ? 'block' : 'hidden'
               } lg:block`}
             >
-              View
+              {t('chrome.view')}
             </div>
             <nav className="space-y-1">
-              {navLink('dashboard', 'Dashboard', LayoutDashboard)}
-              {navLink('chat', 'Chat', MessageSquare)}
+              {navLink('dashboard', t('chrome.dashboard'), LayoutDashboard)}
+              {navLink('chat', t('chrome.chat'), MessageSquare)}
             </nav>
           </div>
           <div className="flex-1 min-h-0 overflow-y-auto">
@@ -208,7 +215,7 @@ export default function AppShell({ view }: { view: ShellView }) {
                 railExpanded ? 'block' : 'hidden'
               } lg:block`}
             >
-              Industries
+              {t('chrome.industries')}
             </div>
             {industryList()}
           </div>
@@ -259,7 +266,7 @@ export default function AppShell({ view }: { view: ShellView }) {
       {/* Mobile bottom tab bar */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 h-14 bg-slate-900 border-t border-slate-800 flex items-stretch z-40 pb-[env(safe-area-inset-bottom)]">
         <MobileTab
-          label="Dashboard"
+          label={t('chrome.dashboard')}
           icon={LayoutDashboard}
           active={view === 'dashboard' && !industriesOpen}
           onClick={() => {
@@ -268,7 +275,7 @@ export default function AppShell({ view }: { view: ShellView }) {
           }}
         />
         <MobileTab
-          label="Chat"
+          label={t('chrome.chat')}
           icon={MessageSquare}
           active={view === 'chat' && !industriesOpen}
           onClick={() => {
@@ -277,7 +284,7 @@ export default function AppShell({ view }: { view: ShellView }) {
           }}
         />
         <MobileTab
-          label="Industries"
+          label={t('chrome.industries')}
           icon={Bot}
           active={industriesOpen}
           onClick={() => setIndustriesOpen((v) => !v)}
@@ -288,13 +295,13 @@ export default function AppShell({ view }: { view: ShellView }) {
       {industriesOpen && (
         <div className="md:hidden fixed inset-0 z-50 flex flex-col justify-end">
           <button
-            aria-label="Close"
+            aria-label={t('chrome.close')}
             className="absolute inset-0 bg-slate-950/70"
             onClick={() => setIndustriesOpen(false)}
           />
           <div className="relative bg-slate-900 border-t border-slate-800 rounded-t-2xl p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] max-h-[70vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-semibold text-white">Industries</h2>
+              <h2 className="text-sm font-semibold text-white">{t('chrome.industries')}</h2>
               <button
                 onClick={() => setIndustriesOpen(false)}
                 className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800"
@@ -319,14 +326,14 @@ export default function AppShell({ view }: { view: ShellView }) {
                   >
                     <Icon className={`w-5 h-5 shrink-0 ${item.themeColor}`} />
                     <span className="flex-1">
-                      <span className="block">{item.name}</span>
+                      <span className="block">{t(`industries.${item.id}.name`)}</span>
                       <span className="block text-xs text-slate-500 line-clamp-1">
-                        {item.description}
+                        {t(`industries.${item.id}.description`)}
                       </span>
                     </span>
                     {!item.enabled && (
                       <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-slate-800 border border-slate-700 text-slate-500">
-                        soon
+                        {t('chrome.soon')}
                       </span>
                     )}
                   </Link>

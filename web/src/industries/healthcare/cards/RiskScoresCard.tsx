@@ -1,15 +1,16 @@
 import { useState } from 'react'
 import { useApi } from '../../../lib/api'
+import { useLocale } from '../../../i18n/LocaleContext'
 import { Card, ErrorPane, LoadingPane } from '../../finance/widgets'
 import { AskAgentButton, StatusPill, type PillTone } from '../widgets'
 import type { RiskScoreResponse } from '../types'
 
 type RiskType = 'cardiovascular' | 'diabetes' | 'falls'
 
-const SEGMENTS: Array<{ type: RiskType; label: string }> = [
-  { type: 'cardiovascular', label: 'ASCVD' },
-  { type: 'diabetes', label: 'Diabetes' },
-  { type: 'falls', label: 'Falls' },
+const SEGMENTS: Array<{ type: RiskType; labelKey: string }> = [
+  { type: 'cardiovascular', labelKey: 'healthcare.segAscvd' },
+  { type: 'diabetes', labelKey: 'healthcare.segDiabetes' },
+  { type: 'falls', labelKey: 'healthcare.segFalls' },
 ]
 
 function interpretationTone(interpretation?: string): PillTone {
@@ -22,6 +23,7 @@ function interpretationTone(interpretation?: string): PillTone {
 }
 
 export default function RiskScoresCard({ patientId }: { patientId: string }) {
+  const { t } = useLocale()
   const [riskType, setRiskType] = useState<RiskType>('cardiovascular')
   const { data, loading, error, reload } = useApi<RiskScoreResponse>(
     `/api/healthcare/risk?patientId=${encodeURIComponent(patientId)}&type=${riskType}`,
@@ -44,7 +46,7 @@ export default function RiskScoresCard({ patientId }: { patientId: string }) {
                 : 'bg-slate-800/60 text-slate-400 hover:text-slate-200'
             }`}
           >
-            {seg.label}
+            {t(seg.labelKey)}
           </button>
         ))}
       </div>
@@ -56,12 +58,12 @@ export default function RiskScoresCard({ patientId }: { patientId: string }) {
   const showStale = loading && data != null
 
   return (
-    <Card title="Clinical Risk Scores" action={headerAction}>
+    <Card title={t('healthcare.riskScores')} action={headerAction}>
       {loading && !data ? (
-        <LoadingPane label="Calculating risk score…" />
+        <LoadingPane label={t('healthcare.calculatingRisk')} />
       ) : error || (!showStale && (!data || data.error)) ? (
         <ErrorPane
-          message={error ?? data?.error ?? 'No risk score data'}
+          message={error ?? data?.error ?? t('healthcare.noRiskData')}
           onRetry={reload}
         />
       ) : (

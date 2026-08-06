@@ -2,6 +2,7 @@ import { useState } from 'react'
 import type { FormEvent } from 'react'
 import { Search } from 'lucide-react'
 import { useApi } from '../../lib/api'
+import { useLocale } from '../../i18n/LocaleContext'
 import { Card, ErrorPane, LoadingPane } from '../finance/widgets'
 import { SectionHeader } from './widgets'
 import type { PatientResponse } from './types'
@@ -22,6 +23,7 @@ export default function PatientSection({
   patientId: string
   onPatientChange: (id: string) => void
 }) {
+  const { t } = useLocale()
   const [inputValue, setInputValue] = useState('')
 
   const { data, loading, error, reload } = useApi<PatientResponse>(
@@ -57,8 +59,8 @@ export default function PatientSection({
         <input
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder="PT-…"
-          aria-label="Patient ID"
+          placeholder={t('healthcare.patientIdPlaceholder')}
+          aria-label={t('healthcare.patientIdLabel')}
           className="w-24 px-2.5 py-1.5 text-xs rounded-lg bg-slate-800 border border-slate-700 text-slate-200 placeholder:text-slate-500 focus:outline-none focus:border-rose-500/60"
         />
         <button
@@ -66,7 +68,7 @@ export default function PatientSection({
           className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg bg-slate-800 border border-slate-700 text-slate-200 hover:bg-slate-700 transition-colors"
         >
           <Search className="w-3.5 h-3.5" />
-          Apply
+          {t('healthcare.apply')}
         </button>
       </form>
     </div>
@@ -74,14 +76,14 @@ export default function PatientSection({
 
   return (
     <section className="space-y-4 @container">
-      <SectionHeader title="Patient 360" action={picker} />
+      <SectionHeader title={t('healthcare.patient360')} action={picker} />
 
       {loading ? (
-        <LoadingPane label={`Loading ${patientId}…`} />
+        <LoadingPane label={t('healthcare.loadingPatient', { id: patientId })} />
       ) : error || !data || data.error ? (
-        <Card title={`Patient ${patientId}`}>
+        <Card title={t('healthcare.patientTitle', { id: patientId })}>
           <ErrorPane
-            message={error ?? data?.error ?? `No data for patient ${patientId}`}
+            message={error ?? data?.error ?? t('healthcare.noPatientData', { id: patientId })}
             onRetry={reload}
           />
         </Card>

@@ -8,6 +8,7 @@ import {
   Wrench,
 } from 'lucide-react'
 import { useApi } from '../../lib/api'
+import { useLocale } from '../../i18n/LocaleContext'
 import { Card, ErrorPane, LoadingPane, SimulatedBadge, StatCard } from '../finance/widgets'
 import {
   AskAgentButton,
@@ -62,6 +63,7 @@ function statusTone(status: string) {
 }
 
 export default function ManufacturingDashboard() {
+  const { t } = useLocale()
   const [equipmentId, setEquipmentId] = useState<string | null>(null)
 
   return (
@@ -69,7 +71,7 @@ export default function ManufacturingDashboard() {
       <div className="p-4 lg:p-6 space-y-6 @container">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-lg lg:text-xl font-bold text-white">
-            Manufacturing Maintenance
+            {t('manufacturing.heading')}
           </h2>
           <SimulatedBadge />
         </div>
@@ -93,15 +95,19 @@ function PlantSection({
   selectedId: string | null
   onSelect: (id: string) => void
 }) {
+  const { t } = useLocale()
   const { data, loading, error, reload } = useApi<OverviewResponse>(
     '/api/manufacturing/overview',
   )
 
-  if (loading) return <LoadingPane label="Loading plant status…" />
+  if (loading) return <LoadingPane label={t('manufacturing.loadingPlant')} />
   if (error || !data || data.error) {
     return (
-      <Card title="Plant Status">
-        <ErrorPane message={error ?? data?.error ?? 'No overview data'} onRetry={reload} />
+      <Card title={t('manufacturing.plantStatus')}>
+        <ErrorPane
+          message={error ?? data?.error ?? t('manufacturing.noOverviewData')}
+          onRetry={reload}
+        />
       </Card>
     )
   }
@@ -126,7 +132,7 @@ function PlantSection({
 
   const equipmentColumns: Array<Column<EquipmentRow>> = [
     {
-      header: 'Asset',
+      header: t('manufacturing.colAsset'),
       render: (row) => (
         <button
           type="button"
@@ -140,15 +146,15 @@ function PlantSection({
         </button>
       ),
     },
-    { header: 'Dept', render: (row) => row.department ?? '—' },
+    { header: t('manufacturing.colDept'), render: (row) => row.department ?? '—' },
     {
-      header: 'Status',
+      header: t('manufacturing.colStatus'),
       render: (row) => (
         <StatusPill tone={statusTone(row.status ?? '')} label={row.status ?? '—'} />
       ),
     },
     {
-      header: 'Criticality',
+      header: t('manufacturing.colCriticality'),
       render: (row) => (
         <StatusPill
           tone={(row.criticality ?? '').toUpperCase() === 'HIGH' ? 'amber' : 'slate'}
@@ -157,7 +163,7 @@ function PlantSection({
       ),
     },
     {
-      header: 'Health',
+      header: t('manufacturing.colHealth'),
       numeric: true,
       render: (row) => {
         const score = row.health_score ?? 0
@@ -174,7 +180,7 @@ function PlantSection({
       },
     },
     {
-      header: 'Next PM',
+      header: t('manufacturing.colNextPm'),
       render: (row) => (
         <span className="tabular-nums text-slate-400">
           {row.next_scheduled_maintenance ?? '—'}
@@ -185,11 +191,11 @@ function PlantSection({
 
   const alertColumns: Array<Column<EquipmentAlert>> = [
     {
-      header: 'Severity',
+      header: t('manufacturing.colSeverity'),
       render: (row) => <SeverityPill severity={row.severity} />,
     },
     {
-      header: 'Asset',
+      header: t('manufacturing.colAsset'),
       render: (row) => (
         <button
           type="button"
@@ -201,7 +207,7 @@ function PlantSection({
       ),
     },
     {
-      header: 'Alert',
+      header: t('manufacturing.colAlert'),
       render: (row) => (
         <div className="min-w-0">
           <div className="text-slate-200">{row.message ?? '—'}</div>
@@ -212,11 +218,11 @@ function PlantSection({
       ),
     },
     {
-      header: 'Ack',
+      header: t('manufacturing.colAck'),
       render: (row) => (
         <StatusPill
           tone={row.acknowledged ? 'slate' : 'amber'}
-          label={row.acknowledged ? 'ACK' : 'OPEN'}
+          label={row.acknowledged ? t('manufacturing.pillAck') : t('manufacturing.pillOpen')}
         />
       ),
     },
@@ -224,25 +230,26 @@ function PlantSection({
 
   const scheduleColumns: Array<Column<ScheduleEntry>> = [
     {
-      header: 'Date',
+      header: t('manufacturing.colDate'),
       render: (row) => (
         <span className="tabular-nums text-white">
           {row.date ?? '—'}
           <span className="block text-[11px] text-slate-500">
-            {row.start_time ?? ''} · {row.duration_hours ?? 0}h
+            {row.start_time ?? ''} ·{' '}
+            {t('manufacturing.hoursSuffix', { n: row.duration_hours ?? 0 })}
           </span>
         </span>
       ),
     },
     {
-      header: 'Asset',
+      header: t('manufacturing.colAsset'),
       render: (row) => (
         <span className="font-mono text-xs">{row.equipment_id ?? '—'}</span>
       ),
     },
-    { header: 'Work', render: (row) => row.description ?? '—' },
+    { header: t('manufacturing.colWork'), render: (row) => row.description ?? '—' },
     {
-      header: 'Priority',
+      header: t('manufacturing.colPriority'),
       render: (row) => (
         <StatusPill
           tone={(row.priority ?? '').toUpperCase() === 'HIGH' ? 'amber' : 'slate'}
@@ -250,13 +257,13 @@ function PlantSection({
         />
       ),
     },
-    { header: 'Tech', render: (row) => row.assigned_to ?? '—' },
+    { header: t('manufacturing.colTech'), render: (row) => row.assigned_to ?? '—' },
   ]
 
   return (
     <section className="space-y-4 @container">
       <SectionHeader
-        title="Plant Status"
+        title={t('manufacturing.plantStatus')}
         accentClass={ACCENT}
         action={
           <AskAgentButton
@@ -268,30 +275,46 @@ function PlantSection({
 
       <div className="grid grid-cols-2 @xl:grid-cols-4 gap-3 @lg:gap-4">
         <StatCard
-          title="Fleet Health"
+          title={t('manufacturing.fleetHealth')}
+          kpiKey="Fleet Health"
           value={avgHealth.toFixed(1)}
           icon={HeartPulse}
-          sub={`${fmtNum(fleet.total_equipment)} assets · ${fmtNum(statusSummary.running)} running`}
+          sub={t('manufacturing.assetsRunning', {
+            n: fmtNum(fleet.total_equipment),
+            running: fmtNum(statusSummary.running),
+          })}
           subClass={avgHealth < HEALTH_WARN ? 'text-amber-400' : 'text-slate-400'}
         />
         <StatCard
-          title="Critical Alerts"
+          title={t('manufacturing.criticalAlerts')}
+          kpiKey="Critical Alerts"
           value={fmtNum(counts.critical)}
           icon={AlertOctagon}
-          sub={`${fmtNum(alerts.unacknowledged)} unacknowledged of ${fmtNum(alerts.total_alerts)}`}
+          sub={t('manufacturing.unacknowledgedOf', {
+            n: fmtNum(alerts.unacknowledged),
+            total: fmtNum(alerts.total_alerts),
+          })}
           subClass={(counts.critical ?? 0) > 0 ? 'text-red-400' : 'text-slate-400'}
         />
         <StatCard
-          title="PM Utilization"
+          title={t('manufacturing.pmUtilization')}
+          kpiKey="PM Utilization"
           value={fmtPct(util.utilization_pct, 0)}
           icon={CalendarClock}
-          sub={`${fmtNum(calendar.total_scheduled)} jobs · ${fmtNum(util.total_maintenance_hours)}h booked`}
+          sub={t('manufacturing.jobsBooked', {
+            n: fmtNum(calendar.total_scheduled),
+            hours: fmtNum(util.total_maintenance_hours),
+          })}
         />
         <StatCard
-          title="Parts Fill Rate"
+          title={t('manufacturing.partsFillRate')}
+          kpiKey="Parts Fill Rate"
           value={fmtPct(partsKpis.fill_rate_pct)}
           icon={Wrench}
-          sub={`${fmtNum(parts.inventory_summary?.total_stockout_items)} stockouts · ${fmtCompactUsd(parts.inventory_summary?.total_inventory_value)}`}
+          sub={t('manufacturing.stockoutsAmount', {
+            n: fmtNum(parts.inventory_summary?.total_stockout_items),
+            amount: fmtCompactUsd(parts.inventory_summary?.total_inventory_value),
+          })}
           subClass={
             (partsKpis.fill_rate_pct ?? 100) < 95 ? 'text-amber-400' : 'text-slate-400'
           }
@@ -299,10 +322,10 @@ function PlantSection({
       </div>
 
       <Card
-        title="Equipment Fleet"
+        title={t('manufacturing.equipmentFleet')}
         action={
           <span className="text-[11px] text-slate-500">
-            select an asset for prediction &amp; sensors
+            {t('manufacturing.selectAssetHint')}
           </span>
         }
       >
@@ -310,26 +333,26 @@ function PlantSection({
           columns={equipmentColumns}
           rows={equipment}
           rowKey={(row, i) => row.equipment_id ?? String(i)}
-          empty="No equipment"
+          empty={t('manufacturing.noEquipment')}
           maxHeight="max-h-96"
         />
       </Card>
 
       <div className="grid grid-cols-1 @4xl:grid-cols-2 gap-3 @lg:gap-4">
-        <Card title="Active Alerts">
+        <Card title={t('manufacturing.activeAlerts')}>
           <DataTable
             columns={alertColumns}
             rows={alerts.alerts ?? []}
             rowKey={(row, i) => row.alert_id ?? String(i)}
-            empty="No active alerts"
+            empty={t('manufacturing.noActiveAlerts')}
           />
         </Card>
 
-        <Card title="Maintenance Load by Week (hours)">
+        <Card title={t('manufacturing.maintenanceLoad')}>
           <div className="p-4 @lg:p-5">
             {weekly.length === 0 ? (
               <p className="py-6 text-center text-sm text-slate-500">
-                Nothing scheduled
+                {t('manufacturing.nothingScheduled')}
               </p>
             ) : (
               <RankedBars
@@ -339,19 +362,19 @@ function PlantSection({
                 color={SERIES}
                 labelWidth={50}
                 barSize={18}
-                valueFormatter={(v) => `${v}h`}
+                valueFormatter={(v) => t('manufacturing.hoursSuffix', { n: v })}
               />
             )}
           </div>
         </Card>
       </div>
 
-      <Card title="Maintenance Schedule (next 30 days)">
+      <Card title={t('manufacturing.maintenanceSchedule')}>
         <DataTable
           columns={scheduleColumns}
           rows={calendar.schedule ?? []}
           rowKey={(row, i) => row.schedule_id ?? String(i)}
-          empty="Nothing scheduled"
+          empty={t('manufacturing.nothingScheduled')}
           maxHeight="max-h-80"
         />
       </Card>
@@ -362,6 +385,7 @@ function PlantSection({
 /* --------------------------- selected-asset detail ------------------------- */
 
 function AssetSection({ equipmentId }: { equipmentId: string }) {
+  const { t } = useLocale()
   const [sensorType, setSensorType] = useState<string>(SENSOR_TYPES[0])
   const detail = useApi<EquipmentDetailResponse>(
     `/api/manufacturing/equipment?equipmentId=${equipmentId}`,
@@ -402,7 +426,7 @@ function AssetSection({ equipmentId }: { equipmentId: string }) {
   return (
     <section className="space-y-4 @container">
       <SectionHeader
-        title={`Asset Detail — ${equipmentId}`}
+        title={t('manufacturing.assetDetail', { id: equipmentId })}
         accentClass={ACCENT}
         action={
           <AskAgentButton
@@ -413,20 +437,22 @@ function AssetSection({ equipmentId }: { equipmentId: string }) {
       />
 
       <div className="grid grid-cols-1 @4xl:grid-cols-2 gap-3 @lg:gap-4">
-        <Card title="Failure Prediction">
+        <Card title={t('manufacturing.failurePrediction')}>
           <div className="p-4 @lg:p-5">
             {detail.loading ? (
-              <LoadingPane label="Loading prediction…" />
+              <LoadingPane label={t('manufacturing.loadingPrediction')} />
             ) : detail.error || !prediction ? (
               <ErrorPane
-                message={detail.error ?? detail.data?.error ?? 'No prediction'}
+                message={detail.error ?? detail.data?.error ?? t('manufacturing.noPrediction')}
                 onRetry={detail.reload}
               />
             ) : (
               <>
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div>
-                    <div className="text-xs text-slate-400">Remaining useful life</div>
+                    <div className="text-xs text-slate-400">
+                      {t('manufacturing.remainingUsefulLife')}
+                    </div>
                     <div className="flex items-baseline gap-2">
                       <span
                         className={`text-3xl font-bold tabular-nums ${
@@ -435,12 +461,16 @@ function AssetSection({ equipmentId }: { equipmentId: string }) {
                       >
                         {rul}
                       </span>
-                      <span className="text-sm text-slate-400">days</span>
+                      <span className="text-sm text-slate-400">
+                        {t('manufacturing.days')}
+                      </span>
                     </div>
                     <div className="text-[11px] text-slate-500 mt-0.5 tabular-nums">
-                      CI {primary.confidence_interval?.lower_days ?? '—'}–
-                      {primary.confidence_interval?.upper_days ?? '—'}d · est.{' '}
-                      {primary.estimated_failure_date ?? '—'}
+                      {t('manufacturing.ciEst', {
+                        low: primary.confidence_interval?.lower_days ?? '—',
+                        high: primary.confidence_interval?.upper_days ?? '—',
+                        date: primary.estimated_failure_date ?? '—',
+                      })}
                     </div>
                   </div>
                   <SeverityPill severity={prediction.risk_level} />
@@ -448,7 +478,7 @@ function AssetSection({ equipmentId }: { equipmentId: string }) {
 
                 <dl className="mt-4 space-y-2 text-sm">
                   <div className="flex justify-between gap-3">
-                    <dt className="text-slate-400">Failure mode</dt>
+                    <dt className="text-slate-400">{t('manufacturing.failureMode')}</dt>
                     <dd className="text-white text-right">
                       {(primary.failure_mode ?? '—').replace(/_/g, ' ')}
                       <span className="block text-[11px] text-slate-500">
@@ -457,16 +487,20 @@ function AssetSection({ equipmentId }: { equipmentId: string }) {
                     </dd>
                   </div>
                   <div className="flex justify-between gap-3">
-                    <dt className="text-slate-400">Failure probability</dt>
+                    <dt className="text-slate-400">
+                      {t('manufacturing.failureProbability')}
+                    </dt>
                     <dd className="text-white tabular-nums">{fmtPct(prob)}</dd>
                   </div>
                   <div className="flex justify-between gap-3">
-                    <dt className="text-slate-400">Degradation</dt>
+                    <dt className="text-slate-400">{t('manufacturing.degradation')}</dt>
                     <dd className="text-white tabular-nums text-right">
                       {fmtPct(degradation.current_degradation_pct)}
                       <span className="block text-[11px] text-slate-500">
-                        {degradation.degradation_rate_per_day ?? '—'}%/day ·{' '}
-                        {(degradation.acceleration ?? '').toLowerCase()}
+                        {t('manufacturing.degradationRate', {
+                          rate: degradation.degradation_rate_per_day ?? '—',
+                          accel: (degradation.acceleration ?? '').toLowerCase(),
+                        })}
                       </span>
                     </dd>
                   </div>
@@ -501,8 +535,10 @@ function AssetSection({ equipmentId }: { equipmentId: string }) {
                   </p>
                 )}
                 <p className="mt-2 text-[11px] text-slate-500">
-                  {prediction.prediction_model} · accuracy{' '}
-                  {fmtPct((prediction.model_accuracy ?? 0) * 100, 0)}
+                  {t('manufacturing.modelAccuracy', {
+                    model: prediction.prediction_model ?? '—',
+                    p: fmtPct((prediction.model_accuracy ?? 0) * 100, 0),
+                  })}
                 </p>
               </>
             )}
@@ -510,13 +546,13 @@ function AssetSection({ equipmentId }: { equipmentId: string }) {
         </Card>
 
         <Card
-          title={`Sensor — last 24h (${sensor.data?.unit ?? ''})`}
+          title={t('manufacturing.sensorTitle', { unit: sensor.data?.unit ?? '' })}
           action={
             <select
               value={sensorType}
               onChange={(event) => setSensorType(event.target.value)}
               className="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-200"
-              aria-label="Sensor type"
+              aria-label={t('manufacturing.sensorTypeLabel')}
             >
               {SENSOR_TYPES.map((type) => (
                 <option key={type} value={type}>
@@ -528,10 +564,10 @@ function AssetSection({ equipmentId }: { equipmentId: string }) {
         >
           <div className="p-4 @lg:p-5">
             {sensor.loading ? (
-              <LoadingPane label="Loading sensor data…" />
+              <LoadingPane label={t('manufacturing.loadingSensor')} />
             ) : sensor.error || !sensor.data || sensor.data.error ? (
               <ErrorPane
-                message={sensor.error ?? sensor.data?.error ?? 'No sensor data'}
+                message={sensor.error ?? sensor.data?.error ?? t('manufacturing.noSensorData')}
                 onRetry={sensor.reload}
               />
             ) : (
@@ -543,7 +579,7 @@ function AssetSection({ equipmentId }: { equipmentId: string }) {
                     {
                       key: 'value',
                       color: SERIES,
-                      name: sensor.data.sensor_type ?? 'value',
+                      name: sensor.data.sensor_type ?? t('manufacturing.valueFallback'),
                     },
                   ]}
                   refLines={[
@@ -551,22 +587,42 @@ function AssetSection({ equipmentId }: { equipmentId: string }) {
                     // on a line the series sits above reads as if the asset were
                     // in breach when it is fine.
                     ...(thresholds.warning != null
-                      ? [{ y: thresholds.warning, label: `warning ${breachSign}` }]
+                      ? [
+                          {
+                            y: thresholds.warning,
+                            label: t('manufacturing.warningSign', { sign: breachSign }),
+                          },
+                        ]
                       : []),
                     ...(thresholds.critical != null
-                      ? [{ y: thresholds.critical, label: `critical ${breachSign}` }]
+                      ? [
+                          {
+                            y: thresholds.critical,
+                            label: t('manufacturing.criticalSign', { sign: breachSign }),
+                          },
+                        ]
                       : []),
                   ]}
                   height={190}
                   unit={sensor.data.unit}
                 />
                 <div className="flex flex-wrap gap-x-5 gap-y-1 mt-3 text-[11px] text-slate-500 tabular-nums">
-                  <span>mean {sensor.data.statistics?.mean ?? '—'}</span>
                   <span>
-                    range {sensor.data.statistics?.min ?? '—'}–
-                    {sensor.data.statistics?.max ?? '—'}
+                    {t('manufacturing.meanLegend', {
+                      n: sensor.data.statistics?.mean ?? '—',
+                    })}
                   </span>
-                  <span>σ {sensor.data.statistics?.std_dev ?? '—'}</span>
+                  <span>
+                    {t('manufacturing.rangeLegend', {
+                      min: sensor.data.statistics?.min ?? '—',
+                      max: sensor.data.statistics?.max ?? '—',
+                    })}
+                  </span>
+                  <span>
+                    {t('manufacturing.sigmaLegend', {
+                      n: sensor.data.statistics?.std_dev ?? '—',
+                    })}
+                  </span>
                   <span
                     className={
                       sensor.data.statistics?.trend === 'INCREASING'
@@ -574,7 +630,9 @@ function AssetSection({ equipmentId }: { equipmentId: string }) {
                         : ''
                     }
                   >
-                    trend {(sensor.data.statistics?.trend ?? '—').toLowerCase()}
+                    {t('manufacturing.trendLegend', {
+                      t: (sensor.data.statistics?.trend ?? '—').toLowerCase(),
+                    })}
                   </span>
                   {thresholds.critical != null ? (
                     // A healthy asset's series sits far from its limits, so the
@@ -582,19 +640,31 @@ function AssetSection({ equipmentId }: { equipmentId: string }) {
                     // recharts clips them — the chart would then show no limits
                     // at all. Stating them here keeps them legible either way.
                     <span className={offChart ? '' : 'text-slate-600'}>
-                      limit {breachSign} {thresholds.critical}
-                      {sensor.data.unit ? ` ${sensor.data.unit}` : ''}
-                      {offChart ? ' (off chart)' : ''}
+                      {offChart
+                        ? t('manufacturing.limitOffChart', {
+                            sign: breachSign,
+                            n: thresholds.critical,
+                            unit: sensor.data.unit ?? '',
+                          })
+                        : t('manufacturing.limitOnChart', {
+                            sign: breachSign,
+                            n: thresholds.critical,
+                            unit: sensor.data.unit ?? '',
+                          })}
                     </span>
                   ) : null}
                 </div>
                 {(thresholds.breaches_critical ?? 0) > 0 ? (
                   <p className="mt-2 rounded-lg border border-red-800/50 bg-red-950/30 px-3 py-2 text-xs text-red-200">
-                    {thresholds.breaches_critical} critical threshold breach(es) in window
+                    {t('manufacturing.criticalBreaches', {
+                      n: thresholds.breaches_critical ?? 0,
+                    })}
                   </p>
                 ) : (thresholds.breaches_warning ?? 0) > 0 ? (
                   <p className="mt-2 rounded-lg border border-amber-800/50 bg-amber-950/30 px-3 py-2 text-xs text-amber-100">
-                    {thresholds.breaches_warning} warning threshold breach(es) in window
+                    {t('manufacturing.warningBreaches', {
+                      n: thresholds.breaches_warning ?? 0,
+                    })}
                   </p>
                 ) : null}
               </>
@@ -603,21 +673,25 @@ function AssetSection({ equipmentId }: { equipmentId: string }) {
         </Card>
       </div>
 
-      <Card title="Reliability (last 12 months)">
+      <Card title={t('manufacturing.reliability')}>
         <div className="p-4 @lg:p-5">
           {detail.loading ? (
-            <LoadingPane label="Loading reliability…" />
+            <LoadingPane label={t('manufacturing.loadingReliability')} />
           ) : !reliability ? (
             <p className="py-6 text-center text-sm text-slate-500">
-              No reliability metrics
+              {t('manufacturing.noReliabilityMetrics')}
             </p>
           ) : (
             <div className="grid grid-cols-2 @2xl:grid-cols-4 gap-3 @lg:gap-4">
               <StatCard
-                title="OEE"
+                title={t('manufacturing.oee')}
+                kpiKey="OEE"
                 value={fmtPct(oee.oee_pct)}
                 icon={Gauge}
-                sub={`${oee.oee_class ?? ''} · industry ${fmtPct(benchmarks.industry_avg_oee, 0)}`}
+                sub={t('manufacturing.industryAvg', {
+                  cls: oee.oee_class ?? '',
+                  p: fmtPct(benchmarks.industry_avg_oee, 0),
+                })}
                 subClass={
                   (benchmarks.vs_industry_oee ?? 0) >= 0
                     ? 'text-green-400'
@@ -625,28 +699,38 @@ function AssetSection({ equipmentId }: { equipmentId: string }) {
                 }
               />
               <StatCard
-                title="MTBF"
-                value={`${fmtNum(metrics.mtbf_hours)}h`}
+                title={t('manufacturing.mtbf')}
+                kpiKey="MTBF"
+                value={t('manufacturing.hoursSuffix', { n: fmtNum(metrics.mtbf_hours) })}
                 icon={Activity}
-                sub={`${metrics.mtbf_days ?? '—'} days between failures`}
+                sub={t('manufacturing.daysBetweenFailures', {
+                  n: metrics.mtbf_days ?? '—',
+                })}
               />
               <StatCard
-                title="MTTR"
-                value={`${metrics.mttr_hours ?? '—'}h`}
+                title={t('manufacturing.mttr')}
+                kpiKey="MTTR"
+                value={t('manufacturing.hoursSuffix', { n: metrics.mttr_hours ?? '—' })}
                 icon={Wrench}
-                sub={`${fmtNum(failures.total_failures_12m)} failures / 12mo`}
+                sub={t('manufacturing.failuresPer12mo', {
+                  n: fmtNum(failures.total_failures_12m),
+                })}
               />
               <StatCard
-                title="Unplanned Downtime"
+                title={t('manufacturing.unplannedDowntime')}
+                kpiKey="Unplanned Downtime"
                 value={fmtPct(failures.unplanned_downtime_pct)}
                 icon={AlertOctagon}
                 // The breakdown hours ARE the unplanned share, so labelling them
                 // "total" contradicted the percentage above them; the total is
                 // breakdown + planned.
-                sub={`${fmtNum(failures.total_downtime_hours)}h breakdown of ${fmtNum(
-                  (failures.total_downtime_hours ?? 0) +
-                    (failures.planned_downtime_hours ?? 0),
-                )}h`}
+                sub={t('manufacturing.breakdownOf', {
+                  n: fmtNum(failures.total_downtime_hours),
+                  total: fmtNum(
+                    (failures.total_downtime_hours ?? 0) +
+                      (failures.planned_downtime_hours ?? 0),
+                  ),
+                })}
                 subClass={
                   (failures.unplanned_downtime_pct ?? 0) > 50
                     ? 'text-amber-400'
@@ -658,7 +742,9 @@ function AssetSection({ equipmentId }: { equipmentId: string }) {
           {(failures.top_failure_modes ?? []).length > 0 ? (
             <div className="mt-4 border-t border-slate-800 pt-3">
               <p className="mb-2 text-[11px] uppercase tracking-wide text-slate-500">
-                {fmtNum(failures.total_failures_12m)} failures by mode
+                {t('manufacturing.failuresByMode', {
+                  n: fmtNum(failures.total_failures_12m),
+                })}
               </p>
               <ul className="space-y-1.5">
                 {(failures.top_failure_modes ?? []).map((mode) => (
@@ -668,7 +754,10 @@ function AssetSection({ equipmentId }: { equipmentId: string }) {
                   >
                     <span className="text-slate-300">{mode.mode}</span>
                     <span className="tabular-nums text-slate-500">
-                      {mode.count}× · {mode.avg_repair_hours}h avg repair
+                      {t('manufacturing.avgRepair', {
+                        n: mode.count ?? '—',
+                        hours: mode.avg_repair_hours ?? '—',
+                      })}
                     </span>
                   </li>
                 ))}

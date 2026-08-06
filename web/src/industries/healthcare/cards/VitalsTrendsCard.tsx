@@ -1,17 +1,10 @@
 import { Card } from '../../finance/widgets'
+import { useLocale } from '../../../i18n/LocaleContext'
 import { StatusPill, TrendChart, type PillTone, type TrendSeries } from '../widgets'
 import type { PatientAnalytics, TrendMetric } from '../types'
 
 const ROSE = '#fb7185' // rose-400
 const SKY = '#38bdf8' // sky-400
-
-function statusTone(status?: string): { tone: PillTone; label: string } | null {
-  if (!status) return null
-  const s = status.toUpperCase()
-  if (s === 'AT TARGET') return { tone: 'green', label: 'AT TARGET' }
-  if (s === 'ABOVE TARGET') return { tone: 'amber', label: 'ABOVE TARGET' }
-  return { tone: 'slate', label: s }
-}
 
 function ChartTile({
   name,
@@ -28,7 +21,18 @@ function ChartTile({
   unit?: string
   showDots?: boolean
 }) {
+  const { t } = useLocale()
   const data = (metric?.data ?? []) as Array<Record<string, unknown>>
+
+  const statusTone = (status?: string): { tone: PillTone; label: string } | null => {
+    if (!status) return null
+    const s = status.toUpperCase()
+    if (s === 'AT TARGET') return { tone: 'green', label: t('healthcare.pillAtTarget') }
+    if (s === 'ABOVE TARGET')
+      return { tone: 'amber', label: t('healthcare.pillAboveTarget') }
+    return { tone: 'slate', label: s }
+  }
+
   const status = statusTone(metric?.status)
   return (
     <div className="rounded-lg border border-slate-800 bg-slate-950/40 p-3 @lg:p-4">
@@ -42,7 +46,9 @@ function ChartTile({
         {status && <StatusPill tone={status.tone} label={status.label} />}
       </div>
       {data.length === 0 ? (
-        <p className="py-8 text-center text-xs text-slate-600">No trend data</p>
+        <p className="py-8 text-center text-xs text-slate-600">
+          {t('healthcare.noTrendData')}
+        </p>
       ) : (
         <TrendChart
           data={data}
@@ -61,11 +67,12 @@ export default function VitalsTrendsCard({
 }: {
   analytics?: PatientAnalytics
 }) {
+  const { t } = useLocale()
   const trends = analytics?.trends ?? {}
 
   return (
     <Card
-      title="Vitals & Trends"
+      title={t('healthcare.vitalsTrends')}
       action={
         analytics?.analysis_period ? (
           <span className="text-[11px] text-slate-500">{analytics.analysis_period}</span>
@@ -74,33 +81,33 @@ export default function VitalsTrendsCard({
     >
       <div className="p-4 @lg:p-5 grid grid-cols-1 @2xl:grid-cols-2 gap-3 @lg:gap-4">
         <ChartTile
-          name="Blood Pressure"
+          name={t('healthcare.bloodPressure')}
           metric={trends.blood_pressure}
           series={[
-            { key: 'systolic', color: ROSE, name: 'Systolic' },
-            { key: 'diastolic', color: SKY, name: 'Diastolic' },
+            { key: 'systolic', color: ROSE, name: t('healthcare.systolic') },
+            { key: 'diastolic', color: SKY, name: t('healthcare.diastolic') },
           ]}
           target={130}
           unit="mmHg"
         />
         <ChartTile
-          name="Hemoglobin A1C"
+          name={t('healthcare.hemoglobinA1c')}
           metric={trends.hemoglobin_a1c}
-          series={[{ key: 'value', color: ROSE, name: 'A1C' }]}
+          series={[{ key: 'value', color: ROSE, name: t('healthcare.a1c') }]}
           target={7}
           unit="%"
           showDots
         />
         <ChartTile
-          name="Weight"
+          name={t('healthcare.weight')}
           metric={trends.weight}
-          series={[{ key: 'value', color: ROSE, name: 'Weight' }]}
+          series={[{ key: 'value', color: ROSE, name: t('healthcare.weight') }]}
           unit="lbs"
         />
         <ChartTile
-          name="LDL Cholesterol"
+          name={t('healthcare.ldl')}
           metric={trends.ldl_cholesterol}
-          series={[{ key: 'value', color: ROSE, name: 'LDL' }]}
+          series={[{ key: 'value', color: ROSE, name: t('healthcare.ldlShort') }]}
           target={100}
           unit="mg/dL"
         />

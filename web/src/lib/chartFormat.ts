@@ -1,4 +1,5 @@
-/** Axis formatters and layout metrics for the answer charts.
+/** Axis formatters, layout metrics and the render-time translator for the
+ * answer charts.
  *
  * Split out of AnswerChartPanel.tsx purely so it can be unit-tested: the node
  * test runner strips TypeScript types but does not compile JSX, so nothing in a
@@ -8,6 +9,38 @@
  * signature disagreed with how recharts calls it, and it shipped to a live
  * screenshot looking plausible — see shortLabel below.
  */
+import { interpolate, type Messages } from '../i18n/index.ts'
+import type { LocalizedText } from './chartSpec'
+
+/**
+ * Resolves a chart's LocalizedText against the charts.* catalog subtree.
+ *
+ * The fallback is the spec's English string: chartFor() stays pure and
+ * locale-independent (dedupe, pagination and data-chart-title key on English),
+ * and this function is the ONLY place the localized fields are read. A missing
+ * key falls back to English rather than showing a raw dot-path; the unit suite
+ * (chartI18n.test.ts) makes such a miss a test failure, so this path is a
+ * safety net, not a workflow.
+ */
+export function chartText(
+  l: LocalizedText | undefined,
+  fallback: string | undefined,
+  dict: Messages['charts'],
+): string | undefined {
+  if (!l) return fallback
+  if (l.parts) {
+    const rendered = l.parts
+      .map((part) =>
+        'raw' in part ? part.raw : chartText(part, undefined, dict) ?? '',
+      )
+      .filter(Boolean)
+    return rendered.length ? rendered.join(' · ') : fallback
+  }
+  if (!l.key) return fallback
+  const template = (dict as Record<string, string>)[l.key]
+  if (typeof template !== 'string') return fallback
+  return interpolate(template, l.params)
+}
 
 /** Compact numeric tick labels — the panel is narrow and full numbers collide. */
 export function tickFormat(value: number): string {

@@ -21,6 +21,7 @@ import {
   YAxis,
 } from 'recharts'
 import { askAgent } from '../../lib/promptBus'
+import { useLocale } from '../../i18n/LocaleContext'
 
 /* ---------------------------------- pills -------------------------------------- */
 
@@ -68,6 +69,7 @@ export function SectionHeader({ title, action }: { title: string; action?: React
 
 /** Ghost button that prefills the chat panel with a suggested prompt. */
 export function AskAgentButton({ prompt }: { prompt: string }) {
+  const { t } = useLocale()
   return (
     <button
       type="button"
@@ -76,7 +78,7 @@ export function AskAgentButton({ prompt }: { prompt: string }) {
       className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-lg border border-transparent text-slate-400 hover:text-rose-300 hover:border-slate-700 hover:bg-slate-800/60 transition-colors shrink-0"
     >
       <Bot className="w-3.5 h-3.5" />
-      Ask agent
+      {t('widgets.askAgent')}
     </button>
   )
 }
