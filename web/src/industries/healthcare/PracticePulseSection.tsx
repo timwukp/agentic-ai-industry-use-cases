@@ -8,43 +8,48 @@ import {
   YAxis,
 } from 'recharts'
 import { useApi } from '../../lib/api'
+import { useLocale } from '../../i18n/LocaleContext'
 import { Card, ErrorPane, LoadingPane, StatCard } from '../finance/widgets'
 import { SectionHeader, StatusPill } from './widgets'
 import type { PopulationResponse } from './types'
 import { labelize, parsePct } from './types'
 
-const CONDITION_LABELS: Record<string, string> = {
-  diabetes_type_2: 'Type 2 Diabetes',
-  hypertension: 'Hypertension',
-  hyperlipidemia: 'Hyperlipidemia',
-  obesity_bmi_30_plus: 'Obesity (BMI 30+)',
-  depression_anxiety: 'Depression / Anxiety',
-  asthma_copd: 'Asthma / COPD',
-  heart_failure: 'Heart Failure',
+/** Payload condition key → catalog key under healthcare.conditions.*; unknown
+ *  payload keys fall back to labelize(). */
+const CONDITION_KEYS: Record<string, string> = {
+  diabetes_type_2: 'diabetes_type_2',
+  hypertension: 'hypertension',
+  hyperlipidemia: 'hyperlipidemia',
+  obesity_bmi_30_plus: 'obesity',
+  depression_anxiety: 'depression_anxiety',
+  asthma_copd: 'asthma_copd',
+  heart_failure: 'heart_failure',
 }
 
-const HEDIS_LABELS: Record<string, string> = {
-  diabetes_a1c_control_lt8: 'Diabetes A1C Control (<8%)',
-  blood_pressure_control: 'Blood Pressure Control',
-  breast_cancer_screening: 'Breast Cancer Screening',
-  colorectal_cancer_screening: 'Colorectal Cancer Screening',
-  flu_vaccination_rate: 'Flu Vaccination Rate',
-  depression_screening: 'Depression Screening',
+/** Payload HEDIS key → catalog key under healthcare.hedis.*. */
+const HEDIS_KEYS: Record<string, string> = {
+  diabetes_a1c_control_lt8: 'diabetes_a1c_control',
+  blood_pressure_control: 'blood_pressure_control',
+  breast_cancer_screening: 'breast_cancer_screening',
+  colorectal_cancer_screening: 'colorectal_cancer_screening',
+  flu_vaccination_rate: 'flu_vaccination',
+  depression_screening: 'depression_screening',
 }
 
 const CMS_READMIT_THRESHOLD = 15.4
 
 export default function PracticePulseSection() {
+  const { t } = useLocale()
   const { data, loading, error, reload } = useApi<PopulationResponse>(
     '/api/healthcare/population',
   )
 
-  if (loading) return <LoadingPane label="Loading practice pulse…" />
+  if (loading) return <LoadingPane label={t('healthcare.loadingPulse')} />
   if (error || !data || data.error) {
     return (
-      <Card title="Practice Pulse">
+      <Card title={t('healthcare.practicePulse')}>
         <ErrorPane
-          message={error ?? data?.error ?? 'No population health data'}
+          message={error ?? data?.error ?? t('healthcare.noPopulationData')}
           onRetry={reload}
         />
       </Card>
@@ -56,8 +61,12 @@ export default function PracticePulseSection() {
   const util = data.utilization_metrics ?? {}
 
   const demoSub = [
-    panel.average_age != null ? `avg age ${panel.average_age.toFixed(1)}` : null,
-    sex.male && sex.female ? `${sex.male} M · ${sex.female} F` : null,
+    panel.average_age != null
+      ? t('healthcare.avgAge', { n: panel.average_age.toFixed(1) })
+      : null,
+    sex.male && sex.female
+      ? t('healthcare.sexSplit', { m: sex.male, f: sex.female })
+      : null,
   ]
     .filter(Boolean)
     .join(' · ')
@@ -67,7 +76,9 @@ export default function PracticePulseSection() {
 
   const prevalence = Object.entries(data.chronic_disease_prevalence ?? {}).map(
     ([key, entry]) => ({
-      name: CONDITION_LABELS[key] ?? labelize(key),
+      name: CONDITION_KEYS[key]
+        ? t(`healthcare.conditions.${CONDITION_KEYS[key]}`)
+        : labelize(key),
       count: entry.count ?? 0,
       rate: entry.rate ?? '',
     }),
@@ -82,7 +93,7 @@ export default function PracticePulseSection() {
         performance !== null && target !== null && performance >= target
       return {
         key,
-        label: HEDIS_LABELS[key] ?? labelize(key),
+        label: HEDIS_KEYS[key] ? t(`healthcare.hedis.${HEDIS_KEYS[key]}`) : labelize(key),
         performance,
         target,
         national,
@@ -95,41 +106,47 @@ export default function PracticePulseSection() {
 
   return (
     <section className="space-y-4 @container">
-      <SectionHeader title="Practice Pulse" />
+      <SectionHeader title={t('healthcare.practicePulse')} />
 
       {/* KPI row */}
       <div className="grid grid-cols-2 @xl:grid-cols-4 gap-3 @lg:gap-4">
         <StatCard
-          title="Active Patients"
+          title={t('healthcare.activePatients')}
+          kpiKey="Active Patients"
           value={panel.total_active_patients?.toLocaleString() ?? '—'}
           icon={Users}
           sub={demoSub || undefined}
         />
         <StatCard
-          title="30d Readmit %"
+          title={t('healthcare.readmit30')}
+          kpiKey="30d Readmit %"
           value={readmit != null ? `${readmit}%` : '—'}
           icon={Activity}
-          sub={`CMS threshold ${CMS_READMIT_THRESHOLD}%`}
+          sub={t('healthcare.cmsThreshold', { n: CMS_READMIT_THRESHOLD })}
           subClass={readmitAboveCms ? 'text-amber-400' : 'text-slate-400'}
         />
         <StatCard
-          title="ED Visits /1000"
+          title={t('healthcare.edVisits')}
+          kpiKey="ED Visits /1000"
           value={util.ed_visits_per_1000?.toLocaleString() ?? '—'}
           icon={Ambulance}
-          sub="per 1,000 patients / yr"
+          sub={t('healthcare.perThousand')}
         />
         <StatCard
-          title="Telehealth %"
+          title={t('healthcare.telehealth')}
+          kpiKey="Telehealth %"
           value={util.telehealth_utilization ?? '—'}
           icon={Video}
-          sub="of all encounters"
+          sub={t('healthcare.ofAllEncounters')}
         />
       </div>
 
       {/* HEDIS quality measures */}
-      <Card title="HEDIS Quality Measures">
+      <Card title={t('healthcare.hedisMeasures')}>
         {measures.length === 0 ? (
-          <p className="py-6 text-center text-sm text-slate-500">No quality measures</p>
+          <p className="py-6 text-center text-sm text-slate-500">
+            {t('healthcare.noQualityMeasures')}
+          </p>
         ) : (
           <div className="p-4 @lg:p-5 grid grid-cols-1 @2xl:grid-cols-2 @5xl:grid-cols-3 gap-3 @lg:gap-4">
             {measures.map((m) => (
@@ -141,7 +158,7 @@ export default function PracticePulseSection() {
                   <span className="text-xs text-slate-400">{m.label}</span>
                   <StatusPill
                     tone={m.onTarget ? 'green' : 'amber'}
-                    label={m.onTarget ? 'On target' : 'Below target'}
+                    label={m.onTarget ? t('widgets.onTarget') : t('widgets.belowTarget')}
                   />
                 </div>
                 <div
@@ -161,20 +178,28 @@ export default function PracticePulseSection() {
                     <div
                       className="absolute top-0 h-full w-0.5 bg-slate-500"
                       style={{ left: `${Math.min(m.national, 100)}%` }}
-                      title={`national avg ${m.national}%`}
+                      title={t('healthcare.nationalAvgPct', { n: `${m.national}%` })}
                     />
                   )}
                   {m.target !== null && (
                     <div
                       className="absolute top-0 h-full w-0.5 bg-slate-300"
                       style={{ left: `${Math.min(m.target, 100)}%` }}
-                      title={`target ${m.target}%`}
+                      title={t('healthcare.targetPct', { n: `${m.target}%` })}
                     />
                   )}
                 </div>
                 <div className="flex justify-between text-[11px] text-slate-500 mt-1.5 tabular-nums">
-                  <span>target {m.target !== null ? `${m.target}%` : '—'}</span>
-                  <span>national avg {m.national !== null ? `${m.national}%` : '—'}</span>
+                  <span>
+                    {t('healthcare.targetPct', {
+                      n: m.target !== null ? `${m.target}%` : '—',
+                    })}
+                  </span>
+                  <span>
+                    {t('healthcare.nationalAvgPct', {
+                      n: m.national !== null ? `${m.national}%` : '—',
+                    })}
+                  </span>
                 </div>
               </div>
             ))}
@@ -184,11 +209,11 @@ export default function PracticePulseSection() {
 
       {/* Prevalence chart + improvement opportunities */}
       <div className="grid grid-cols-1 @3xl:grid-cols-[3fr_2fr] gap-3 @lg:gap-4">
-        <Card title="Chronic Disease Prevalence (patients)">
+        <Card title={t('healthcare.chronicPrevalence')}>
           <div className="p-4 @lg:p-5">
             {prevalence.length === 0 ? (
               <p className="py-6 text-center text-sm text-slate-500">
-                No prevalence data
+                {t('healthcare.noPrevalenceData')}
               </p>
             ) : (
               <ResponsiveContainer
@@ -226,8 +251,11 @@ export default function PracticePulseSection() {
                     }}
                     labelStyle={{ color: '#94a3b8' }}
                     formatter={(value: number, _name, item) => [
-                      `${value.toLocaleString()} patients${item?.payload?.rate ? ` (${item.payload.rate})` : ''}`,
-                      'Prevalence',
+                      t('healthcare.patientsTooltip', {
+                        n: value.toLocaleString(),
+                        rate: item?.payload?.rate ?? '',
+                      }).replace(/ \(\)$/, ''),
+                      t('healthcare.prevalence'),
                     ]}
                   />
                   <Bar dataKey="count" fill="#f43f5e" barSize={14} radius={[0, 4, 4, 0]} />
@@ -237,10 +265,10 @@ export default function PracticePulseSection() {
           </div>
         </Card>
 
-        <Card title="Improvement Opportunities">
+        <Card title={t('healthcare.improvementOpportunities')}>
           {opportunities.length === 0 ? (
             <p className="py-6 text-center text-sm text-slate-500">
-              No improvement opportunities
+              {t('healthcare.noOpportunities')}
             </p>
           ) : (
             <ul className="p-2 @lg:p-3 divide-y divide-slate-800/70">

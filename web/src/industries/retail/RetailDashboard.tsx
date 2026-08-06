@@ -8,6 +8,7 @@ import {
   Warehouse,
 } from 'lucide-react'
 import { useApi } from '../../lib/api'
+import { useLocale } from '../../i18n/LocaleContext'
 import { Card, ErrorPane, LoadingPane, SimulatedBadge, StatCard } from '../finance/widgets'
 import {
   AskAgentButton,
@@ -54,13 +55,16 @@ const SKU_CHOICES = [
 ] as const
 
 export default function RetailDashboard() {
+  const { t } = useLocale()
   const [sku, setSku] = useState<string>(SKU_CHOICES[0].sku)
 
   return (
     <div className="h-full overflow-y-auto">
       <div className="p-4 lg:p-6 space-y-6 @container">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-lg lg:text-xl font-bold text-white">Retail Inventory</h2>
+          <h2 className="text-lg lg:text-xl font-bold text-white">
+            {t('retail.heading')}
+          </h2>
           <SimulatedBadge />
         </div>
 
@@ -75,15 +79,19 @@ export default function RetailDashboard() {
 /* ------------------------------ network health ---------------------------- */
 
 function NetworkSection() {
+  const { t } = useLocale()
   const { data, loading, error, reload } = useApi<OverviewResponse>(
     '/api/retail/overview',
   )
 
-  if (loading) return <LoadingPane label="Loading network health…" />
+  if (loading) return <LoadingPane label={t('retail.loadingNetwork')} />
   if (error || !data || data.error) {
     return (
-      <Card title="Network Health">
-        <ErrorPane message={error ?? data?.error ?? 'No overview data'} onRetry={reload} />
+      <Card title={t('retail.networkHealth')}>
+        <ErrorPane
+          message={error ?? data?.error ?? t('retail.noOverviewData')}
+          onRetry={reload}
+        />
       </Card>
     )
   }
@@ -100,7 +108,7 @@ function NetworkSection() {
   return (
     <section className="space-y-4 @container">
       <SectionHeader
-        title="Network Health"
+        title={t('retail.networkHealth')}
         accentClass={ACCENT}
         action={
           <AskAgentButton
@@ -112,7 +120,8 @@ function NetworkSection() {
 
       <div className="grid grid-cols-2 @xl:grid-cols-4 gap-3 @lg:gap-4">
         <StatCard
-          title="Total SKUs"
+          title={t('retail.totalSkus')}
+          kpiKey="Total SKUs"
           value={fmtNum(overall.total_skus)}
           icon={Boxes}
           /* Excess is the share of the on-hand value above target — the number a
@@ -120,27 +129,35 @@ function NetworkSection() {
              trapped capital inside $14.5M on hand was invisible on this screen. */
           sub={
             overall.total_excess_value
-              ? `${fmtCompactUsd(overall.total_inventory_value)} on hand · ${fmtCompactUsd(
-                  overall.total_excess_value,
-                )} excess`
-              : `${fmtCompactUsd(overall.total_inventory_value)} on hand`
+              ? t('retail.onHandExcess', {
+                  onHand: fmtCompactUsd(overall.total_inventory_value),
+                  excess: fmtCompactUsd(overall.total_excess_value),
+                })
+              : t('retail.onHand', {
+                  onHand: fmtCompactUsd(overall.total_inventory_value),
+                })
           }
         />
         <StatCard
-          title="In-Stock Rate"
+          title={t('retail.inStockRate')}
+          kpiKey="In-Stock Rate"
           value={fmtPct(inStock)}
           icon={Warehouse}
-          sub="target 95%"
+          sub={t('retail.target95')}
           subClass={inStock < 95 ? 'text-amber-400' : 'text-green-400'}
         />
         <StatCard
-          title="Blended Margin"
+          title={t('retail.blendedMargin')}
+          kpiKey="Blended Margin"
           value={fmtPct(margins.blended_gross_margin)}
           icon={Percent}
-          sub={`${fmtCompactUsd(margins.margin_improvement_opportunity)} opportunity`}
+          sub={t('retail.opportunity', {
+            amount: fmtCompactUsd(margins.margin_improvement_opportunity),
+          })}
         />
         <StatCard
-          title="Supply Chain Risk"
+          title={t('retail.supplyChainRisk')}
+          kpiKey="Supply Chain Risk"
           value={risk.overall_supply_chain_risk ?? '—'}
           icon={Truck}
           /* The rating is a judgement over the whole roster, so the subtitle
@@ -148,8 +165,8 @@ function NetworkSection() {
              the length of the findings list, which reads as a supplier count. */
           sub={
             risk.suppliers_assessed
-              ? `${fmtNum(risk.suppliers_assessed)} suppliers assessed`
-              : `${(risk.top_risks ?? []).length} tracked risks`
+              ? t('retail.suppliersAssessed', { n: fmtNum(risk.suppliers_assessed) })
+              : t('retail.trackedRisks', { n: (risk.top_risks ?? []).length })
           }
           subClass={
             (risk.overall_supply_chain_risk ?? '').toUpperCase() === 'LOW'
@@ -174,18 +191,22 @@ function NetworkSection() {
       )}
 
       <div className="grid grid-cols-1 @4xl:grid-cols-[3fr_2fr] gap-3 @lg:gap-4">
-        <Card title="Inventory by Category">
+        <Card title={t('retail.inventoryByCategory')}>
           <DataTable
             columns={
               [
                 {
-                  header: 'Category',
+                  header: t('retail.colCategory'),
                   className: 'text-white',
                   render: (row) => row.category ?? '—',
                 },
-                { header: 'SKUs', numeric: true, render: (row) => fmtNum(row.total_skus) },
                 {
-                  header: 'In stock',
+                  header: t('retail.colSkus'),
+                  numeric: true,
+                  render: (row) => fmtNum(row.total_skus),
+                },
+                {
+                  header: t('retail.colInStock'),
                   numeric: true,
                   render: (row) => (
                     <span
@@ -198,17 +219,17 @@ function NetworkSection() {
                   ),
                 },
                 {
-                  header: 'Stockouts',
+                  header: t('retail.colStockouts'),
                   numeric: true,
                   render: (row) => fmtNum(row.stockout_skus),
                 },
                 {
-                  header: 'Turns',
+                  header: t('retail.colTurns'),
                   numeric: true,
                   render: (row) => row.inventory_turnover?.toFixed(1) ?? '—',
                 },
                 {
-                  header: 'Value',
+                  header: t('retail.colValue'),
                   numeric: true,
                   className: 'text-white',
                   render: (row) => fmtCompactUsd(row.total_value),
@@ -217,13 +238,15 @@ function NetworkSection() {
             }
             rows={categories}
             rowKey={(row, i) => row.category ?? String(i)}
-            empty="No category data"
+            empty={t('retail.noCategoryData')}
           />
         </Card>
 
-        <Card title="ABC Classification — fill rate vs target">
+        <Card title={t('retail.abcClassification')}>
           {Object.keys(abc).length === 0 ? (
-            <p className="py-6 text-center text-sm text-slate-500">No ABC analysis</p>
+            <p className="py-6 text-center text-sm text-slate-500">
+              {t('retail.noAbcAnalysis')}
+            </p>
           ) : (
             <ul className="p-4 @lg:p-5 space-y-4">
               {Object.entries(abc).map(([cls, entry]) => {
@@ -234,25 +257,27 @@ function NetworkSection() {
                   <li key={cls}>
                     <div className="flex items-baseline justify-between gap-2 mb-1.5">
                       <span className="text-sm font-semibold text-white">
-                        Class {cls}
+                        {t('retail.classLabel', { c: cls })}
                         <span className="ml-2 font-normal text-xs text-slate-400 tabular-nums">
-                          {fmtNum(entry.sku_count)} SKUs · {fmtPct(entry.revenue_pct)} of
-                          revenue
+                          {t('retail.skusRevenue', {
+                            n: fmtNum(entry.sku_count),
+                            p: fmtPct(entry.revenue_pct),
+                          })}
                         </span>
                       </span>
                       <StatusPill
                         tone={onTarget ? 'green' : 'amber'}
-                        label={onTarget ? 'On target' : 'Below target'}
+                        label={onTarget ? t('widgets.onTarget') : t('widgets.belowTarget')}
                       />
                     </div>
                     <MeterBar
                       pct={current}
                       fillClass={onTarget ? 'bg-green-500' : 'bg-amber-500'}
-                      ticks={[{ at: target, title: `target ${target}%` }]}
+                      ticks={[{ at: target, title: t('retail.targetTick', { p: `${target}%` }) }]}
                     />
                     <div className="flex justify-between text-[11px] text-slate-500 mt-1 tabular-nums">
-                      <span>fill {fmtPct(current)}</span>
-                      <span>target {fmtPct(target)}</span>
+                      <span>{t('retail.fillLegend', { p: fmtPct(current) })}</span>
+                      <span>{t('retail.targetLegend', { p: fmtPct(target) })}</span>
                     </div>
                   </li>
                 )
@@ -268,20 +293,21 @@ function NetworkSection() {
 /* -------------------------------- stockouts ------------------------------- */
 
 function StockoutSection() {
+  const { t } = useLocale()
   const { data, loading, error, reload } = useApi<StockoutReport>(
     '/api/retail/stockouts',
   )
 
   const columns: Array<Column<StockoutItem>> = [
     {
-      header: 'SKU',
+      header: t('retail.colSku'),
       render: (row) => (
         <span className="font-mono text-xs text-white">{row.sku ?? '—'}</span>
       ),
     },
-    { header: 'Product', render: (row) => row.product_name ?? '—' },
+    { header: t('retail.colProduct'), render: (row) => row.product_name ?? '—' },
     {
-      header: 'Class',
+      header: t('retail.colClass'),
       render: (row) => (
         <StatusPill
           tone={row.abc_class === 'A' ? 'red' : row.abc_class === 'B' ? 'amber' : 'slate'}
@@ -290,7 +316,7 @@ function StockoutSection() {
       ),
     },
     {
-      header: 'Days out',
+      header: t('retail.colDaysOut'),
       numeric: true,
       render: (row) => (
         <span className={(row.days_out_of_stock ?? 0) > 7 ? 'text-red-400' : ''}>
@@ -299,7 +325,7 @@ function StockoutSection() {
       ),
     },
     {
-      header: 'Reorder',
+      header: t('retail.colReorder'),
       render: (row) => (
         <StatusPill
           tone={row.reorder_status === 'ON_ORDER' ? 'sky' : 'amber'}
@@ -308,13 +334,13 @@ function StockoutSection() {
       ),
     },
     {
-      header: 'ETA',
+      header: t('retail.colEta'),
       render: (row) => (
         <span className="tabular-nums text-slate-400">{row.eta ?? '—'}</span>
       ),
     },
     {
-      header: 'Lost revenue',
+      header: t('retail.colLostRevenue'),
       numeric: true,
       className: 'text-white',
       render: (row) => fmtUsd0(row.estimated_total_loss),
@@ -324,7 +350,7 @@ function StockoutSection() {
   return (
     <section className="space-y-4 @container">
       <SectionHeader
-        title="Stockouts"
+        title={t('retail.stockouts')}
         accentClass={ACCENT}
         action={
           <AskAgentButton
@@ -335,11 +361,11 @@ function StockoutSection() {
       />
 
       {loading ? (
-        <LoadingPane label="Loading stockouts…" />
+        <LoadingPane label={t('retail.loadingStockouts')} />
       ) : error || !data || data.error ? (
-        <Card title="Stockouts">
+        <Card title={t('retail.stockouts')}>
           <ErrorPane
-            message={error ?? data?.error ?? 'No stockout data'}
+            message={error ?? data?.error ?? t('retail.noStockoutData')}
             onRetry={reload}
           />
         </Card>
@@ -352,24 +378,27 @@ function StockoutSection() {
                 number under two names. Both are now stated, with the tile that
                 names the table showing the table's own count. */}
             <StatCard
-              title="Tracked Stockouts"
+              title={t('retail.trackedStockouts')}
+              kpiKey="Tracked Stockouts"
               value={fmtNum(data.total_stockouts)}
               icon={PackageX}
               sub={
                 data.network_stockouts
-                  ? `of ${fmtNum(data.network_stockouts)} network-wide`
-                  : `${fmtNum(data.a_class_stockouts)} A-class`
+                  ? t('retail.ofNetworkWide', { n: fmtNum(data.network_stockouts) })
+                  : t('retail.aClass', { n: fmtNum(data.a_class_stockouts) })
               }
               subClass="text-slate-400"
             />
             <StatCard
-              title="Revenue at Risk"
+              title={t('retail.revenueAtRisk')}
+              kpiKey="Revenue at Risk"
               value={fmtCompactUsd(data.total_revenue_impact)}
               icon={TrendingUp}
-              sub="cumulative lost sales, tracked SKUs"
+              sub={t('retail.cumulativeLost')}
             />
             <StatCard
-              title="A-Class Share"
+              title={t('retail.aClassShare')}
+              kpiKey="A-Class Share"
               value={fmtPct(
                 data.total_stockouts
                   ? ((data.a_class_stockouts ?? 0) / data.total_stockouts) * 100
@@ -377,14 +406,17 @@ function StockoutSection() {
                 0,
               )}
               icon={Boxes}
-              sub={`${fmtNum(data.a_class_stockouts)} of ${fmtNum(data.total_stockouts)} tracked`}
+              sub={t('retail.ofTracked', {
+                a: fmtNum(data.a_class_stockouts),
+                b: fmtNum(data.total_stockouts),
+              })}
               subClass={
                 (data.a_class_stockouts ?? 0) > 0 ? 'text-red-400' : 'text-slate-400'
               }
             />
           </div>
 
-          <Card title="Out-of-Stock Items">
+          <Card title={t('retail.outOfStockItems')}>
             {data.scope && (
               <p className="text-xs text-slate-400 mb-3">{data.scope}</p>
             )}
@@ -392,7 +424,7 @@ function StockoutSection() {
               columns={columns}
               rows={data.items ?? []}
               rowKey={(row, i) => row.sku ?? String(i)}
-              empty="No stockouts — every SKU is in stock"
+              empty={t('retail.noStockouts')}
             />
           </Card>
 
@@ -414,6 +446,7 @@ function DemandSection({
   sku: string
   onSkuChange: (value: string) => void
 }) {
+  const { t } = useLocale()
   // quarter, not month: the backend derives weeks from the period, so "month"
   // yields a 4-point line — too few points to read as a trend.
   const demand = useApi<DemandResponse>(
@@ -441,7 +474,7 @@ function DemandSection({
   return (
     <section className="space-y-4 @container">
       <SectionHeader
-        title="Demand & Forecast"
+        title={t('retail.demandForecast')}
         accentClass={ACCENT}
         action={
           <AskAgentButton
@@ -453,23 +486,25 @@ function DemandSection({
 
       <div className="grid grid-cols-1 @4xl:grid-cols-2 gap-3 @lg:gap-4">
         <Card
-          title="Weekly Demand Trend — 12w (all categories)"
+          title={t('retail.weeklyDemand')}
           action={
             trends.units_growth_pct != null ? (
               <span
                 className={`text-xs tabular-nums ${deltaClass(trends.units_growth_pct)}`}
               >
-                units {fmtSignedPct(trends.units_growth_pct)}
+                {t('retail.unitsGrowth', {
+                  p: fmtSignedPct(trends.units_growth_pct),
+                })}
               </span>
             ) : undefined
           }
         >
           <div className="p-4 @lg:p-5">
             {demand.loading ? (
-              <LoadingPane label="Loading demand…" />
+              <LoadingPane label={t('retail.loadingDemand')} />
             ) : demand.error || !demand.data || demand.data.error ? (
               <ErrorPane
-                message={demand.error ?? demand.data?.error ?? 'No demand data'}
+                message={demand.error ?? demand.data?.error ?? t('retail.noDemandData')}
                 onRetry={demand.reload}
               />
             ) : (
@@ -478,12 +513,12 @@ function DemandSection({
                   data={weekly}
                   xKey="week"
                   series={[
-                    { key: 'units', color: SERIES, name: 'Units sold' },
+                    { key: 'units', color: SERIES, name: t('retail.unitsSold') },
                     // revenue runs ~100x units — its own axis, or it flatlines
                     {
                       key: 'revenue',
                       color: SERIES_2,
-                      name: 'Revenue (USD)',
+                      name: t('retail.revenueUsd'),
                       axis: 'right',
                       formatter: fmtCompactUsd,
                     },
@@ -491,19 +526,19 @@ function DemandSection({
                   yFormatter={fmtNum}
                 />
                 <div className="flex flex-wrap gap-x-5 gap-y-1 mt-3 text-[11px] text-slate-500 tabular-nums">
-                  <span>
-                    revenue{' '}
-                    <span className={deltaClass(trends.revenue_growth_pct ?? 0)}>
-                      {fmtSignedPct(trends.revenue_growth_pct)}
-                    </span>
+                  <span className={deltaClass(trends.revenue_growth_pct ?? 0)}>
+                    {t('retail.revenueLegend', {
+                      p: fmtSignedPct(trends.revenue_growth_pct),
+                    })}
+                  </span>
+                  <span className={deltaClass(trends.aov_change_pct ?? 0)}>
+                    {t('retail.aovLegend', { p: fmtSignedPct(trends.aov_change_pct) })}
                   </span>
                   <span>
-                    AOV{' '}
-                    <span className={deltaClass(trends.aov_change_pct ?? 0)}>
-                      {fmtSignedPct(trends.aov_change_pct)}
-                    </span>
+                    {t('retail.seasonality', {
+                      n: demand.data.seasonality_index ?? '—',
+                    })}
                   </span>
-                  <span>seasonality {demand.data.seasonality_index ?? '—'}×</span>
                 </div>
               </>
             )}
@@ -511,13 +546,13 @@ function DemandSection({
         </Card>
 
         <Card
-          title="SKU Demand Forecast"
+          title={t('retail.skuForecast')}
           action={
             <select
               value={sku}
               onChange={(event) => onSkuChange(event.target.value)}
               className="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-200"
-              aria-label="Forecast SKU"
+              aria-label={t('retail.forecastSkuLabel')}
             >
               {SKU_CHOICES.map((choice) => (
                 <option key={choice.sku} value={choice.sku}>
@@ -529,23 +564,45 @@ function DemandSection({
         >
           <div className="p-4 @lg:p-5">
             {forecast.loading ? (
-              <LoadingPane label="Loading forecast…" />
+              <LoadingPane label={t('retail.loadingForecast')} />
             ) : forecast.error || !forecast.data || forecast.data.error ? (
               <ErrorPane
-                message={forecast.error ?? forecast.data?.error ?? 'No forecast'}
+                message={forecast.error ?? forecast.data?.error ?? t('retail.noForecast')}
                 onRetry={forecast.reload}
               />
             ) : (
               <>
                 <div className="flex flex-wrap items-baseline gap-x-5 gap-y-1 mb-3">
-                  <span className="text-2xl font-bold text-white tabular-nums">
-                    {fmtNum(forecast.data.total_predicted_demand)}
-                  </span>
-                  <span className="text-xs text-slate-400">
-                    units over {forecast.data.forecast_period_days}d · avg{' '}
-                    {forecast.data.avg_daily_demand}/day · peak{' '}
-                    {forecast.data.peak_day}
-                  </span>
+                  {/* The template's {units} slot is the bold figure itself, and
+                      its position moves with the locale (leads in English, sits
+                      mid-sentence in CJK). Interpolate everything else, then
+                      split on the untouched {units} token so the number keeps
+                      its big/bold styling wherever the language puts it. */}
+                  {t('retail.forecastCaption', {
+                    days: forecast.data.forecast_period_days ?? '—',
+                    avg: forecast.data.avg_daily_demand ?? '—',
+                    peak: forecast.data.peak_day ?? '—',
+                  })
+                    .split('{units}')
+                    .flatMap((part, i) => [
+                      ...(i > 0
+                        ? [
+                            <span
+                              key={`units-${i}`}
+                              className="text-2xl font-bold text-white tabular-nums"
+                            >
+                              {fmtNum(forecast.data?.total_predicted_demand)}
+                            </span>,
+                          ]
+                        : []),
+                      ...(part.trim()
+                        ? [
+                            <span key={`part-${i}`} className="text-xs text-slate-400">
+                              {part.trim()}
+                            </span>,
+                          ]
+                        : []),
+                    ])}
                 </div>
                 <ForecastBand
                   data={points}
@@ -556,9 +613,9 @@ function DemandSection({
                   color={SERIES}
                 />
                 <div className="flex flex-wrap gap-x-5 gap-y-1 mt-2 text-[11px] text-slate-500 tabular-nums">
-                  <span>MAPE {fmtPct(accuracy.mape)}</span>
-                  <span>RMSE {accuracy.rmse ?? '—'}</span>
-                  <span>bias {fmtSignedPct(accuracy.forecast_bias)}</span>
+                  <span>{t('retail.mape', { p: fmtPct(accuracy.mape) })}</span>
+                  <span>{t('retail.rmse', { n: accuracy.rmse ?? '—' })}</span>
+                  <span>{t('retail.bias', { p: fmtSignedPct(accuracy.forecast_bias) })}</span>
                 </div>
                 <p className="mt-2 text-[11px] text-slate-500">
                   {forecast.data.model}

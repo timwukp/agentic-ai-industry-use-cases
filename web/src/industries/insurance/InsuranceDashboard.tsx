@@ -8,6 +8,7 @@ import {
   Zap,
 } from 'lucide-react'
 import { useApi } from '../../lib/api'
+import { useLocale } from '../../i18n/LocaleContext'
 import { Card, ErrorPane, LoadingPane, SimulatedBadge, StatCard } from '../finance/widgets'
 import {
   AskAgentButton,
@@ -40,9 +41,10 @@ const HOVER = 'hover:text-indigo-300'
 const FRAUD_REVIEW_THRESHOLD = 0.7
 
 function riskTone(score: number) {
-  if (score >= FRAUD_REVIEW_THRESHOLD) return { tone: 'red' as const, label: 'REVIEW' }
-  if (score >= 0.4) return { tone: 'amber' as const, label: 'WATCH' }
-  return { tone: 'slate' as const, label: 'CLEAR' }
+  if (score >= FRAUD_REVIEW_THRESHOLD)
+    return { tone: 'red' as const, labelKey: 'insurance.pillReview' }
+  if (score >= 0.4) return { tone: 'amber' as const, labelKey: 'insurance.pillWatch' }
+  return { tone: 'slate' as const, labelKey: 'insurance.pillClear' }
 }
 
 function STATUS_TONE(status: string) {
@@ -54,13 +56,16 @@ function STATUS_TONE(status: string) {
 }
 
 export default function InsuranceDashboard() {
+  const { t } = useLocale()
   const [statusFilter, setStatusFilter] = useState<ClaimStatusFilter>('all')
 
   return (
     <div className="h-full overflow-y-auto">
       <div className="p-4 lg:p-6 space-y-6 @container">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h2 className="text-lg lg:text-xl font-bold text-white">Insurance Claims</h2>
+          <h2 className="text-lg lg:text-xl font-bold text-white">
+            {t('insurance.heading')}
+          </h2>
           <SimulatedBadge />
         </div>
 
@@ -74,15 +79,19 @@ export default function InsuranceDashboard() {
 /* ------------------------------- book of business -------------------------- */
 
 function BookSection() {
+  const { t } = useLocale()
   const { data, loading, error, reload } = useApi<OverviewResponse>(
     '/api/insurance/overview',
   )
 
-  if (loading) return <LoadingPane label="Loading claims book…" />
+  if (loading) return <LoadingPane label={t('insurance.loadingBook')} />
   if (error || !data || data.error) {
     return (
-      <Card title="Claims Book">
-        <ErrorPane message={error ?? data?.error ?? 'No overview data'} onRetry={reload} />
+      <Card title={t('insurance.claimsBook')}>
+        <ErrorPane
+          message={error ?? data?.error ?? t('insurance.noOverviewData')}
+          onRetry={reload}
+        />
       </Card>
     )
   }
@@ -113,7 +122,7 @@ function BookSection() {
   return (
     <section className="space-y-4 @container">
       <SectionHeader
-        title="Claims Book"
+        title={t('insurance.claimsBook')}
         accentClass={ACCENT}
         action={
           <AskAgentButton
@@ -125,33 +134,41 @@ function BookSection() {
 
       <div className="grid grid-cols-2 @xl:grid-cols-4 gap-3 @lg:gap-4">
         <StatCard
-          title="Claims Screened"
+          title={t('insurance.claimsScreened')}
+          kpiKey="Claims Screened"
           value={fmtNum(fm.total_claims_screened)}
           icon={ShieldAlert}
-          sub={`${fmtNum(fm.flagged_for_review)} flagged for review`}
+          sub={t('insurance.flaggedForReview', { n: fmtNum(fm.flagged_for_review) })}
         />
         <StatCard
-          title="Fraud Detection Rate"
+          title={t('insurance.fraudDetectionRate')}
+          kpiKey="Fraud Detection Rate"
           value={fmtPct(fm.detection_rate_pct)}
           icon={Zap}
-          sub={`${fmtPct(fpRate)} false positives`}
+          sub={t('insurance.falsePositives', { p: fmtPct(fpRate) })}
           subClass={fpRate > 5 ? 'text-amber-400' : 'text-slate-400'}
         />
         <StatCard
-          title="Detection Savings"
+          title={t('insurance.detectionSavings')}
+          kpiKey="Detection Savings"
           value={fmtCompactUsd(fm.savings_from_detection)}
           icon={BadgeDollarSign}
-          sub={`${fmtNum(fm.confirmed_fraud)} confirmed cases`}
+          sub={t('insurance.confirmedCases', { n: fmtNum(fm.confirmed_fraud) })}
         />
         <StatCard
-          title="Avg Processing"
+          title={t('insurance.avgProcessing')}
+          kpiKey="Avg Processing"
           value={
-            kpis.avg_processing_days != null ? `${kpis.avg_processing_days}d` : '—'
+            kpis.avg_processing_days != null
+              ? t('insurance.daysSuffix', { n: kpis.avg_processing_days })
+              : '—'
           }
           icon={Timer}
           sub={
             trend.processing_time_vs_prior_month != null
-              ? `${fmtSignedPct(trend.processing_time_vs_prior_month)} vs prior month`
+              ? t('insurance.vsPriorMonth', {
+                  p: fmtSignedPct(trend.processing_time_vs_prior_month),
+                })
               : undefined
           }
           subClass={
@@ -163,11 +180,11 @@ function BookSection() {
       </div>
 
       <div className="grid grid-cols-1 @3xl:grid-cols-2 gap-3 @lg:gap-4">
-        <Card title="Top Fraud Patterns (confirmed cases)">
+        <Card title={t('insurance.topFraudPatterns')}>
           <div className="p-4 @lg:p-5">
             {fraudTypes.length === 0 ? (
               <p className="py-6 text-center text-sm text-slate-500">
-                No fraud patterns
+                {t('insurance.noFraudPatterns')}
               </p>
             ) : (
               <RankedBars
@@ -183,17 +200,19 @@ function BookSection() {
         </Card>
 
         <Card
-          title="Settlement Mix by Claim Type"
+          title={t('insurance.settlementMix')}
           action={
             <span className="text-[11px] text-slate-500 tabular-nums">
-              {fmtNum(kpis.total_settlements)} settlements ·{' '}
-              {fmtCompactUsd(kpis.total_amount_paid)} paid
+              {t('insurance.settlementsPaid', {
+                n: fmtNum(kpis.total_settlements),
+                amount: fmtCompactUsd(kpis.total_amount_paid),
+              })}
             </span>
           }
         >
           {byType.length === 0 ? (
             <p className="py-6 text-center text-sm text-slate-500">
-              No settlement data
+              {t('insurance.noSettlementData')}
             </p>
           ) : (
             <ul className="p-4 @lg:p-5 space-y-3">
@@ -202,7 +221,10 @@ function BookSection() {
                   <div className="flex items-baseline justify-between gap-2 mb-1.5">
                     <span className="text-sm text-white capitalize">{row.type}</span>
                     <span className="text-xs text-slate-400 tabular-nums">
-                      {fmtNum(row.count)} claims · avg {fmtUsd0(row.avg)}
+                      {t('insurance.claimsAvg', {
+                        n: fmtNum(row.count),
+                        amount: fmtUsd0(row.avg),
+                      })}
                     </span>
                   </div>
                   <MeterBar
@@ -213,10 +235,16 @@ function BookSection() {
               ))}
               <li className="pt-2 flex flex-wrap gap-x-5 gap-y-1 text-[11px] text-slate-500 tabular-nums border-t border-slate-800">
                 <span>
-                  straight-through {fmtPct(kpis.straight_through_rate_pct)}
+                  {t('insurance.straightThrough', {
+                    p: fmtPct(kpis.straight_through_rate_pct),
+                  })}
                 </span>
-                <span>median {fmtUsd0(kpis.median_settlement)}</span>
-                <span>CSAT {kpis.customer_satisfaction ?? '—'}/5</span>
+                <span>
+                  {t('insurance.medianLegend', {
+                    amount: fmtUsd0(kpis.median_settlement),
+                  })}
+                </span>
+                <span>{t('insurance.csat', { n: kpis.customer_satisfaction ?? '—' })}</span>
               </li>
             </ul>
           )}
@@ -235,6 +263,7 @@ function QueueSection({
   statusFilter: ClaimStatusFilter
   onFilterChange: (value: ClaimStatusFilter) => void
 }) {
+  const { t } = useLocale()
   const { data, loading, error, reload } = useApi<ClaimsResponse>(
     `/api/insurance/claims?status=${statusFilter}&days=30`,
   )
@@ -243,23 +272,23 @@ function QueueSection({
 
   const columns: Array<Column<ClaimRow>> = [
     {
-      header: 'Claim',
+      header: t('insurance.colClaim'),
       render: (row) => (
         <span className="font-mono text-xs text-white">{row.claim_id ?? '—'}</span>
       ),
     },
     {
-      header: 'Type',
+      header: t('insurance.colType'),
       render: (row) => <span className="capitalize">{row.claim_type ?? '—'}</span>,
     },
     {
-      header: 'Filed',
+      header: t('insurance.colFiled'),
       render: (row) => (
         <span className="tabular-nums text-slate-400">{row.filed_date ?? '—'}</span>
       ),
     },
     {
-      header: 'Status',
+      header: t('insurance.colStatus'),
       render: (row) => (
         <StatusPill
           tone={STATUS_TONE(row.status ?? '')}
@@ -268,7 +297,7 @@ function QueueSection({
       ),
     },
     {
-      header: 'Priority',
+      header: t('insurance.colPriority'),
       render: (row) => (
         <StatusPill
           tone={(row.priority ?? '').toUpperCase() === 'HIGH' ? 'amber' : 'slate'}
@@ -277,21 +306,21 @@ function QueueSection({
       ),
     },
     {
-      header: 'Fraud score',
+      header: t('insurance.colFraudScore'),
       numeric: true,
       render: (row) => {
         const score = row.fraud_risk ?? 0
-        const { tone, label } = riskTone(score)
+        const { tone, labelKey } = riskTone(score)
         return (
           <span className="inline-flex items-center gap-2 justify-end">
             <span className="tabular-nums text-white">{score.toFixed(2)}</span>
-            <StatusPill tone={tone} label={label} />
+            <StatusPill tone={tone} label={t(labelKey)} />
           </span>
         )
       },
     },
     {
-      header: 'Amount',
+      header: t('insurance.colAmount'),
       numeric: true,
       className: 'text-white',
       render: (row) => fmtUsd0(row.amount),
@@ -301,7 +330,7 @@ function QueueSection({
   return (
     <section className="space-y-4 @container">
       <SectionHeader
-        title="Claim Queue"
+        title={t('insurance.claimQueue')}
         accentClass={ACCENT}
         action={
           <AskAgentButton
@@ -329,52 +358,61 @@ function QueueSection({
       </div>
 
       {loading ? (
-        <LoadingPane label="Loading claim queue…" />
+        <LoadingPane label={t('insurance.loadingQueue')} />
       ) : error || !data || data.error ? (
-        <Card title="Claim Queue">
-          <ErrorPane message={error ?? data?.error ?? 'No claims'} onRetry={reload} />
+        <Card title={t('insurance.claimQueue')}>
+          <ErrorPane
+            message={error ?? data?.error ?? t('insurance.noClaims')}
+            onRetry={reload}
+          />
         </Card>
       ) : (
         <>
           <div className="grid grid-cols-2 @xl:grid-cols-4 gap-3 @lg:gap-4">
             <StatCard
-              title="Open Claims"
+              title={t('insurance.openClaims')}
+              kpiKey="Open Claims"
               value={fmtNum(data.open_claims)}
               icon={Clock}
-              sub={`of ${fmtNum(data.total_claims)} filed in 30 days`}
+              sub={t('insurance.ofFiled', { n: fmtNum(data.total_claims) })}
             />
             <StatCard
-              title="Reserve Exposure"
+              title={t('insurance.reserveExposure')}
+              kpiKey="Reserve Exposure"
               value={fmtCompactUsd(summary.reserve_exposure)}
               icon={BadgeDollarSign}
-              sub={`avg ${fmtUsd0(summary.avg_open_amount)} per open claim`}
+              sub={t('insurance.avgPerOpenClaim', {
+                amount: fmtUsd0(summary.avg_open_amount),
+              })}
             />
             <StatCard
-              title="High Priority"
+              title={t('insurance.highPriority')}
+              kpiKey="High Priority"
               value={fmtNum(summary.high_priority)}
               icon={AlertTriangle}
-              sub="need adjuster today"
+              sub={t('insurance.needAdjuster')}
               subClass={
                 (summary.high_priority ?? 0) > 0 ? 'text-amber-400' : 'text-slate-400'
               }
             />
             <StatCard
-              title="Fraud Flagged"
+              title={t('insurance.fraudFlagged')}
+              kpiKey="Fraud Flagged"
               value={fmtNum(summary.flagged_fraud)}
               icon={ShieldAlert}
-              sub={`score > ${FRAUD_REVIEW_THRESHOLD}`}
+              sub={t('insurance.scoreAbove', { n: FRAUD_REVIEW_THRESHOLD })}
               subClass={
                 (summary.flagged_fraud ?? 0) > 0 ? 'text-red-400' : 'text-slate-400'
               }
             />
           </div>
 
-          <Card title={`Claims — ${statusFilter}`}>
+          <Card title={t('insurance.claimsFiltered', { filter: statusFilter })}>
             <DataTable
               columns={columns}
               rows={data.claims ?? []}
               rowKey={(row, i) => row.claim_id ?? String(i)}
-              empty="No claims match this filter"
+              empty={t('insurance.noClaimsMatch')}
               maxHeight="max-h-96"
             />
           </Card>

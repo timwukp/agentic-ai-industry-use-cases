@@ -1,14 +1,7 @@
 import { Card } from '../../finance/widgets'
+import { useLocale } from '../../../i18n/LocaleContext'
 import { AskAgentButton, PriorityPill, StatusPill, type PillTone } from '../widgets'
 import type { CareGapAnalysis } from '../types'
-
-function gapTone(status?: string): { tone: PillTone; label: string } {
-  const s = (status ?? '').toUpperCase()
-  if (s === 'OVERDUE') return { tone: 'red', label: 'OVERDUE' }
-  if (s === 'DUE SOON') return { tone: 'amber', label: 'DUE SOON' }
-  if (s === 'NEVER COMPLETED') return { tone: 'violet', label: 'NEVER COMPLETED' }
-  return { tone: 'slate', label: s || '—' }
-}
 
 export default function CareGapsCard({
   careGaps,
@@ -17,6 +10,17 @@ export default function CareGapsCard({
   careGaps?: CareGapAnalysis
   patientId: string
 }) {
+  const { t } = useLocale()
+
+  const gapTone = (status?: string): { tone: PillTone; label: string } => {
+    const s = (status ?? '').toUpperCase()
+    if (s === 'OVERDUE') return { tone: 'red', label: t('healthcare.pillOverdue') }
+    if (s === 'DUE SOON') return { tone: 'amber', label: t('healthcare.pillDueSoon') }
+    if (s === 'NEVER COMPLETED')
+      return { tone: 'violet', label: t('healthcare.pillNever') }
+    return { tone: 'slate', label: s || '—' }
+  }
+
   const gaps = careGaps?.care_gaps ?? []
   const total = careGaps?.total_care_gaps ?? gaps.length
   const high =
@@ -26,7 +30,7 @@ export default function CareGapsCard({
 
   return (
     <Card
-      title={`Care Gaps (${total}) · ${high} high priority`}
+      title={t('healthcare.careGapsTitle', { n: total, high })}
       action={
         <AskAgentButton
           prompt={`Create an outreach plan to close the care gaps for ${patientId}`}
@@ -34,7 +38,7 @@ export default function CareGapsCard({
       }
     >
       {gaps.length === 0 ? (
-        <p className="p-5 text-sm text-slate-500">No open care gaps.</p>
+        <p className="p-5 text-sm text-slate-500">{t('healthcare.noCareGaps')}</p>
       ) : (
         <ul className="p-2 @lg:p-3 divide-y divide-slate-800/70">
           {gaps.map((gap, i) => {

@@ -35,8 +35,10 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { useLocale } from '../i18n/LocaleContext'
 import type { ChartSpec } from '../lib/chartSpec'
 import {
+  chartText,
   LABEL_WIDTH,
   LINE_HEIGHT,
   plotHeight,
@@ -60,15 +62,26 @@ const AXIS = {
 } as const
 
 export function ChartCard({ spec }: { spec: ChartSpec }) {
+  // Translation happens HERE, at render, never in chartFor(): the English
+  // title stays the spec's identity (dedupe, pagination, data-chart-title),
+  // so switching language mid-conversation cannot duplicate or reset charts.
+  const { messages } = useLocale()
+  const dict = messages.charts
+  const seriesName = (s: ChartSpec['series'][number]) =>
+    (s.nameKey && chartText({ key: s.nameKey }, s.name, dict)) || s.name
   const negative = spec.data.some((row) =>
     spec.series.some((s) => Number(row[s.key]) < 0),
   )
   return (
     <div data-testid="answer-chart" data-chart-title={spec.title}>
       <div className="px-1 pb-2">
-        <h4 className="text-sm font-medium text-white">{spec.title}</h4>
-        {spec.subtitle && (
-          <p className="text-[11px] text-slate-500 mt-0.5">{spec.subtitle}</p>
+        <h4 className="text-sm font-medium text-white">
+          {chartText(spec.titleL, spec.title, dict)}
+        </h4>
+        {(spec.subtitleL || spec.subtitle) && (
+          <p className="text-[11px] text-slate-500 mt-0.5">
+            {chartText(spec.subtitleL, spec.subtitle, dict)}
+          </p>
         )}
       </div>
 
@@ -116,7 +129,14 @@ export function ChartCard({ spec }: { spec: ChartSpec }) {
                 label={
                   line.label
                     ? {
-                        value: line.label,
+                        value:
+                          chartText(
+                            line.labelKey
+                              ? { key: line.labelKey, params: line.labelParams }
+                              : undefined,
+                            line.label,
+                            dict,
+                          ) ?? line.label,
                         position: 'insideTopRight',
                         fill: '#64748b',
                         fontSize: 10,
@@ -130,7 +150,7 @@ export function ChartCard({ spec }: { spec: ChartSpec }) {
                 key={s.key}
                 type="monotone"
                 dataKey={s.key}
-                name={s.name}
+                name={seriesName(s)}
                 stroke={s.color}
                 strokeWidth={2}
                 dot={false}
@@ -209,7 +229,14 @@ export function ChartCard({ spec }: { spec: ChartSpec }) {
                 label={
                   line.label
                     ? {
-                        value: line.label,
+                        value:
+                          chartText(
+                            line.labelKey
+                              ? { key: line.labelKey, params: line.labelParams }
+                              : undefined,
+                            line.label,
+                            dict,
+                          ) ?? line.label,
                         // Above the plot, not inside it. 'insideTop' centres the
                         // text ON the line at bar height, so any bar that reaches
                         // the line runs straight through the label — the pricing
@@ -228,7 +255,13 @@ export function ChartCard({ spec }: { spec: ChartSpec }) {
               />
             ))}
             {spec.series.map((s) => (
-              <Bar key={s.key} dataKey={s.key} name={s.name} barSize={12} radius={[0, 3, 3, 0]}>
+              <Bar
+                key={s.key}
+                dataKey={s.key}
+                name={seriesName(s)}
+                barSize={12}
+                radius={[0, 3, 3, 0]}
+              >
                 {spec.data.map((row, i) => (
                   // Diverging bars are tinted by sign — this is the one place a
                   // status color is legitimate, because the sign IS the status.
@@ -256,7 +289,7 @@ export function ChartCard({ spec }: { spec: ChartSpec }) {
                 className="inline-block w-2.5 h-0.5 rounded-full"
                 style={{ background: s.color }}
               />
-              {s.name}
+              {seriesName(s)}
             </span>
           ))}
         </div>
@@ -276,6 +309,7 @@ export default function AnswerChartPanel({
   specs: ChartSpec[]
   onDismiss: () => void
 }) {
+  const { t } = useLocale()
   const [index, setIndex] = useState(0)
 
   // A new answer resets to the first chart. Keyed on the titles rather than the
@@ -295,7 +329,7 @@ export default function AnswerChartPanel({
       <div className="px-4 pt-3 pb-1 flex items-center gap-2">
         <BarChart3 className="w-4 h-4 text-sky-400 shrink-0" />
         <span className="text-[11px] uppercase tracking-wider text-slate-500 font-medium flex-1 truncate">
-          From the assistant’s answer
+          {t('chat.fromAnswer')}
         </span>
         {specs.length > 1 && (
           <div className="flex items-center gap-1 shrink-0">
@@ -303,7 +337,7 @@ export default function AnswerChartPanel({
               type="button"
               onClick={() => setIndex((i) => Math.max(0, i - 1))}
               disabled={index === 0}
-              title="Previous chart"
+              title={t('chat.prevChart')}
               className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
             >
               <ChevronLeft className="w-4 h-4" />
@@ -315,7 +349,7 @@ export default function AnswerChartPanel({
               type="button"
               onClick={() => setIndex((i) => Math.min(specs.length - 1, i + 1))}
               disabled={index >= specs.length - 1}
-              title="Next chart"
+              title={t('chat.nextChart')}
               className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 disabled:opacity-40 disabled:hover:bg-transparent transition-colors"
             >
               <ChevronRight className="w-4 h-4" />
@@ -325,8 +359,8 @@ export default function AnswerChartPanel({
         <button
           type="button"
           onClick={onDismiss}
-          title="Dismiss charts"
-          aria-label="Dismiss charts"
+          title={t('chat.dismissCharts')}
+          aria-label={t('chat.dismissCharts')}
           data-testid="dismiss-answer-chart"
           className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition-colors shrink-0"
         >

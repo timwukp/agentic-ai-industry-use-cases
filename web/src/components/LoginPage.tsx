@@ -3,13 +3,16 @@ import { useNavigate } from 'react-router-dom'
 import { KeyRound, Loader2, Lock, Mail, ShieldCheck } from 'lucide-react'
 import { answerChallenge, startSignIn, type SignInChallenge } from '../lib/auth'
 import { useAuth } from '../lib/AuthContext'
+import { useLocale } from '../i18n/LocaleContext'
 import { DEFAULT_INDUSTRY_ID } from '../industries/registry'
+import LocalePicker from './LocalePicker'
 
 type Step = 'credentials' | 'totp' | 'newPassword'
 
 export default function LoginPage() {
   const navigate = useNavigate()
   const { refresh } = useAuth()
+  const { t } = useLocale()
 
   const [step, setStep] = useState<Step>('credentials')
   const [email, setEmail] = useState('')
@@ -36,7 +39,7 @@ export default function LoginPage() {
         setStep('newPassword')
         break
       default:
-        setError('Unsupported sign-in challenge. Contact your administrator.')
+        setError(t('login.unsupportedChallenge'))
     }
   }
 
@@ -47,7 +50,7 @@ export default function LoginPage() {
     try {
       await handleChallenge(await action())
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Sign-in failed')
+      setError(err instanceof Error ? err.message : t('login.signInFailed'))
     } finally {
       setBusy(false)
     }
@@ -64,14 +67,19 @@ export default function LoginPage() {
     'disabled:cursor-not-allowed transition-colors'
 
   return (
-    <div className="min-h-full flex items-center justify-center bg-slate-950 p-4">
+    <div className="min-h-full flex items-center justify-center bg-slate-950 p-4 relative">
+      {/* Pre-auth surface: the header picker does not exist yet, so the login
+          page carries its own. */}
+      <div className="absolute top-4 right-4">
+        <LocalePicker />
+      </div>
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <div className="mx-auto w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center mb-4">
             <ShieldCheck className="w-6 h-6 text-white" />
           </div>
-          <h1 className="text-xl font-bold text-white">Agentic AI Use Cases</h1>
-          <p className="text-sm text-slate-400 mt-1">Sign in with your Cognito account</p>
+          <h1 className="text-xl font-bold text-white">{t('login.title')}</h1>
+          <p className="text-sm text-slate-400 mt-1">{t('login.subtitle')}</p>
         </div>
 
         <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4">
@@ -88,7 +96,7 @@ export default function LoginPage() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email"
+                  placeholder={t('login.email')}
                   className={inputClass}
                 />
               </div>
@@ -100,13 +108,13 @@ export default function LoginPage() {
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Password"
+                  placeholder={t('login.password')}
                   className={inputClass}
                 />
               </div>
               <button type="submit" disabled={busy || !email || !password} className={buttonClass}>
                 {busy && <Loader2 className="w-4 h-4 animate-spin" />}
-                Sign in
+                {t('login.signIn')}
               </button>
             </form>
           )}
@@ -116,9 +124,7 @@ export default function LoginPage() {
               onSubmit={(e) => submit(e, () => answerChallenge(totpCode.trim()))}
               className="space-y-4"
             >
-              <p className="text-sm text-slate-300">
-                Enter the 6-digit code from your authenticator app.
-              </p>
+              <p className="text-sm text-slate-300">{t('login.totpHint')}</p>
               <div className="relative">
                 <KeyRound className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                 <input
@@ -130,13 +136,13 @@ export default function LoginPage() {
                   required
                   value={totpCode}
                   onChange={(e) => setTotpCode(e.target.value.replace(/\D/g, ''))}
-                  placeholder="MFA code"
+                  placeholder={t('login.mfaCode')}
                   className={`${inputClass} tracking-[0.3em]`}
                 />
               </div>
               <button type="submit" disabled={busy || totpCode.length !== 6} className={buttonClass}>
                 {busy && <Loader2 className="w-4 h-4 animate-spin" />}
-                Verify
+                {t('login.verify')}
               </button>
             </form>
           )}
@@ -146,9 +152,7 @@ export default function LoginPage() {
               onSubmit={(e) => submit(e, () => answerChallenge(newPassword))}
               className="space-y-4"
             >
-              <p className="text-sm text-slate-300">
-                Your account requires a new password before continuing.
-              </p>
+              <p className="text-sm text-slate-300">{t('login.newPasswordHint')}</p>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                 <input
@@ -158,13 +162,13 @@ export default function LoginPage() {
                   required
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  placeholder="New password"
+                  placeholder={t('login.newPassword')}
                   className={inputClass}
                 />
               </div>
               <button type="submit" disabled={busy || newPassword.length < 8} className={buttonClass}>
                 {busy && <Loader2 className="w-4 h-4 animate-spin" />}
-                Set password &amp; sign in
+                {t('login.setPassword')}
               </button>
             </form>
           )}
@@ -176,9 +180,7 @@ export default function LoginPage() {
           )}
         </div>
 
-        <p className="text-center text-xs text-slate-600 mt-6">
-          AWS AgentCore Harness · Cognito authenticated
-        </p>
+        <p className="text-center text-xs text-slate-600 mt-6">{t('login.footer')}</p>
       </div>
     </div>
   )

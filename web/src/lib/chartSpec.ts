@@ -15,9 +15,31 @@
 
 export type ChartKind = 'line' | 'bars'
 
+/** A UI string by catalog key, for render-time translation.
+ *
+ * The English strings on ChartSpec remain the spec's IDENTITY — chart dedupe,
+ * pagination signatures and E2E's data-chart-title all key on them, and
+ * chartFor() must stay locale-independent (unit tests import it with no React
+ * at all). These parallel fields let the component translate what it DISPLAYS
+ * without the identity ever changing under a locale switch.
+ *
+ * `key` is a dot-path into messages.charts.*; `params` carries payload-derived
+ * values (ids, counts, sensor names) verbatim — they are data, not copy.
+ * `parts` composes a line from fragments joined with ' · ', the pattern the
+ * subtitles already use; `{ raw }` parts (a patient id, a payload enum) pass
+ * through untranslated by design.
+ */
+export interface LocalizedText {
+  key?: string
+  params?: Record<string, string | number>
+  parts?: Array<LocalizedText | { raw: string }>
+}
+
 export interface ChartSeries {
   key: string
   name: string
+  /** charts.* catalog key for the display name. */
+  nameKey?: string
   color: string
 }
 
@@ -25,19 +47,34 @@ export interface ChartSpec {
   kind: ChartKind
   /** Card title, e.g. "S&P 500 · sector performance". */
   title: string
+  titleL?: LocalizedText
   /** One-line note under the title: units, scope, or the id this describes. */
   subtitle?: string
+  subtitleL?: LocalizedText
   /** Row objects; every series key indexes into these. */
   data: Array<Record<string, unknown>>
   /** Category axis key. */
   xKey: string
   series: ChartSeries[]
   /** Dashed target/threshold markers. Never a data series. */
-  refLines?: Array<{ y: number; label?: string }>
+  refLines?: Array<{
+    y: number
+    label?: string
+    labelKey?: string
+    labelParams?: Record<string, string | number>
+  }>
   /** Suffix appended in tooltips, e.g. "%". */
   unit?: string
   /** Rows are ranked categories rather than a time axis (drives bar direction). */
   ranked?: boolean
+}
+
+/** Shorthand for building LocalizedText values inside recognizers. */
+export function lt(
+  key: string,
+  params?: Record<string, string | number>,
+): LocalizedText {
+  return params ? { key, params } : { key }
 }
 
 /* Series palette. Matches the dashboard dataviz rules: status colors
@@ -180,12 +217,14 @@ const sectorPerformance: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Sector performance',
+    titleL: lt('sectorPerformance'),
     subtitle: 'Daily change, ranked',
+    subtitleL: lt('dailyChangeRanked'),
     // Ranked descending so "leading" and "lagging" read off the ends, which is
     // how the question is normally phrased.
     data: [...data].sort((a, b) => Number(b.daily) - Number(a.daily)),
     xKey: 'sector',
-    series: [{ key: 'daily', name: 'Daily %', color: PRIMARY }],
+    series: [{ key: 'daily', name: 'Daily %', nameKey: 'seriesDailyPct', color: PRIMARY }],
     unit: '%',
     ranked: true,
     refLines: [{ y: 0 }],
@@ -201,10 +240,12 @@ const historicalPrices: Recognizer = (payload) => {
   return {
     kind: 'line',
     title: `${symbol} closing price`.trim(),
+    titleL: lt('closingPrice', { symbol }),
     subtitle: `${data.length} sessions`,
+    subtitleL: lt('sessions', { n: data.length }),
     data,
     xKey: 'date',
-    series: [{ key: 'close', name: 'Close', color: PRIMARY }],
+    series: [{ key: 'close', name: 'Close', nameKey: 'seriesClose', color: PRIMARY }],
   }
 }
 
@@ -220,10 +261,12 @@ const marketOverview: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Index moves today',
+    titleL: lt('indexMoves'),
     subtitle: 'Change vs previous close',
+    subtitleL: lt('changeVsClose'),
     data,
     xKey: 'index',
-    series: [{ key: 'change', name: 'Change %', color: PRIMARY }],
+    series: [{ key: 'change', name: 'Change %', nameKey: 'seriesChangePct', color: PRIMARY }],
     unit: '%',
     ranked: true,
     refLines: [{ y: 0 }],
@@ -239,10 +282,12 @@ const portfolioAllocation: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Allocation by sector',
+    titleL: lt('allocationBySector'),
     subtitle: top === undefined ? undefined : `Largest position ${top}% of book`,
+    subtitleL: top === undefined ? undefined : lt('largestPosition', { p: top }),
     data: [...data].sort((a, b) => Number(b.weight) - Number(a.weight)),
     xKey: 'sector',
-    series: [{ key: 'weight', name: 'Weight %', color: PRIMARY }],
+    series: [{ key: 'weight', name: 'Weight %', nameKey: 'seriesWeightPct', color: PRIMARY }],
     unit: '%',
     ranked: true,
   }
@@ -261,13 +306,18 @@ const portfolioPositions: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Unrealized return by position',
+    titleL: lt('unrealizedByPosition'),
     subtitle: (() => {
       const total = num(get(get(payload, 'summary'), 'total_return_pct'))
       return total === undefined ? undefined : `Portfolio ${total}%`
     })(),
+    subtitleL: (() => {
+      const total = num(get(get(payload, 'summary'), 'total_return_pct'))
+      return total === undefined ? undefined : lt('portfolioPct', { p: total })
+    })(),
     data: [...data].sort((a, b) => Number(b.ret) - Number(a.ret)),
     xKey: 'symbol',
-    series: [{ key: 'ret', name: 'Return %', color: PRIMARY }],
+    series: [{ key: 'ret', name: 'Return %', nameKey: 'seriesReturnPct', color: PRIMARY }],
     unit: '%',
     ranked: true,
     refLines: [{ y: 0 }],
@@ -288,15 +338,24 @@ const valueAtRisk: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Value at Risk by confidence level',
+    titleL: lt('varByConfidence'),
     subtitle: [
       horizon === undefined ? '' : `${horizon}-day horizon`,
       str(get(payload, 'method'))?.replace(/_/g, ' '),
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        ...(horizon === undefined ? [] : [lt('dayHorizon', { n: horizon })]),
+        // The method name is a payload enum ("parametric variance covariance"),
+        // passed through untranslated like every other payload value.
+        { raw: str(get(payload, 'method'))?.replace(/_/g, ' ') ?? '' },
+      ],
+    },
     data,
     xKey: 'level',
-    series: [{ key: 'amount', name: 'VaR', color: PRIMARY }],
+    series: [{ key: 'amount', name: 'VaR', nameKey: 'seriesVar', color: PRIMARY }],
     ranked: true,
   }
 }
@@ -309,17 +368,24 @@ const stressTest: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Stress scenario drawdown',
+    titleL: lt('stressDrawdown'),
     subtitle: (() => {
       const value = num(get(payload, 'portfolio_value'))
       return value === undefined
         ? undefined
         : `On a $${value.toLocaleString('en-US')} book`
     })(),
+    subtitleL: (() => {
+      const value = num(get(payload, 'portfolio_value'))
+      return value === undefined
+        ? undefined
+        : lt('onABook', { amount: value.toLocaleString('en-US') })
+    })(),
     // Ascending, so the deepest drawdown is the leftmost bar — the answer to
     // "what is my downside" is the worst case, not the alphabetically first.
     data: [...data].sort((a, b) => Number(a.drawdown) - Number(b.drawdown)),
     xKey: 'scenario',
-    series: [{ key: 'drawdown', name: 'Drawdown %', color: PRIMARY }],
+    series: [{ key: 'drawdown', name: 'Drawdown %', nameKey: 'seriesDrawdownPct', color: PRIMARY }],
     unit: '%',
     ranked: true,
     refLines: [{ y: 0 }],
@@ -341,18 +407,22 @@ const patientAnalytics: Recognizer = (payload) => {
   return {
     kind: 'line',
     title: 'Blood pressure trend',
+    titleL: lt('bloodPressureTrend'),
     subtitle: [patient, str(get(bp, 'current'))].filter(Boolean).join(' · '),
+    subtitleL: {
+      parts: [{ raw: patient ?? '' }, { raw: str(get(bp, 'current')) ?? '' }],
+    },
     data,
     xKey: 'month',
     series: [
-      { key: 'systolic', name: 'Systolic', color: SECOND },
-      { key: 'diastolic', name: 'Diastolic', color: PRIMARY },
+      { key: 'systolic', name: 'Systolic', nameKey: 'seriesSystolic', color: SECOND },
+      { key: 'diastolic', name: 'Diastolic', nameKey: 'seriesDiastolic', color: PRIMARY },
     ],
     unit: 'mmHg',
     // Clinical targets, which is the one legitimate use of a dashed line here.
     refLines: [
-      { y: 130, label: 'target 130' },
-      { y: 80, label: '80' },
+      { y: 130, label: 'target 130', labelKey: 'refTarget', labelParams: { n: 130 } },
+      { y: 80, label: '80', labelKey: 'refValue', labelParams: { n: 80 } },
     ],
   }
 }
@@ -375,12 +445,14 @@ const populationHealth: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'HEDIS quality measures',
+    titleL: lt('hedisMeasures'),
     subtitle: 'Performance vs target',
+    subtitleL: lt('performanceVsTarget'),
     data,
     xKey: 'measure',
     series: [
-      { key: 'performance', name: 'Performance %', color: PRIMARY },
-      { key: 'target', name: 'Target %', color: THIRD },
+      { key: 'performance', name: 'Performance %', nameKey: 'seriesPerformancePct', color: PRIMARY },
+      { key: 'target', name: 'Target %', nameKey: 'seriesTargetPct', color: THIRD },
     ],
     unit: '%',
     ranked: true,
@@ -404,15 +476,22 @@ const careGaps: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Care gaps by days past due',
+    titleL: lt('careGapsByDays'),
     subtitle: [
       str(get(payload, 'patient_id')),
       high === undefined ? '' : `${high} high priority`,
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'patient_id')) ?? '' },
+        ...(high === undefined ? [] : [lt('highPriority', { n: high })]),
+      ],
+    },
     data: [...data].sort((a, b) => Number(b.overdue) - Number(a.overdue)),
     xKey: 'measure',
-    series: [{ key: 'overdue', name: 'Days past due', color: PRIMARY }],
+    series: [{ key: 'overdue', name: 'Days past due', nameKey: 'seriesDaysPastDue', color: PRIMARY }],
     unit: 'days',
     ranked: true,
     // No line at zero. The intent was "bars left of it are not yet overdue", but a
@@ -441,15 +520,22 @@ const readmissionRisk: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: '30-day readmission risk vs benchmarks',
+    titleL: lt('readmissionVsBenchmarks'),
     subtitle: [
       str(get(payload, 'patient_id')),
       str(get(payload, 'risk_level')),
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'patient_id')) ?? '' },
+        { raw: str(get(payload, 'risk_level')) ?? '' },
+      ],
+    },
     data,
     xKey: 'who',
-    series: [{ key: 'rate', name: 'Rate %', color: PRIMARY }],
+    series: [{ key: 'rate', name: 'Rate %', nameKey: 'seriesRatePct', color: PRIMARY }],
     unit: '%',
     ranked: true,
   }
@@ -463,6 +549,7 @@ const providerAvailability: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Open slots by day',
+    titleL: lt('openSlotsByDay'),
     subtitle: [
       str(get(get(payload, 'provider'), 'name')),
       (() => {
@@ -472,11 +559,20 @@ const providerAvailability: Recognizer = (payload) => {
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(get(payload, 'provider'), 'name')) ?? '' },
+        ...(() => {
+          const total = num(get(get(payload, 'summary'), 'total_available_slots'))
+          return total === undefined ? [] : [lt('slots', { n: total })]
+        })(),
+      ],
+    },
     // Chronological, not ranked: this is a calendar, and reordering it by slot
     // count would make "when is the next opening" unanswerable from the chart.
     data,
     xKey: 'day',
-    series: [{ key: 'slots', name: 'Open slots', color: PRIMARY }],
+    series: [{ key: 'slots', name: 'Open slots', nameKey: 'seriesOpenSlots', color: PRIMARY }],
   }
 }
 
@@ -502,18 +598,25 @@ const labResults: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Lab results vs upper reference limit',
+    titleL: lt('labsVsLimit'),
     subtitle: [
       str(get(payload, 'patient_id')),
       abnormal === undefined ? '' : `${abnormal} abnormal`,
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'patient_id')) ?? '' },
+        ...(abnormal === undefined ? [] : [lt('abnormal', { n: abnormal })]),
+      ],
+    },
     data: [...data].sort((a, b) => Number(b.pctOfLimit) - Number(a.pctOfLimit)),
     xKey: 'test',
-    series: [{ key: 'pctOfLimit', name: '% of limit', color: PRIMARY }],
+    series: [{ key: 'pctOfLimit', name: '% of limit', nameKey: 'seriesPctOfLimit', color: PRIMARY }],
     unit: '%',
     ranked: true,
-    refLines: [{ y: 100, label: 'ref limit' }],
+    refLines: [{ y: 100, label: 'ref limit', labelKey: 'refLimit' }],
   }
 }
 
@@ -526,15 +629,17 @@ const medicationList: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Medication adherence',
+    titleL: lt('medicationAdherence'),
     subtitle: str(get(payload, 'patient_id')),
+    subtitleL: { parts: [{ raw: str(get(payload, 'patient_id')) ?? '' }] },
     data: [...data].sort((a, b) => Number(a.adherence) - Number(b.adherence)),
     xKey: 'med',
-    series: [{ key: 'adherence', name: 'Adherence %', color: PRIMARY }],
+    series: [{ key: 'adherence', name: 'Adherence %', nameKey: 'seriesAdherencePct', color: PRIMARY }],
     unit: '%',
     ranked: true,
     // 80% is the conventional adherence threshold in medication-possession
     // measures, so it marks which fills need intervention.
-    refLines: [{ y: 80, label: 'target 80' }],
+    refLines: [{ y: 80, label: 'target 80', labelKey: 'refTarget', labelParams: { n: 80 } }],
   }
 }
 
@@ -553,13 +658,18 @@ const drugInteractions: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Interactions by severity',
+    titleL: lt('interactionsBySeverity'),
     subtitle: (() => {
       const pairs = num(get(payload, 'pairs_analyzed'))
       return pairs === undefined ? undefined : `${pairs} pairs analyzed`
     })(),
+    subtitleL: (() => {
+      const pairs = num(get(payload, 'pairs_analyzed'))
+      return pairs === undefined ? undefined : lt('pairsAnalyzed', { n: pairs })
+    })(),
     data,
     xKey: 'severity',
-    series: [{ key: 'count', name: 'Interactions', color: PRIMARY }],
+    series: [{ key: 'count', name: 'Interactions', nameKey: 'seriesInteractions', color: PRIMARY }],
     ranked: true,
   }
 }
@@ -574,10 +684,12 @@ const fraudDashboard: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Top fraud types',
+    titleL: lt('topFraudTypes'),
     subtitle: str(get(payload, 'period')),
+    subtitleL: { parts: [{ raw: str(get(payload, 'period')) ?? '' }] },
     data,
     xKey: 'type',
-    series: [{ key: 'count', name: 'Claims', color: PRIMARY }],
+    series: [{ key: 'count', name: 'Claims', nameKey: 'seriesClaims', color: PRIMARY }],
     ranked: true,
   }
 }
@@ -594,10 +706,12 @@ const settlementAnalytics: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Average settlement by claim type',
+    titleL: lt('avgSettlementByType'),
     subtitle: str(get(payload, 'period')),
+    subtitleL: { parts: [{ raw: str(get(payload, 'period')) ?? '' }] },
     data,
     xKey: 'type',
-    series: [{ key: 'avg', name: 'Avg settlement', color: PRIMARY }],
+    series: [{ key: 'avg', name: 'Avg settlement', nameKey: 'seriesAvgSettlement', color: PRIMARY }],
     ranked: true,
   }
 }
@@ -616,10 +730,12 @@ const claimsList: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Claims by status',
+    titleL: lt('claimsByStatus'),
     subtitle: `${source.length} claims in the queue`,
+    subtitleL: lt('claimsInQueue', { n: source.length }),
     data: [...counts].map(([status, count]) => ({ status, count })),
     xKey: 'status',
-    series: [{ key: 'count', name: 'Claims', color: PRIMARY }],
+    series: [{ key: 'count', name: 'Claims', nameKey: 'seriesClaims', color: PRIMARY }],
     ranked: true,
   }
 }
@@ -642,12 +758,19 @@ const coverageCheck: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Coverage determination',
+    titleL: lt('coverageDetermination'),
     subtitle: [
       str(get(payload, 'policy_number')),
       str(get(payload, 'coverage_determination')),
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'policy_number')) ?? '' },
+        { raw: str(get(payload, 'coverage_determination')) ?? '' },
+      ],
+    },
     data: [
       { part: 'Claimed', amount: claimed },
       { part: 'Deductible', amount: deductible },
@@ -655,7 +778,7 @@ const coverageCheck: Recognizer = (payload) => {
       { part: 'Coverage limit', amount: limit },
     ],
     xKey: 'part',
-    series: [{ key: 'amount', name: 'Amount', color: PRIMARY }],
+    series: [{ key: 'amount', name: 'Amount', nameKey: 'seriesAmount', color: PRIMARY }],
     ranked: true,
   }
 }
@@ -674,15 +797,22 @@ const fraudRisk: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Fraud signal contributions',
+    titleL: lt('fraudSignalContributions'),
     subtitle: [
       str(get(payload, 'claim_id')),
       str(get(payload, 'risk_level')),
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'claim_id')) ?? '' },
+        { raw: str(get(payload, 'risk_level')) ?? '' },
+      ],
+    },
     data: [...data].sort((a, b) => Number(b.score) - Number(a.score)),
     xKey: 'signal',
-    series: [{ key: 'score', name: 'Score %', color: PRIMARY }],
+    series: [{ key: 'score', name: 'Score %', nameKey: 'seriesScorePct', color: PRIMARY }],
     unit: '%',
     ranked: true,
   }
@@ -696,6 +826,7 @@ const settlementCalculation: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Settlement damage breakdown',
+    titleL: lt('settlementBreakdown'),
     subtitle: (() => {
       const net = num(
         get(get(payload, 'settlement_calculation'), 'net_settlement_amount'),
@@ -707,9 +838,22 @@ const settlementCalculation: Recognizer = (payload) => {
         .filter(Boolean)
         .join(' · ')
     })(),
+    subtitleL: (() => {
+      const net = num(
+        get(get(payload, 'settlement_calculation'), 'net_settlement_amount'),
+      )
+      return {
+        parts: [
+          { raw: str(get(payload, 'claim_id')) ?? '' },
+          ...(net === undefined
+            ? []
+            : [lt('netAmount', { amount: net.toLocaleString('en-US') })]),
+        ],
+      }
+    })(),
     data: [...data].sort((a, b) => Number(b.amount) - Number(a.amount)),
     xKey: 'component',
-    series: [{ key: 'amount', name: 'Amount', color: PRIMARY }],
+    series: [{ key: 'amount', name: 'Amount', nameKey: 'seriesAmount', color: PRIMARY }],
     ranked: true,
   }
 }
@@ -724,10 +868,12 @@ const demandTrends: Recognizer = (payload) => {
   return {
     kind: 'line',
     title: 'Weekly units sold',
+    titleL: lt('weeklyUnitsSold'),
     subtitle: str(get(payload, 'category')),
+    subtitleL: { parts: [{ raw: str(get(payload, 'category')) ?? '' }] },
     data,
     xKey: 'week',
-    series: [{ key: 'units', name: 'Units', color: PRIMARY }],
+    series: [{ key: 'units', name: 'Units', nameKey: 'seriesUnits', color: PRIMARY }],
   }
 }
 
@@ -743,15 +889,22 @@ const demandForecast: Recognizer = (payload) => {
   return {
     kind: 'line',
     title: 'Demand forecast',
+    titleL: lt('demandForecast'),
     subtitle: [str(get(payload, 'sku')), str(get(payload, 'product_name'))]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'sku')) ?? '' },
+        { raw: str(get(payload, 'product_name')) ?? '' },
+      ],
+    },
     data,
     xKey: 'date',
     series: [
-      { key: 'predicted', name: 'Predicted', color: PRIMARY },
-      { key: 'low', name: 'Lower bound', color: THIRD },
-      { key: 'high', name: 'Upper bound', color: THIRD },
+      { key: 'predicted', name: 'Predicted', nameKey: 'seriesPredicted', color: PRIMARY },
+      { key: 'low', name: 'Lower bound', nameKey: 'seriesLowerBound', color: THIRD },
+      { key: 'high', name: 'Upper bound', nameKey: 'seriesUpperBound', color: THIRD },
     ],
     unit: 'units',
   }
@@ -767,9 +920,10 @@ const inventorySummary: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'In-stock rate by category',
+    titleL: lt('inStockByCategory'),
     data,
     xKey: 'category',
-    series: [{ key: 'inStock', name: 'In stock %', color: PRIMARY }],
+    series: [{ key: 'inStock', name: 'In stock %', nameKey: 'seriesInStockPct', color: PRIMARY }],
     unit: '%',
     ranked: true,
   }
@@ -785,10 +939,12 @@ const stockoutReport: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Stockout revenue impact',
+    titleL: lt('stockoutImpact'),
     subtitle: str(get(payload, 'scope')),
+    subtitleL: { parts: [{ raw: str(get(payload, 'scope')) ?? '' }] },
     data: [...data].sort((a, b) => Number(b.loss) - Number(a.loss)),
     xKey: 'sku',
-    series: [{ key: 'loss', name: 'Estimated loss', color: PRIMARY }],
+    series: [{ key: 'loss', name: 'Estimated loss', nameKey: 'seriesEstimatedLoss', color: PRIMARY }],
     ranked: true,
   }
 }
@@ -803,20 +959,36 @@ const pricingAnalysis: Recognizer = (payload) => {
   if (ours !== undefined) data.unshift({ seller: 'Us', price: ours })
   const refLines: ChartSpec['refLines'] = []
   if (recommended !== undefined) {
-    refLines.push({ y: recommended, label: `rec $${recommended}` })
+    refLines.push({
+      y: recommended,
+      label: `rec $${recommended}`,
+      labelKey: 'refRecommended',
+      labelParams: { n: recommended },
+    })
   }
   return {
     kind: 'bars',
     title: 'Price vs competitors',
+    titleL: lt('priceVsCompetitors'),
     subtitle: [
       str(get(payload, 'product_name')),
       str(get(payload, 'market_position'))?.replace(/_/g, ' ').toLowerCase(),
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'product_name')) ?? '' },
+        {
+          raw:
+            str(get(payload, 'market_position'))?.replace(/_/g, ' ').toLowerCase() ??
+            '',
+        },
+      ],
+    },
     data,
     xKey: 'seller',
-    series: [{ key: 'price', name: 'Price', color: PRIMARY }],
+    series: [{ key: 'price', name: 'Price', nameKey: 'seriesPrice', color: PRIMARY }],
     ranked: true,
     refLines,
   }
@@ -852,17 +1024,24 @@ const pricingOptimization: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Pricing tradeoff',
+    titleL: lt('pricingTradeoff'),
     subtitle: [
       str(get(payload, 'product_name')),
       str(get(payload, 'objective'))?.replace(/_/g, ' '),
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'product_name')) ?? '' },
+        { raw: str(get(payload, 'objective'))?.replace(/_/g, ' ') ?? '' },
+      ],
+    },
     data,
     xKey: 'metric',
     series: [
-      { key: 'now', name: 'Current', color: THIRD },
-      { key: 'next', name: 'Recommended', color: PRIMARY },
+      { key: 'now', name: 'Current', nameKey: 'seriesCurrent', color: THIRD },
+      { key: 'next', name: 'Recommended', nameKey: 'seriesRecommended', color: PRIMARY },
     ],
     ranked: true,
   }
@@ -883,6 +1062,7 @@ const supplierPerformance: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Supplier scorecard',
+    titleL: lt('supplierScorecard'),
     subtitle: [
       str(get(payload, 'supplier_name')),
       str(get(payload, 'rating')),
@@ -893,9 +1073,19 @@ const supplierPerformance: Recognizer = (payload) => {
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'supplier_name')) ?? '' },
+        { raw: str(get(payload, 'rating')) ?? '' },
+        ...(() => {
+          const overall = num(get(payload, 'overall_score'))
+          return overall === undefined ? [] : [lt('overall', { n: overall })]
+        })(),
+      ],
+    },
     data: [...scored].sort((a, b) => Number(a.value) - Number(b.value)),
     xKey: 'metric',
-    series: [{ key: 'value', name: 'Score', color: PRIMARY }],
+    series: [{ key: 'value', name: 'Score', nameKey: 'seriesScore', color: PRIMARY }],
     ranked: true,
   }
 }
@@ -914,17 +1104,24 @@ const abcAnalysis: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'ABC classification',
+    titleL: lt('abcClassification'),
     subtitle: (() => {
       const total = num(get(payload, 'total_skus'))
       return total === undefined
         ? 'Share of revenue vs share of SKUs'
         : `${total.toLocaleString('en-US')} SKUs · revenue vs SKU share`
     })(),
+    subtitleL: (() => {
+      const total = num(get(payload, 'total_skus'))
+      return total === undefined
+        ? lt('shareOfRevenue')
+        : lt('skusRevenueShare', { n: total.toLocaleString('en-US') })
+    })(),
     data,
     xKey: 'cls',
     series: [
-      { key: 'revenue', name: 'Revenue %', color: PRIMARY },
-      { key: 'skus', name: 'SKU %', color: THIRD },
+      { key: 'revenue', name: 'Revenue %', nameKey: 'seriesRevenuePct', color: PRIMARY },
+      { key: 'skus', name: 'SKU %', nameKey: 'seriesSkuPct', color: THIRD },
     ],
     unit: '%',
     ranked: true,
@@ -949,6 +1146,7 @@ const inventoryCheck: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'On-hand units by location',
+    titleL: lt('onHandByLocation'),
     subtitle: [
       str(get(payload, 'product_name')),
       (() => {
@@ -958,9 +1156,18 @@ const inventoryCheck: Recognizer = (payload) => {
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'product_name')) ?? '' },
+        ...(() => {
+          const days = num(get(metrics, 'days_of_supply'))
+          return days === undefined ? [] : [lt('daysOfSupply', { n: days })]
+        })(),
+      ],
+    },
     data: [...data].sort((a, b) => Number(b.units) - Number(a.units)),
     xKey: 'location',
-    series: [{ key: 'units', name: 'Units', color: PRIMARY }],
+    series: [{ key: 'units', name: 'Units', nameKey: 'seriesUnits', color: PRIMARY }],
     unit: 'units',
     ranked: true,
   }
@@ -998,27 +1205,36 @@ const sensorData: Recognizer = (payload) => {
   // earns its compression only when the reading is actually climbing towards it.
   const values = data.map((row) => Number(row.value))
   const refLines: ChartSpec['refLines'] = []
-  for (const [limit, label] of [
-    [warning, 'warning'],
-    [critical, 'critical'],
+  for (const [limit, label, labelKey] of [
+    [warning, 'warning', 'refWarning'],
+    [critical, 'critical', 'refCritical'],
   ] as const) {
     if (limit === undefined) continue
     const candidate = [...refLines.map((l) => l.y), limit]
     if (refLines.length > 0 && dataShare('line', values, candidate) < MIN_DATA_SHARE) continue
-    refLines.push({ y: limit, label })
+    refLines.push({ y: limit, label, labelKey })
   }
   return {
     kind: 'line',
     title: `${str(get(payload, 'sensor_type')) ?? 'Sensor'} readings`,
+    titleL: lt('sensorReadings', {
+      sensor: str(get(payload, 'sensor_type')) ?? 'Sensor',
+    }),
     subtitle: [
       str(get(payload, 'equipment_id')),
       `${str(get(payload, 'unit')) ?? ''}`,
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'equipment_id')) ?? '' },
+        { raw: str(get(payload, 'unit')) ?? '' },
+      ],
+    },
     data,
     xKey: 'time',
-    series: [{ key: 'value', name: 'Reading', color: PRIMARY }],
+    series: [{ key: 'value', name: 'Reading', nameKey: 'seriesReading', color: PRIMARY }],
     unit: str(get(payload, 'unit')),
     refLines,
   }
@@ -1034,10 +1250,12 @@ const equipmentList: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Equipment health scores',
+    titleL: lt('equipmentHealth'),
     subtitle: `${data.length} assets, lowest first`,
+    subtitleL: lt('assetsLowestFirst', { n: data.length }),
     data: [...data].sort((a, b) => Number(a.health) - Number(b.health)),
     xKey: 'asset',
-    series: [{ key: 'health', name: 'Health', color: PRIMARY }],
+    series: [{ key: 'health', name: 'Health', nameKey: 'seriesHealth', color: PRIMARY }],
     ranked: true,
   }
 }
@@ -1050,10 +1268,12 @@ const reliabilityMetrics: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Failure modes (12 months)',
+    titleL: lt('failureModes'),
     subtitle: str(get(payload, 'equipment_id')),
+    subtitleL: { parts: [{ raw: str(get(payload, 'equipment_id')) ?? '' }] },
     data,
     xKey: 'mode',
-    series: [{ key: 'count', name: 'Failures', color: PRIMARY }],
+    series: [{ key: 'count', name: 'Failures', nameKey: 'seriesFailures', color: PRIMARY }],
     ranked: true,
   }
 }
@@ -1077,6 +1297,7 @@ const vibrationSpectrum: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Vibration spectrum peaks',
+    titleL: lt('vibrationPeaks'),
     subtitle: [
       str(get(payload, 'equipment_id')),
       overall === undefined ? '' : `overall ${overall} mm/s RMS`,
@@ -1086,9 +1307,19 @@ const vibrationSpectrum: Recognizer = (payload) => {
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'equipment_id')) ?? '' },
+        ...(overall === undefined ? [] : [lt('overallMmS', { n: overall })]),
+        ...(() => {
+          const zone = str(get(get(payload, 'iso_10816_classification'), 'zone'))
+          return zone ? [lt('isoZone', { zone })] : []
+        })(),
+      ],
+    },
     data,
     xKey: 'peak',
-    series: [{ key: 'amp', name: 'Amplitude', color: PRIMARY }],
+    series: [{ key: 'amp', name: 'Amplitude', nameKey: 'seriesAmplitude', color: PRIMARY }],
     unit: 'mm/s',
     ranked: true,
   }
@@ -1119,6 +1350,7 @@ const failurePrediction: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Failure probability by component',
+    titleL: lt('failureProbability'),
     subtitle: [
       str(get(payload, 'equipment_id')),
       rul === undefined ? '' : `${rul} days remaining useful life`,
@@ -1126,9 +1358,16 @@ const failurePrediction: Recognizer = (payload) => {
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'equipment_id')) ?? '' },
+        ...(rul === undefined ? [] : [lt('rulDays', { n: rul })]),
+        { raw: str(get(payload, 'risk_level')) ?? '' },
+      ],
+    },
     data,
     xKey: 'component',
-    series: [{ key: 'probability', name: 'Probability %', color: PRIMARY }],
+    series: [{ key: 'probability', name: 'Probability %', nameKey: 'seriesProbabilityPct', color: PRIMARY }],
     unit: '%',
     ranked: true,
   }
@@ -1147,6 +1386,7 @@ const equipmentAlerts: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Alerts by severity',
+    titleL: lt('alertsBySeverity'),
     subtitle: [
       (() => {
         const total = num(get(payload, 'total_alerts'))
@@ -1156,9 +1396,18 @@ const equipmentAlerts: Recognizer = (payload) => {
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        ...(() => {
+          const total = num(get(payload, 'total_alerts'))
+          return total === undefined ? [] : [lt('openAlerts', { n: total })]
+        })(),
+        ...(unack === undefined ? [] : [lt('unacknowledged', { n: unack })]),
+      ],
+    },
     data,
     xKey: 'severity',
-    series: [{ key: 'count', name: 'Alerts', color: PRIMARY }],
+    series: [{ key: 'count', name: 'Alerts', nameKey: 'seriesAlerts', color: PRIMARY }],
     ranked: true,
   }
 }
@@ -1189,12 +1438,18 @@ const maintenanceCalendar: Recognizer = (payload) => {
     const weekly = Math.round((available / period) * 7)
     const share = dataShare('bars', data.map((row) => Number(row.hours)), [weekly])
     if (share >= MIN_DATA_SHARE) {
-      refLines.push({ y: weekly, label: `${weekly}h weekly capacity` })
+      refLines.push({
+        y: weekly,
+        label: `${weekly}h weekly capacity`,
+        labelKey: 'refWeeklyCapacity',
+        labelParams: { n: weekly },
+      })
     }
   }
   return {
     kind: 'bars',
     title: 'Maintenance hours by week',
+    titleL: lt('maintenanceByWeek'),
     subtitle: (() => {
       const pct = num(get(util, 'utilization_pct'))
       return [
@@ -1207,10 +1462,20 @@ const maintenanceCalendar: Recognizer = (payload) => {
         .filter(Boolean)
         .join(' · ')
     })(),
+    subtitleL: (() => {
+      const pct = num(get(util, 'utilization_pct'))
+      const total = num(get(payload, 'total_scheduled'))
+      return {
+        parts: [
+          ...(total === undefined ? [] : [lt('jobs', { n: total })]),
+          ...(pct === undefined ? [] : [lt('utilization', { p: pct })]),
+        ],
+      }
+    })(),
     // Chronological: it is a schedule.
     data,
     xKey: 'week',
-    series: [{ key: 'hours', name: 'Hours', color: PRIMARY }],
+    series: [{ key: 'hours', name: 'Hours', nameKey: 'seriesHours', color: PRIMARY }],
     unit: 'h',
     refLines,
   }
@@ -1227,6 +1492,7 @@ const partsForecast: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Parts needed vs on hand',
+    titleL: lt('partsNeededVsOnHand'),
     subtitle: [
       str(get(payload, 'equipment_id')),
       (() => {
@@ -1236,11 +1502,22 @@ const partsForecast: Recognizer = (payload) => {
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'equipment_id')) ?? '' },
+        ...(() => {
+          const order = num(
+            get(get(payload, 'procurement_summary'), 'parts_to_order'),
+          )
+          return order === undefined ? [] : [lt('toOrder', { n: order })]
+        })(),
+      ],
+    },
     data,
     xKey: 'part',
     series: [
-      { key: 'needed', name: 'Needed', color: PRIMARY },
-      { key: 'stock', name: 'On hand', color: THIRD },
+      { key: 'needed', name: 'Needed', nameKey: 'seriesNeeded', color: PRIMARY },
+      { key: 'stock', name: 'On hand', nameKey: 'seriesOnHand', color: THIRD },
     ],
     ranked: true,
   }
@@ -1258,12 +1535,19 @@ const marketTrends: Recognizer = (payload) => {
   return {
     kind: 'line',
     title: 'Median sale price',
+    titleL: lt('medianSalePrice'),
     subtitle: [str(get(payload, 'zipcode')), str(get(payload, 'period'))]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'zipcode')) ?? '' },
+        { raw: str(get(payload, 'period')) ?? '' },
+      ],
+    },
     data,
     xKey: 'month',
-    series: [{ key: 'price', name: 'Median price', color: PRIMARY }],
+    series: [{ key: 'price', name: 'Median price', nameKey: 'seriesMedianPrice', color: PRIMARY }],
   }
 }
 
@@ -1279,6 +1563,7 @@ const marketForecast: Recognizer = (payload) => {
   return {
     kind: 'line',
     title: 'Price forecast',
+    titleL: lt('priceForecast'),
     subtitle: [
       str(get(payload, 'zipcode')),
       `${data.length} months`,
@@ -1286,12 +1571,19 @@ const marketForecast: Recognizer = (payload) => {
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'zipcode')) ?? '' },
+        lt('months', { n: data.length }),
+        { raw: str(get(get(payload, 'summary'), 'forecast_confidence')) ?? '' },
+      ],
+    },
     data,
     xKey: 'month',
     series: [
-      { key: 'price', name: 'Forecast', color: PRIMARY },
-      { key: 'low', name: 'Low', color: THIRD },
-      { key: 'high', name: 'High', color: THIRD },
+      { key: 'price', name: 'Forecast', nameKey: 'seriesForecast', color: PRIMARY },
+      { key: 'low', name: 'Low', nameKey: 'seriesLow', color: THIRD },
+      { key: 'high', name: 'High', nameKey: 'seriesHigh', color: THIRD },
     ],
   }
 }
@@ -1306,10 +1598,12 @@ const comparables: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Comparable price per sqft',
+    titleL: lt('compPricePerSqft'),
     subtitle: str(get(payload, 'subject_address')),
+    subtitleL: { parts: [{ raw: str(get(payload, 'subject_address')) ?? '' }] },
     data,
     xKey: 'address',
-    series: [{ key: 'ppsf', name: '$/sqft', color: PRIMARY }],
+    series: [{ key: 'ppsf', name: '$/sqft', nameKey: 'seriesPpsf', color: PRIMARY }],
     ranked: true,
   }
 }
@@ -1329,6 +1623,7 @@ const marketConditions: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Median price by property type',
+    titleL: lt('medianByPropertyType'),
     subtitle: [
       str(get(payload, 'zipcode')),
       str(get(get(payload, 'market_indicators'), 'market_type')),
@@ -1339,12 +1634,25 @@ const marketConditions: Recognizer = (payload) => {
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'zipcode')) ?? '' },
+        { raw: str(get(get(payload, 'market_indicators'), 'market_type')) ?? '' },
+        ...(() => {
+          const supply = num(get(snapshot, 'months_of_supply'))
+          return supply === undefined ? [] : [lt('monthsOfSupply', { n: supply })]
+        })(),
+      ],
+    },
     data: [...data].sort((a, b) => Number(b.price) - Number(a.price)),
     xKey: 'type',
-    series: [{ key: 'price', name: 'Median price', color: PRIMARY }],
+    series: [{ key: 'price', name: 'Median price', nameKey: 'seriesMedianPrice', color: PRIMARY }],
     ranked: true,
     // The all-types median, so each type reads as above or below the market.
-    refLines: median === undefined ? undefined : [{ y: median, label: 'market median' }],
+    refLines:
+      median === undefined
+        ? undefined
+        : [{ y: median, label: 'market median', labelKey: 'refMarketMedian' }],
   }
 }
 
@@ -1358,6 +1666,7 @@ const propertyValuation: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Comparable sale prices',
+    titleL: lt('compSalePrices'),
     subtitle: [
       str(get(payload, 'address')),
       estimate === undefined ? '' : `estimate $${estimate.toLocaleString('en-US')}`,
@@ -1368,11 +1677,26 @@ const propertyValuation: Recognizer = (payload) => {
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(payload, 'address')) ?? '' },
+        ...(estimate === undefined
+          ? []
+          : [lt('estimateAmount', { amount: estimate.toLocaleString('en-US') })]),
+        ...(() => {
+          const conf = num(get(valuation, 'confidence_score'))
+          return conf === undefined ? [] : [lt('confidencePct', { p: conf })]
+        })(),
+      ],
+    },
     data: [...data].sort((a, b) => Number(b.price) - Number(a.price)),
     xKey: 'address',
-    series: [{ key: 'price', name: 'Sale price', color: PRIMARY }],
+    series: [{ key: 'price', name: 'Sale price', nameKey: 'seriesSalePrice', color: PRIMARY }],
     ranked: true,
-    refLines: estimate === undefined ? undefined : [{ y: estimate, label: 'estimate' }],
+    refLines:
+      estimate === undefined
+        ? undefined
+        : [{ y: estimate, label: 'estimate', labelKey: 'refEstimate' }],
   }
 }
 
@@ -1390,6 +1714,7 @@ const cmaReport: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Comparable sales, before and after adjustment',
+    titleL: lt('compBeforeAfter'),
     subtitle: [
       str(get(get(payload, 'subject_property'), 'address')),
       reconciled === undefined
@@ -1398,15 +1723,25 @@ const cmaReport: Recognizer = (payload) => {
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        { raw: str(get(get(payload, 'subject_property'), 'address')) ?? '' },
+        ...(reconciled === undefined
+          ? []
+          : [lt('reconciledAmount', { amount: reconciled.toLocaleString('en-US') })]),
+      ],
+    },
     data: [...data].sort((a, b) => Number(b.adjusted) - Number(a.adjusted)),
     xKey: 'address',
     series: [
-      { key: 'sale', name: 'Sale price', color: THIRD },
-      { key: 'adjusted', name: 'Adjusted', color: PRIMARY },
+      { key: 'sale', name: 'Sale price', nameKey: 'seriesSalePrice', color: THIRD },
+      { key: 'adjusted', name: 'Adjusted', nameKey: 'seriesAdjusted', color: PRIMARY },
     ],
     ranked: true,
     refLines:
-      reconciled === undefined ? undefined : [{ y: reconciled, label: 'reconciled' }],
+      reconciled === undefined
+        ? undefined
+        : [{ y: reconciled, label: 'reconciled', labelKey: 'refReconciled' }],
   }
 }
 
@@ -1424,6 +1759,7 @@ const propertySearch: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Listing prices',
+    titleL: lt('listingPrices'),
     subtitle: [
       (() => {
         const total = num(get(payload, 'total_results'))
@@ -1435,13 +1771,27 @@ const propertySearch: Recognizer = (payload) => {
     ]
       .filter(Boolean)
       .join(' · '),
+    subtitleL: {
+      parts: [
+        (() => {
+          const total = num(get(payload, 'total_results'))
+          return total === undefined
+            ? lt('listings', { n: data.length })
+            : lt('ofMatches', { n: data.length, total })
+        })(),
+        { raw: str(get(payload, 'zipcode')) ?? '' },
+      ],
+    },
     data: [...data].sort((a, b) => Number(a.price) - Number(b.price)),
     xKey: 'address',
-    series: [{ key: 'price', name: 'List price', color: PRIMARY }],
+    series: [{ key: 'price', name: 'List price', nameKey: 'seriesListPrice', color: PRIMARY }],
     ranked: true,
     // The question is which listings sit below the market median, so the median
     // has to be on the chart for the answer to be visible rather than asserted.
-    refLines: median === undefined ? undefined : [{ y: median, label: 'market median' }],
+    refLines:
+      median === undefined
+        ? undefined
+        : [{ y: median, label: 'market median', labelKey: 'refMarketMedian' }],
   }
 }
 
@@ -1454,13 +1804,15 @@ const neighborhoodAnalysis: Recognizer = (payload) => {
   return {
     kind: 'bars',
     title: 'Neighborhood scores',
+    titleL: lt('neighborhoodScores'),
     subtitle: str(get(payload, 'address')),
+    subtitleL: { parts: [{ raw: str(get(payload, 'address')) ?? '' }] },
     data: [...data].sort((a, b) => Number(b.value) - Number(a.value)),
     xKey: 'score',
-    series: [{ key: 'value', name: 'Score', color: PRIMARY }],
+    series: [{ key: 'value', name: 'Score', nameKey: 'seriesScore', color: PRIMARY }],
     ranked: true,
     // All five are 0-100 indices, so the midpoint says which are above average.
-    refLines: [{ y: 50, label: '50' }],
+    refLines: [{ y: 50, label: '50', labelKey: 'refValue', labelParams: { n: 50 } }],
   }
 }
 

@@ -8,6 +8,7 @@ import {
   Scale,
 } from 'lucide-react'
 import { useApi } from '../../lib/api'
+import { useLocale } from '../../i18n/LocaleContext'
 import { Card, ErrorPane, LoadingPane, SimulatedBadge, StatCard } from '../finance/widgets'
 import {
   AskAgentButton,
@@ -47,6 +48,7 @@ const BALANCED_MONTHS_SUPPLY = 6
 const fmtK = (n: number) => `${Math.round(n / 1000)}k`
 
 export default function RealEstateDashboard() {
+  const { t } = useLocale()
   const [zipcode, setZipcode] = useState<string>(MARKETS[0].zipcode)
   const [subject, setSubject] = useState<string | null>(null)
 
@@ -61,14 +63,14 @@ export default function RealEstateDashboard() {
       <div className="p-4 lg:p-6 space-y-6 @container">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-lg lg:text-xl font-bold text-white">
-            Real Estate Valuation
+            {t('realestate.heading')}
           </h2>
           <div className="flex items-center gap-3">
             <select
               value={zipcode}
               onChange={(event) => selectMarket(event.target.value)}
               className="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-200"
-              aria-label="Market"
+              aria-label={t('realestate.marketLabel')}
             >
               {MARKETS.map((market) => (
                 <option key={market.zipcode} value={market.zipcode}>
@@ -95,15 +97,19 @@ export default function RealEstateDashboard() {
 /* ------------------------- market pulse + trend + forecast ----------------- */
 
 function MarketSection({ zipcode }: { zipcode: string }) {
+  const { t } = useLocale()
   const { data, loading, error, reload } = useApi<MarketResponse>(
     `/api/realestate/market?zipcode=${zipcode}`,
   )
 
-  if (loading) return <LoadingPane label="Loading market conditions…" />
+  if (loading) return <LoadingPane label={t('realestate.loadingMarket')} />
   if (error || !data || data.error) {
     return (
-      <Card title="Market Pulse">
-        <ErrorPane message={error ?? data?.error ?? 'No market data'} onRetry={reload} />
+      <Card title={t('realestate.marketPulse')}>
+        <ErrorPane
+          message={error ?? data?.error ?? t('realestate.noMarketData')}
+          onRetry={reload}
+        />
       </Card>
     )
   }
@@ -137,7 +143,7 @@ function MarketSection({ zipcode }: { zipcode: string }) {
   return (
     <section className="space-y-4 @container">
       <SectionHeader
-        title="Market Pulse"
+        title={t('realestate.marketPulse')}
         accentClass={ACCENT}
         action={
           <AskAgentButton
@@ -149,14 +155,16 @@ function MarketSection({ zipcode }: { zipcode: string }) {
 
       <div className="grid grid-cols-2 @xl:grid-cols-4 gap-3 @lg:gap-4">
         <StatCard
-          title="Median Sale Price"
+          title={t('realestate.medianSalePrice')}
+          kpiKey="Median Sale Price"
           value={fmtCompactUsd(snapshot.median_sale_price)}
           icon={DollarSign}
-          sub={`YoY ${fmtSignedPct(yoy)}`}
+          sub={t('realestate.yoy', { p: fmtSignedPct(yoy) })}
           subClass={deltaClass(yoy)}
         />
         <StatCard
-          title="Price / Sq Ft"
+          title={t('realestate.pricePerSqft')}
+          kpiKey="Price / Sq Ft"
           value={
             snapshot.median_price_per_sqft != null
               ? `$${snapshot.median_price_per_sqft.toFixed(0)}`
@@ -169,30 +177,39 @@ function MarketSection({ zipcode }: { zipcode: string }) {
              screen made that visible. */
           sub={
             snapshot.implied_median_sqft
-              ? `${fmtNum(snapshot.implied_median_sqft)} sq ft median home`
-              : `trend ${fmtSignedPct(priceTrends.price_per_sqft_trend)}`
+              ? t('realestate.sqftMedianHome', {
+                  n: fmtNum(snapshot.implied_median_sqft),
+                })
+              : t('realestate.trendSub', {
+                  p: fmtSignedPct(priceTrends.price_per_sqft_trend),
+                })
           }
           subClass="text-slate-400"
         />
         <StatCard
-          title="Median Days on Market"
+          title={t('realestate.medianDom')}
+          kpiKey="Median Days on Market"
           value={fmtNum(snapshot.median_days_on_market)}
           icon={CalendarDays}
-          sub={`${fmtNum(snapshot.average_days_on_market)} day average`}
+          sub={t('realestate.dayAverage', {
+            n: fmtNum(snapshot.average_days_on_market),
+          })}
         />
         <StatCard
-          title="Active Listings"
+          title={t('realestate.activeListings')}
+          kpiKey="Active Listings"
           value={fmtNum(snapshot.active_listings)}
           icon={Building2}
-          sub={`${fmtNum(snapshot.pending_sales)} pending · ${fmtNum(
-            snapshot.closed_sales_30d,
-          )} closed 30d`}
+          sub={t('realestate.pendingClosed', {
+            pending: fmtNum(snapshot.pending_sales),
+            closed: fmtNum(snapshot.closed_sales_30d),
+          })}
         />
       </div>
 
       <div className="grid grid-cols-1 @4xl:grid-cols-[2fr_3fr] gap-3 @lg:gap-4">
         <Card
-          title="Supply & Negotiating Position"
+          title={t('realestate.supplyPosition')}
           action={
             indicators.market_type ? (
               <StatusPill
@@ -211,25 +228,26 @@ function MarketSection({ zipcode }: { zipcode: string }) {
           <div className="p-4 @lg:p-5 space-y-4">
             <div>
               <div className="flex items-baseline justify-between gap-2 mb-1.5">
-                <span className="text-sm text-slate-300">Months of supply</span>
+                <span className="text-sm text-slate-300">
+                  {t('realestate.monthsOfSupply')}
+                </span>
                 <span className="text-sm font-semibold text-white tabular-nums">
-                  {supply.toFixed(1)} mo
+                  {t('realestate.moSuffix', { n: supply.toFixed(1) })}
                 </span>
               </div>
               <MeterBar
                 pct={supplyPct}
                 fillClass={supply < 3 ? 'bg-amber-500' : 'bg-green-500'}
-                ticks={[{ at: 50, title: 'balanced market ≈ 6 months' }]}
+                ticks={[{ at: 50, title: t('realestate.balancedTick') }]}
               />
               <p className="mt-1 text-[11px] text-slate-500">
-                Tick marks a balanced market at {BALANCED_MONTHS_SUPPLY} months; less
-                supply means sellers hold the leverage.
+                {t('realestate.balancedCaption', { n: BALANCED_MONTHS_SUPPLY })}
               </p>
             </div>
 
             <dl className="grid grid-cols-2 gap-x-4 gap-y-2.5 text-xs">
               <Metric
-                label="Sale-to-list ratio"
+                label={t('realestate.saleToList')}
                 value={
                   indicators.sale_to_list_ratio != null
                     ? indicators.sale_to_list_ratio.toFixed(3)
@@ -237,30 +255,32 @@ function MarketSection({ zipcode }: { zipcode: string }) {
                 }
               />
               <Metric
-                label="Sold over asking"
+                label={t('realestate.soldOverAsking')}
                 value={fmtPct(indicators.pct_sold_over_asking)}
               />
               <Metric
-                label="With price cut"
+                label={t('realestate.withPriceCut')}
                 value={fmtPct(indicators.pct_with_price_reduction)}
               />
               <Metric
-                label="Avg price cut"
+                label={t('realestate.avgPriceCut')}
                 value={fmtPct(indicators.avg_price_reduction_pct)}
               />
               <Metric
-                label="Absorption rate"
+                label={t('realestate.absorptionRate')}
                 value={fmtPct(indicators.absorption_rate)}
               />
               <Metric
-                label="New listings 30d"
+                label={t('realestate.newListings30d')}
                 value={fmtNum(snapshot.new_listings_30d)}
               />
             </dl>
 
             {Object.keys(propertyTypes).length > 0 && (
               <div>
-                <p className="text-xs text-slate-500 mb-2">Median price by type</p>
+                <p className="text-xs text-slate-500 mb-2">
+                  {t('realestate.medianByType')}
+                </p>
                 <ul className="space-y-1.5">
                   {Object.entries(propertyTypes).map(([type, entry]) => (
                     <li
@@ -270,7 +290,7 @@ function MarketSection({ zipcode }: { zipcode: string }) {
                       <span className="text-slate-300 capitalize">
                         {type.replace(/_/g, ' ')}
                         <span className="ml-2 text-slate-500 tabular-nums">
-                          {fmtPct(entry.pct_of_sales)} of sales
+                          {t('realestate.ofSales', { p: fmtPct(entry.pct_of_sales) })}
                         </span>
                       </span>
                       <span className="text-white tabular-nums">
@@ -285,7 +305,7 @@ function MarketSection({ zipcode }: { zipcode: string }) {
         </Card>
 
         <Card
-          title={`Price History — ${data.trends?.period ?? '1y'}`}
+          title={t('realestate.priceHistory', { period: data.trends?.period ?? '1y' })}
           action={
             trendSummary.total_price_change_pct != null ? (
               <span
@@ -293,7 +313,9 @@ function MarketSection({ zipcode }: { zipcode: string }) {
                   trendSummary.total_price_change_pct,
                 )}`}
               >
-                {fmtSignedPct(trendSummary.total_price_change_pct)} over period
+                {t('realestate.overPeriod', {
+                  p: fmtSignedPct(trendSummary.total_price_change_pct),
+                })}
               </span>
             ) : undefined
           }
@@ -303,12 +325,16 @@ function MarketSection({ zipcode }: { zipcode: string }) {
               data={history}
               xKey="month"
               series={[
-                { key: 'price', color: SERIES, name: 'Median sale price (USD)' },
+                {
+                  key: 'price',
+                  color: SERIES,
+                  name: t('realestate.medianSaleSeries'),
+                },
                 // sales volume is ~4 orders of magnitude below price — own axis
                 {
                   key: 'sales',
                   color: SERIES_2,
-                  name: 'Closed sales',
+                  name: t('realestate.closedSalesSeries'),
                   axis: 'right',
                   formatter: fmtNum,
                 },
@@ -316,17 +342,35 @@ function MarketSection({ zipcode }: { zipcode: string }) {
               yFormatter={fmtK}
             />
             <div className="flex flex-wrap gap-x-5 gap-y-1 mt-3 text-[11px] text-slate-500 tabular-nums">
-              <span>peak {fmtCompactUsd(trendSummary.peak_price)}</span>
-              <span>trough {fmtCompactUsd(trendSummary.trough_price)}</span>
-              <span>avg volume {fmtNum(trendSummary.avg_monthly_volume)}/mo</span>
-              <span>volume {trendSummary.volume_trend ?? '—'}</span>
+              <span>
+                {t('realestate.peakLegend', {
+                  amount: fmtCompactUsd(trendSummary.peak_price),
+                })}
+              </span>
+              <span>
+                {t('realestate.troughLegend', {
+                  amount: fmtCompactUsd(trendSummary.trough_price),
+                })}
+              </span>
+              <span>
+                {t('realestate.avgVolume', {
+                  n: fmtNum(trendSummary.avg_monthly_volume),
+                })}
+              </span>
+              <span>
+                {t('realestate.volumeTrend', {
+                  t: trendSummary.volume_trend ?? '—',
+                })}
+              </span>
             </div>
           </div>
         </Card>
       </div>
 
       <Card
-        title={`${data.forecast?.forecast_horizon_months ?? 12}-Month Price Forecast`}
+        title={t('realestate.forecastTitle', {
+          n: data.forecast?.forecast_horizon_months ?? 12,
+        })}
         action={
           forecastSummary.forecast_confidence ? (
             <StatusPill
@@ -337,7 +381,9 @@ function MarketSection({ zipcode }: { zipcode: string }) {
                     ? 'amber'
                     : 'slate'
               }
-              label={`${forecastSummary.forecast_confidence} confidence`}
+              label={t('realestate.confidencePill', {
+                level: forecastSummary.forecast_confidence,
+              })}
             />
           ) : undefined
         }
@@ -348,11 +394,11 @@ function MarketSection({ zipcode }: { zipcode: string }) {
               {fmtCompactUsd(forecastSummary.projected_end_price)}
             </span>
             <span className="text-xs text-slate-400">
-              projected from {fmtCompactUsd(data.forecast?.current_median_price)} ·{' '}
-              <span className={deltaClass(forecastSummary.total_price_change_pct ?? 0)}>
-                {fmtSignedPct(forecastSummary.total_price_change_pct)}
-              </span>{' '}
-              · {fmtSignedPct(forecastSummary.annualized_growth_rate)} annualized
+              {t('realestate.projectedFrom', {
+                amount: fmtCompactUsd(data.forecast?.current_median_price),
+                p: fmtSignedPct(forecastSummary.total_price_change_pct),
+                annualized: fmtSignedPct(forecastSummary.annualized_growth_rate),
+              })}
             </span>
           </div>
 
@@ -368,12 +414,12 @@ function MarketSection({ zipcode }: { zipcode: string }) {
 
           <div className="grid grid-cols-1 @2xl:grid-cols-2 gap-x-6 gap-y-3 mt-4">
             <DriverList
-              title="Positive drivers"
+              title={t('realestate.positiveDrivers')}
               items={data.forecast?.positive_drivers ?? []}
               markerClass="bg-green-500"
             />
             <DriverList
-              title="Risk factors"
+              title={t('realestate.riskFactors')}
               items={data.forecast?.risk_factors ?? []}
               markerClass="bg-amber-500"
             />
@@ -437,6 +483,7 @@ function ListingsSection({
   subject: string | null
   onSelectSubject: (address: string) => void
 }) {
+  const { t } = useLocale()
   const [bedsMin, setBedsMin] = useState(3)
   const { data, loading, error, reload } = useApi<ListingsResponse>(
     `/api/realestate/listings?zipcode=${zipcode}&bedsMin=${bedsMin}`,
@@ -444,7 +491,7 @@ function ListingsSection({
 
   const columns: Array<Column<Listing>> = [
     {
-      header: 'Address',
+      header: t('realestate.colAddress'),
       className: 'text-white whitespace-nowrap',
       render: (row) => (
         <button
@@ -453,7 +500,7 @@ function ListingsSection({
           className={`text-left hover:underline ${
             subject === row.address ? 'text-cyan-300' : 'text-white'
           }`}
-          title="Run comparables for this property"
+          title={t('realestate.runCompsTooltip')}
         >
           {/* the trailing zipcode duplicates the market selector — drop it */}
           {(row.address ?? '—').replace(/,\s*\d{5}$/, '')}
@@ -461,7 +508,7 @@ function ListingsSection({
       ),
     },
     {
-      header: 'List price',
+      header: t('realestate.colListPrice'),
       numeric: true,
       className: 'text-white',
       render: (row) => (
@@ -474,20 +521,24 @@ function ListingsSection({
       ),
     },
     {
-      header: '$/sqft',
+      header: t('realestate.colPpsf'),
       numeric: true,
       render: (row) =>
         row.price_per_sqft != null ? `$${row.price_per_sqft.toFixed(0)}` : '—',
     },
     {
-      header: 'Bd / Ba',
+      header: t('realestate.colBdBa'),
       numeric: true,
       render: (row) => `${row.bedrooms ?? '—'} / ${row.bathrooms ?? '—'}`,
     },
-    { header: 'Sq ft', numeric: true, render: (row) => fmtNum(row.sqft) },
-    { header: 'Built', numeric: true, render: (row) => row.year_built ?? '—' },
+    { header: t('realestate.colSqft'), numeric: true, render: (row) => fmtNum(row.sqft) },
     {
-      header: 'Status',
+      header: t('realestate.colBuilt'),
+      numeric: true,
+      render: (row) => row.year_built ?? '—',
+    },
+    {
+      header: t('realestate.colStatus'),
       render: (row) => (
         <StatusPill
           tone={
@@ -502,7 +553,7 @@ function ListingsSection({
       ),
     },
     {
-      header: 'DOM',
+      header: t('realestate.colDom'),
       numeric: true,
       render: (row) => (
         <span className={(row.days_on_market ?? 0) > 60 ? 'text-amber-400' : ''}>
@@ -517,7 +568,7 @@ function ListingsSection({
   return (
     <section className="space-y-4 @container">
       <SectionHeader
-        title="Active Listings"
+        title={t('realestate.activeListings')}
         accentClass={ACCENT}
         action={
           <div className="flex items-center gap-2">
@@ -525,11 +576,11 @@ function ListingsSection({
               value={bedsMin}
               onChange={(event) => setBedsMin(Number(event.target.value))}
               className="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-200"
-              aria-label="Minimum bedrooms"
+              aria-label={t('realestate.minBedsLabel')}
             >
               {[1, 2, 3, 4].map((beds) => (
                 <option key={beds} value={beds}>
-                  {beds}+ beds
+                  {t('realestate.bedsOption', { n: beds })}
                 </option>
               ))}
             </select>
@@ -542,11 +593,11 @@ function ListingsSection({
       />
 
       {loading ? (
-        <LoadingPane label="Loading listings…" />
+        <LoadingPane label={t('realestate.loadingListings')} />
       ) : error || !data || data.error ? (
-        <Card title="Active Listings">
+        <Card title={t('realestate.activeListings')}>
           <ErrorPane
-            message={error ?? data?.error ?? 'No listing data'}
+            message={error ?? data?.error ?? t('realestate.noListingData')}
             onRetry={reload}
           />
         </Card>
@@ -554,7 +605,8 @@ function ListingsSection({
         <>
           <div className="grid grid-cols-2 @xl:grid-cols-4 gap-3 @lg:gap-4">
             <StatCard
-              title="Matching Listings"
+              title={t('realestate.matchingListings')}
+              kpiKey="Matching Listings"
               value={fmtNum(data.total_results)}
               icon={Building2}
               /* Against the market's whole active inventory, so "323 matching"
@@ -562,12 +614,18 @@ function ListingsSection({
                  contradicts the 420 on the Market Pulse tile above. */
               sub={
                 data.market_active_listings
-                  ? `of ${fmtNum(data.market_active_listings)} active in market`
-                  : `showing ${(data.listings ?? []).length} of page ${data.page ?? 1}`
+                  ? t('realestate.ofActiveMarket', {
+                      n: fmtNum(data.market_active_listings),
+                    })
+                  : t('realestate.showingPage', {
+                      n: (data.listings ?? []).length,
+                      p: data.page ?? 1,
+                    })
               }
             />
             <StatCard
-              title="Median Asking"
+              title={t('realestate.medianAsking')}
+              kpiKey="Median Asking"
               value={fmtCompactUsd(summary.median_price)}
               icon={DollarSign}
               sub={`${fmtCompactUsd(summary.min_price)} – ${fmtCompactUsd(
@@ -575,7 +633,8 @@ function ListingsSection({
               )}`}
             />
             <StatCard
-              title="Avg $/Sq Ft"
+              title={t('realestate.avgPpsf')}
+              kpiKey="Avg $/Sq Ft"
               value={
                 summary.avg_price_per_sqft != null
                   ? `$${summary.avg_price_per_sqft.toFixed(0)}`
@@ -587,16 +646,21 @@ function ListingsSection({
                  market tile and nothing on screen connected the two. */
               sub={
                 data.market_median_price_per_sqft
-                  ? `market $${data.market_median_price_per_sqft.toFixed(0)}/sq ft`
-                  : `${fmtNum(summary.avg_days_on_market)} day avg on market`
+                  ? t('realestate.marketPpsf', {
+                      n: data.market_median_price_per_sqft.toFixed(0),
+                    })
+                  : t('realestate.dayAvgOnMarket', {
+                      n: fmtNum(summary.avg_days_on_market),
+                    })
               }
               subClass="text-slate-400"
             />
             <StatCard
-              title="With Price Cut"
+              title={t('realestate.withPriceCut')}
+              kpiKey="With Price Cut"
               value={fmtPct(summary.pct_with_price_reduction, 0)}
               icon={LineChartIcon}
-              sub="of listings shown"
+              sub={t('realestate.ofListingsShown')}
               subClass={
                 (summary.pct_with_price_reduction ?? 0) > 40
                   ? 'text-amber-400'
@@ -605,12 +669,12 @@ function ListingsSection({
             />
           </div>
 
-          <Card title="Listings — select an address to pull comparables">
+          <Card title={t('realestate.listingsTitle')}>
             <DataTable
               columns={columns}
               rows={data.listings ?? []}
               rowKey={(row, i) => row.listing_id ?? String(i)}
-              empty="No listings match these criteria"
+              empty={t('realestate.noListingsMatch')}
             />
           </Card>
         </>
@@ -622,6 +686,7 @@ function ListingsSection({
 /* ------------------------------- comparables ------------------------------ */
 
 function ComparablesSection({ address }: { address: string }) {
+  const { t } = useLocale()
   const [radius, setRadius] = useState(1)
   const { data, loading, error, reload } = useApi<ComparablesResponse>(
     `/api/realestate/comparables?address=${encodeURIComponent(address)}&radius=${radius}`,
@@ -629,23 +694,23 @@ function ComparablesSection({ address }: { address: string }) {
 
   const columns: Array<Column<Comparable>> = [
     {
-      header: 'Comp address',
+      header: t('realestate.colCompAddress'),
       className: 'text-white whitespace-nowrap',
       render: (row) => row.address ?? '—',
     },
     {
-      header: 'Sale price',
+      header: t('realestate.colSalePrice'),
       numeric: true,
       render: (row) => fmtUsd0(row.sale_price),
     },
     {
-      header: 'Adjusted',
+      header: t('realestate.colAdjusted'),
       numeric: true,
       className: 'text-white',
       render: (row) => fmtUsd0(row.adjusted_price),
     },
     {
-      header: 'Net adj.',
+      header: t('realestate.colNetAdj'),
       numeric: true,
       render: (row) => {
         const total = row.adjustments?.total ?? 0
@@ -657,27 +722,29 @@ function ComparablesSection({ address }: { address: string }) {
         )
       },
     },
-    { header: 'Sq ft', numeric: true, render: (row) => fmtNum(row.sqft) },
+    { header: t('realestate.colSqft'), numeric: true, render: (row) => fmtNum(row.sqft) },
     {
-      header: 'Bd / Ba',
+      header: t('realestate.colBdBa'),
       numeric: true,
       render: (row) => `${row.beds ?? '—'} / ${row.baths ?? '—'}`,
     },
     {
-      header: '$/sqft',
+      header: t('realestate.colPpsf'),
       numeric: true,
       render: (row) =>
         row.price_per_sqft != null ? `$${row.price_per_sqft.toFixed(0)}` : '—',
     },
     {
-      header: 'Distance',
+      header: t('realestate.colDistance'),
       numeric: true,
       render: (row) =>
-        row.distance_miles != null ? `${row.distance_miles.toFixed(2)} mi` : '—',
+        row.distance_miles != null
+          ? t('realestate.milesSuffix', { n: row.distance_miles.toFixed(2) })
+          : '—',
     },
-    { header: 'Sold', render: (row) => row.sale_date ?? '—' },
+    { header: t('realestate.colSold'), render: (row) => row.sale_date ?? '—' },
     {
-      header: 'Similarity',
+      header: t('realestate.colSimilarity'),
       numeric: true,
       render: (row) => (
         <StatusPill
@@ -694,7 +761,7 @@ function ComparablesSection({ address }: { address: string }) {
   return (
     <section className="space-y-4 @container">
       <SectionHeader
-        title="Comparables"
+        title={t('realestate.comparables')}
         accentClass={ACCENT}
         action={
           <div className="flex items-center gap-2">
@@ -702,11 +769,11 @@ function ComparablesSection({ address }: { address: string }) {
               value={radius}
               onChange={(event) => setRadius(Number(event.target.value))}
               className="bg-slate-800 border border-slate-700 rounded-lg px-2.5 py-1 text-xs text-slate-200"
-              aria-label="Search radius in miles"
+              aria-label={t('realestate.radiusLabel')}
             >
               {[0.5, 1, 2, 5].map((miles) => (
                 <option key={miles} value={miles}>
-                  {miles} mi radius
+                  {t('realestate.radiusOption', { n: miles })}
                 </option>
               ))}
             </select>
@@ -721,11 +788,11 @@ function ComparablesSection({ address }: { address: string }) {
       />
 
       {loading ? (
-        <LoadingPane label="Loading comparables…" />
+        <LoadingPane label={t('realestate.loadingComps')} />
       ) : error || !data || data.error ? (
-        <Card title="Comparables">
+        <Card title={t('realestate.comparables')}>
           <ErrorPane
-            message={error ?? data?.error ?? 'No comparable sales'}
+            message={error ?? data?.error ?? t('realestate.noComps')}
             onRetry={reload}
           />
         </Card>
@@ -733,7 +800,8 @@ function ComparablesSection({ address }: { address: string }) {
         <>
           <div className="grid grid-cols-2 @xl:grid-cols-4 gap-3 @lg:gap-4">
             <StatCard
-              title="Indicated Value"
+              title={t('realestate.indicatedValue')}
+              kpiKey="Indicated Value"
               value={fmtCompactUsd(summary.median_adjusted_price)}
               icon={Scale}
               /* Against the subject's own basis value, so the two are readable
@@ -742,62 +810,76 @@ function ComparablesSection({ address }: { address: string }) {
                  the row the user had just clicked. */
               sub={
                 subject.indicated_value
-                  ? `subject basis ${fmtCompactUsd(subject.indicated_value)}`
-                  : 'median adjusted comp price'
+                  ? t('realestate.subjectBasis', {
+                      amount: fmtCompactUsd(subject.indicated_value),
+                    })
+                  : t('realestate.medianAdjustedComp')
               }
               subClass="text-slate-400"
             />
             <StatCard
-              title="Median Comp Sale"
+              title={t('realestate.medianCompSale')}
+              kpiKey="Median Comp Sale"
               value={fmtCompactUsd(summary.median_sale_price)}
               icon={DollarSign}
-              sub="before adjustments"
+              sub={t('realestate.beforeAdjustments')}
             />
             <StatCard
-              title="Median $/Sq Ft"
+              title={t('realestate.medianPpsf')}
+              kpiKey="Median $/Sq Ft"
               value={
                 summary.median_price_per_sqft != null
                   ? `$${summary.median_price_per_sqft.toFixed(0)}`
                   : '—'
               }
               icon={Home}
-              sub={`${fmtNum(data.total_found)} comps within ${
-                data.search_radius_miles ?? radius
-              } mi`}
+              sub={t('realestate.compsWithin', {
+                n: fmtNum(data.total_found),
+                miles: data.search_radius_miles ?? radius,
+              })}
             />
             <StatCard
-              title="Avg Days on Market"
+              title={t('realestate.avgDom')}
+              kpiKey="Avg Days on Market"
               value={fmtNum(summary.avg_days_on_market)}
               icon={CalendarDays}
-              sub="for these comps"
+              sub={t('realestate.forTheseComps')}
             />
           </div>
 
-          <Card title={`Comparable sales — subject ${data.subject_address ?? address}`}>
+          <Card
+            title={t('realestate.compsSubject', {
+              address: data.subject_address ?? address,
+            })}
+          >
             {/* The subject the whole adjustment column is measured against. The
                 table showed adjustments of +/-$90K with the property they were
                 relative to nowhere on screen, so a reader had no way to tell a
                 reasonable adjustment from an absurd one. */}
             {subject.sqft != null && (
               <p className="text-xs text-slate-400 mb-3 tabular-nums">
-                {fmtNum(subject.sqft)} sq ft · {subject.beds ?? '—'} bd ·{' '}
-                {subject.baths ?? '—'} ba · built {subject.year_built ?? '—'}
-                {subject.price_per_sqft != null &&
-                  ` · $${subject.price_per_sqft.toFixed(0)}/sq ft`}
+                {t('realestate.subjectCaption', {
+                  sqft: fmtNum(subject.sqft),
+                  beds: subject.beds ?? '—',
+                  baths: subject.baths ?? '—',
+                  year: subject.year_built ?? '—',
+                  ppsf:
+                    subject.price_per_sqft != null
+                      ? subject.price_per_sqft.toFixed(0)
+                      : '—',
+                })}
               </p>
             )}
             <DataTable
               columns={columns}
               rows={data.comparables ?? []}
               rowKey={(row, i) => row.address ?? String(i)}
-              empty="No comparable sales in this radius"
+              empty={t('realestate.noCompsRadius')}
             />
           </Card>
 
           <p className="text-xs text-slate-400 px-1">
-            Adjusted prices normalise each comp to the subject property for size,
-            bedrooms, bathrooms and time of sale. The indicated value is the median of
-            those adjusted prices — the agent can walk through any single adjustment.
+            {t('realestate.adjustedExplainer')}
           </p>
         </>
       )}

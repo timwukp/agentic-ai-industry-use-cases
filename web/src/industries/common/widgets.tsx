@@ -27,6 +27,8 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { getCurrentLocale } from '../../i18n'
+import { useLocale } from '../../i18n/LocaleContext'
 import { askAgent } from '../../lib/promptBus'
 
 /* ---------------------------------- pills --------------------------------- */
@@ -101,6 +103,7 @@ export function AskAgentButton({
   prompt: string
   hoverClass?: string
 }) {
+  const { t } = useLocale()
   return (
     <button
       type="button"
@@ -109,7 +112,7 @@ export function AskAgentButton({
       className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-lg border border-transparent text-slate-400 hover:border-slate-700 hover:bg-slate-800/60 transition-colors shrink-0 ${hoverClass}`}
     >
       <Bot className="w-3.5 h-3.5" />
-      Ask agent
+      {t('widgets.askAgent')}
     </button>
   )
 }
@@ -268,6 +271,7 @@ export function ForecastBand({
   height?: number
   yFormatter?: (value: number) => string
 }) {
+  const { t } = useLocale()
   // Stacked areas make recharts anchor its own domain at 0, which squashes a
   // band sitting far from zero into a flat line near the top. Derive the real
   // range, snap it to a round step, and pass explicit ticks — recharts still
@@ -307,7 +311,7 @@ export function ForecastBand({
         {/* stacked pair renders the interval as a band without a second axis */}
         <Area
           dataKey={lowKey}
-          name="Low"
+          name={t('widgets.forecastLow')}
           stackId="band"
           stroke="none"
           fill="transparent"
@@ -315,7 +319,7 @@ export function ForecastBand({
         />
         <Area
           dataKey={highKey}
-          name="Confidence range"
+          name={t('widgets.forecastRange')}
           stackId="band"
           stroke="none"
           fill={color}
@@ -325,7 +329,7 @@ export function ForecastBand({
         <Line
           type="monotone"
           dataKey={lineKey}
-          name="Projection"
+          name={t('widgets.forecastProjection')}
           stroke={color}
           strokeWidth={2}
           dot={false}
@@ -455,7 +459,7 @@ export function DataTable<T>({
   columns,
   rows,
   rowKey,
-  empty = 'No rows',
+  empty,
   maxHeight = 'max-h-80',
 }: {
   columns: Array<Column<T>>
@@ -464,8 +468,13 @@ export function DataTable<T>({
   empty?: string
   maxHeight?: string
 }) {
+  const { t } = useLocale()
   if (rows.length === 0) {
-    return <p className="py-6 text-center text-sm text-slate-500">{empty}</p>
+    return (
+      <p className="py-6 text-center text-sm text-slate-500">
+        {empty ?? t('widgets.noRows')}
+      </p>
+    )
   }
   return (
     <div className={`overflow-auto ${maxHeight}`}>
@@ -510,7 +519,7 @@ export function DataTable<T>({
 export const fmtCompactUsd = (n: number | undefined | null): string =>
   n == null
     ? '—'
-    : n.toLocaleString('en-US', {
+    : n.toLocaleString(getCurrentLocale(), {
         style: 'currency',
         currency: 'USD',
         notation: 'compact',
@@ -520,14 +529,14 @@ export const fmtCompactUsd = (n: number | undefined | null): string =>
 export const fmtUsd0 = (n: number | undefined | null): string =>
   n == null
     ? '—'
-    : n.toLocaleString('en-US', {
+    : n.toLocaleString(getCurrentLocale(), {
         style: 'currency',
         currency: 'USD',
         maximumFractionDigits: 0,
       })
 
 export const fmtNum = (n: number | undefined | null): string =>
-  n == null ? '—' : n.toLocaleString('en-US')
+  n == null ? '—' : n.toLocaleString(getCurrentLocale())
 
 export const fmtPct = (n: number | undefined | null, digits = 1): string =>
   n == null ? '—' : `${n.toFixed(digits)}%`

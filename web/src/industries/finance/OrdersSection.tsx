@@ -1,3 +1,4 @@
+import { useLocale } from '../../i18n/LocaleContext'
 import { useApi } from '../../lib/api'
 import type { Order, OrdersResponse } from './types'
 import { Card, ErrorPane, LoadingPane, fmtUsd } from './widgets'
@@ -21,30 +22,31 @@ function StatusChip({ status }: { status: Order['status'] }) {
 }
 
 export default function OrdersSection() {
+  const { t } = useLocale()
   const { data, loading, error, reload } = useApi<OrdersResponse>('/api/finance/orders')
 
-  if (loading) return <LoadingPane label="Loading orders…" />
+  if (loading) return <LoadingPane label={t('finance.loadingOrders')} />
   if (error || !data) {
     return (
-      <Card title="Recent Orders">
-        <ErrorPane message={error ?? 'No order data'} onRetry={reload} />
+      <Card title={t('finance.recentOrders')}>
+        <ErrorPane message={error ?? t('finance.noOrderData')} onRetry={reload} />
       </Card>
     )
   }
 
   return (
-    <Card title={`Recent Orders (last ${data.period_days} days)`}>
+    <Card title={t('finance.recentOrdersDays', { n: data.period_days })}>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[520px]">
           <thead>
             <tr className="text-xs text-slate-500 border-b border-slate-800">
-              <th className="px-5 py-3 text-left font-medium">Order</th>
-              <th className="px-5 py-3 text-left font-medium">Symbol</th>
-              <th className="px-5 py-3 text-left font-medium">Side</th>
-              <th className="px-5 py-3 text-right font-medium">Qty</th>
-              <th className="px-5 py-3 text-right font-medium">Fill Price</th>
-              <th className="px-5 py-3 text-left font-medium">Status</th>
-              <th className="px-5 py-3 text-right font-medium">Placed</th>
+              <th className="px-5 py-3 text-left font-medium">{t('finance.colOrder')}</th>
+              <th className="px-5 py-3 text-left font-medium">{t('finance.colSymbol')}</th>
+              <th className="px-5 py-3 text-left font-medium">{t('finance.colSide')}</th>
+              <th className="px-5 py-3 text-right font-medium">{t('finance.colQty')}</th>
+              <th className="px-5 py-3 text-right font-medium">{t('finance.colFillPrice')}</th>
+              <th className="px-5 py-3 text-left font-medium">{t('finance.colStatus')}</th>
+              <th className="px-5 py-3 text-right font-medium">{t('finance.colPlaced')}</th>
             </tr>
           </thead>
           <tbody>
@@ -81,7 +83,7 @@ export default function OrdersSection() {
             {data.orders.length === 0 && (
               <tr>
                 <td colSpan={7} className="px-5 py-8 text-center text-sm text-slate-500">
-                  No orders in this period — ask the agent to place one.
+                  {t('finance.noOrders')}
                 </td>
               </tr>
             )}
