@@ -299,15 +299,26 @@ def check_drug_interactions(medications: str) -> dict:
         return tool_error("Provide at least two medication names as a JSON array")
     med_list = [str(m).strip() for m in med_list]
 
+    # Matched case-insensitively. INTERACTION_DB is keyed on capitalized names
+    # ("Metformin", "Lisinopril"), but medication names arrive however the user
+    # typed them — "check for interactions between metformin, lisinopril and
+    # atorvastatin" is one of the app's own starter questions. A case-sensitive
+    # lookup answered that with "LOW - No significant interactions detected",
+    # which is a missed interaction the database does in fact hold.
+    lookup = {
+        (a.casefold(), b.casefold()): entry for (a, b), entry in INTERACTION_DB.items()
+    }
     interactions_found = []
     pairs_checked = 0
     for i in range(len(med_list)):
         for j in range(i + 1, len(med_list)):
             pairs_checked += 1
-            pair = (med_list[i], med_list[j])
-            match = INTERACTION_DB.get(pair) or INTERACTION_DB.get(pair[::-1])
+            pair = (med_list[i].casefold(), med_list[j].casefold())
+            match = lookup.get(pair) or lookup.get(pair[::-1])
             if match:
-                interactions_found.append({"medication_pair": list(pair), **match})
+                interactions_found.append(
+                    {"medication_pair": [med_list[i], med_list[j]], **match}
+                )
 
     major = sum(1 for x in interactions_found if x["severity"] == "major")
     moderate = sum(1 for x in interactions_found if x["severity"] == "moderate")
@@ -322,13 +333,21 @@ def check_drug_interactions(medications: str) -> dict:
                 "moderate": moderate,
                 "minor": len(interactions_found) - major - moderate,
             },
+            # The minor case needs its own wording. Saying "No significant
+            # interactions detected" while `interactions` lists one contradicts
+            # the payload beside it, and that sentence is what the agent quotes.
             "overall_risk": (
                 "HIGH - Major interactions detected. Physician review required."
                 if major
                 else (
                     "MODERATE - Review recommended."
                     if moderate
-                    else "LOW - No significant interactions detected in the reference database."
+                    else (
+                        f"LOW - {len(interactions_found)} minor interaction(s) detected; "
+                        "monitor but no change indicated."
+                        if interactions_found
+                        else "LOW - No significant interactions detected in the reference database."
+                    )
                 )
             ),
             "database_note": "Curated reference database of common interactions; not exhaustive.",

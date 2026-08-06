@@ -91,6 +91,25 @@ export function ChartCard({ spec }: { spec: ChartSpec }) {
               <ReferenceLine
                 key={`${line.y}-${line.label ?? ''}`}
                 y={line.y}
+                // recharts defaults ifOverflow to "discard": a line outside the
+                // axis domain is dropped with no warning. The vibration chart
+                // shipped that way — readings 2.6–4.5 mm/s under a 7.1 warning
+                // limit, and the limit is the entire point of the question, so the
+                // one chart that needed its threshold most was the one that lost
+                // it. Extending the domain is the honest failure mode: a squashed
+                // trend is visibly odd, a missing line is invisible. The
+                // recognizer still declines to emit a line so far out that the
+                // series would be flattened (see sensorData).
+                ifOverflow="extendDomain"
+                // Explicit, although 0 is the default: recharts decides whether to
+                // extend the axis by reading element.props.yAxisId BEFORE render
+                // (detectReferenceElementsDomain), and React 19's jsx() runtime —
+                // unlike createElement — no longer copies class defaultProps into
+                // element.props. Left implicit, the id reads undefined, the
+                // `=== axisId` check fails, and ifOverflow silently degrades to
+                // discard: the line vanishes exactly when it matters. SSR repros
+                // (createElement) pass while the built app fails.
+                yAxisId={0}
                 stroke="#64748b"
                 strokeDasharray="4 4"
                 strokeWidth={1}
@@ -131,7 +150,17 @@ export function ChartCard({ spec }: { spec: ChartSpec }) {
           <BarChart
             data={spec.data}
             layout="vertical"
-            margin={{ left: 4, right: 16, top: 4, bottom: 4 }}
+            // top leaves room for a reference-line label; at top: 4 the label was
+            // clipped away and the line read as an unexplained dashed rule, which
+            // a reader is free to mistake for whichever figure the prose names.
+            // 20, not 16: position 'top' hangs the label 5px above the plot edge,
+            // and a 10px glyph needs the extra headroom or its ascenders clip.
+            margin={{
+              left: 4,
+              right: 16,
+              top: spec.refLines?.some((l) => l.label) ? 20 : 4,
+              bottom: 4,
+            }}
           >
             <XAxis type="number" {...AXIS} tickFormatter={tickFormat} />
             <YAxis
@@ -154,6 +183,50 @@ export function ChartCard({ spec }: { spec: ChartSpec }) {
             {/* Zero line only where values straddle it, so a positive-only chart
                 does not carry an axis marker that means nothing. */}
             {negative && <ReferenceLine x={0} stroke="#475569" strokeWidth={1} />}
+            {/* Thresholds on a horizontal bar chart are VERTICAL lines: the value
+                axis is x here, so `y={line.y}` — correct for the line chart above
+                — silently rendered nothing. Every threshold a bar recognizer
+                emitted (the market median under listing prices, the reference
+                limit on labs, reorder points, adherence targets) was dropped
+                on screen while the spec carried it, which unit tests asserting
+                the spec could not see. */}
+            {(spec.refLines ?? []).map((line) => (
+              <ReferenceLine
+                key={`${line.y}-${line.label ?? ''}`}
+                x={line.y}
+                // As on the line chart: the default "discard" makes an
+                // out-of-domain threshold vanish silently, and a silently missing
+                // line is the one failure a screenshot cannot show. A bar axis is
+                // anchored at 0, so overflow here means "above every bar" — which
+                // the maintenance-capacity line was, at 224h against a 66h week.
+                ifOverflow="extendDomain"
+                // Same React 19 defaultProps caveat as the line chart above, on
+                // the value axis of this layout.
+                xAxisId={0}
+                stroke="#64748b"
+                strokeDasharray="4 4"
+                strokeWidth={1}
+                label={
+                  line.label
+                    ? {
+                        value: line.label,
+                        // Above the plot, not inside it. 'insideTop' centres the
+                        // text ON the line at bar height, so any bar that reaches
+                        // the line runs straight through the label — the pricing
+                        // chart showed "4.36" because the longest bar covered
+                        // "rec $15". Nothing can occlude the strip above the plot,
+                        // and the conditional top margin (20px) exists precisely
+                        // to make room for it; at the default 4px this same
+                        // position was clipped to invisibility, which is the bug
+                        // the margin comment records.
+                        position: 'top',
+                        fill: '#94a3b8',
+                        fontSize: 10,
+                      }
+                    : undefined
+                }
+              />
+            ))}
             {spec.series.map((s) => (
               <Bar key={s.key} dataKey={s.key} name={s.name} barSize={12} radius={[0, 3, 3, 0]}>
                 {spec.data.map((row, i) => (

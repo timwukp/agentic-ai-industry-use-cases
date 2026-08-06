@@ -407,3 +407,101 @@ def test_starter_tool_path_returns_data(industry, module_path, fn_name, args):
         (isinstance(v, (list, dict)) and len(v) > 0) or isinstance(v, (int, float))
         for v in substantive.values()
     ), f"{fn_name} returned no populated field: {result}"
+
+
+# --------------------------------------------------------------------------
+# a starter question must get the *right* answer, not merely a non-error one
+# --------------------------------------------------------------------------
+
+
+def test_drug_interactions_match_regardless_of_case():
+    """The "Check interactions" starter question names its drugs in lowercase.
+
+    ``INTERACTION_DB`` is keyed on capitalized names, so a case-sensitive lookup
+    answered "LOW - No significant interactions detected in the reference
+    database" for metformin + lisinopril — a pair that database does hold. The
+    parametrized check above passed throughout: the payload had no ``error`` key
+    and plenty of populated fields. It was simply wrong, which is the worse
+    failure for a clinical tool, and it also left the chart panel blank because
+    an all-zero severity summary has nothing to plot.
+    """
+    clinical = _load("tools/healthcare/clinical/handler.py", "clinical_case")
+
+    pairs = [
+        (["metformin", "lisinopril"], "minor"),
+        (["warfarin", "aspirin"], "major"),
+        (["lisinopril", "potassium"], "moderate"),
+    ]
+    for meds, severity in pairs:
+        for variant in (meds, [m.title() for m in meds], [m.upper() for m in meds]):
+            result = clinical.check_drug_interactions(json.dumps(variant))
+            assert result["interactions_found"] == 1, f"{variant} -> {result}"
+            assert result["severity_summary"][severity] == 1, f"{variant} -> {result}"
+            # The reply echoes the names the user typed, not the database's.
+            assert result["interactions"][0]["medication_pair"] == variant
+
+    # Reversed order must match too — the pair is unordered clinically.
+    reversed_result = clinical.check_drug_interactions(
+        json.dumps(["aspirin", "Warfarin"])
+    )
+    assert reversed_result["severity_summary"]["major"] == 1
+
+    # And a genuinely clean list must still come back clean, or the fix would be
+    # matching everything.
+    clean = clinical.check_drug_interactions(json.dumps(["metformin", "atorvastatin"]))
+    assert clean["interactions_found"] == 0
+    assert clean["overall_risk"].startswith("LOW")
+
+
+def test_overall_risk_sentence_agrees_with_the_interaction_list():
+    """``overall_risk`` is the sentence the agent quotes, so it cannot contradict
+    the list beside it.
+
+    With the case fix in place, metformin + lisinopril returned one minor
+    interaction *and* "LOW - No significant interactions detected in the
+    reference database" — the tool disagreeing with itself in the same payload.
+    """
+    clinical = _load("tools/healthcare/clinical/handler.py", "clinical_risk")
+
+    cases = [
+        (["metformin", "atorvastatin"], 0, "no significant"),
+        (["metformin", "lisinopril"], 1, "minor interaction"),
+        (["lisinopril", "potassium"], 1, "moderate"),
+        (["warfarin", "aspirin"], 1, "major"),
+    ]
+    for meds, expected, phrase in cases:
+        result = clinical.check_drug_interactions(json.dumps(meds))
+        assert result["interactions_found"] == expected, f"{meds} -> {result}"
+        assert (
+            phrase in result["overall_risk"].lower()
+        ), f"{meds} -> {result['overall_risk']}"
+        # "No significant interactions" must never appear alongside a populated
+        # list, in either direction.
+        says_none = "no significant" in result["overall_risk"].lower()
+        assert says_none == (result["interactions_found"] == 0), (
+            f"{meds}: overall_risk {result['overall_risk']!r} contradicts "
+            f"{result['interactions_found']} interaction(s)"
+        )
+        assert sum(result["severity_summary"].values()) == result["interactions_found"]
+
+
+def test_starter_interaction_prompt_names_a_flagged_pair():
+    """The prompt's own drug names must be a pair the database actually flags.
+
+    Otherwise the starter question demonstrates the feature by showing nothing —
+    which is what the live app did, and what the E2E chart census caught.
+    """
+    clinical = _load("tools/healthcare/clinical/handler.py", "clinical_prompt")
+    prompts = _starters()["healthcare-medical"]
+    matching = [p for _, p in prompts if "interaction" in p.lower()]
+    assert matching, "no interaction starter prompt found; did the wording change?"
+
+    known = {name.casefold() for pair in clinical.INTERACTION_DB for name in pair}
+    for prompt in matching:
+        named = [d for d in known if re.search(rf"\b{re.escape(d)}\b", prompt.lower())]
+        assert len(named) >= 2, (
+            f"{prompt!r} names {named} from the interaction database; a starter "
+            "question needs at least two so a real interaction surfaces"
+        )
+        result = clinical.check_drug_interactions(json.dumps(named))
+        assert result["interactions_found"] >= 1, f"{prompt!r} -> {result}"
