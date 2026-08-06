@@ -153,10 +153,12 @@ export function ChartCard({ spec }: { spec: ChartSpec }) {
             // top leaves room for a reference-line label; at top: 4 the label was
             // clipped away and the line read as an unexplained dashed rule, which
             // a reader is free to mistake for whichever figure the prose names.
+            // 20, not 16: position 'top' hangs the label 5px above the plot edge,
+            // and a 10px glyph needs the extra headroom or its ascenders clip.
             margin={{
               left: 4,
               right: 16,
-              top: spec.refLines?.some((l) => l.label) ? 16 : 4,
+              top: spec.refLines?.some((l) => l.label) ? 20 : 4,
               bottom: 4,
             }}
           >
@@ -208,10 +210,16 @@ export function ChartCard({ spec }: { spec: ChartSpec }) {
                   line.label
                     ? {
                         value: line.label,
-                        // insideTop, not top: a label above the plot is clipped by
-                        // the container, and a line near the right edge would push
-                        // an outside label off the card entirely.
-                        position: 'insideTop',
+                        // Above the plot, not inside it. 'insideTop' centres the
+                        // text ON the line at bar height, so any bar that reaches
+                        // the line runs straight through the label — the pricing
+                        // chart showed "4.36" because the longest bar covered
+                        // "rec $15". Nothing can occlude the strip above the plot,
+                        // and the conditional top margin (20px) exists precisely
+                        // to make room for it; at the default 4px this same
+                        // position was clipped to invisibility, which is the bug
+                        // the margin comment records.
+                        position: 'top',
                         fill: '#94a3b8',
                         fontSize: 10,
                       }
