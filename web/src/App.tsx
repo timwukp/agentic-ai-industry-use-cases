@@ -7,6 +7,7 @@ import {
   useLocation,
 } from 'react-router-dom'
 import { Loader2 } from 'lucide-react'
+import { LocaleProvider } from './i18n/LocaleContext'
 import { AuthProvider, useAuth } from './lib/AuthContext'
 import { DEFAULT_INDUSTRY_ID } from './industries/registry'
 import AppShell from './components/AppShell'
@@ -38,32 +39,35 @@ function LoginRoute() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<LoginRoute />} />
-          <Route
-            path="/:industryId/chat"
-            element={
-              <RequireAuth>
-                <AppShell view="chat" />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="/:industryId/dashboard"
-            element={
-              <RequireAuth>
-                <AppShell view="dashboard" />
-              </RequireAuth>
-            }
-          />
-          <Route
-            path="*"
-            element={<Navigate to={`/${DEFAULT_INDUSTRY_ID}/dashboard`} replace />}
-          />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+    // LocaleProvider outermost: LoginPage renders before auth and needs t() too.
+    <LocaleProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/login" element={<LoginRoute />} />
+            <Route
+              path="/:industryId/chat"
+              element={
+                <RequireAuth>
+                  <AppShell view="chat" />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="/:industryId/dashboard"
+              element={
+                <RequireAuth>
+                  <AppShell view="dashboard" />
+                </RequireAuth>
+              }
+            />
+            <Route
+              path="*"
+              element={<Navigate to={`/${DEFAULT_INDUSTRY_ID}/dashboard`} replace />}
+            />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </LocaleProvider>
   )
 }

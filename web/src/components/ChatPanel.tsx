@@ -1,9 +1,13 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
 import { Bot, Loader2, RefreshCw, Send, User } from 'lucide-react'
 import { invokeAgent, newSessionId } from '../lib/agentClient'
-import { AGENT_PROMPT_EVENT } from '../lib/promptBus'
+import Markdown from './Markdown'
+import { ChartCard } from './AnswerChartPanel'
+import { chartFor, type ChartSpec } from '../lib/chartSpec'
+import { AGENT_PROMPT_EVENT, publishAnswerCharts } from '../lib/promptBus'
 import { industries } from '../industries/registry'
 import { starterPrompts, type StarterPrompt } from '../industries/starterPrompts'
+import { useLocale } from '../i18n/LocaleContext'
 import { useAuth } from '../lib/AuthContext'
 
 interface ChatMessage {
@@ -11,6 +15,8 @@ interface ChatMessage {
   role: 'user' | 'assistant'
   content: string
   streaming?: boolean
+  /** Charts built from the tool payloads behind this answer. */
+  charts?: ChartSpec[]
 }
 
 function sessionKey(industryId: string): string {
@@ -28,6 +34,7 @@ function getOrCreateSession(industryId: string): string {
 
 export default function ChatPanel({ industryId }: { industryId: string }) {
   const { user, getToken } = useAuth()
+  const { t } = useLocale()
   const [sessionId, setSessionId] = useState(() => getOrCreateSession(industryId))
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [input, setInput] = useState('')
@@ -56,7 +63,14 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
     setError(null)
     abortRef.current?.abort()
     setStreaming(false)
+    // Finance charts must not linger over the healthcare dashboard.
+    publishAnswerCharts([])
   }, [industryId])
+
+  // Unmounting takes the overlay with it: below lg the chat pane unmounts when
+  // the user navigates to the dashboard view, and a panel left behind would
+  // outlive the conversation that produced it.
+  useEffect(() => () => publishAnswerCharts([]), [])
 
   // Follow the conversation, but only once there is one. On an empty pane this
   // fired on mount and scrolled the starter list to the bottom of its scroller,
@@ -77,6 +91,7 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
     setMessages([])
     setError(null)
     setStreaming(false)
+    publishAnswerCharts([])
   }, [industryId])
 
   const send = useCallback(
@@ -96,19 +111,43 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
         { id: assistantId, role: 'assistant', content: '', streaming: true },
       ])
       setStreaming(true)
+      // The previous answer's charts describe the previous question. Leaving them
+      // up while a new answer streams is the one way this panel could actively
+      // mislead, so they go before the new request starts.
+      publishAnswerCharts([])
 
       const controller = new AbortController()
       abortRef.current = controller
 
       try {
         const token = await getToken()
-        if (!token) throw new Error('Session expired — please sign in again.')
+        if (!token) throw new Error(t('chat.sessionExpired'))
+
+        // Charts for THIS answer only. Accumulated locally rather than in state
+        // so a second tool arriving does not re-render the whole message list
+        // mid-stream; the finished set is committed to the message below.
+        const specs: ChartSpec[] = []
 
         let received = false
         for await (const chunk of invokeAgent(prompt.trim(), sessionId, token, {
           actorId: user?.sub,
           harnessArn: industries.find((i) => i.id === industryId)?.harnessArn,
           signal: controller.signal,
+          onToolCall: (call) => {
+            const spec = chartFor(call.tool, call.payload)
+            // Most tools have nothing worth plotting; chartFor returns null and
+            // no panel appears. Duplicate titles are dropped so an agent that
+            // retries a call does not paginate the same chart twice.
+            if (!spec || specs.some((s) => s.title === spec.title)) return
+            specs.push(spec)
+            // Published as it arrives so the panel opens while prose streams.
+            publishAnswerCharts([...specs])
+            setMessages((prev) =>
+              prev.map((m) =>
+                m.id === assistantId ? { ...m, charts: [...specs] } : m,
+              ),
+            )
+          },
         })) {
           received = true
           setMessages((prev) =>
@@ -121,7 +160,7 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
           setMessages((prev) =>
             prev.map((m) =>
               m.id === assistantId
-                ? { ...m, content: '(no response from agent)' }
+                ? { ...m, content: t('chat.noResponse') }
                 : m,
             ),
           )
@@ -141,7 +180,7 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
         setStreaming(false)
       }
     },
-    [streaming, sessionId, user?.sub, getToken],
+    [streaming, sessionId, user?.sub, getToken, t],
   )
 
   const handleSubmit = (event: FormEvent) => {
@@ -156,18 +195,20 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
       {/* Header */}
       <div className="px-4 py-3 border-b border-slate-800 bg-slate-900/60 flex items-center justify-between gap-2">
         <div className="min-w-0">
-          <h2 className="text-sm font-semibold text-white truncate">AI Assistant</h2>
+          <h2 className="text-sm font-semibold text-white truncate">
+            {t('chat.assistant')}
+          </h2>
           <p className="text-[11px] text-slate-500 truncate">
-            AgentCore Harness · session {sessionId.slice(0, 8)}…
+            {t('chat.sessionLine', { id: sessionId.slice(0, 8) })}
           </p>
         </div>
         <button
           onClick={newSession}
-          title="Start a new session"
+          title={t('chat.newSessionTitle')}
           className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 transition-colors shrink-0"
         >
           <RefreshCw className="w-3.5 h-3.5" />
-          New session
+          {t('chat.newSession')}
         </button>
       </div>
 
@@ -175,7 +216,7 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {messages.length === 0 && (
           <StarterPane
-            description={industries.find((i) => i.id === industryId)?.description}
+            description={t(`industries.${industryId}.description`)}
             prompts={starterPrompts(industryId)}
             disabled={streaming}
             onPick={(prompt) => void send(prompt)}
@@ -208,7 +249,7 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
               }
             }}
             rows={2}
-            placeholder="Ask the agent…"
+            placeholder={t('chat.placeholder')}
             disabled={streaming}
             className="flex-1 resize-none px-3 py-2.5 bg-slate-800 border border-slate-700 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 disabled:opacity-60"
           />
@@ -216,7 +257,8 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
             type="submit"
             disabled={!input.trim() || streaming}
             className="p-2.5 bg-blue-600 rounded-xl text-white hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-            title="Send"
+            title={t('chat.send')}
+            aria-label={t('chat.send')}
           >
             {streaming ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -258,6 +300,7 @@ function StarterPane({
   disabled: boolean
   onPick: (prompt: string) => void
 }) {
+  const { t } = useLocale()
   return (
     <div
       data-testid="starter-pane"
@@ -266,14 +309,14 @@ function StarterPane({
       <div className="w-full max-w-[340px] flex items-start gap-2.5">
         <Bot className="w-5 h-5 text-slate-500 shrink-0 mt-0.5" />
         <p className="text-xs leading-snug text-slate-500 line-clamp-2">
-          {description ?? 'Ask the agent anything about this industry.'}
+          {description ?? t('chat.fallbackDescription')}
         </p>
       </div>
 
       {prompts.length > 0 && (
         <div className="w-full max-w-[340px] flex flex-col gap-2">
           <p className="text-[11px] uppercase tracking-wide text-slate-600 font-medium">
-            Try asking
+            {t('chat.tryAsking')}
           </p>
           {prompts.map((starter) => (
             <button
@@ -286,7 +329,7 @@ function StarterPane({
               className="group w-full text-left px-3 py-2.5 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-600 hover:bg-slate-800/70 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
             >
               <span className="block text-xs font-medium text-slate-200">
-                {starter.label}
+                {starter.labelKey ? t(starter.labelKey) : starter.label}
               </span>
               <span className="block mt-0.5 text-[11px] leading-snug text-slate-500 group-hover:text-slate-400">
                 {starter.prompt}
@@ -309,19 +352,51 @@ function MessageBubble({ message }: { message: ChatMessage }) {
           <Bot className="w-4 h-4 text-white" />
         </div>
       )}
+      {/* Assistant bubbles run wider than user bubbles: they carry tables, and at
+          80% of a 620px pane a five-column table is already scrolling. min-w-0 is
+          required for the table's overflow-x-auto to work at all — without it the
+          flex item sizes to its content and the table pushes the bubble past the
+          pane instead of scrolling inside it. */}
       <div
-        className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
+        className={`px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
           isUser
-            ? 'bg-blue-600 text-white rounded-br-md'
-            : 'bg-slate-800 text-slate-200 rounded-bl-md border border-slate-700'
+            ? 'max-w-[80%] bg-blue-600 text-white rounded-br-md'
+            : 'max-w-[92%] min-w-0 bg-slate-800 text-slate-200 rounded-bl-md border border-slate-700'
         }`}
       >
-        <div className="whitespace-pre-wrap break-words">
-          {message.content}
-          {message.streaming && (
-            <span className="inline-block w-1.5 h-4 ml-0.5 align-text-bottom bg-slate-400 animate-pulse rounded-sm" />
-          )}
-        </div>
+        {isUser ? (
+          <div className="whitespace-pre-wrap break-words">{message.content}</div>
+        ) : (
+          <>
+            {/* Parsing is skipped while streaming: half-arrived Markdown reparses
+                on every chunk and a table renders as a flickering pile of pipes
+                until its separator row lands. Plain text until the stream ends,
+                then one clean parse. */}
+            {message.streaming ? (
+              <div className="whitespace-pre-wrap break-words">{message.content}</div>
+            ) : (
+              <Markdown>{message.content}</Markdown>
+            )}
+            {message.streaming && (
+              <span className="inline-block w-1.5 h-4 ml-0.5 align-text-bottom bg-slate-400 animate-pulse rounded-sm" />
+            )}
+            {/* Inline charts, below lg only. At lg+ the same specs are drawn in
+                the overlay above the dashboard, so rendering both would show the
+                chart twice side by side. Below lg the dashboard is a separate
+                view the user is not currently looking at, so the chart has to
+                live with the message that produced it. */}
+            {message.charts && message.charts.length > 0 && (
+              <div
+                data-testid="inline-answer-charts"
+                className="lg:hidden mt-3 -mx-1 space-y-4 border-t border-slate-700 pt-3"
+              >
+                {message.charts.map((spec) => (
+                  <ChartCard key={spec.title} spec={spec} />
+                ))}
+              </div>
+            )}
+          </>
+        )}
       </div>
       {isUser && (
         <div className="w-7 h-7 bg-slate-700 rounded-lg flex items-center justify-center shrink-0 mt-0.5">

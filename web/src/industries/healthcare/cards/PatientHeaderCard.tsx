@@ -1,4 +1,5 @@
 import { Card } from '../../finance/widgets'
+import { useLocale } from '../../../i18n/LocaleContext'
 import { StatusPill, type PillTone } from '../widgets'
 import type { PatientSummary } from '../types'
 
@@ -10,6 +11,7 @@ function allergyTone(severity?: string): PillTone {
 }
 
 export default function PatientHeaderCard({ summary }: { summary?: PatientSummary }) {
+  const { t } = useLocale()
   const demo = summary?.demographics
   const allergies = summary?.allergies ?? []
   const conditions = (summary?.active_conditions ?? []).filter(
@@ -20,7 +22,7 @@ export default function PatientHeaderCard({ summary }: { summary?: PatientSummar
   if (!summary) {
     return (
       <Card>
-        <p className="p-5 text-sm text-slate-500">No patient summary available.</p>
+        <p className="p-5 text-sm text-slate-500">{t('healthcare.noPatientSummary')}</p>
       </Card>
     )
   }
@@ -28,12 +30,14 @@ export default function PatientHeaderCard({ summary }: { summary?: PatientSummar
   const identity = [
     demo?.age != null || demo?.sex ? [demo?.age, demo?.sex].filter((v) => v != null).join(' / ') : null,
     demo?.insurance,
-    demo?.primary_care_provider ? `PCP ${demo.primary_care_provider}` : null,
+    demo?.primary_care_provider
+      ? t('healthcare.pcp', { name: demo.primary_care_provider })
+      : null,
   ].filter(Boolean)
 
   const vitalBits = vitals
     ? [
-        vitals.date ? `Last vitals ${vitals.date}` : null,
+        vitals.date ? t('healthcare.lastVitals', { date: vitals.date }) : null,
         vitals.blood_pressure ? `BP ${vitals.blood_pressure}` : null,
         vitals.heart_rate ? `HR ${vitals.heart_rate}` : null,
         vitals.oxygen_saturation ? `SpO2 ${vitals.oxygen_saturation}` : null,
@@ -47,7 +51,7 @@ export default function PatientHeaderCard({ summary }: { summary?: PatientSummar
         {/* Identity line */}
         <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
           <span className="text-lg font-bold text-white">
-            {demo?.name ?? summary.patient_id ?? 'Unknown patient'}
+            {demo?.name ?? summary.patient_id ?? t('healthcare.unknownPatient')}
           </span>
           <span className="text-sm text-slate-400">{identity.join(' · ')}</span>
         </div>
@@ -59,7 +63,7 @@ export default function PatientHeaderCard({ summary }: { summary?: PatientSummar
               <span key={`allergy-${a.allergen ?? i}`} title={a.reaction}>
                 <StatusPill
                   tone={allergyTone(a.severity)}
-                  label={`⚠ ${a.allergen ?? 'Allergy'}`}
+                  label={`⚠ ${a.allergen ?? t('healthcare.allergyFallback')}`}
                 />
               </span>
             ))}

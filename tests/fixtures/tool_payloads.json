@@ -1,0 +1,4920 @@
+{
+  "analyze_fraud_risk": {
+    "analysis_details": {
+      "anomaly_score": 0.62,
+      "behavioral_score": 0.01,
+      "network_analysis_score": 0.14,
+      "pattern_match_score": 0.38
+    },
+    "claim_id": "CLM-2026-0001",
+    "fraud_risk_score": 0.964,
+    "indicators": [
+      {
+        "name": "Claim amount near policy limit",
+        "severity": "MEDIUM",
+        "weight": 0.08
+      },
+      {
+        "name": "Unusual geographic pattern",
+        "severity": "MEDIUM",
+        "weight": 0.07
+      },
+      {
+        "name": "Prior fraud history in database",
+        "severity": "CRITICAL",
+        "weight": 0.2
+      },
+      {
+        "name": "Inconsistent damage description vs photos",
+        "severity": "MEDIUM",
+        "weight": 0.1
+      },
+      {
+        "name": "Provider on watch list",
+        "severity": "HIGH",
+        "weight": 0.12
+      }
+    ],
+    "indicators_flagged": 5,
+    "recommendation": "REFER_TO_SIU",
+    "risk_level": "HIGH",
+    "similar_fraud_cases": 5,
+    "source": "simulated"
+  },
+  "analyze_vibration": {
+    "analysis_type": "FFT Vibration Spectrum Analysis",
+    "bearing_defect_frequencies": {
+      "BPFI_hz": 1123.45,
+      "BPFO_hz": 512.4,
+      "BSF_hz": 541.28,
+      "FTF_hz": 53.05
+    },
+    "defects_detected": [
+      {
+        "amplitude_mm_s": 2.3,
+        "diagnosis": "Imbalance",
+        "frequency_hz": 139.93,
+        "label": "1X (Shaft speed)"
+      }
+    ],
+    "diagnosis_summary": "DEFECTS DETECTED: Imbalance",
+    "equipment_id": "EQ-CNC-001",
+    "frequency_peaks": [
+      {
+        "amplitude_mm_s": 2.3,
+        "diagnosis": "Imbalance",
+        "frequency_hz": 139.93,
+        "label": "1X (Shaft speed)"
+      },
+      {
+        "amplitude_mm_s": 1.07,
+        "diagnosis": "Normal",
+        "frequency_hz": 279.86,
+        "label": "2X (Shaft speed)"
+      },
+      {
+        "amplitude_mm_s": 0.99,
+        "diagnosis": "Normal",
+        "frequency_hz": 512.4,
+        "label": "BPFO (Outer race)"
+      },
+      {
+        "amplitude_mm_s": 0.58,
+        "diagnosis": "Normal",
+        "frequency_hz": 1123.45,
+        "label": "BPFI (Inner race)"
+      },
+      {
+        "amplitude_mm_s": 0.54,
+        "diagnosis": "Normal",
+        "frequency_hz": 541.28,
+        "label": "BSF (Ball spin)"
+      }
+    ],
+    "iso_10816_classification": {
+      "description": "Acceptable - unrestricted long-term operation",
+      "machine_class": "Class III (Large machines, rigid foundation)",
+      "zone": "B"
+    },
+    "measurement_point": "Gearbox Output",
+    "overall_vibration": {
+      "acceleration_peak_g": 9.04,
+      "displacement_peak_um": 52.2,
+      "velocity_rms_mm_s": 3.74
+    },
+    "recommendation": "Schedule bearing replacement within 2 weeks",
+    "shaft_frequency_hz": 139.93,
+    "shaft_speed_rpm": 8396,
+    "source": "simulated"
+  },
+  "calculate_risk_score": {
+    "disclaimer": "This tool is for clinical decision support only and does not replace clinical judgment. Always consult a licensed physician.",
+    "input_parameters": {
+      "age": 53,
+      "diabetes": false,
+      "hdl_cholesterol": "74 mg/dL",
+      "on_bp_medication": true,
+      "sex": "Male",
+      "smoker": false,
+      "systolic_bp": "170 mmHg",
+      "total_cholesterol": "262 mg/dL"
+    },
+    "interpretation": "HIGH RISK",
+    "patient_id": "PT-1001",
+    "recommendations": [
+      "Initiate statin therapy (moderate-to-high intensity)",
+      "Aspirin 81mg daily if benefit outweighs bleeding risk",
+      "Blood pressure management to target <130/80 mmHg",
+      "Lifestyle modifications: Mediterranean diet, 150 min/week moderate exercise"
+    ],
+    "risk_category": "High (>=20%)",
+    "risk_factors_present": [
+      "Hypertension",
+      "Elevated total cholesterol"
+    ],
+    "risk_model": "ASCVD 10-Year Risk (Pooled Cohort Equations)",
+    "score": 33.4,
+    "source": "simulated",
+    "unit": "% 10-year risk"
+  },
+  "calculate_settlement": {
+    "breakdown": {
+      "additional_living_expenses": 12352.78,
+      "other": 6176.39,
+      "repair_costs": 74116.66,
+      "replacement_costs": 30881.94
+    },
+    "claim_id": "CLM-2026-0001",
+    "comparable_settlements": {
+      "average": 79103.41,
+      "median": 101297.85,
+      "range": [
+        55677.5,
+        129914.16
+      ]
+    },
+    "confidence": 0.97,
+    "recommendation": "APPROVE",
+    "settlement_calculation": {
+      "gross_damage_estimate": 123527.76,
+      "less_deductible": -2671.97,
+      "less_depreciation": -28059.96,
+      "net_settlement_amount": 92795.83,
+      "policy_limit": 250000.0
+    },
+    "source": "simulated"
+  },
+  "calculate_var": {
+    "all_levels": {
+      "var_90": {
+        "confidence": 0.9,
+        "var_amount": 3634.13,
+        "var_pct": 1.45
+      },
+      "var_95": {
+        "confidence": 0.95,
+        "var_amount": 4663.14,
+        "var_pct": 1.87
+      },
+      "var_99": {
+        "confidence": 0.99,
+        "var_amount": 6593.59,
+        "var_pct": 2.64
+      }
+    },
+    "annual_volatility_pct": 18.0,
+    "method": "parametric_variance_covariance",
+    "portfolio_value": 250000.0,
+    "requested_confidence": 0.95,
+    "time_horizon_days": 1,
+    "var": {
+      "amount": 4663.14,
+      "interpretation": "With 95% confidence, the portfolio will not lose more than $4,663.14 over the next 1 trading day(s).",
+      "percentage": 1.87
+    }
+  },
+  "check_coverage": {
+    "claim_type": "home",
+    "claimed_amount": 25000.0,
+    "coverage_determination": "COVERED",
+    "coverage_limit": 171003.76,
+    "deductible": 1492.01,
+    "exclusion_applies": false,
+    "exclusions_checked": [
+      "Pre-existing conditions",
+      "Intentional acts",
+      "War/terrorism",
+      "Normal wear and tear",
+      "Nuclear hazard"
+    ],
+    "notes": "Claim falls within policy coverage and limits",
+    "payable_amount": 23507.99,
+    "policy_number": "POL-2024-118273",
+    "remaining_limit": 147495.77,
+    "source": "simulated"
+  },
+  "check_drug_interactions": {
+    "database_note": "Curated reference database of common interactions; not exhaustive.",
+    "disclaimer": "This tool is for clinical decision support only and does not replace clinical judgment. Always consult a licensed physician.",
+    "interactions": [
+      {
+        "clinical_effect": "Slight increase in hypoglycemia risk",
+        "description": "ACE inhibitors may enhance the hypoglycemic effect of metformin.",
+        "evidence_level": "Theoretical",
+        "medication_pair": [
+          "metformin",
+          "lisinopril"
+        ],
+        "recommendation": "Monitor blood glucose. Generally safe combination commonly used in diabetic patients with hypertension.",
+        "severity": "minor"
+      }
+    ],
+    "interactions_found": 1,
+    "medications_checked": [
+      "metformin",
+      "lisinopril",
+      "atorvastatin"
+    ],
+    "overall_risk": "LOW - No significant interactions detected in the reference database.",
+    "pairs_analyzed": 3,
+    "severity_summary": {
+      "major": 0,
+      "minor": 1,
+      "moderate": 0
+    }
+  },
+  "check_drug_interactions__interacting": {
+    "database_note": "Curated reference database of common interactions; not exhaustive.",
+    "disclaimer": "This tool is for clinical decision support only and does not replace clinical judgment. Always consult a licensed physician.",
+    "interactions": [
+      {
+        "clinical_effect": "Elevated INR, increased hemorrhage risk",
+        "description": "Increased risk of bleeding. Aspirin inhibits platelet aggregation and may displace warfarin from protein binding sites.",
+        "evidence_level": "Well-established",
+        "medication_pair": [
+          "warfarin",
+          "aspirin"
+        ],
+        "recommendation": "Avoid combination if possible. If concurrent use required, monitor INR closely and watch for signs of bleeding.",
+        "severity": "major"
+      }
+    ],
+    "interactions_found": 1,
+    "medications_checked": [
+      "warfarin",
+      "aspirin",
+      "atorvastatin"
+    ],
+    "overall_risk": "HIGH - Major interactions detected. Physician review required.",
+    "pairs_analyzed": 3,
+    "severity_summary": {
+      "major": 1,
+      "minor": 0,
+      "moderate": 0
+    }
+  },
+  "check_inventory": {
+    "abc_class": "A",
+    "by_location": {
+      "DC-Central": 539,
+      "DC-East": 178,
+      "DC-West": 501,
+      "Store-124": 179,
+      "Store-136": 537,
+      "Store-197": 441
+    },
+    "category": "Electronics",
+    "inventory": {
+      "available_to_sell": 1926,
+      "in_transit": 410,
+      "on_order": 1529,
+      "reserved": 449,
+      "total_on_hand": 2375
+    },
+    "metrics": {
+      "avg_daily_sales": 107,
+      "days_of_supply": 22.2,
+      "needs_reorder": false,
+      "reorder_point": 1498,
+      "safety_stock": 749
+    },
+    "product_name": "Wireless Earbuds",
+    "sku": "SKU-ELEC-1001",
+    "source": "simulated",
+    "unit_economics": {
+      "daily_revenue": 34473.26,
+      "gross_margin_pct": 40.7,
+      "unit_cost": 190.98,
+      "unit_price": 322.18
+    }
+  },
+  "estimate_property_value": {
+    "address": "1200 Oak Dr, 78701",
+    "comparables": [
+      {
+        "address": "4067 Willow Ct",
+        "baths": 2,
+        "beds": 2,
+        "distance_miles": 2.12,
+        "price_per_sqft": 316.81,
+        "sale_date": "2026-06-27",
+        "sale_price": 660000,
+        "sqft": 2082
+      },
+      {
+        "address": "1094 Elm St",
+        "baths": 2,
+        "beds": 4,
+        "distance_miles": 1.19,
+        "price_per_sqft": 363.79,
+        "sale_date": "2026-04-20",
+        "sale_price": 780000,
+        "sqft": 2144
+      },
+      {
+        "address": "3568 Hickory St",
+        "baths": 3,
+        "beds": 2,
+        "distance_miles": 0.55,
+        "price_per_sqft": 333.6,
+        "sale_date": "2026-04-14",
+        "sale_price": 702000,
+        "sqft": 2103
+      },
+      {
+        "address": "9517 Walnut Way",
+        "baths": 3,
+        "beds": 4,
+        "distance_miles": 2.24,
+        "price_per_sqft": 340.32,
+        "sale_date": "2026-06-16",
+        "sale_price": 660000,
+        "sqft": 1940
+      }
+    ],
+    "disclaimer": "This is an automated valuation estimate. A formal appraisal by a licensed appraiser is required for mortgage lending and legal purposes.",
+    "methodology": {
+      "adjustments_applied": [
+        {
+          "adjustment_pct": -8.4,
+          "factor": "Age/Condition"
+        },
+        {
+          "adjustment_pct": 0.0,
+          "factor": "Bed/Bath Count"
+        },
+        {
+          "adjustment_pct": 0.0,
+          "factor": "Lot Size"
+        }
+      ],
+      "comparables_used": 4,
+      "primary": "Comparable Sales Approach"
+    },
+    "property_type": "single_family",
+    "source": "simulated",
+    "subject_property": {
+      "bathrooms": 2,
+      "bedrooms": 3,
+      "lot_sqft": 7200,
+      "sqft": 1850,
+      "year_built": 1998
+    },
+    "valuation": {
+      "confidence_high": 657000,
+      "confidence_low": 549000,
+      "confidence_score": 79.7,
+      "estimated_value": 603000,
+      "price_per_sqft": 325.69
+    }
+  },
+  "forecast_demand": {
+    "accuracy_metrics": {
+      "forecast_bias": -2.6,
+      "mape": 5.2,
+      "rmse": 5.9
+    },
+    "avg_daily_demand": 102.3,
+    "factors": {
+      "promotional_impact": "None currently active",
+      "seasonality": "Moderate - weekend spike pattern",
+      "trend": "Slightly upward (+0.1%/day)"
+    },
+    "forecast_period_days": 30,
+    "forecasts": [
+      {
+        "confidence": 0.85,
+        "date": "2026-08-06",
+        "lower_bound": 69,
+        "predicted_units": 99,
+        "upper_bound": 139
+      },
+      {
+        "confidence": 0.85,
+        "date": "2026-08-07",
+        "lower_bound": 90,
+        "predicted_units": 128,
+        "upper_bound": 180
+      },
+      {
+        "confidence": 0.85,
+        "date": "2026-08-08",
+        "lower_bound": 78,
+        "predicted_units": 112,
+        "upper_bound": 157
+      },
+      {
+        "confidence": 0.85,
+        "date": "2026-08-09",
+        "lower_bound": 73,
+        "predicted_units": 105,
+        "upper_bound": 147
+      },
+      {
+        "confidence": 0.85,
+        "date": "2026-08-10",
+        "lower_bound": 50,
+        "predicted_units": 71,
+        "upper_bound": 99
+      },
+      {
+        "confidence": 0.85,
+        "date": "2026-08-11",
+        "lower_bound": 75,
+        "predicted_units": 108,
+        "upper_bound": 151
+      },
+      {
+        "confidence": 0.85,
+        "date": "2026-08-12",
+        "lower_bound": 63,
+        "predicted_units": 90,
+        "upper_bound": 125
+      },
+      {
+        "confidence": 0.85,
+        "date": "2026-08-13",
+        "lower_bound": 69,
+        "predicted_units": 98,
+        "upper_bound": 137
+      },
+      {
+        "confidence": 0.85,
+        "date": "2026-08-14",
+        "lower_bound": 83,
+        "predicted_units": 119,
+        "upper_bound": 167
+      },
+      {
+        "confidence": 0.85,
+        "date": "2026-08-15",
+        "lower_bound": 98,
+        "predicted_units": 140,
+        "upper_bound": 195
+      },
+      {
+        "confidence": 0.85,
+        "date": "2026-08-16",
+        "lower_bound": 71,
+        "predicted_units": 101,
+        "upper_bound": 141
+      },
+      {
+        "confidence": 0.85,
+        "date": "2026-08-17",
+        "lower_bound": 51,
+        "predicted_units": 73,
+        "upper_bound": 102
+      },
+      {
+        "confidence": 0.85,
+        "date": "2026-08-18",
+        "lower_bound": 65,
+        "predicted_units": 94,
+        "upper_bound": 131
+      },
+      {
+        "confidence": 0.85,
+        "date": "2026-08-19",
+        "lower_bound": 62,
+        "predicted_units": 89,
+        "upper_bound": 124
+      }
+    ],
+    "model": "Gradient boosting + seasonal decomposition (demo simulation)",
+    "peak_day": "2026-08-15",
+    "product_name": "Wireless Earbuds",
+    "sku": "SKU-ELEC-1001",
+    "source": "simulated",
+    "total_predicted_demand": 3068
+  },
+  "generate_cma_report": {
+    "active_listings": [
+      {
+        "address": "5712 Walnut Way",
+        "baths": 2,
+        "beds": 3,
+        "days_on_market": 41,
+        "list_price": 867000,
+        "sqft": 2225
+      },
+      {
+        "address": "1273 Pine Rd",
+        "baths": 3,
+        "beds": 5,
+        "days_on_market": 9,
+        "list_price": 1154000,
+        "sqft": 2942
+      },
+      {
+        "address": "2465 Cedar Ln",
+        "baths": 2,
+        "beds": 4,
+        "days_on_market": 37,
+        "list_price": 1013000,
+        "sqft": 2614
+      }
+    ],
+    "comparable_sales": [
+      {
+        "address": "7850 Magnolia Dr",
+        "adjusted_price": 977000,
+        "adjustments": {
+          "age": 6777,
+          "bathrooms": 0,
+          "bedrooms": 14349,
+          "condition": 8088,
+          "features": -3278,
+          "lot_size": -10044,
+          "sqft": 35912
+        },
+        "baths": 2,
+        "beds": 3,
+        "comp_number": 1,
+        "condition": "Good",
+        "days_on_market": 39,
+        "lot_sqft": 6935,
+        "net_adjustment": 51804,
+        "price_per_sqft": 394.29,
+        "sale_date": "2026-05-23",
+        "sale_price": 925000,
+        "sqft": 2346,
+        "status": "Sold",
+        "year_built": 1996
+      },
+      {
+        "address": "1610 Oak Dr",
+        "adjusted_price": 823000,
+        "adjustments": {
+          "age": 8048,
+          "bathrooms": 0,
+          "bedrooms": 14415,
+          "condition": 14896,
+          "features": 14022,
+          "lot_size": 280,
+          "sqft": 79645
+        },
+        "baths": 2,
+        "beds": 3,
+        "comp_number": 2,
+        "condition": "Average",
+        "days_on_market": 36,
+        "lot_sqft": 4619,
+        "net_adjustment": 131306,
+        "price_per_sqft": 329.36,
+        "sale_date": "2026-07-04",
+        "sale_price": 692000,
+        "sqft": 2100,
+        "status": "Sold",
+        "year_built": 1989
+      },
+      {
+        "address": "9481 Pine Rd",
+        "adjusted_price": 916000,
+        "adjustments": {
+          "age": 594,
+          "bathrooms": 0,
+          "bedrooms": 27732,
+          "condition": 6481,
+          "features": -13601,
+          "lot_size": 3288,
+          "sqft": 50845
+        },
+        "baths": 2,
+        "beds": 2,
+        "comp_number": 3,
+        "condition": "Good",
+        "days_on_market": 78,
+        "lot_sqft": 4100,
+        "net_adjustment": 75339,
+        "price_per_sqft": 371.6,
+        "sale_date": "2026-03-23",
+        "sale_price": 841000,
+        "sqft": 2262,
+        "status": "Sold",
+        "year_built": 2003
+      },
+      {
+        "address": "495 Elm St",
+        "adjusted_price": 946000,
+        "adjustments": {
+          "age": 13248,
+          "bathrooms": -9010,
+          "bedrooms": -5352,
+          "condition": 12812,
+          "features": -7825,
+          "lot_size": -8124,
+          "sqft": -39645
+        },
+        "baths": 3,
+        "beds": 5,
+        "comp_number": 4,
+        "condition": "Average",
+        "days_on_market": 64,
+        "lot_sqft": 8788,
+        "net_adjustment": -43896,
+        "price_per_sqft": 357.37,
+        "sale_date": "2026-07-26",
+        "sale_price": 990000,
+        "sqft": 2771,
+        "status": "Sold",
+        "year_built": 1982
+      },
+      {
+        "address": "5634 Hickory St",
+        "adjusted_price": 912000,
+        "adjustments": {
+          "age": -6748,
+          "bathrooms": 0,
+          "bedrooms": 0,
+          "condition": 7012,
+          "features": 4606,
+          "lot_size": 308,
+          "sqft": 43734
+        },
+        "baths": 2,
+        "beds": 4,
+        "comp_number": 5,
+        "condition": "Good",
+        "days_on_market": 36,
+        "lot_sqft": 4528,
+        "net_adjustment": 48912,
+        "price_per_sqft": 374.97,
+        "sale_date": "2026-05-16",
+        "sale_price": 863000,
+        "sqft": 2302,
+        "status": "Sold",
+        "year_built": 2019
+      }
+    ],
+    "disclaimer": "This CMA is for informational purposes only. It is not a formal appraisal. A licensed appraiser should be consulted for lending or legal valuations.",
+    "market_position": {
+      "aspirational_price": 979000,
+      "competitive_price": 897000,
+      "suggested_list_price": 939000
+    },
+    "prepared_date": "2026-08-05",
+    "report_type": "Comparative Market Analysis",
+    "source": "simulated",
+    "subject_property": {
+      "address": "1200 Oak Dr, 78701",
+      "baths": 2,
+      "beds": 4,
+      "condition": "Excellent",
+      "features": [
+        "Hardwood Floors",
+        "Garage",
+        "Deck/Patio",
+        "Fireplace",
+        "New Roof",
+        "Central AC"
+      ],
+      "lot_sqft": 4796,
+      "property_type": "condo",
+      "sqft": 2548,
+      "year_built": 2005
+    },
+    "value_conclusion": {
+      "adjusted_price_spread_pct": 16.8,
+      "confidence_level": "Moderate",
+      "indicated_value_range": {
+        "high": 977000,
+        "low": 823000
+      },
+      "price_per_sqft": 359.11,
+      "reconciled_value": 915000
+    }
+  },
+  "get_abc_analysis": {
+    "analysis_date": "2026-08-05",
+    "classification": {
+      "A": {
+        "avg_turnover": 8.0,
+        "current_fill_rate": 99.5,
+        "description": "High value - top 20% of SKUs, 80% of revenue",
+        "inventory_value": 7983681.36,
+        "revenue_pct": 79.2,
+        "sku_count": 1010,
+        "sku_pct": 18.5,
+        "target_fill_rate": 98.0
+      },
+      "B": {
+        "avg_turnover": 2.8,
+        "current_fill_rate": 97.1,
+        "description": "Medium value - next 30% of SKUs, 15% of revenue",
+        "inventory_value": 4354735.29,
+        "revenue_pct": 15.3,
+        "sku_count": 1704,
+        "sku_pct": 31.2,
+        "target_fill_rate": 95.0
+      },
+      "C": {
+        "avg_turnover": 2.0,
+        "current_fill_rate": 93.1,
+        "description": "Low value - bottom 50% of SKUs, 5% of revenue",
+        "inventory_value": 2177367.64,
+        "revenue_pct": 5.5,
+        "sku_count": 2746,
+        "sku_pct": 50.3,
+        "target_fill_rate": 90.0
+      }
+    },
+    "recommendations": [
+      "Increase safety stock for A-class items below 98% fill rate",
+      "Review C-class items with turnover < 2x for potential discontinuation",
+      "Consolidate B-class items from 3 warehouses to 2 for cost savings",
+      "Implement cycle counting for A-class items (weekly vs monthly)"
+    ],
+    "source": "simulated",
+    "total_skus": 5460
+  },
+  "get_care_gap_analysis": {
+    "care_gaps": [
+      {
+        "applies_to": "Patients with diabetes annually",
+        "description": "Annual nephropathy screening for diabetic patients",
+        "due_date": "2026-06-24",
+        "last_completed": "2025-01-13",
+        "measure": "Kidney Function Screening (eGFR/UACR)",
+        "priority": "HIGH",
+        "quality_measure": "HEDIS KED - Kidney Evaluation for Diabetes",
+        "status": "OVERDUE"
+      },
+      {
+        "applies_to": "Patients with diabetes",
+        "description": "Diabetes monitoring - glycemic control assessment",
+        "due_date": "2026-06-10",
+        "last_completed": "2025-09-13",
+        "measure": "Hemoglobin A1C Test",
+        "priority": "HIGH",
+        "quality_measure": "HEDIS CDC - HbA1c Testing",
+        "status": "OVERDUE"
+      },
+      {
+        "applies_to": "All patients annually",
+        "description": "Comprehensive preventive health assessment",
+        "due_date": "2026-02-10",
+        "last_completed": "2025-05-15",
+        "measure": "Annual Wellness Visit",
+        "priority": "HIGH",
+        "quality_measure": "AWV (Annual Wellness Visit)",
+        "status": "OVERDUE"
+      },
+      {
+        "applies_to": "Patients with diabetes annually",
+        "description": "Annual dilated eye examination for diabetic patients",
+        "due_date": "2026-05-12",
+        "last_completed": "2024-08-29",
+        "measure": "Eye Exam (Diabetic Retinopathy)",
+        "priority": "HIGH",
+        "quality_measure": "HEDIS EED - Eye Exam for Diabetes",
+        "status": "OVERDUE"
+      },
+      {
+        "applies_to": "All patients annually (Oct-Mar)",
+        "description": "Annual flu vaccine",
+        "due_date": "Next flu season (Oct)",
+        "last_completed": "2025-05-08",
+        "measure": "Influenza Vaccination",
+        "priority": "MEDIUM",
+        "quality_measure": "Flu Vaccination Rate",
+        "status": "DUE SOON"
+      },
+      {
+        "applies_to": "Patients on statins or with CVD risk factors",
+        "description": "Fasting lipid profile for cardiovascular risk assessment",
+        "due_date": "2026-05-22",
+        "last_completed": "2025-05-10",
+        "measure": "Lipid Panel",
+        "priority": "MEDIUM",
+        "quality_measure": "Statin Therapy Monitoring",
+        "status": "OVERDUE"
+      }
+    ],
+    "high_priority_gaps": 4,
+    "hipaa_notice": "Care gap analysis access audit-logged.",
+    "patient_id": "PT-1001",
+    "patient_profile": {
+      "age": 58,
+      "sex": "Male"
+    },
+    "quality_impact": {
+      "hedis_measures_affected": 3,
+      "message": "Closing these gaps would improve 4 high-priority quality measures."
+    },
+    "recommended_actions": [
+      "Schedule annual wellness visit to address 6 overdue items",
+      "Order overdue lab work (A1C, lipid panel, eGFR/UACR) as standing orders",
+      "Send patient outreach for overdue cancer screenings",
+      "Update immunization record and administer due vaccines at next visit"
+    ],
+    "source": "simulated",
+    "total_care_gaps": 6
+  },
+  "get_comparables": {
+    "comparables": [
+      {
+        "address": "4653 Spruce Blvd",
+        "adjusted_price": 843000,
+        "adjustments": {
+          "bathrooms": 0,
+          "bedrooms": 0,
+          "sqft": -6090,
+          "time": 12958,
+          "total": 6868
+        },
+        "baths": 4,
+        "beds": 6,
+        "days_on_market": 14,
+        "distance_miles": 0.55,
+        "lot_sqft": 5849,
+        "price_per_sqft": 229.46,
+        "property_type": "condo",
+        "sale_date": "2026-03-03",
+        "sale_price": 836000,
+        "similarity_score": 92.2,
+        "sqft": 3644,
+        "year_built": 2013
+      },
+      {
+        "address": "4196 Cherry Ln",
+        "adjusted_price": 904000,
+        "adjustments": {
+          "bathrooms": 0,
+          "bedrooms": 0,
+          "sqft": -21314,
+          "time": 27209,
+          "total": 5895
+        },
+        "baths": 4,
+        "beds": 6,
+        "days_on_market": 8,
+        "distance_miles": 0.55,
+        "lot_sqft": 11741,
+        "price_per_sqft": 238.66,
+        "property_type": "single_family",
+        "sale_date": "2025-10-06",
+        "sale_price": 898000,
+        "similarity_score": 86.9,
+        "sqft": 3764,
+        "year_built": 2000
+      },
+      {
+        "address": "7162 Oak Dr",
+        "adjusted_price": 916000,
+        "adjustments": {
+          "bathrooms": 9298,
+          "bedrooms": 0,
+          "sqft": 22202,
+          "time": 16058,
+          "total": 47558
+        },
+        "baths": 3,
+        "beds": 6,
+        "days_on_market": 15,
+        "distance_miles": 0.47,
+        "lot_sqft": 17625,
+        "price_per_sqft": 253.86,
+        "property_type": "townhouse",
+        "sale_date": "2026-02-01",
+        "sale_price": 868000,
+        "similarity_score": 86.6,
+        "sqft": 3421,
+        "year_built": 2006
+      },
+      {
+        "address": "2631 Cedar Ln",
+        "adjusted_price": 872000,
+        "adjustments": {
+          "bathrooms": 18392,
+          "bedrooms": 14382,
+          "sqft": 3552,
+          "time": 16216,
+          "total": 52542
+        },
+        "baths": 3,
+        "beds": 5,
+        "days_on_market": 26,
+        "distance_miles": 0.35,
+        "lot_sqft": 11330,
+        "price_per_sqft": 229.52,
+        "property_type": "single_family",
+        "sale_date": "2026-01-19",
+        "sale_price": 819000,
+        "similarity_score": 86.1,
+        "sqft": 3568,
+        "year_built": 2022
+      },
+      {
+        "address": "5444 Oak Dr",
+        "adjusted_price": 1022000,
+        "adjustments": {
+          "bathrooms": 0,
+          "bedrooms": 0,
+          "sqft": -74980,
+          "time": 26643,
+          "total": -48337
+        },
+        "baths": 4,
+        "beds": 6,
+        "days_on_market": 99,
+        "distance_miles": 0.73,
+        "lot_sqft": 18292,
+        "price_per_sqft": 255.59,
+        "property_type": "single_family",
+        "sale_date": "2025-11-29",
+        "sale_price": 1070000,
+        "similarity_score": 80.5,
+        "sqft": 4187,
+        "year_built": 2021
+      },
+      {
+        "address": "1817 Willow Ct",
+        "adjusted_price": 799000,
+        "adjustments": {
+          "bathrooms": 15748,
+          "bedrooms": 18234,
+          "sqft": 55950,
+          "time": 19774,
+          "total": 109706
+        },
+        "baths": 3,
+        "beds": 4,
+        "days_on_market": 82,
+        "distance_miles": 0.62,
+        "lot_sqft": 9754,
+        "price_per_sqft": 218.44,
+        "property_type": "condo",
+        "sale_date": "2025-10-22",
+        "sale_price": 689000,
+        "similarity_score": 73.5,
+        "sqft": 3155,
+        "year_built": 2003
+      }
+    ],
+    "search_radius_miles": 1.0,
+    "source": "simulated",
+    "subject_address": "123 Main St, Austin TX",
+    "subject_property": {
+      "baths": 4,
+      "beds": 6,
+      "indicated_value": 912000,
+      "price_per_sqft": 253.74,
+      "sqft": 3596,
+      "year_built": 1994
+    },
+    "summary": {
+      "avg_days_on_market": 41,
+      "median_adjusted_price": 904000,
+      "median_price_per_sqft": 238.66,
+      "median_sale_price": 868000
+    },
+    "total_found": 6
+  },
+  "get_demand_trends": {
+    "category": "all",
+    "declining_skus": [
+      {
+        "decline_pct": -29.4,
+        "sku": "SKU-345"
+      },
+      {
+        "decline_pct": -17.1,
+        "sku": "SKU-411"
+      },
+      {
+        "decline_pct": -17.8,
+        "sku": "SKU-899"
+      }
+    ],
+    "period": "month",
+    "seasonality_index": 1.24,
+    "source": "simulated",
+    "top_growing_skus": [
+      {
+        "growth_pct": 17.8,
+        "sku": "SKU-348"
+      },
+      {
+        "growth_pct": 48.4,
+        "sku": "SKU-309"
+      },
+      {
+        "growth_pct": 22.5,
+        "sku": "SKU-278"
+      },
+      {
+        "growth_pct": 47.6,
+        "sku": "SKU-374"
+      },
+      {
+        "growth_pct": 29.0,
+        "sku": "SKU-697"
+      }
+    ],
+    "trends": {
+      "aov_change_pct": -1.2,
+      "revenue_growth_pct": -4.1,
+      "units_growth_pct": -2.9
+    },
+    "weekly_data": [
+      {
+        "avg_order_value": 118.33,
+        "revenue": 316177.76,
+        "units_sold": 2672,
+        "week": "2026-W28"
+      },
+      {
+        "avg_order_value": 118.76,
+        "revenue": 305925.76,
+        "units_sold": 2576,
+        "week": "2026-W29"
+      },
+      {
+        "avg_order_value": 118.21,
+        "revenue": 307109.58,
+        "units_sold": 2598,
+        "week": "2026-W30"
+      },
+      {
+        "avg_order_value": 116.88,
+        "revenue": 303186.72,
+        "units_sold": 2594,
+        "week": "2026-W31"
+      }
+    ]
+  },
+  "get_equipment_alerts": {
+    "alerts": [
+      {
+        "acknowledged": true,
+        "action": "Check for leaks, verify oil level, inspect pump seals",
+        "alert_id": "ALT-75670",
+        "equipment_id": "EQ-COMP-001",
+        "equipment_name": "Main Air Compressor",
+        "message": "Oil pressure 1.7 bar below the 2.0 bar minimum",
+        "severity": "CRITICAL",
+        "triggered_at": "2026-08-04T06:39:00+00:00",
+        "type": "LOW_OIL_PRESSURE"
+      },
+      {
+        "acknowledged": false,
+        "action": "Check for leaks, verify oil level, inspect pump seals",
+        "alert_id": "ALT-98917",
+        "equipment_id": "EQ-COMP-002",
+        "equipment_name": "Backup Air Compressor",
+        "message": "Oil pressure 1.7 bar below the 2.0 bar minimum",
+        "severity": "CRITICAL",
+        "triggered_at": "2026-08-04T14:26:00+00:00",
+        "type": "LOW_OIL_PRESSURE"
+      },
+      {
+        "acknowledged": false,
+        "action": "Check for leaks, verify oil level, inspect pump seals",
+        "alert_id": "ALT-76066",
+        "equipment_id": "EQ-CONV-002",
+        "equipment_name": "Assembly Line Conveyor B",
+        "message": "Oil pressure 1.7 bar below the 2.0 bar minimum",
+        "severity": "CRITICAL",
+        "triggered_at": "2026-08-04T08:36:00+00:00",
+        "type": "LOW_OIL_PRESSURE"
+      },
+      {
+        "acknowledged": true,
+        "action": "Check for leaks, verify oil level, inspect pump seals",
+        "alert_id": "ALT-56398",
+        "equipment_id": "EQ-CONV-003",
+        "equipment_name": "Packaging Conveyor",
+        "message": "Oil pressure 1.9 bar below the 2.0 bar minimum",
+        "severity": "CRITICAL",
+        "triggered_at": "2026-08-04T06:16:00+00:00",
+        "type": "LOW_OIL_PRESSURE"
+      },
+      {
+        "acknowledged": true,
+        "action": "Check for leaks, verify oil level, inspect pump seals",
+        "alert_id": "ALT-41708",
+        "equipment_id": "EQ-PUMP-002",
+        "equipment_name": "Coolant Circulation Pump",
+        "message": "Oil pressure 2.3 bar close to the 2.0 bar minimum",
+        "severity": "WARNING",
+        "triggered_at": "2026-08-04T19:48:00+00:00",
+        "type": "LOW_OIL_PRESSURE"
+      },
+      {
+        "acknowledged": true,
+        "action": "Schedule inspection during the next planned stop",
+        "alert_id": "ALT-90242",
+        "equipment_id": "EQ-COMP-001",
+        "equipment_name": "Main Air Compressor",
+        "message": "Health score 62.8 (FAIR) \u2014 degraded in high-criticality service",
+        "severity": "WARNING",
+        "triggered_at": "2026-08-04T06:35:00+00:00",
+        "type": "DEGRADED_CONDITION"
+      },
+      {
+        "acknowledged": false,
+        "action": "Check for leaks, verify oil level, inspect pump seals",
+        "alert_id": "ALT-11081",
+        "equipment_id": "EQ-CONV-001",
+        "equipment_name": "Assembly Line Conveyor A",
+        "message": "Oil pressure 2.0 bar close to the 2.0 bar minimum",
+        "severity": "WARNING",
+        "triggered_at": "2026-08-04T20:36:00+00:00",
+        "type": "LOW_OIL_PRESSURE"
+      },
+      {
+        "acknowledged": false,
+        "action": "Schedule inspection during the next planned stop",
+        "alert_id": "ALT-50005",
+        "equipment_id": "EQ-CONV-002",
+        "equipment_name": "Assembly Line Conveyor B",
+        "message": "Health score 60.3 (FAIR) \u2014 degraded in medium-criticality service",
+        "severity": "WARNING",
+        "triggered_at": "2026-08-04T00:02:00+00:00",
+        "type": "DEGRADED_CONDITION"
+      },
+      {
+        "acknowledged": false,
+        "action": "Immediate shutdown and bearing inspection required",
+        "alert_id": "ALT-91621",
+        "equipment_id": "EQ-CONV-003",
+        "equipment_name": "Packaging Conveyor",
+        "message": "Vibration 10.65 mm/s exceeds ISO 10816 Zone C threshold",
+        "severity": "WARNING",
+        "triggered_at": "2026-08-04T19:09:00+00:00",
+        "type": "HIGH_VIBRATION"
+      },
+      {
+        "acknowledged": true,
+        "action": "Check cooling system, verify airflow, clean heat exchanger",
+        "alert_id": "ALT-18407",
+        "equipment_id": "EQ-CONV-003",
+        "equipment_name": "Packaging Conveyor",
+        "message": "Temperature 62.7C against a 70C limit",
+        "severity": "WARNING",
+        "triggered_at": "2026-08-04T00:32:00+00:00",
+        "type": "HIGH_TEMPERATURE"
+      },
+      {
+        "acknowledged": false,
+        "action": "Schedule inspection during the next planned stop",
+        "alert_id": "ALT-92991",
+        "equipment_id": "EQ-CONV-003",
+        "equipment_name": "Packaging Conveyor",
+        "message": "Health score 48.6 (POOR) \u2014 degraded in medium-criticality service",
+        "severity": "WARNING",
+        "triggered_at": "2026-08-04T06:57:00+00:00",
+        "type": "DEGRADED_CONDITION"
+      },
+      {
+        "acknowledged": false,
+        "action": "Immediate shutdown and bearing inspection required",
+        "alert_id": "ALT-17794",
+        "equipment_id": "EQ-TURB-001",
+        "equipment_name": "Steam Turbine Generator",
+        "message": "Vibration 7.83 mm/s exceeds ISO 10816 Zone C threshold",
+        "severity": "WARNING",
+        "triggered_at": "2026-08-04T12:55:00+00:00",
+        "type": "HIGH_VIBRATION"
+      },
+      {
+        "acknowledged": true,
+        "action": "Schedule inspection during the next planned stop",
+        "alert_id": "ALT-59749",
+        "equipment_id": "EQ-COMP-002",
+        "equipment_name": "Backup Air Compressor",
+        "message": "Health score 66.7 (FAIR) \u2014 running in low-criticality service",
+        "severity": "INFO",
+        "triggered_at": "2026-08-04T09:54:00+00:00",
+        "type": "DEGRADED_CONDITION"
+      },
+      {
+        "acknowledged": false,
+        "action": "Schedule inspection during the next planned stop",
+        "alert_id": "ALT-94375",
+        "equipment_id": "EQ-TURB-001",
+        "equipment_name": "Steam Turbine Generator",
+        "message": "Health score 67.5 (FAIR) \u2014 running in high-criticality service",
+        "severity": "INFO",
+        "triggered_at": "2026-08-04T19:34:00+00:00",
+        "type": "DEGRADED_CONDITION"
+      }
+    ],
+    "recommendation": "Address critical alerts immediately. Schedule warning-level items within 48 hours.",
+    "severity_counts": {
+      "critical": 4,
+      "info": 2,
+      "warning": 8
+    },
+    "source": "simulated",
+    "total_alerts": 14,
+    "unacknowledged": 8
+  },
+  "get_equipment_list": {
+    "avg_health_score": 75.5,
+    "critical_equipment_below_threshold": [],
+    "equipment": [
+      {
+        "criticality": "HIGH",
+        "department": "Machining",
+        "equipment_id": "EQ-CNC-001",
+        "health_score": 78.6,
+        "last_maintenance": "2026-03-16",
+        "name": "CNC Milling Machine #1",
+        "next_scheduled_maintenance": "2026-10-14",
+        "status": "RUNNING"
+      },
+      {
+        "criticality": "MEDIUM",
+        "department": "Machining",
+        "equipment_id": "EQ-CNC-002",
+        "health_score": 78.3,
+        "last_maintenance": "2026-04-15",
+        "name": "CNC Milling Machine #2",
+        "next_scheduled_maintenance": "2026-10-14",
+        "status": "RUNNING"
+      },
+      {
+        "criticality": "HIGH",
+        "department": "Machining",
+        "equipment_id": "EQ-CNC-003",
+        "health_score": 81.9,
+        "last_maintenance": "2026-04-01",
+        "name": "CNC Lathe",
+        "next_scheduled_maintenance": "2026-10-17",
+        "status": "RUNNING"
+      },
+      {
+        "criticality": "HIGH",
+        "department": "Forming",
+        "equipment_id": "EQ-PUMP-001",
+        "health_score": 87.0,
+        "last_maintenance": "2026-05-01",
+        "name": "Hydraulic Press Pump",
+        "next_scheduled_maintenance": "2026-10-22",
+        "status": "RUNNING"
+      },
+      {
+        "criticality": "MEDIUM",
+        "department": "Utilities",
+        "equipment_id": "EQ-PUMP-002",
+        "health_score": 78.9,
+        "last_maintenance": "2026-05-24",
+        "name": "Coolant Circulation Pump",
+        "next_scheduled_maintenance": "2026-10-15",
+        "status": "RUNNING"
+      },
+      {
+        "criticality": "HIGH",
+        "department": "Utilities",
+        "equipment_id": "EQ-COMP-001",
+        "health_score": 62.8,
+        "last_maintenance": "2026-02-12",
+        "name": "Main Air Compressor",
+        "next_scheduled_maintenance": "2026-09-30",
+        "status": "DEGRADED"
+      },
+      {
+        "criticality": "LOW",
+        "department": "Utilities",
+        "equipment_id": "EQ-COMP-002",
+        "health_score": 66.7,
+        "last_maintenance": "2026-02-09",
+        "name": "Backup Air Compressor",
+        "next_scheduled_maintenance": "2026-10-04",
+        "status": "RUNNING"
+      },
+      {
+        "criticality": "HIGH",
+        "department": "Assembly",
+        "equipment_id": "EQ-CONV-001",
+        "health_score": 91.7,
+        "last_maintenance": "2026-06-09",
+        "name": "Assembly Line Conveyor A",
+        "next_scheduled_maintenance": "2026-10-26",
+        "status": "RUNNING"
+      },
+      {
+        "criticality": "MEDIUM",
+        "department": "Assembly",
+        "equipment_id": "EQ-CONV-002",
+        "health_score": 60.3,
+        "last_maintenance": "2026-03-15",
+        "name": "Assembly Line Conveyor B",
+        "next_scheduled_maintenance": "2026-09-28",
+        "status": "DEGRADED"
+      },
+      {
+        "criticality": "MEDIUM",
+        "department": "Packaging",
+        "equipment_id": "EQ-CONV-003",
+        "health_score": 48.6,
+        "last_maintenance": "2026-03-20",
+        "name": "Packaging Conveyor",
+        "next_scheduled_maintenance": "2026-09-18",
+        "status": "DEGRADED"
+      },
+      {
+        "criticality": "HIGH",
+        "department": "Power",
+        "equipment_id": "EQ-TURB-001",
+        "health_score": 67.5,
+        "last_maintenance": "2026-07-05",
+        "name": "Steam Turbine Generator",
+        "next_scheduled_maintenance": "2026-10-05",
+        "status": "RUNNING"
+      },
+      {
+        "criticality": "HIGH",
+        "department": "Machining",
+        "equipment_id": "EQ-MOTOR-001",
+        "health_score": 76.4,
+        "last_maintenance": "2026-04-12",
+        "name": "Main Drive Motor",
+        "next_scheduled_maintenance": "2026-10-12",
+        "status": "RUNNING"
+      },
+      {
+        "criticality": "LOW",
+        "department": "HVAC",
+        "equipment_id": "EQ-MOTOR-002",
+        "health_score": 86.8,
+        "last_maintenance": "2026-07-30",
+        "name": "Ventilation Fan Motor",
+        "next_scheduled_maintenance": "2026-10-22",
+        "status": "RUNNING"
+      },
+      {
+        "criticality": "MEDIUM",
+        "department": "Utilities",
+        "equipment_id": "EQ-MOTOR-003",
+        "health_score": 91.6,
+        "last_maintenance": "2026-05-04",
+        "name": "Cooling Tower Motor",
+        "next_scheduled_maintenance": "2026-10-26",
+        "status": "RUNNING"
+      }
+    ],
+    "facility_id": "all",
+    "source": "simulated",
+    "status_summary": {
+      "degraded": 3,
+      "running": 11,
+      "stopped": 0
+    },
+    "total_equipment": 14
+  },
+  "get_equipment_status": {
+    "alerts": [
+      {
+        "message": "Vibration 7.83 mm/s exceeds ISO 10816 Zone C threshold",
+        "severity": "WARNING",
+        "type": "HIGH_VIBRATION"
+      },
+      {
+        "message": "Health score 67.5 (FAIR) \u2014 running in high-criticality service",
+        "severity": "INFO",
+        "type": "DEGRADED_CONDITION"
+      }
+    ],
+    "criticality": "HIGH",
+    "equipment_id": "EQ-TURB-001",
+    "equipment_name": "Steam Turbine",
+    "health_rating": "FAIR",
+    "health_score": 67.5,
+    "hours_since_last_maintenance": 1421,
+    "operating_hours": 5692,
+    "sensors": {
+      "oil_pressure_bar": 2.7,
+      "power_consumption_kw": 105.0,
+      "rpm": 2811,
+      "temperature_c": 176.0,
+      "vibration_mm_s": 7.83
+    },
+    "source": "simulated",
+    "status": "RUNNING"
+  },
+  "get_fraud_dashboard": {
+    "metrics": {
+      "confirmed_fraud": 17,
+      "detection_rate_pct": 94.4,
+      "false_positive_rate_pct": 3.7,
+      "false_positives": 56,
+      "flagged_for_review": 73,
+      "missed_fraud_estimate": 1,
+      "savings_from_detection": 426237.54,
+      "total_claims_screened": 1511
+    },
+    "period": "current_month",
+    "source": "simulated",
+    "top_fraud_types": [
+      {
+        "count": 5,
+        "pct": 29.4,
+        "type": "Staged accidents"
+      },
+      {
+        "count": 5,
+        "pct": 29.4,
+        "type": "Inflated claims"
+      },
+      {
+        "count": 4,
+        "pct": 23.5,
+        "type": "Phantom damage"
+      },
+      {
+        "count": 3,
+        "pct": 17.6,
+        "type": "Identity fraud"
+      }
+    ],
+    "trend": "IMPROVING"
+  },
+  "get_historical_prices": {
+    "data": [
+      {
+        "close": 256.6,
+        "date": "2026-07-06",
+        "high": 256.76,
+        "low": 255.74,
+        "open": 255.68,
+        "volume": 5256913
+      },
+      {
+        "close": 256.31,
+        "date": "2026-07-07",
+        "high": 256.56,
+        "low": 255.52,
+        "open": 255.21,
+        "volume": 47513834
+      },
+      {
+        "close": 245.8,
+        "date": "2026-07-08",
+        "high": 248.24,
+        "low": 241.47,
+        "open": 244.9,
+        "volume": 12499392
+      },
+      {
+        "close": 244.52,
+        "date": "2026-07-09",
+        "high": 245.84,
+        "low": 243.85,
+        "open": 246.79,
+        "volume": 19003056
+      },
+      {
+        "close": 241.02,
+        "date": "2026-07-10",
+        "high": 242.98,
+        "low": 240.42,
+        "open": 240.52,
+        "volume": 40241951
+      },
+      {
+        "close": 243.34,
+        "date": "2026-07-11",
+        "high": 244.42,
+        "low": 240.54,
+        "open": 242.75,
+        "volume": 26501364
+      },
+      {
+        "close": 252.83,
+        "date": "2026-07-12",
+        "high": 253.0,
+        "low": 252.58,
+        "open": 251.32,
+        "volume": 35857528
+      },
+      {
+        "close": 249.88,
+        "date": "2026-07-13",
+        "high": 251.77,
+        "low": 249.88,
+        "open": 250.22,
+        "volume": 43186908
+      },
+      {
+        "close": 253.54,
+        "date": "2026-07-14",
+        "high": 254.01,
+        "low": 249.96,
+        "open": 253.58,
+        "volume": 26505965
+      },
+      {
+        "close": 254.54,
+        "date": "2026-07-15",
+        "high": 256.65,
+        "low": 249.1,
+        "open": 253.8,
+        "volume": 25315224
+      },
+      {
+        "close": 255.01,
+        "date": "2026-07-16",
+        "high": 258.36,
+        "low": 254.58,
+        "open": 253.86,
+        "volume": 49687708
+      },
+      {
+        "close": 252.54,
+        "date": "2026-07-17",
+        "high": 253.28,
+        "low": 250.81,
+        "open": 253.83,
+        "volume": 16196914
+      },
+      {
+        "close": 246.05,
+        "date": "2026-07-18",
+        "high": 246.85,
+        "low": 246.03,
+        "open": 247.27,
+        "volume": 29874730
+      },
+      {
+        "close": 237.7,
+        "date": "2026-07-19",
+        "high": 239.72,
+        "low": 236.41,
+        "open": 236.87,
+        "volume": 22915091
+      },
+      {
+        "close": 234.0,
+        "date": "2026-07-20",
+        "high": 236.25,
+        "low": 233.85,
+        "open": 233.07,
+        "volume": 22449363
+      },
+      {
+        "close": 248.2,
+        "date": "2026-07-21",
+        "high": 252.12,
+        "low": 243.54,
+        "open": 248.64,
+        "volume": 59181640
+      },
+      {
+        "close": 251.17,
+        "date": "2026-07-22",
+        "high": 251.82,
+        "low": 249.53,
+        "open": 251.76,
+        "volume": 45415597
+      },
+      {
+        "close": 251.02,
+        "date": "2026-07-23",
+        "high": 252.27,
+        "low": 248.52,
+        "open": 250.7,
+        "volume": 51510210
+      },
+      {
+        "close": 248.23,
+        "date": "2026-07-24",
+        "high": 248.24,
+        "low": 244.17,
+        "open": 249.62,
+        "volume": 12940850
+      },
+      {
+        "close": 255.19,
+        "date": "2026-07-25",
+        "high": 256.26,
+        "low": 250.39,
+        "open": 254.12,
+        "volume": 54100703
+      },
+      {
+        "close": 255.53,
+        "date": "2026-07-26",
+        "high": 257.88,
+        "low": 254.0,
+        "open": 254.76,
+        "volume": 37009675
+      },
+      {
+        "close": 252.36,
+        "date": "2026-07-27",
+        "high": 253.44,
+        "low": 249.59,
+        "open": 251.54,
+        "volume": 35482684
+      },
+      {
+        "close": 258.29,
+        "date": "2026-07-28",
+        "high": 262.94,
+        "low": 255.87,
+        "open": 254.36,
+        "volume": 29309110
+      },
+      {
+        "close": 259.3,
+        "date": "2026-07-29",
+        "high": 261.48,
+        "low": 259.23,
+        "open": 258.67,
+        "volume": 22979395
+      },
+      {
+        "close": 261.97,
+        "date": "2026-07-30",
+        "high": 262.34,
+        "low": 261.01,
+        "open": 263.69,
+        "volume": 16716051
+      },
+      {
+        "close": 262.45,
+        "date": "2026-07-31",
+        "high": 264.51,
+        "low": 261.03,
+        "open": 261.57,
+        "volume": 7710887
+      },
+      {
+        "close": 264.49,
+        "date": "2026-08-01",
+        "high": 265.01,
+        "low": 262.73,
+        "open": 264.51,
+        "volume": 5582476
+      },
+      {
+        "close": 255.1,
+        "date": "2026-08-02",
+        "high": 255.55,
+        "low": 254.66,
+        "open": 254.53,
+        "volume": 45107289
+      },
+      {
+        "close": 256.88,
+        "date": "2026-08-03",
+        "high": 257.79,
+        "low": 254.92,
+        "open": 257.34,
+        "volume": 7103616
+      },
+      {
+        "close": 255.6,
+        "date": "2026-08-04",
+        "high": 256.07,
+        "low": 255.5,
+        "open": 256.48,
+        "volume": 9750452
+      }
+    ],
+    "period_days": 30,
+    "source": "simulated",
+    "symbol": "AAPL"
+  },
+  "get_inventory_summary": {
+    "alerts": [
+      {
+        "message": "15 A-class SKUs below safety stock",
+        "severity": "HIGH",
+        "type": "STOCKOUT_RISK"
+      },
+      {
+        "message": "$3,402K excess inventory across 1,300 SKUs",
+        "severity": "MEDIUM",
+        "type": "OVERSTOCK"
+      }
+    ],
+    "filter": "all",
+    "overall": {
+      "avg_in_stock_rate": 97.1,
+      "total_excess_value": 3402243.84,
+      "total_inventory_value": 14515784.29,
+      "total_overstock": 1300,
+      "total_skus": 5460,
+      "total_stockouts": 157
+    },
+    "source": "simulated",
+    "summary": [
+      {
+        "avg_days_of_supply": 81.4,
+        "category": "Electronics",
+        "excess_value": 664112.7,
+        "in_stock_pct": 96.3,
+        "inventory_turnover": 4.5,
+        "overstock_skus": 322,
+        "stockout_skus": 48,
+        "total_skus": 1288,
+        "total_value": 2656450.82
+      },
+      {
+        "avg_days_of_supply": 53.0,
+        "category": "Apparel",
+        "excess_value": 561967.21,
+        "in_stock_pct": 97.5,
+        "inventory_turnover": 6.9,
+        "overstock_skus": 161,
+        "stockout_skus": 23,
+        "total_skus": 904,
+        "total_value": 3155393.51
+      },
+      {
+        "avg_days_of_supply": 63.4,
+        "category": "Grocery",
+        "excess_value": 1020868.71,
+        "in_stock_pct": 96.9,
+        "inventory_turnover": 5.8,
+        "overstock_skus": 301,
+        "stockout_skus": 37,
+        "total_skus": 1205,
+        "total_value": 4086866.42
+      },
+      {
+        "avg_days_of_supply": 69.4,
+        "category": "Home & Garden",
+        "excess_value": 806782.52,
+        "in_stock_pct": 98.1,
+        "inventory_turnover": 5.3,
+        "overstock_skus": 402,
+        "stockout_skus": 31,
+        "total_skus": 1609,
+        "total_value": 3229136.99
+      },
+      {
+        "avg_days_of_supply": 87.8,
+        "category": "Sports",
+        "excess_value": 348512.7,
+        "in_stock_pct": 96.0,
+        "inventory_turnover": 4.2,
+        "overstock_skus": 114,
+        "stockout_skus": 18,
+        "total_skus": 454,
+        "total_value": 1387936.55
+      }
+    ]
+  },
+  "get_lab_results": {
+    "hipaa_notice": "Lab result access audit-logged.",
+    "lookback_days": 90,
+    "panels_returned": 4,
+    "patient_id": "PT-1001",
+    "recommendation": "Critical values detected - notify ordering provider immediately.",
+    "results": [
+      {
+        "collection_date": "2026-07-25",
+        "order_id": "LAB-7590B933",
+        "ordering_provider": "Dr. Priya Patel, MD",
+        "panel_name": "Complete Blood Count",
+        "result_date": "2026-07-28",
+        "status": "Final",
+        "tests": [
+          {
+            "flag": "HIGH",
+            "ref_range": "4.5-11.0",
+            "test": "WBC",
+            "unit": "x10^3/uL",
+            "value": 11.8
+          },
+          {
+            "flag": "HIGH",
+            "ref_range": "4.5-5.5",
+            "test": "RBC",
+            "unit": "x10^6/uL",
+            "value": 5.69
+          },
+          {
+            "flag": null,
+            "ref_range": "12.0-16.0",
+            "test": "Hemoglobin",
+            "unit": "g/dL",
+            "value": 14.3
+          },
+          {
+            "flag": null,
+            "ref_range": "36-46",
+            "test": "Hematocrit",
+            "unit": "%",
+            "value": 41.8
+          },
+          {
+            "flag": null,
+            "ref_range": "150-400",
+            "test": "Platelets",
+            "unit": "x10^3/uL",
+            "value": 288
+          }
+        ]
+      },
+      {
+        "collection_date": "2026-06-17",
+        "order_id": "LAB-9B5A0369",
+        "ordering_provider": "Dr. James Wilson, MD",
+        "panel_name": "Lipid Panel",
+        "result_date": "2026-06-20",
+        "status": "Final",
+        "tests": [
+          {
+            "flag": "HIGH",
+            "ref_range": "<200",
+            "test": "Total Cholesterol",
+            "unit": "mg/dL",
+            "value": 246
+          },
+          {
+            "flag": "HIGH",
+            "ref_range": "<100",
+            "test": "LDL Cholesterol",
+            "unit": "mg/dL",
+            "value": 105
+          },
+          {
+            "flag": "LOW",
+            "ref_range": ">40",
+            "test": "HDL Cholesterol",
+            "unit": "mg/dL",
+            "value": 36
+          },
+          {
+            "flag": "HIGH",
+            "ref_range": "<150",
+            "test": "Triglycerides",
+            "unit": "mg/dL",
+            "value": 216
+          }
+        ]
+      },
+      {
+        "collection_date": "2026-07-16",
+        "order_id": "LAB-A5803876",
+        "ordering_provider": "Dr. Priya Patel, MD",
+        "panel_name": "Hemoglobin A1C",
+        "result_date": "2026-07-18",
+        "status": "Final",
+        "tests": [
+          {
+            "flag": "HIGH",
+            "ref_range": "<5.7",
+            "test": "HbA1c",
+            "unit": "%",
+            "value": 9.1
+          }
+        ]
+      },
+      {
+        "collection_date": "2026-07-25",
+        "order_id": "LAB-13AAD4E9",
+        "ordering_provider": "Dr. Sarah Chen, MD",
+        "panel_name": "Thyroid Panel",
+        "result_date": "2026-07-28",
+        "status": "Final",
+        "tests": [
+          {
+            "flag": null,
+            "ref_range": "0.4-4.0",
+            "test": "TSH",
+            "unit": "mIU/L",
+            "value": 1.38
+          },
+          {
+            "flag": null,
+            "ref_range": "0.8-1.8",
+            "test": "Free T4",
+            "unit": "ng/dL",
+            "value": 1.53
+          }
+        ]
+      }
+    ],
+    "source": "simulated",
+    "summary": {
+      "abnormal_count": 7,
+      "critical_flags": [
+        "WBC"
+      ],
+      "total_tests": 12
+    }
+  },
+  "get_maintenance_calendar": {
+    "conflicts": [],
+    "facility_id": "all",
+    "period_days": 30,
+    "resource_utilization": {
+      "technician_hours_available": 960,
+      "total_maintenance_hours": 230.7,
+      "utilization_pct": 24.0
+    },
+    "schedule": [
+      {
+        "assigned_to": "M. Rodriguez",
+        "date": "2026-08-06",
+        "description": "Vibration-based predictive maintenance",
+        "duration_hours": 9.3,
+        "equipment_id": "EQ-CONV-001",
+        "priority": "MEDIUM",
+        "schedule_id": "SCH-BCF783CC",
+        "start_time": "07:00",
+        "status": "PARTS_ORDERED",
+        "type": "PREDICTIVE"
+      },
+      {
+        "assigned_to": "S. Chen",
+        "date": "2026-08-08",
+        "description": "Sensor calibration",
+        "duration_hours": 5.1,
+        "equipment_id": "EQ-CONV-002",
+        "priority": "MEDIUM",
+        "schedule_id": "SCH-0B3426DA",
+        "start_time": "12:00",
+        "status": "SCHEDULED",
+        "type": "CALIBRATION"
+      },
+      {
+        "assigned_to": "M. Rodriguez",
+        "date": "2026-08-09",
+        "description": "Sensor calibration",
+        "duration_hours": 5.4,
+        "equipment_id": "EQ-TURB-001",
+        "priority": "MEDIUM",
+        "schedule_id": "SCH-8B5DE54F",
+        "start_time": "12:00",
+        "status": "PARTS_ORDERED",
+        "type": "CALIBRATION"
+      },
+      {
+        "assigned_to": "J. Wilson",
+        "date": "2026-08-10",
+        "description": "Filter replacement and cleaning",
+        "duration_hours": 10.1,
+        "equipment_id": "EQ-CNC-001",
+        "priority": "MEDIUM",
+        "schedule_id": "SCH-CF9EA52C",
+        "start_time": "06:00",
+        "status": "PARTS_ORDERED",
+        "type": "INSPECTION"
+      },
+      {
+        "assigned_to": "J. Wilson",
+        "date": "2026-08-12",
+        "description": "Annual motor insulation test",
+        "duration_hours": 13.9,
+        "equipment_id": "EQ-CNC-001",
+        "priority": "MEDIUM",
+        "schedule_id": "SCH-4D0E01C6",
+        "start_time": "06:00",
+        "status": "SCHEDULED",
+        "type": "CALIBRATION"
+      },
+      {
+        "assigned_to": "A. Petrova",
+        "date": "2026-08-12",
+        "description": "Quarterly bearing inspection",
+        "duration_hours": 14.2,
+        "equipment_id": "EQ-COMP-001",
+        "priority": "LOW",
+        "schedule_id": "SCH-061230DA",
+        "start_time": "06:00",
+        "status": "PARTS_ORDERED",
+        "type": "INSPECTION"
+      },
+      {
+        "assigned_to": "M. Rodriguez",
+        "date": "2026-08-14",
+        "description": "Quarterly bearing inspection",
+        "duration_hours": 10.2,
+        "equipment_id": "EQ-CNC-003",
+        "priority": "MEDIUM",
+        "schedule_id": "SCH-D38000D3",
+        "start_time": "12:00",
+        "status": "SCHEDULED",
+        "type": "PREDICTIVE"
+      },
+      {
+        "assigned_to": "M. Rodriguez",
+        "date": "2026-08-19",
+        "description": "Sensor calibration",
+        "duration_hours": 3.3,
+        "equipment_id": "EQ-CNC-003",
+        "priority": "HIGH",
+        "schedule_id": "SCH-71B8AD81",
+        "start_time": "09:00",
+        "status": "PARTS_ORDERED",
+        "type": "PREDICTIVE"
+      },
+      {
+        "assigned_to": "A. Petrova",
+        "date": "2026-08-20",
+        "description": "Oil analysis sampling",
+        "duration_hours": 3.3,
+        "equipment_id": "EQ-COMP-001",
+        "priority": "MEDIUM",
+        "schedule_id": "SCH-11C6AA5F",
+        "start_time": "13:00",
+        "status": "PARTS_ORDERED",
+        "type": "PREVENTIVE"
+      },
+      {
+        "assigned_to": "S. Chen",
+        "date": "2026-08-21",
+        "description": "Sensor calibration",
+        "duration_hours": 10.5,
+        "equipment_id": "EQ-CNC-002",
+        "priority": "MEDIUM",
+        "schedule_id": "SCH-2B87417A",
+        "start_time": "07:00",
+        "status": "PARTS_ORDERED",
+        "type": "INSPECTION"
+      },
+      {
+        "assigned_to": "A. Petrova",
+        "date": "2026-08-21",
+        "description": "Filter replacement and cleaning",
+        "duration_hours": 15.1,
+        "equipment_id": "EQ-CONV-001",
+        "priority": "HIGH",
+        "schedule_id": "SCH-D1B6A7A0",
+        "start_time": "06:00",
+        "status": "PARTS_ORDERED",
+        "type": "PREVENTIVE"
+      },
+      {
+        "assigned_to": "A. Petrova",
+        "date": "2026-08-22",
+        "description": "Vibration-based predictive maintenance",
+        "duration_hours": 10.9,
+        "equipment_id": "EQ-CNC-003",
+        "priority": "LOW",
+        "schedule_id": "SCH-C05EC649",
+        "start_time": "13:00",
+        "status": "PARTS_ORDERED",
+        "type": "PREDICTIVE"
+      },
+      {
+        "assigned_to": "M. Rodriguez",
+        "date": "2026-08-22",
+        "description": "Vibration-based predictive maintenance",
+        "duration_hours": 3.5,
+        "equipment_id": "EQ-MOTOR-001",
+        "priority": "MEDIUM",
+        "schedule_id": "SCH-AD041BCC",
+        "start_time": "06:00",
+        "status": "PARTS_ORDERED",
+        "type": "PREVENTIVE"
+      },
+      {
+        "assigned_to": "J. Wilson",
+        "date": "2026-08-23",
+        "description": "Safety system functional test",
+        "duration_hours": 8.2,
+        "equipment_id": "EQ-CNC-003",
+        "priority": "LOW",
+        "schedule_id": "SCH-5B40409B",
+        "start_time": "14:00",
+        "status": "PARTS_ORDERED",
+        "type": "PREDICTIVE"
+      },
+      {
+        "assigned_to": "A. Petrova",
+        "date": "2026-08-23",
+        "description": "Safety system functional test",
+        "duration_hours": 2.9,
+        "equipment_id": "EQ-COMP-001",
+        "priority": "MEDIUM",
+        "schedule_id": "SCH-022FEAC9",
+        "start_time": "08:00",
+        "status": "CONFIRMED",
+        "type": "PREVENTIVE"
+      },
+      {
+        "assigned_to": "S. Chen",
+        "date": "2026-08-26",
+        "description": "Lubrication schedule - routine",
+        "duration_hours": 4.9,
+        "equipment_id": "EQ-CNC-001",
+        "priority": "HIGH",
+        "schedule_id": "SCH-C6A9EFEF",
+        "start_time": "11:00",
+        "status": "CONFIRMED",
+        "type": "CALIBRATION"
+      },
+      {
+        "assigned_to": "S. Chen",
+        "date": "2026-08-27",
+        "description": "Quarterly bearing inspection",
+        "duration_hours": 6.2,
+        "equipment_id": "EQ-MOTOR-002",
+        "priority": "MEDIUM",
+        "schedule_id": "SCH-1D33D793",
+        "start_time": "07:00",
+        "status": "SCHEDULED",
+        "type": "CALIBRATION"
+      },
+      {
+        "assigned_to": "S. Chen",
+        "date": "2026-08-27",
+        "description": "Quarterly bearing inspection",
+        "duration_hours": 10.4,
+        "equipment_id": "EQ-MOTOR-002",
+        "priority": "MEDIUM",
+        "schedule_id": "SCH-F63909E3",
+        "start_time": "12:00",
+        "status": "CONFIRMED",
+        "type": "PREDICTIVE"
+      },
+      {
+        "assigned_to": "S. Chen",
+        "date": "2026-08-27",
+        "description": "Thermal imaging survey",
+        "duration_hours": 14.4,
+        "equipment_id": "EQ-CNC-003",
+        "priority": "HIGH",
+        "schedule_id": "SCH-E2F14904",
+        "start_time": "08:00",
+        "status": "PARTS_ORDERED",
+        "type": "PREDICTIVE"
+      },
+      {
+        "assigned_to": "J. Wilson",
+        "date": "2026-08-28",
+        "description": "Oil analysis sampling",
+        "duration_hours": 13.3,
+        "equipment_id": "EQ-CONV-002",
+        "priority": "LOW",
+        "schedule_id": "SCH-47EACBC4",
+        "start_time": "06:00",
+        "status": "SCHEDULED",
+        "type": "PREDICTIVE"
+      }
+    ],
+    "source": "simulated",
+    "total_scheduled": 27,
+    "weekly_capacity": {
+      "Week 32": {
+        "events": 3,
+        "maintenance_hours": 19.8
+      },
+      "Week 33": {
+        "events": 4,
+        "maintenance_hours": 48.4
+      },
+      "Week 34": {
+        "events": 8,
+        "maintenance_hours": 57.7
+      },
+      "Week 35": {
+        "events": 7,
+        "maintenance_hours": 65.9
+      },
+      "Week 36": {
+        "events": 5,
+        "maintenance_hours": 38.9
+      }
+    }
+  },
+  "get_margin_report": {
+    "category_filter": "all",
+    "overall": {
+      "blended_gross_margin": 32.1,
+      "margin_improvement_opportunity": 1279118.43,
+      "total_cogs": 80373828.71,
+      "total_gross_profit": 38002912.44,
+      "total_revenue": 118376741.15
+    },
+    "report": [
+      {
+        "category": "Electronics",
+        "cogs": 11954028.69,
+        "gross_margin_pct": 38.9,
+        "gross_profit": 7610666.38,
+        "lowest_margin_sku": "SKU-ELEC-1003",
+        "lowest_margin_sku_pct": 36.3,
+        "margin_trend": -1.9,
+        "net_margin_pct": 23.9,
+        "revenue": 19564695.07,
+        "skus_below_target": 76,
+        "top_margin_sku": "SKU-ELEC-1002",
+        "top_margin_sku_pct": 41.6
+      },
+      {
+        "category": "Apparel",
+        "cogs": 21772215.22,
+        "gross_margin_pct": 27.6,
+        "gross_profit": 8299905.25,
+        "lowest_margin_sku": "SKU-APRL-2002",
+        "lowest_margin_sku_pct": 30.5,
+        "margin_trend": 3.2,
+        "net_margin_pct": 19.6,
+        "revenue": 30072120.47,
+        "skus_below_target": 65,
+        "top_margin_sku": "SKU-APRL-2003",
+        "top_margin_sku_pct": 39.7
+      },
+      {
+        "category": "Grocery",
+        "cogs": 23703825.24,
+        "gross_margin_pct": 23.2,
+        "gross_profit": 7160530.54,
+        "lowest_margin_sku": "SKU-GROC-3001",
+        "lowest_margin_sku_pct": 30.1,
+        "margin_trend": 3.9,
+        "net_margin_pct": 17.9,
+        "revenue": 30864355.78,
+        "skus_below_target": 57,
+        "top_margin_sku": "SKU-GROC-3002",
+        "top_margin_sku_pct": 45.8
+      },
+      {
+        "category": "Home & Garden",
+        "cogs": 17114426.05,
+        "gross_margin_pct": 44.0,
+        "gross_profit": 13447049.04,
+        "lowest_margin_sku": "SKU-HOME-4003",
+        "lowest_margin_sku_pct": 32.8,
+        "margin_trend": 1.9,
+        "net_margin_pct": 31.4,
+        "revenue": 30561475.09,
+        "skus_below_target": 122,
+        "top_margin_sku": "SKU-HOME-4001",
+        "top_margin_sku_pct": 38.4
+      },
+      {
+        "category": "Sports",
+        "cogs": 5829333.51,
+        "gross_margin_pct": 20.3,
+        "gross_profit": 1484761.23,
+        "lowest_margin_sku": "SKU-SPRT-5003",
+        "lowest_margin_sku_pct": 30.7,
+        "margin_trend": 4.9,
+        "net_margin_pct": 8.1,
+        "revenue": 7314094.74,
+        "skus_below_target": 15,
+        "top_margin_sku": "SKU-SPRT-5002",
+        "top_margin_sku_pct": 44.3
+      }
+    ],
+    "source": "simulated"
+  },
+  "get_market_conditions": {
+    "as_of": "2026-08",
+    "market_indicators": {
+      "absorption_rate": 17.9,
+      "avg_price_reduction_pct": 1.7,
+      "market_type": "Balanced Market",
+      "pct_sold_over_asking": 28.6,
+      "pct_with_price_reduction": 27.6,
+      "sale_to_list_ratio": 1.003
+    },
+    "market_snapshot": {
+      "active_listings": 420,
+      "average_days_on_market": 92,
+      "closed_sales_30d": 133,
+      "implied_median_sqft": 1721,
+      "median_days_on_market": 78,
+      "median_price_per_sqft": 306.86,
+      "median_sale_price": 528000,
+      "months_of_supply": 5.6,
+      "new_listings_30d": 150,
+      "pending_sales": 93
+    },
+    "price_trends": {
+      "median_price_12mo_ago": 485294,
+      "month_over_month_pct": 0.71,
+      "price_per_sqft_trend": 8.8,
+      "year_over_year_pct": 8.8
+    },
+    "property_types": {
+      "condo": {
+        "median_price": 341405,
+        "pct_of_sales": 24.5
+      },
+      "single_family": {
+        "median_price": 655121,
+        "pct_of_sales": 48.6
+      },
+      "townhouse": {
+        "median_price": 468279,
+        "pct_of_sales": 26.9
+      }
+    },
+    "source": "simulated",
+    "zipcode": "78701"
+  },
+  "get_market_forecast": {
+    "current_median_price": 528000,
+    "disclaimer": "Forecasts are based on historical trends and current market indicators. Actual results may vary significantly.",
+    "forecast": [
+      {
+        "confidence_high": 544267,
+        "confidence_low": 517717,
+        "date": "2026-09",
+        "forecasted_median_price": 530992,
+        "month": 1,
+        "month_over_month_pct": 0.57
+      },
+      {
+        "confidence_high": 551011,
+        "confidence_low": 518913,
+        "date": "2026-10",
+        "forecasted_median_price": 534962,
+        "month": 2,
+        "month_over_month_pct": 0.75
+      },
+      {
+        "confidence_high": 554333,
+        "confidence_low": 516841,
+        "date": "2026-11",
+        "forecasted_median_price": 535587,
+        "month": 3,
+        "month_over_month_pct": 0.12
+      },
+      {
+        "confidence_high": 564303,
+        "confidence_low": 520895,
+        "date": "2026-12",
+        "forecasted_median_price": 542599,
+        "month": 4,
+        "month_over_month_pct": 1.31
+      },
+      {
+        "confidence_high": 569693,
+        "confidence_low": 520629,
+        "date": "2027-01",
+        "forecasted_median_price": 545161,
+        "month": 5,
+        "month_over_month_pct": 0.47
+      },
+      {
+        "confidence_high": 575761,
+        "confidence_low": 520927,
+        "date": "2027-02",
+        "forecasted_median_price": 548344,
+        "month": 6,
+        "month_over_month_pct": 0.58
+      },
+      {
+        "confidence_high": 585356,
+        "confidence_low": 524324,
+        "date": "2027-03",
+        "forecasted_median_price": 554840,
+        "month": 7,
+        "month_over_month_pct": 1.18
+      },
+      {
+        "confidence_high": 594995,
+        "confidence_low": 527637,
+        "date": "2027-04",
+        "forecasted_median_price": 561316,
+        "month": 8,
+        "month_over_month_pct": 1.17
+      },
+      {
+        "confidence_high": 600134,
+        "confidence_low": 526878,
+        "date": "2027-05",
+        "forecasted_median_price": 563506,
+        "month": 9,
+        "month_over_month_pct": 0.39
+      },
+      {
+        "confidence_high": 609144,
+        "confidence_low": 529442,
+        "date": "2027-06",
+        "forecasted_median_price": 569293,
+        "month": 10,
+        "month_over_month_pct": 1.03
+      },
+      {
+        "confidence_high": 620761,
+        "confidence_low": 534143,
+        "date": "2027-07",
+        "forecasted_median_price": 577452,
+        "month": 11,
+        "month_over_month_pct": 1.43
+      },
+      {
+        "confidence_high": 627304,
+        "confidence_low": 534370,
+        "date": "2027-08",
+        "forecasted_median_price": 580837,
+        "month": 12,
+        "month_over_month_pct": 0.59
+      }
+    ],
+    "forecast_horizon_months": 12,
+    "market_type": "Balanced Market",
+    "positive_drivers": [
+      "Prices up 8.8% year over year",
+      "Tech sector expansion nearby",
+      "Population in-migration trends"
+    ],
+    "risk_factors": [
+      "Interest rate volatility",
+      "Regulatory changes (zoning, rent control)"
+    ],
+    "source": "simulated",
+    "summary": {
+      "annualized_growth_rate": 10.0,
+      "forecast_confidence": "Moderate",
+      "projected_end_price": 580837,
+      "total_price_change_pct": 10.0
+    },
+    "trailing_yoy_pct": 8.8,
+    "zipcode": "78701"
+  },
+  "get_market_overview": {
+    "indices": {
+      "DOW": {
+        "change_pct": -0.87,
+        "value": 44250.8
+      },
+      "NASDAQ": {
+        "change_pct": 0.25,
+        "value": 19845.2
+      },
+      "RUSSELL2000": {
+        "change_pct": -0.4,
+        "value": 2285.4
+      },
+      "SP500": {
+        "change_pct": -1.12,
+        "value": 6120.35
+      }
+    },
+    "sentiment": {
+      "fear_greed_index": 80,
+      "label": "Extreme Greed"
+    },
+    "source": "simulated",
+    "timestamp": "2026-08-05T05:24:42.478117+00:00",
+    "treasury": {
+      "10Y": 4.32,
+      "2Y": 4.51,
+      "30Y": 4.29
+    },
+    "volatility": {
+      "VIX": 19.6,
+      "VIX_status": "normal"
+    }
+  },
+  "get_market_trends": {
+    "current_median_price": 528000,
+    "data_points": 13,
+    "market_type": "Balanced Market",
+    "period": "1y",
+    "source": "simulated",
+    "summary": {
+      "annualized_change_pct": 8.8,
+      "avg_monthly_volume": 132,
+      "end_median_price": 528000,
+      "peak_price": 528000,
+      "start_median_price": 485196,
+      "total_price_change_pct": 8.8,
+      "trough_price": 485196,
+      "volume_trend": "Increasing"
+    },
+    "trends": [
+      {
+        "avg_days_on_market": 103,
+        "closed_sales": 129,
+        "date": "2025-08",
+        "inventory": 722,
+        "median_price_per_sqft": 282.0,
+        "median_sale_price": 485196,
+        "new_listings": 146,
+        "sale_to_list_ratio": 1.005
+      },
+      {
+        "avg_days_on_market": 100,
+        "closed_sales": 113,
+        "date": "2025-09",
+        "inventory": 633,
+        "median_price_per_sqft": 285.24,
+        "median_sale_price": 490779,
+        "new_listings": 128,
+        "sale_to_list_ratio": 1.002
+      },
+      {
+        "avg_days_on_market": 97,
+        "closed_sales": 121,
+        "date": "2025-10",
+        "inventory": 678,
+        "median_price_per_sqft": 288.04,
+        "median_sale_price": 495599,
+        "new_listings": 137,
+        "sale_to_list_ratio": 0.999
+      },
+      {
+        "avg_days_on_market": 84,
+        "closed_sales": 131,
+        "date": "2025-11",
+        "inventory": 734,
+        "median_price_per_sqft": 290.79,
+        "median_sale_price": 500324,
+        "new_listings": 148,
+        "sale_to_list_ratio": 0.999
+      },
+      {
+        "avg_days_on_market": 100,
+        "closed_sales": 103,
+        "date": "2025-12",
+        "inventory": 577,
+        "median_price_per_sqft": 292.52,
+        "median_sale_price": 503301,
+        "new_listings": 116,
+        "sale_to_list_ratio": 1.008
+      },
+      {
+        "avg_days_on_market": 95,
+        "closed_sales": 130,
+        "date": "2026-01",
+        "inventory": 728,
+        "median_price_per_sqft": 292.18,
+        "median_sale_price": 502724,
+        "new_listings": 147,
+        "sale_to_list_ratio": 1.008
+      },
+      {
+        "avg_days_on_market": 90,
+        "closed_sales": 132,
+        "date": "2026-02",
+        "inventory": 739,
+        "median_price_per_sqft": 293.55,
+        "median_sale_price": 505079,
+        "new_listings": 149,
+        "sale_to_list_ratio": 0.998
+      },
+      {
+        "avg_days_on_market": 104,
+        "closed_sales": 108,
+        "date": "2026-03",
+        "inventory": 605,
+        "median_price_per_sqft": 295.53,
+        "median_sale_price": 508494,
+        "new_listings": 122,
+        "sale_to_list_ratio": 1.003
+      },
+      {
+        "avg_days_on_market": 104,
+        "closed_sales": 167,
+        "date": "2026-04",
+        "inventory": 935,
+        "median_price_per_sqft": 295.49,
+        "median_sale_price": 508420,
+        "new_listings": 189,
+        "sale_to_list_ratio": 1.001
+      },
+      {
+        "avg_days_on_market": 103,
+        "closed_sales": 138,
+        "date": "2026-05",
+        "inventory": 773,
+        "median_price_per_sqft": 299.67,
+        "median_sale_price": 515619,
+        "new_listings": 156,
+        "sale_to_list_ratio": 1.007
+      },
+      {
+        "avg_days_on_market": 86,
+        "closed_sales": 148,
+        "date": "2026-06",
+        "inventory": 829,
+        "median_price_per_sqft": 301.35,
+        "median_sale_price": 518510,
+        "new_listings": 167,
+        "sale_to_list_ratio": 1.001
+      },
+      {
+        "avg_days_on_market": 97,
+        "closed_sales": 161,
+        "date": "2026-07",
+        "inventory": 902,
+        "median_price_per_sqft": 305.84,
+        "median_sale_price": 526240,
+        "new_listings": 182,
+        "sale_to_list_ratio": 1.003
+      },
+      {
+        "avg_days_on_market": 82,
+        "closed_sales": 130,
+        "date": "2026-08",
+        "inventory": 728,
+        "median_price_per_sqft": 306.86,
+        "median_sale_price": 528000,
+        "new_listings": 147,
+        "sale_to_list_ratio": 1.004
+      }
+    ],
+    "zipcode": "78701"
+  },
+  "get_medication_list": {
+    "alerts": [
+      {
+        "message": "1 medication(s) need refill renewal",
+        "severity": "MEDIUM",
+        "type": "REFILL_NEEDED"
+      },
+      {
+        "message": "Patient on 6 medications - review for deprescribing opportunities",
+        "severity": "LOW",
+        "type": "POLYPHARMACY"
+      }
+    ],
+    "allergies_on_file": [
+      {
+        "allergen": "Penicillin",
+        "reaction": "Anaphylaxis",
+        "severity": "severe"
+      },
+      {
+        "allergen": "Sulfa drugs",
+        "reaction": "Rash",
+        "severity": "moderate"
+      }
+    ],
+    "hipaa_notice": "Medication record access audit-logged.",
+    "last_reconciliation": "2026-05-09",
+    "medication_count": 6,
+    "medications": [
+      {
+        "adherence_rate": "92%",
+        "class": "Beta-2 Agonist",
+        "dosage": "90mcg/actuation",
+        "frequency": "PRN (as needed)",
+        "generic": false,
+        "indication": "Asthma (J45.20)",
+        "last_filled": "2026-06-18",
+        "name": "Albuterol HFA",
+        "pharmacy": "Walgreens #1089",
+        "prescriber": "Dr. Priya Patel, MD",
+        "refills_remaining": 5,
+        "route": "inhaled",
+        "start_date": "2005-12-01"
+      },
+      {
+        "adherence_rate": "91%",
+        "class": "Calcium Channel Blocker",
+        "dosage": "5mg",
+        "frequency": "QD (once daily)",
+        "generic": true,
+        "indication": "Hypertension (I10)",
+        "last_filled": "2026-06-09",
+        "name": "Amlodipine",
+        "pharmacy": "CVS Pharmacy #4521",
+        "prescriber": "Dr. Sarah Chen, MD",
+        "refill_alert": "NEEDS RENEWAL - No refills remaining",
+        "refills_remaining": 0,
+        "route": "oral",
+        "start_date": "2021-06-20"
+      },
+      {
+        "adherence_rate": "91%",
+        "class": "Biguanide",
+        "dosage": "1000mg",
+        "frequency": "BID (twice daily)",
+        "generic": true,
+        "indication": "Type 2 Diabetes (E11.9)",
+        "last_filled": "2026-06-16",
+        "name": "Metformin HCl",
+        "pharmacy": "Express Scripts Mail Order",
+        "prescriber": "Dr. Sarah Chen, MD",
+        "refills_remaining": 1,
+        "route": "oral",
+        "start_date": "2019-04-01"
+      },
+      {
+        "adherence_rate": "84%",
+        "class": "HMG-CoA Reductase Inhibitor",
+        "dosage": "40mg",
+        "frequency": "QHS (at bedtime)",
+        "generic": true,
+        "indication": "Hyperlipidemia (E78.5)",
+        "last_filled": "2026-07-12",
+        "name": "Atorvastatin",
+        "pharmacy": "CVS Pharmacy #4521",
+        "prescriber": "Dr. Sarah Chen, MD",
+        "refills_remaining": 1,
+        "route": "oral",
+        "start_date": "2020-02-10"
+      },
+      {
+        "adherence_rate": "77%",
+        "class": "Antiplatelet",
+        "dosage": "81mg",
+        "frequency": "QD (once daily)",
+        "generic": true,
+        "indication": "Cardiovascular prophylaxis",
+        "last_filled": "2026-07-10",
+        "name": "Aspirin",
+        "pharmacy": "CVS Pharmacy #4521",
+        "prescriber": "Dr. Sarah Chen, MD",
+        "refills_remaining": 3,
+        "route": "oral",
+        "start_date": "2020-02-10"
+      },
+      {
+        "adherence_rate": "89%",
+        "class": "Supplement",
+        "dosage": "2000 IU",
+        "frequency": "QD (once daily)",
+        "generic": true,
+        "indication": "Vitamin D deficiency (E55.9)",
+        "last_filled": "2026-06-14",
+        "name": "Vitamin D3",
+        "pharmacy": "CVS Pharmacy #4521",
+        "prescriber": "Dr. Sarah Chen, MD",
+        "refills_remaining": 3,
+        "route": "oral",
+        "start_date": "2023-01-05"
+      }
+    ],
+    "patient_id": "PT-1001",
+    "reconciled_by": "Pharm.D. Lee",
+    "source": "simulated"
+  },
+  "get_neighborhood_analysis": {
+    "address": "1200 Oak Dr, 78701",
+    "amenities": {
+      "grocery_stores_within_2mi": 10,
+      "hospitals_within_5mi": 4,
+      "parks_within_1mi": 6,
+      "restaurants_within_1mi": 81,
+      "shopping_centers_within_3mi": 8
+    },
+    "demographics": {
+      "college_educated_pct": 41.0,
+      "median_age": 41.8,
+      "median_household_income": 54133,
+      "owner_occupied_pct": 47.5,
+      "population_density_per_sqmi": 10343,
+      "population_growth_5yr_pct": 5.0
+    },
+    "growth_trends": {
+      "home_value_growth_1yr_pct": 10.8,
+      "home_value_growth_5yr_pct": 41.3,
+      "major_developments": [
+        "Mixed-use development"
+      ],
+      "new_construction_permits_1yr": 127
+    },
+    "safety": {
+      "crime_index": 82,
+      "crime_trend": "Stable",
+      "national_comparison": "Above Average",
+      "property_crime_per_1000": 55.0,
+      "violent_crime_per_1000": 8.4
+    },
+    "schools": {
+      "average_rating": 5.4,
+      "nearby_schools": [
+        {
+          "distance_miles": 0.6,
+          "name": "Washington Elementary",
+          "rating": 5.2,
+          "type": "Elementary"
+        },
+        {
+          "distance_miles": 0.7,
+          "name": "Lincoln Middle School",
+          "rating": 5.8,
+          "type": "Middle"
+        },
+        {
+          "distance_miles": 1.0,
+          "name": "Jefferson High School",
+          "rating": 5.2,
+          "type": "High"
+        }
+      ]
+    },
+    "scores": {
+      "bike_score": 70,
+      "overall_livability": 54,
+      "transit_score": 79,
+      "walk_score": 86
+    },
+    "source": "simulated"
+  },
+  "get_parts_forecast": {
+    "equipment_id": "EQ-TURB-001",
+    "forecast_period_days": 90,
+    "parts": [
+      {
+        "category": "Bearings",
+        "confidence": 0.96,
+        "current_stock": 4,
+        "description": "Deep groove ball bearing 6205-2RS",
+        "forecast_reason": "Predictive: vibration trend indicates bearing wear",
+        "needed_by": "2026-09-09",
+        "order_needed": false,
+        "part_number": "BRG-7376",
+        "quantity_needed": 1,
+        "stock_sufficient": true,
+        "unit_cost": 103.86
+      },
+      {
+        "category": "Seals",
+        "confidence": 0.85,
+        "current_stock": 0,
+        "description": "Mechanical shaft seal 35mm",
+        "forecast_reason": "Scheduled: preventive maintenance due",
+        "needed_by": "2026-08-30",
+        "order_needed": true,
+        "order_quantity": 5,
+        "part_number": "SEL-2209",
+        "quantity_needed": 2,
+        "stock_sufficient": false,
+        "unit_cost": 93.74
+      },
+      {
+        "category": "Lubricants",
+        "confidence": 0.85,
+        "current_stock": 0,
+        "description": "Synthetic bearing grease EP2 400g",
+        "forecast_reason": "Scheduled: lubrication interval approaching",
+        "needed_by": "2026-08-31",
+        "order_needed": true,
+        "order_quantity": 5,
+        "part_number": "LUB-7024",
+        "quantity_needed": 3,
+        "stock_sufficient": false,
+        "unit_cost": 21.5
+      },
+      {
+        "category": "Filters",
+        "confidence": 0.87,
+        "current_stock": 2,
+        "description": "Hydraulic filter element 10 micron",
+        "forecast_reason": "Usage-based: filter life approaching limit",
+        "needed_by": "2026-09-07",
+        "order_needed": true,
+        "order_quantity": 3,
+        "part_number": "FLT-1849",
+        "quantity_needed": 3,
+        "stock_sufficient": false,
+        "unit_cost": 78.71
+      },
+      {
+        "category": "Belts",
+        "confidence": 0.73,
+        "current_stock": 4,
+        "description": "V-belt B68",
+        "forecast_reason": "Preventive: belt replacement interval due",
+        "needed_by": "2026-09-09",
+        "order_needed": false,
+        "part_number": "BLT-6913",
+        "quantity_needed": 1,
+        "stock_sufficient": true,
+        "unit_cost": 32.65
+      }
+    ],
+    "procurement_summary": {
+      "estimated_total_cost": 624.62,
+      "parts_in_stock": 2,
+      "parts_to_order": 3,
+      "urgent_orders": 0
+    },
+    "recommendation": "Order 3 parts to avoid maintenance delays. Total estimated cost: $624.62",
+    "source": "simulated",
+    "total_parts_forecasted": 5
+  },
+  "get_parts_inventory_report": {
+    "by_category": [
+      {
+        "avg_turnover_ratio": 2.6,
+        "below_reorder_point": 7,
+        "category": "Bearings",
+        "excess_stock_items": 10,
+        "excess_stock_value": 8108.02,
+        "service_level_pct": 88.4,
+        "stockout_items": 4,
+        "total_inventory_value": 33318.75,
+        "total_part_numbers": 102
+      },
+      {
+        "avg_turnover_ratio": 5.2,
+        "below_reorder_point": 9,
+        "category": "Seals & Gaskets",
+        "excess_stock_items": 4,
+        "excess_stock_value": 3404.33,
+        "service_level_pct": 91.3,
+        "stockout_items": 3,
+        "total_inventory_value": 19731.71,
+        "total_part_numbers": 47
+      },
+      {
+        "avg_turnover_ratio": 3.4,
+        "below_reorder_point": 8,
+        "category": "Filters",
+        "excess_stock_items": 4,
+        "excess_stock_value": 675.35,
+        "service_level_pct": 98.3,
+        "stockout_items": 8,
+        "total_inventory_value": 7753.32,
+        "total_part_numbers": 125
+      },
+      {
+        "avg_turnover_ratio": 4.5,
+        "below_reorder_point": 10,
+        "category": "Belts & Hoses",
+        "excess_stock_items": 19,
+        "excess_stock_value": 14008.75,
+        "service_level_pct": 95.6,
+        "stockout_items": 1,
+        "total_inventory_value": 54599.14,
+        "total_part_numbers": 147
+      },
+      {
+        "avg_turnover_ratio": 6.8,
+        "below_reorder_point": 9,
+        "category": "Lubricants",
+        "excess_stock_items": 7,
+        "excess_stock_value": 8043.44,
+        "service_level_pct": 95.9,
+        "stockout_items": 7,
+        "total_inventory_value": 73239.04,
+        "total_part_numbers": 163
+      },
+      {
+        "avg_turnover_ratio": 5.6,
+        "below_reorder_point": 13,
+        "category": "Electrical Components",
+        "excess_stock_items": 6,
+        "excess_stock_value": 419.93,
+        "service_level_pct": 98.1,
+        "stockout_items": 4,
+        "total_inventory_value": 5803.24,
+        "total_part_numbers": 152
+      },
+      {
+        "avg_turnover_ratio": 5.6,
+        "below_reorder_point": 11,
+        "category": "Valves & Fittings",
+        "excess_stock_items": 15,
+        "excess_stock_value": 39833.9,
+        "service_level_pct": 93.9,
+        "stockout_items": 4,
+        "total_inventory_value": 143063.62,
+        "total_part_numbers": 115
+      },
+      {
+        "avg_turnover_ratio": 1.7,
+        "below_reorder_point": 8,
+        "category": "Instrumentation",
+        "excess_stock_items": 3,
+        "excess_stock_value": 1307.07,
+        "service_level_pct": 90.1,
+        "stockout_items": 7,
+        "total_inventory_value": 21643.37,
+        "total_part_numbers": 127
+      }
+    ],
+    "critical_stockouts": [
+      {
+        "days_out_of_stock": 7,
+        "description": "Critical bearing for CNC spindle",
+        "equipment_affected": "EQ-CNC-001, EQ-CNC-002",
+        "part_number": "BRG-9019"
+      },
+      {
+        "days_out_of_stock": 4,
+        "description": "Hydraulic pump seal",
+        "equipment_affected": "EQ-PUMP-001",
+        "part_number": "SEL-1313"
+      }
+    ],
+    "inventory_summary": {
+      "inventory_accuracy_pct": 97.2,
+      "overall_service_level_pct": 94.0,
+      "total_excess_value": 75800.79,
+      "total_inventory_value": 359152.19,
+      "total_part_numbers": 978,
+      "total_stockout_items": 38
+    },
+    "kpis": {
+      "avg_days_to_fulfill": 4.0,
+      "carrying_cost_pct": 19.3,
+      "dead_stock_pct": 9.3,
+      "fill_rate_pct": 95.6,
+      "inventory_turnover_ratio": 2.7
+    },
+    "recommendations": [
+      "Reorder 38 critical parts immediately to restore service levels",
+      "Review 68 excess items for potential return or redistribution ($75,800.79 tied up)",
+      "Implement consignment stocking for high-value, low-turnover bearings",
+      "Set up vendor-managed inventory for filters and lubricants"
+    ],
+    "report_date": "2026-08-05",
+    "source": "simulated"
+  },
+  "get_patient_analytics": {
+    "analysis_period": "2025-08 to 2026-07",
+    "clinical_insights": [
+      "Blood pressure remains above target - consider medication adjustment",
+      "A1C at goal",
+      "BMI 26.5 - weight management counseling recommended",
+      "Weight change: +3 lbs over 12 months"
+    ],
+    "hipaa_notice": "Analytics access audit-logged.",
+    "patient_id": "PT-1001",
+    "source": "simulated",
+    "trends": {
+      "blood_pressure": {
+        "current": "146/80 mmHg",
+        "data": [
+          {
+            "diastolic": 79,
+            "month": "2025-08",
+            "systolic": 140
+          },
+          {
+            "diastolic": 78,
+            "month": "2025-09",
+            "systolic": 137
+          },
+          {
+            "diastolic": 75,
+            "month": "2025-10",
+            "systolic": 149
+          },
+          {
+            "diastolic": 78,
+            "month": "2025-11",
+            "systolic": 148
+          },
+          {
+            "diastolic": 76,
+            "month": "2025-12",
+            "systolic": 140
+          },
+          {
+            "diastolic": 75,
+            "month": "2026-01",
+            "systolic": 135
+          },
+          {
+            "diastolic": 75,
+            "month": "2026-02",
+            "systolic": 137
+          },
+          {
+            "diastolic": 83,
+            "month": "2026-03",
+            "systolic": 140
+          },
+          {
+            "diastolic": 80,
+            "month": "2026-04",
+            "systolic": 143
+          },
+          {
+            "diastolic": 74,
+            "month": "2026-05",
+            "systolic": 143
+          },
+          {
+            "diastolic": 74,
+            "month": "2026-06",
+            "systolic": 137
+          },
+          {
+            "diastolic": 80,
+            "month": "2026-07",
+            "systolic": 146
+          }
+        ],
+        "status": "ABOVE TARGET",
+        "target": "<130/80 mmHg",
+        "trend_direction": "worsening"
+      },
+      "bmi": {
+        "classification": "Overweight",
+        "current": 26.5,
+        "data": [
+          {
+            "month": "2025-08",
+            "value": 26.8
+          },
+          {
+            "month": "2025-09",
+            "value": 26.4
+          },
+          {
+            "month": "2025-10",
+            "value": 26.7
+          },
+          {
+            "month": "2025-11",
+            "value": 26.4
+          },
+          {
+            "month": "2025-12",
+            "value": 26.2
+          },
+          {
+            "month": "2026-01",
+            "value": 26.7
+          },
+          {
+            "month": "2026-02",
+            "value": 26.7
+          },
+          {
+            "month": "2026-03",
+            "value": 26.4
+          },
+          {
+            "month": "2026-04",
+            "value": 26.2
+          },
+          {
+            "month": "2026-05",
+            "value": 26.1
+          },
+          {
+            "month": "2026-06",
+            "value": 26.5
+          },
+          {
+            "month": "2026-07",
+            "value": 26.5
+          }
+        ],
+        "trend_direction": "improving"
+      },
+      "hemoglobin_a1c": {
+        "current": 6.4,
+        "data": [
+          {
+            "month": "2025-08",
+            "value": 6.5
+          },
+          {
+            "month": "2025-11",
+            "value": 6.8
+          },
+          {
+            "month": "2026-02",
+            "value": 6.6
+          },
+          {
+            "month": "2026-05",
+            "value": 6.4
+          }
+        ],
+        "status": "AT TARGET",
+        "target": "<7.0%",
+        "trend_direction": "improving"
+      },
+      "ldl_cholesterol": {
+        "current": "120 mg/dL",
+        "data": [
+          {
+            "month": "2025-08",
+            "value": 128
+          },
+          {
+            "month": "2026-02",
+            "value": 120
+          }
+        ],
+        "status": "ABOVE TARGET",
+        "target": "<100 mg/dL (with diabetes/CVD risk)"
+      },
+      "weight": {
+        "change_12mo": "+3 lbs",
+        "current": "205 lbs",
+        "data": [
+          {
+            "month": "2025-08",
+            "value": 202
+          },
+          {
+            "month": "2025-09",
+            "value": 201
+          },
+          {
+            "month": "2025-10",
+            "value": 204
+          },
+          {
+            "month": "2025-11",
+            "value": 203
+          },
+          {
+            "month": "2025-12",
+            "value": 201
+          },
+          {
+            "month": "2026-01",
+            "value": 203
+          },
+          {
+            "month": "2026-02",
+            "value": 205
+          },
+          {
+            "month": "2026-03",
+            "value": 203
+          },
+          {
+            "month": "2026-04",
+            "value": 205
+          },
+          {
+            "month": "2026-05",
+            "value": 201
+          },
+          {
+            "month": "2026-06",
+            "value": 205
+          },
+          {
+            "month": "2026-07",
+            "value": 205
+          }
+        ],
+        "trend_direction": "increasing"
+      }
+    }
+  },
+  "get_population_health_metrics": {
+    "chronic_disease_prevalence": {
+      "asthma_copd": {
+        "count": 239,
+        "rate": "8.8%"
+      },
+      "depression_anxiety": {
+        "count": 478,
+        "rate": "14.4%"
+      },
+      "diabetes_type_2": {
+        "count": 620,
+        "rate": "15.5%"
+      },
+      "heart_failure": {
+        "count": 87,
+        "rate": "7.7%"
+      },
+      "hyperlipidemia": {
+        "count": 469,
+        "rate": "34.3%"
+      },
+      "hypertension": {
+        "count": 678,
+        "rate": "40.0%"
+      },
+      "obesity_bmi_30_plus": {
+        "count": 1161,
+        "rate": "37.2%"
+      }
+    },
+    "improvement_opportunities": [
+      {
+        "area": "Diabetes Management",
+        "gap": "A1C testing overdue for 12% of diabetic patients",
+        "impact": "HIGH"
+      },
+      {
+        "area": "Preventive Screening",
+        "gap": "Colorectal cancer screening below national target",
+        "impact": "HIGH"
+      },
+      {
+        "area": "Chronic Care",
+        "gap": "15% of hypertensive patients without BP reading in 6 months",
+        "impact": "MEDIUM"
+      },
+      {
+        "area": "Immunizations",
+        "gap": "Flu vaccination rate below organizational target",
+        "impact": "MEDIUM"
+      },
+      {
+        "area": "Behavioral Health",
+        "gap": "Depression screening gap in 20% of eligible patients",
+        "impact": "MEDIUM"
+      }
+    ],
+    "practice_panel": {
+      "average_age": 52.2,
+      "new_patients_30d": 146,
+      "sex_distribution": {
+        "female": "54%",
+        "male": "46%"
+      },
+      "total_active_patients": 2555
+    },
+    "quality_measures_hedis": {
+      "blood_pressure_control": {
+        "national_avg": "68%",
+        "performance": "77%",
+        "target": "70%"
+      },
+      "breast_cancer_screening": {
+        "national_avg": "73%",
+        "performance": "61%",
+        "target": "75%"
+      },
+      "colorectal_cancer_screening": {
+        "national_avg": "65%",
+        "performance": "72%",
+        "target": "70%"
+      },
+      "depression_screening": {
+        "national_avg": "65%",
+        "performance": "82%",
+        "target": "80%"
+      },
+      "diabetes_a1c_control_lt8": {
+        "national_avg": "72%",
+        "performance": "81%",
+        "target": "75%"
+      },
+      "flu_vaccination_rate": {
+        "national_avg": "52%",
+        "performance": "65%",
+        "target": "70%"
+      }
+    },
+    "report_period": "2026-05-07 to 2026-08-05",
+    "source": "simulated",
+    "utilization_metrics": {
+      "avg_encounters_per_patient_year": 5.0,
+      "ed_visits_per_1000": 249,
+      "hospital_admissions_per_1000": 101,
+      "readmission_rate_30d": "11.9%",
+      "telehealth_utilization": "16%"
+    }
+  },
+  "get_portfolio_allocation": {
+    "by_sector": {
+      "Energy": 9.2,
+      "Financials": 18.3,
+      "Healthcare": 7.9,
+      "Technology": 64.6
+    },
+    "concentration": {
+      "herfindahl_index": 0.1875,
+      "top_position_weight_pct": 22.14
+    },
+    "diversification_note": "Computed from live demo positions; sector map covers major tickers.",
+    "portfolio_id": "default",
+    "source": "simulated"
+  },
+  "get_portfolio_positions": {
+    "as_of": "2026-08-05T11:48:38.129343+00:00",
+    "portfolio_id": "default",
+    "positions": [
+      {
+        "avg_cost": 185.5,
+        "cost_basis": 18550.0,
+        "current_price": 254.74,
+        "market_value": 25474.0,
+        "quantity": 100,
+        "symbol": "AAPL",
+        "unrealized_pnl": 6924.0,
+        "unrealized_pnl_pct": 37.33
+      },
+      {
+        "avg_cost": 155,
+        "cost_basis": 9300,
+        "current_price": 150.78,
+        "market_value": 9046.8,
+        "quantity": 60,
+        "symbol": "JNJ",
+        "unrealized_pnl": -253.2,
+        "unrealized_pnl_pct": -2.72
+      },
+      {
+        "avg_cost": 195,
+        "cost_basis": 15600,
+        "current_price": 263.67,
+        "market_value": 21093.6,
+        "quantity": 80,
+        "symbol": "JPM",
+        "unrealized_pnl": 5493.6,
+        "unrealized_pnl_pct": 35.22
+      },
+      {
+        "avg_cost": 380.2,
+        "cost_basis": 19010.0,
+        "current_price": 473.02,
+        "market_value": 23651.0,
+        "quantity": 50,
+        "symbol": "MSFT",
+        "unrealized_pnl": 4641.0,
+        "unrealized_pnl_pct": 24.41
+      },
+      {
+        "avg_cost": 490,
+        "cost_basis": 14700,
+        "current_price": 840.56,
+        "market_value": 25216.8,
+        "quantity": 30,
+        "symbol": "NVDA",
+        "unrealized_pnl": 10516.8,
+        "unrealized_pnl_pct": 71.54
+      },
+      {
+        "avg_cost": 105,
+        "cost_basis": 9450,
+        "current_price": 117.71,
+        "market_value": 10593.9,
+        "quantity": 90,
+        "symbol": "XOM",
+        "unrealized_pnl": 1143.9,
+        "unrealized_pnl_pct": 12.1
+      }
+    ],
+    "source": "simulated",
+    "summary": {
+      "num_positions": 6,
+      "total_cost_basis": 86610.0,
+      "total_market_value": 115076.1,
+      "total_return_pct": 32.87,
+      "total_unrealized_pnl": 28466.1
+    }
+  },
+  "get_pricing_analysis": {
+    "category": "Apparel",
+    "competitor_prices": [
+      {
+        "diff_pct": -13.2,
+        "name": "Amazon",
+        "price": 136.08
+      },
+      {
+        "diff_pct": -8.1,
+        "name": "Walmart",
+        "price": 144.1
+      },
+      {
+        "diff_pct": 0.3,
+        "name": "Best Buy",
+        "price": 157.15
+      },
+      {
+        "diff_pct": 2.6,
+        "name": "Costco",
+        "price": 160.75
+      },
+      {
+        "diff_pct": 3.2,
+        "name": "Target",
+        "price": 161.79
+      }
+    ],
+    "cost": 103.19,
+    "current_price": 156.74,
+    "margin": 34.2,
+    "margin_dollars": 53.55,
+    "market_avg_price": 151.97,
+    "market_position": "ABOVE_AVERAGE",
+    "price_elasticity": -1.86,
+    "price_history": {
+      "30_day_avg": 163.13,
+      "90_day_avg": 147.7,
+      "price_changes_30d": 2
+    },
+    "product_name": "Winter Jacket",
+    "recommended_change_pct": -1.5,
+    "recommended_margin_pct": 33.1,
+    "recommended_price": 154.36,
+    "sku": "SKU-APRL-2001",
+    "source": "simulated"
+  },
+  "get_provider_availability": {
+    "availability": [
+      {
+        "available_slots": [
+          {
+            "duration_minutes": 30,
+            "slot_type": "in-person",
+            "time": "10:00"
+          },
+          {
+            "duration_minutes": 20,
+            "slot_type": "in-person",
+            "time": "10:30"
+          },
+          {
+            "duration_minutes": 15,
+            "slot_type": "in-person",
+            "time": "11:30"
+          },
+          {
+            "duration_minutes": 45,
+            "slot_type": "in-person",
+            "time": "13:00"
+          },
+          {
+            "duration_minutes": 20,
+            "slot_type": "in-person",
+            "time": "14:30"
+          },
+          {
+            "duration_minutes": 20,
+            "slot_type": "in-person",
+            "time": "16:30"
+          }
+        ],
+        "date": "2026-08-06",
+        "day_of_week": "Thursday",
+        "total_open_slots": 6
+      },
+      {
+        "available_slots": [
+          {
+            "duration_minutes": 30,
+            "slot_type": "in-person",
+            "time": "09:00"
+          },
+          {
+            "duration_minutes": 20,
+            "slot_type": "in-person",
+            "time": "10:00"
+          },
+          {
+            "duration_minutes": 30,
+            "slot_type": "in-person",
+            "time": "10:30"
+          },
+          {
+            "duration_minutes": 15,
+            "slot_type": "in-person",
+            "time": "11:30"
+          },
+          {
+            "duration_minutes": 15,
+            "slot_type": "in-person",
+            "time": "13:00"
+          },
+          {
+            "duration_minutes": 30,
+            "slot_type": "in-person",
+            "time": "15:00"
+          },
+          {
+            "duration_minutes": 15,
+            "slot_type": "in-person",
+            "time": "16:00"
+          },
+          {
+            "duration_minutes": 20,
+            "slot_type": "in-person",
+            "time": "16:30"
+          }
+        ],
+        "date": "2026-08-07",
+        "day_of_week": "Friday",
+        "total_open_slots": 8
+      },
+      {
+        "available_slots": [
+          {
+            "duration_minutes": 30,
+            "slot_type": "telehealth",
+            "time": "10:30"
+          },
+          {
+            "duration_minutes": 30,
+            "slot_type": "telehealth",
+            "time": "11:30"
+          },
+          {
+            "duration_minutes": 30,
+            "slot_type": "telehealth",
+            "time": "13:30"
+          }
+        ],
+        "date": "2026-08-10",
+        "day_of_week": "Monday",
+        "total_open_slots": 3
+      },
+      {
+        "available_slots": [
+          {
+            "duration_minutes": 45,
+            "slot_type": "telehealth",
+            "time": "08:30"
+          },
+          {
+            "duration_minutes": 15,
+            "slot_type": "telehealth",
+            "time": "09:00"
+          },
+          {
+            "duration_minutes": 45,
+            "slot_type": "in-person",
+            "time": "09:30"
+          },
+          {
+            "duration_minutes": 45,
+            "slot_type": "in-person",
+            "time": "10:30"
+          },
+          {
+            "duration_minutes": 45,
+            "slot_type": "telehealth",
+            "time": "11:00"
+          },
+          {
+            "duration_minutes": 30,
+            "slot_type": "in-person",
+            "time": "13:00"
+          },
+          {
+            "duration_minutes": 45,
+            "slot_type": "telehealth",
+            "time": "13:30"
+          },
+          {
+            "duration_minutes": 45,
+            "slot_type": "telehealth",
+            "time": "15:00"
+          },
+          {
+            "duration_minutes": 45,
+            "slot_type": "in-person",
+            "time": "15:30"
+          },
+          {
+            "duration_minutes": 15,
+            "slot_type": "telehealth",
+            "time": "16:00"
+          }
+        ],
+        "date": "2026-08-11",
+        "day_of_week": "Tuesday",
+        "total_open_slots": 10
+      },
+      {
+        "available_slots": [
+          {
+            "duration_minutes": 30,
+            "slot_type": "telehealth",
+            "time": "08:30"
+          },
+          {
+            "duration_minutes": 15,
+            "slot_type": "telehealth",
+            "time": "09:30"
+          },
+          {
+            "duration_minutes": 20,
+            "slot_type": "in-person",
+            "time": "10:00"
+          },
+          {
+            "duration_minutes": 45,
+            "slot_type": "in-person",
+            "time": "13:30"
+          },
+          {
+            "duration_minutes": 20,
+            "slot_type": "in-person",
+            "time": "16:30"
+          }
+        ],
+        "date": "2026-08-12",
+        "day_of_week": "Wednesday",
+        "total_open_slots": 5
+      },
+      {
+        "available_slots": [
+          {
+            "duration_minutes": 45,
+            "slot_type": "in-person",
+            "time": "08:30"
+          },
+          {
+            "duration_minutes": 45,
+            "slot_type": "in-person",
+            "time": "09:00"
+          },
+          {
+            "duration_minutes": 30,
+            "slot_type": "in-person",
+            "time": "09:30"
+          },
+          {
+            "duration_minutes": 45,
+            "slot_type": "in-person",
+            "time": "13:00"
+          },
+          {
+            "duration_minutes": 30,
+            "slot_type": "in-person",
+            "time": "14:00"
+          },
+          {
+            "duration_minutes": 20,
+            "slot_type": "in-person",
+            "time": "15:30"
+          }
+        ],
+        "date": "2026-08-13",
+        "day_of_week": "Thursday",
+        "total_open_slots": 6
+      }
+    ],
+    "booking_note": "To book, use schedule_appointment with the desired date.",
+    "date_range": {
+      "end": "2026-08-13",
+      "start": "2026-08-06"
+    },
+    "provider": {
+      "location": "Main Campus",
+      "name": "Dr. Sarah Chen, MD",
+      "specialty": "Internal Medicine"
+    },
+    "provider_id": "DR-CHEN",
+    "source": "simulated",
+    "summary": {
+      "earliest_available": "10:00",
+      "total_available_days": 6,
+      "total_available_slots": 38
+    }
+  },
+  "get_readmission_risk": {
+    "benchmark": {
+      "cms_penalty_threshold": "15.4%",
+      "national_avg_readmission_rate": "15.6%"
+    },
+    "clinical_profile": {
+      "age": 64,
+      "comorbidities": [
+        {
+          "condition": "Chronic Kidney Disease Stage 3",
+          "icd10": "N18.3"
+        },
+        {
+          "condition": "Anemia",
+          "icd10": "D64.9"
+        },
+        {
+          "condition": "Atrial Fibrillation",
+          "icd10": "I48.91"
+        }
+      ],
+      "comorbidity_count": 3,
+      "ed_visits_6mo": 6,
+      "prior_admissions_12mo": 2
+    },
+    "contributing_factors": [
+      "3 active comorbidities",
+      "2 hospital admissions in past 12 months",
+      "6 ED visits in past 6 months"
+    ],
+    "disclaimer": "Predictive model for clinical decision support. Individual patient assessment required.",
+    "patient_id": "PT-1001",
+    "probability_30day_readmission": "8.9%",
+    "recommended_interventions": [
+      {
+        "intervention": "Patient education on warning signs requiring ED return",
+        "priority": "MEDIUM"
+      }
+    ],
+    "risk_color": "GREEN",
+    "risk_level": "LOW",
+    "risk_model": "Hospital Readmission Risk Prediction (LACE+ enhanced)",
+    "risk_score": 8.9,
+    "social_determinants": {
+      "food_insecurity": false,
+      "health_literacy": "adequate",
+      "insurance_type": "Commercial",
+      "lives_alone": false,
+      "transportation_barriers": false
+    },
+    "source": "simulated"
+  },
+  "get_reliability_metrics": {
+    "benchmarks": {
+      "industry_avg_mtbf_hours": 3000,
+      "industry_avg_oee": 65.0,
+      "vs_industry_mtbf": 13.5,
+      "vs_industry_oee": 11.0
+    },
+    "equipment_id": "EQ-CNC-001",
+    "failure_history": {
+      "planned_downtime_hours": 12.8,
+      "top_failure_modes": [
+        {
+          "avg_repair_hours": 4.2,
+          "count": 1,
+          "mode": "Bearing failure"
+        },
+        {
+          "avg_repair_hours": 3.2,
+          "count": 1,
+          "mode": "Seal leak"
+        },
+        {
+          "avg_repair_hours": 1.6,
+          "count": 1,
+          "mode": "Electrical fault"
+        }
+      ],
+      "total_downtime_hours": 9.0,
+      "total_failures_12m": 3,
+      "unplanned_downtime_pct": 41.3
+    },
+    "oee_breakdown": {
+      "availability_pct": 91.92,
+      "oee_class": "Good",
+      "oee_pct": 76.0,
+      "performance_rate_pct": 85.2,
+      "quality_rate_pct": 97.0
+    },
+    "period": "Last 12 months",
+    "reliability_metrics": {
+      "failure_rate_per_1000h": 0.294,
+      "mtbf_days": 141.9,
+      "mtbf_hours": 3405,
+      "mttr_hours": 3.0
+    },
+    "source": "simulated",
+    "trends": {
+      "mtbf_change_pct": 1.9,
+      "mtbf_trend": "STABLE",
+      "oee_change_pct": 0.9,
+      "oee_trend": "STABLE"
+    }
+  },
+  "get_sector_performance": {
+    "sectors": [
+      {
+        "daily_change_pct": 1.22,
+        "market_cap_trillions": 13.1,
+        "name": "Technology",
+        "ytd_change_pct": -1.71
+      },
+      {
+        "daily_change_pct": 0.18,
+        "market_cap_trillions": 5.7,
+        "name": "Healthcare",
+        "ytd_change_pct": 6.15
+      },
+      {
+        "daily_change_pct": -0.99,
+        "market_cap_trillions": 10.0,
+        "name": "Financials",
+        "ytd_change_pct": 4.18
+      },
+      {
+        "daily_change_pct": 0.42,
+        "market_cap_trillions": 6.4,
+        "name": "Consumer Discretionary",
+        "ytd_change_pct": 13.21
+      },
+      {
+        "daily_change_pct": 1.47,
+        "market_cap_trillions": 10.2,
+        "name": "Communication Services",
+        "ytd_change_pct": 2.93
+      },
+      {
+        "daily_change_pct": -0.87,
+        "market_cap_trillions": 13.9,
+        "name": "Industrials",
+        "ytd_change_pct": 2.39
+      },
+      {
+        "daily_change_pct": -1.68,
+        "market_cap_trillions": 6.7,
+        "name": "Consumer Staples",
+        "ytd_change_pct": 3.5
+      },
+      {
+        "daily_change_pct": -0.81,
+        "market_cap_trillions": 9.4,
+        "name": "Energy",
+        "ytd_change_pct": 14.27
+      },
+      {
+        "daily_change_pct": -0.42,
+        "market_cap_trillions": 14.4,
+        "name": "Utilities",
+        "ytd_change_pct": -1.58
+      },
+      {
+        "daily_change_pct": 1.0,
+        "market_cap_trillions": 9.5,
+        "name": "Real Estate",
+        "ytd_change_pct": 1.9
+      },
+      {
+        "daily_change_pct": -0.36,
+        "market_cap_trillions": 9.7,
+        "name": "Materials",
+        "ytd_change_pct": 18.63
+      }
+    ],
+    "source": "simulated"
+  },
+  "get_sensor_data": {
+    "data_points": 96,
+    "equipment_id": "EQ-CNC-001",
+    "period_hours": 24,
+    "readings": [
+      {
+        "timestamp": "2026-08-04T11:30:00+00:00",
+        "value": 3.85
+      },
+      {
+        "timestamp": "2026-08-04T11:45:00+00:00",
+        "value": 3.33
+      },
+      {
+        "timestamp": "2026-08-04T12:00:00+00:00",
+        "value": 4.11
+      },
+      {
+        "timestamp": "2026-08-04T12:15:00+00:00",
+        "value": 3.7
+      },
+      {
+        "timestamp": "2026-08-04T12:30:00+00:00",
+        "value": 3.83
+      },
+      {
+        "timestamp": "2026-08-04T12:45:00+00:00",
+        "value": 4.13
+      },
+      {
+        "timestamp": "2026-08-04T13:00:00+00:00",
+        "value": 3.25
+      },
+      {
+        "timestamp": "2026-08-04T13:15:00+00:00",
+        "value": 3.99
+      },
+      {
+        "timestamp": "2026-08-04T13:30:00+00:00",
+        "value": 3.63
+      },
+      {
+        "timestamp": "2026-08-04T13:45:00+00:00",
+        "value": 3.81
+      },
+      {
+        "timestamp": "2026-08-04T14:00:00+00:00",
+        "value": 3.87
+      },
+      {
+        "timestamp": "2026-08-04T14:15:00+00:00",
+        "value": 3.54
+      },
+      {
+        "timestamp": "2026-08-04T14:30:00+00:00",
+        "value": 3.92
+      },
+      {
+        "timestamp": "2026-08-04T14:45:00+00:00",
+        "value": 3.94
+      },
+      {
+        "timestamp": "2026-08-04T15:00:00+00:00",
+        "value": 4.49
+      },
+      {
+        "timestamp": "2026-08-04T15:15:00+00:00",
+        "value": 3.73
+      },
+      {
+        "timestamp": "2026-08-04T15:30:00+00:00",
+        "value": 3.81
+      },
+      {
+        "timestamp": "2026-08-04T15:45:00+00:00",
+        "value": 4.13
+      },
+      {
+        "timestamp": "2026-08-04T16:00:00+00:00",
+        "value": 4.38
+      },
+      {
+        "timestamp": "2026-08-04T16:15:00+00:00",
+        "value": 2.63
+      },
+      {
+        "timestamp": "2026-08-04T16:30:00+00:00",
+        "value": 3.95
+      },
+      {
+        "timestamp": "2026-08-04T16:45:00+00:00",
+        "value": 4.12
+      },
+      {
+        "timestamp": "2026-08-04T17:00:00+00:00",
+        "value": 3.52
+      },
+      {
+        "timestamp": "2026-08-04T17:15:00+00:00",
+        "value": 4.28
+      },
+      {
+        "timestamp": "2026-08-04T17:30:00+00:00",
+        "value": 3.75
+      },
+      {
+        "timestamp": "2026-08-04T17:45:00+00:00",
+        "value": 3.87
+      },
+      {
+        "timestamp": "2026-08-04T18:00:00+00:00",
+        "value": 4.03
+      },
+      {
+        "timestamp": "2026-08-04T18:15:00+00:00",
+        "value": 3.32
+      },
+      {
+        "timestamp": "2026-08-04T18:30:00+00:00",
+        "value": 3.55
+      },
+      {
+        "timestamp": "2026-08-04T18:45:00+00:00",
+        "value": 3.6
+      },
+      {
+        "timestamp": "2026-08-04T19:00:00+00:00",
+        "value": 3.72
+      },
+      {
+        "timestamp": "2026-08-04T19:15:00+00:00",
+        "value": 3.33
+      },
+      {
+        "timestamp": "2026-08-04T19:30:00+00:00",
+        "value": 3.43
+      },
+      {
+        "timestamp": "2026-08-04T19:45:00+00:00",
+        "value": 3.99
+      },
+      {
+        "timestamp": "2026-08-04T20:00:00+00:00",
+        "value": 3.6
+      },
+      {
+        "timestamp": "2026-08-04T20:15:00+00:00",
+        "value": 3.45
+      },
+      {
+        "timestamp": "2026-08-04T20:30:00+00:00",
+        "value": 3.42
+      },
+      {
+        "timestamp": "2026-08-04T20:45:00+00:00",
+        "value": 3.62
+      },
+      {
+        "timestamp": "2026-08-04T21:00:00+00:00",
+        "value": 3.63
+      },
+      {
+        "timestamp": "2026-08-04T21:15:00+00:00",
+        "value": 3.62
+      },
+      {
+        "timestamp": "2026-08-04T21:30:00+00:00",
+        "value": 3.45
+      },
+      {
+        "timestamp": "2026-08-04T21:45:00+00:00",
+        "value": 4.0
+      },
+      {
+        "timestamp": "2026-08-04T22:00:00+00:00",
+        "value": 3.88
+      },
+      {
+        "timestamp": "2026-08-04T22:15:00+00:00",
+        "value": 4.01
+      },
+      {
+        "timestamp": "2026-08-04T22:30:00+00:00",
+        "value": 3.5
+      },
+      {
+        "timestamp": "2026-08-04T22:45:00+00:00",
+        "value": 3.44
+      },
+      {
+        "timestamp": "2026-08-04T23:00:00+00:00",
+        "value": 3.02
+      },
+      {
+        "timestamp": "2026-08-04T23:15:00+00:00",
+        "value": 3.18
+      },
+      {
+        "timestamp": "2026-08-04T23:30:00+00:00",
+        "value": 3.43
+      },
+      {
+        "timestamp": "2026-08-04T23:45:00+00:00",
+        "value": 3.7
+      }
+    ],
+    "sensor_type": "vibration",
+    "source": "simulated",
+    "statistics": {
+      "max": 4.54,
+      "mean": 3.73,
+      "min": 2.63,
+      "std_dev": 0.36,
+      "trend": "STABLE",
+      "trend_rate_per_hour": -0.001
+    },
+    "thresholds": {
+      "breach_direction": "ABOVE",
+      "breaches_critical": 0,
+      "breaches_warning": 0,
+      "critical": 11.0,
+      "warning": 7.1
+    },
+    "unit": "mm/s"
+  },
+  "get_settlement_analytics": {
+    "by_claim_type": {
+      "auto": {
+        "avg_amount": 8927.06,
+        "count": 97
+      },
+      "health": {
+        "avg_amount": 13208.41,
+        "count": 49
+      },
+      "home": {
+        "avg_amount": 18880.24,
+        "count": 60
+      },
+      "property": {
+        "avg_amount": 5044.76,
+        "count": 22
+      }
+    },
+    "kpis": {
+      "average_settlement": 12091.82,
+      "avg_processing_days": 17.2,
+      "customer_satisfaction": 4.3,
+      "median_settlement": 10801.32,
+      "straight_through_rate_pct": 58.3,
+      "total_amount_paid": 2756936.03,
+      "total_settlements": 228
+    },
+    "period": "current_month",
+    "source": "simulated",
+    "trend": {
+      "avg_amount_vs_prior_month": 3.4,
+      "processing_time_vs_prior_month": 4.3,
+      "settlements_vs_prior_month": -9.9
+    }
+  },
+  "get_stock_quote": {
+    "52w_high": 1050.7,
+    "52w_low": 630.42,
+    "avg_volume": 40010315,
+    "change": 10.58,
+    "change_pct": 1.27,
+    "dividend_yield": 1.37,
+    "market_cap_billions": 1020.7,
+    "pe_ratio": 39.2,
+    "price": 840.56,
+    "source": "simulated",
+    "symbol": "NVDA",
+    "timestamp": "2026-08-05T11:48:38.161390+00:00",
+    "volume": 36373014
+  },
+  "get_stockout_report": {
+    "a_class_stockouts": 5,
+    "items": [
+      {
+        "abc_class": "A",
+        "category": "Electronics",
+        "days_out_of_stock": 8,
+        "estimated_daily_revenue_loss": 34473.26,
+        "estimated_total_loss": 275786.08,
+        "eta": "2026-08-19",
+        "product_name": "Wireless Earbuds",
+        "reorder_status": "ON_ORDER",
+        "sku": "SKU-ELEC-1001"
+      },
+      {
+        "abc_class": "A",
+        "category": "Apparel",
+        "days_out_of_stock": 6,
+        "estimated_daily_revenue_loss": 23667.74,
+        "estimated_total_loss": 142006.44,
+        "eta": "2026-08-16",
+        "product_name": "Winter Jacket",
+        "reorder_status": "ON_ORDER",
+        "sku": "SKU-APRL-2001"
+      },
+      {
+        "abc_class": "A",
+        "category": "Home & Garden",
+        "days_out_of_stock": 7,
+        "estimated_daily_revenue_loss": 17764.24,
+        "estimated_total_loss": 124349.68,
+        "eta": "2026-08-08",
+        "product_name": "Air Purifier",
+        "reorder_status": "ON_ORDER",
+        "sku": "SKU-HOME-4001"
+      },
+      {
+        "abc_class": "B",
+        "category": "Home & Garden",
+        "days_out_of_stock": 13,
+        "estimated_daily_revenue_loss": 3314.1,
+        "estimated_total_loss": 43083.3,
+        "eta": "2026-08-18",
+        "product_name": "Cast Iron Skillet",
+        "reorder_status": "ON_ORDER",
+        "sku": "SKU-HOME-4002"
+      },
+      {
+        "abc_class": "C",
+        "category": "Electronics",
+        "days_out_of_stock": 13,
+        "estimated_daily_revenue_loss": 2511.63,
+        "estimated_total_loss": 32651.19,
+        "eta": "2026-08-07",
+        "product_name": "USB-C Cable",
+        "reorder_status": "ON_ORDER",
+        "sku": "SKU-ELEC-1002"
+      },
+      {
+        "abc_class": "A",
+        "category": "Sports",
+        "days_out_of_stock": 6,
+        "estimated_daily_revenue_loss": 4725.06,
+        "estimated_total_loss": 28350.36,
+        "eta": "2026-08-18",
+        "product_name": "Running Shoes",
+        "reorder_status": "ON_ORDER",
+        "sku": "SKU-SPRT-5001"
+      },
+      {
+        "abc_class": "B",
+        "category": "Sports",
+        "days_out_of_stock": 4,
+        "estimated_daily_revenue_loss": 6158.7,
+        "estimated_total_loss": 24634.8,
+        "eta": null,
+        "product_name": "Trail Backpack",
+        "reorder_status": "PENDING",
+        "sku": "SKU-SPRT-5003"
+      },
+      {
+        "abc_class": "A",
+        "category": "Grocery",
+        "days_out_of_stock": 3,
+        "estimated_daily_revenue_loss": 3218.25,
+        "estimated_total_loss": 9654.75,
+        "eta": "2026-08-14",
+        "product_name": "Organic Coffee",
+        "reorder_status": "ON_ORDER",
+        "sku": "SKU-GROC-3001"
+      }
+    ],
+    "network_stockouts": 157,
+    "recommendation": "Prioritize A-class items for expedited reorder. Consider safety stock adjustment.",
+    "scope": "8 tracked catalog SKUs out of stock, of 157 network-wide",
+    "source": "simulated",
+    "total_revenue_impact": 680516.6,
+    "total_stockouts": 8
+  },
+  "get_supplier_performance": {
+    "category": "Electronics",
+    "contract_expiry": "2027-05-22",
+    "contract_status": "ACTIVE",
+    "metrics": {
+      "avg_lead_time_days": 10.3,
+      "cost_competitiveness_score": 84.0,
+      "defect_rate_ppm": 1000,
+      "lead_time_variability_days": 0.6,
+      "on_time_delivery_pct": 92.4,
+      "quality_acceptance_pct": 99.9,
+      "responsiveness_score": 64.9
+    },
+    "overall_score": 87.5,
+    "rating": "APPROVED",
+    "recent_orders": 4,
+    "risk_assessment": "MEDIUM",
+    "single_source": false,
+    "source": "simulated",
+    "supplier_id": "SUP-100",
+    "supplier_name": "GlobalSupply Co",
+    "total_spend_ytd": 4619495.2
+  },
+  "get_supplier_risk_report": {
+    "next_review": "2026-09-10",
+    "overall_supply_chain_risk": "MEDIUM",
+    "recommendations": [
+      "Dual-source Grocery, Sports \u2014 1,659 SKUs currently on one vendor",
+      "Put Pacific Distributors on a 90-day improvement plan (below the 80 approval score)",
+      "Raise safety stock for 5 vendors delivering under 90% on time",
+      "Conduct quarterly supplier financial health reviews"
+    ],
+    "report_date": "2026-08-05",
+    "risk_factors": {
+      "financial_health": {
+        "recent_downgrades": 1,
+        "suppliers_on_watch": 1,
+        "watch_list": [
+          "SUP-101"
+        ]
+      },
+      "geographic_concentration": {
+        "high_risk_regions": 2,
+        "suppliers_in_risk_zones": 2
+      },
+      "lead_time_risk": {
+        "avg_lead_time_increase_pct": 10.4,
+        "suppliers_with_increasing_lead_times": 5
+      },
+      "single_source_dependencies": {
+        "categories": [
+          "Sports",
+          "Grocery"
+        ],
+        "count": 2,
+        "revenue_at_risk": 38178450.52,
+        "skus_affected": 1659,
+        "suppliers": [
+          "SUP-103",
+          "SUP-104"
+        ]
+      }
+    },
+    "source": "simulated",
+    "suppliers_assessed": 8,
+    "top_risks": [
+      {
+        "mitigation": "Qualify a second Grocery vendor",
+        "risk": "Grocery is single-sourced through Sunrise Manufacturing (SUP-104)",
+        "severity": "HIGH"
+      },
+      {
+        "mitigation": "Performance review and dual-source Apparel",
+        "risk": "Pacific Distributors is PROBATIONARY at 79.9 (82.5% on-time)",
+        "severity": "HIGH"
+      },
+      {
+        "mitigation": "Qualify a second Sports vendor",
+        "risk": "Sports is single-sourced through Atlas Trading (SUP-103)",
+        "severity": "MEDIUM"
+      },
+      {
+        "mitigation": "Raise safety stock on Apparel SKUs",
+        "risk": "Crown Supply Chain lead time varies by \u00b12.6 days",
+        "severity": "MEDIUM"
+      }
+    ]
+  },
+  "list_claims": {
+    "claims": [
+      {
+        "amount": 65163.85,
+        "claim_id": "CLM-2026-B6CA9F",
+        "claim_type": "home",
+        "filed_date": "2026-07-28",
+        "fraud_risk": 0.51,
+        "priority": "HIGH",
+        "status": "UNDER_REVIEW"
+      },
+      {
+        "amount": 52728.38,
+        "claim_id": "CLM-2026-804807",
+        "claim_type": "health",
+        "filed_date": "2026-07-27",
+        "fraud_risk": 0.42,
+        "priority": "MEDIUM",
+        "status": "INVESTIGATION"
+      },
+      {
+        "amount": 33955.09,
+        "claim_id": "CLM-2026-2B190F",
+        "claim_type": "home",
+        "filed_date": "2026-07-24",
+        "fraud_risk": 0.61,
+        "priority": "MEDIUM",
+        "status": "SETTLEMENT_OFFERED"
+      },
+      {
+        "amount": 55599.0,
+        "claim_id": "CLM-2026-6D4AC1",
+        "claim_type": "property",
+        "filed_date": "2026-07-23",
+        "fraud_risk": 0.32,
+        "priority": "MEDIUM",
+        "status": "CLOSED"
+      },
+      {
+        "amount": 36091.99,
+        "claim_id": "CLM-2026-0C8BED",
+        "claim_type": "health",
+        "filed_date": "2026-07-22",
+        "fraud_risk": 0.91,
+        "priority": "HIGH",
+        "status": "CLOSED"
+      },
+      {
+        "amount": 16867.18,
+        "claim_id": "CLM-2026-76C6C4",
+        "claim_type": "property",
+        "filed_date": "2026-07-22",
+        "fraud_risk": 0.25,
+        "priority": "LOW",
+        "status": "SETTLEMENT_OFFERED"
+      },
+      {
+        "amount": 53157.51,
+        "claim_id": "CLM-2026-BF8968",
+        "claim_type": "liability",
+        "filed_date": "2026-07-20",
+        "fraud_risk": 0.81,
+        "priority": "MEDIUM",
+        "status": "SETTLEMENT_OFFERED"
+      },
+      {
+        "amount": 45581.71,
+        "claim_id": "CLM-2026-D99B8F",
+        "claim_type": "health",
+        "filed_date": "2026-07-17",
+        "fraud_risk": 0.29,
+        "priority": "MEDIUM",
+        "status": "INVESTIGATION"
+      },
+      {
+        "amount": 1988.64,
+        "claim_id": "CLM-2026-B9A707",
+        "claim_type": "property",
+        "filed_date": "2026-07-16",
+        "fraud_risk": 0.57,
+        "priority": "MEDIUM",
+        "status": "ASSESSMENT"
+      },
+      {
+        "amount": 63379.62,
+        "claim_id": "CLM-2026-1FF9DF",
+        "claim_type": "property",
+        "filed_date": "2026-07-16",
+        "fraud_risk": 0.99,
+        "priority": "HIGH",
+        "status": "CLOSED"
+      },
+      {
+        "amount": 70417.3,
+        "claim_id": "CLM-2026-462C0F",
+        "claim_type": "home",
+        "filed_date": "2026-07-15",
+        "fraud_risk": 0.66,
+        "priority": "HIGH",
+        "status": "SETTLEMENT_OFFERED"
+      },
+      {
+        "amount": 57575.57,
+        "claim_id": "CLM-2026-D98BD9",
+        "claim_type": "home",
+        "filed_date": "2026-07-13",
+        "fraud_risk": 0.92,
+        "priority": "HIGH",
+        "status": "CLOSED"
+      },
+      {
+        "amount": 68959.47,
+        "claim_id": "CLM-2026-B1C9D8",
+        "claim_type": "property",
+        "filed_date": "2026-07-10",
+        "fraud_risk": 0.62,
+        "priority": "HIGH",
+        "status": "SUBMITTED"
+      },
+      {
+        "amount": 59780.78,
+        "claim_id": "CLM-2026-8CB220",
+        "claim_type": "auto",
+        "filed_date": "2026-07-07",
+        "fraud_risk": 0.12,
+        "priority": "MEDIUM",
+        "status": "UNDER_REVIEW"
+      },
+      {
+        "amount": 46718.29,
+        "claim_id": "CLM-2026-4BBB4F",
+        "claim_type": "auto",
+        "filed_date": "2026-07-07",
+        "fraud_risk": 0.66,
+        "priority": "MEDIUM",
+        "status": "INVESTIGATION"
+      }
+    ],
+    "filter": "all",
+    "open_claims": 11,
+    "period_days": 30,
+    "source": "simulated",
+    "summary": {
+      "avg_amount": 48530.96,
+      "avg_open_amount": 46847.11,
+      "flagged_fraud": 4,
+      "high_priority": 6,
+      "reserve_exposure": 515318.2,
+      "total_amount": 727964.38
+    },
+    "total_claims": 15
+  },
+  "optimize_pricing": {
+    "current": {
+      "daily_margin": 8086.05,
+      "daily_revenue": 23667.74,
+      "daily_units": 151,
+      "margin_pct": 34.2,
+      "price": 156.74
+    },
+    "impact": {
+      "margin_change_pct": 3.8,
+      "revenue_change_pct": -17.0
+    },
+    "objective": "maximize_margin",
+    "price_elasticity": -1.86,
+    "product_name": "Winter Jacket",
+    "recommended": {
+      "price": 180.2,
+      "price_change_pct": 15.0,
+      "projected_daily_margin": 8394.09,
+      "projected_daily_revenue": 19641.8,
+      "projected_daily_units": 109,
+      "projected_margin_pct": 42.7
+    },
+    "sku": "SKU-APRL-2001",
+    "source": "simulated"
+  },
+  "predict_failure": {
+    "contributing_factors": [
+      {
+        "factor": "Vibration trend increasing",
+        "impact": "HIGH"
+      },
+      {
+        "factor": "Temperature above baseline",
+        "impact": "MEDIUM"
+      },
+      {
+        "factor": "Operating hours: 33470h",
+        "impact": "MEDIUM"
+      },
+      {
+        "factor": "Last maintenance: 307 days ago",
+        "impact": "MEDIUM"
+      }
+    ],
+    "degradation_trend": {
+      "acceleration": "ACCELERATING",
+      "current_degradation_pct": 63.2,
+      "degradation_rate_per_day": 1.8
+    },
+    "equipment_id": "EQ-TURB-001",
+    "model_accuracy": 0.86,
+    "prediction_model": "LSTM degradation model (demo simulation)",
+    "primary_prediction": {
+      "affected_component": "Main Bearing",
+      "confidence_interval": {
+        "confidence_level": 0.95,
+        "lower_days": 5,
+        "upper_days": 5
+      },
+      "estimated_failure_date": "2026-08-10",
+      "failure_mode": "BEARING_FAILURE",
+      "failure_probability": 0.94,
+      "remaining_useful_life_days": 5
+    },
+    "recommended_action": "Schedule immediate maintenance for Main Bearing replacement within 5 days.",
+    "risk_level": "CRITICAL",
+    "secondary_prediction": {
+      "affected_component": "Impeller",
+      "failure_mode": "IMPELLER_WEAR",
+      "probability": 0.14
+    },
+    "source": "simulated"
+  },
+  "search_properties": {
+    "listings": [
+      {
+        "address": "2973 Spruce Blvd, 78701",
+        "bathrooms": 2,
+        "bedrooms": 3,
+        "days_on_market": 58,
+        "features": [
+          "Solar",
+          "Deck",
+          "New Roof"
+        ],
+        "list_price": 375000,
+        "listing_date": "2026-06-08",
+        "listing_id": "MLS-85983504",
+        "lot_sqft": 12910,
+        "original_price": 382810,
+        "price_per_sqft": 285.39,
+        "price_reduced": true,
+        "property_type": "Single Family",
+        "sqft": 1314,
+        "status": "Active",
+        "year_built": 1962
+      },
+      {
+        "address": "5178 Walnut Way, 78701",
+        "bathrooms": 2,
+        "bedrooms": 4,
+        "days_on_market": 37,
+        "features": [
+          "Pool",
+          "Hardwood",
+          "Deck",
+          "Fireplace",
+          "Solar"
+        ],
+        "list_price": 527000,
+        "listing_date": "2026-06-29",
+        "listing_id": "MLS-33896228",
+        "lot_sqft": 16607,
+        "original_price": 527000,
+        "price_per_sqft": 305.51,
+        "price_reduced": false,
+        "property_type": "Single Family",
+        "sqft": 1725,
+        "status": "Active",
+        "year_built": 1972
+      },
+      {
+        "address": "2577 Maple Ave, 78701",
+        "bathrooms": 2,
+        "bedrooms": 3,
+        "days_on_market": 38,
+        "features": [
+          "Garage",
+          "Solar"
+        ],
+        "list_price": 612000,
+        "listing_date": "2026-06-28",
+        "listing_id": "MLS-33450466",
+        "lot_sqft": 19353,
+        "original_price": 612000,
+        "price_per_sqft": 299.56,
+        "price_reduced": false,
+        "property_type": "Single Family",
+        "sqft": 2043,
+        "status": "Active",
+        "year_built": 2018
+      },
+      {
+        "address": "6622 Hickory St, 78701",
+        "bathrooms": 2,
+        "bedrooms": 3,
+        "days_on_market": 36,
+        "features": [
+          "Hardwood",
+          "New Roof"
+        ],
+        "list_price": 678000,
+        "listing_date": "2026-06-30",
+        "listing_id": "MLS-56345692",
+        "lot_sqft": 4754,
+        "original_price": 678000,
+        "price_per_sqft": 259.57,
+        "price_reduced": false,
+        "property_type": "Single Family",
+        "sqft": 2612,
+        "status": "Active",
+        "year_built": 1953
+      },
+      {
+        "address": "2834 Walnut Way, 78701",
+        "bathrooms": 3,
+        "bedrooms": 4,
+        "days_on_market": 31,
+        "features": [
+          "Fireplace",
+          "Hardwood",
+          "Garage"
+        ],
+        "list_price": 684000,
+        "listing_date": "2026-07-05",
+        "listing_id": "MLS-52159679",
+        "lot_sqft": 9852,
+        "original_price": 684000,
+        "price_per_sqft": 234.89,
+        "price_reduced": false,
+        "property_type": "Single Family",
+        "sqft": 2912,
+        "status": "Active",
+        "year_built": 1957
+      },
+      {
+        "address": "4986 Elm St, 78701",
+        "bathrooms": 3,
+        "bedrooms": 6,
+        "days_on_market": 48,
+        "features": [
+          "Deck",
+          "Pool"
+        ],
+        "list_price": 776000,
+        "listing_date": "2026-06-18",
+        "listing_id": "MLS-50264899",
+        "lot_sqft": 11830,
+        "original_price": 804433,
+        "price_per_sqft": 234.87,
+        "price_reduced": true,
+        "property_type": "Single Family",
+        "sqft": 3304,
+        "status": "Coming Soon",
+        "year_built": 1962
+      },
+      {
+        "address": "923 Hickory St, 78701",
+        "bathrooms": 2,
+        "bedrooms": 4,
+        "days_on_market": 134,
+        "features": [
+          "Garage",
+          "Deck",
+          "Fireplace"
+        ],
+        "list_price": 777000,
+        "listing_date": "2026-03-24",
+        "listing_id": "MLS-75260236",
+        "lot_sqft": 17866,
+        "original_price": 777000,
+        "price_per_sqft": 374.1,
+        "price_reduced": false,
+        "property_type": "Single Family",
+        "sqft": 2077,
+        "status": "Active",
+        "year_built": 1963
+      },
+      {
+        "address": "7347 Magnolia Dr, 78701",
+        "bathrooms": 3,
+        "bedrooms": 4,
+        "days_on_market": 95,
+        "features": [
+          "Pool",
+          "New Roof",
+          "Deck",
+          "Fireplace",
+          "Hardwood"
+        ],
+        "list_price": 852000,
+        "listing_date": "2026-05-02",
+        "listing_id": "MLS-28466599",
+        "lot_sqft": 9024,
+        "original_price": 852000,
+        "price_per_sqft": 292.18,
+        "price_reduced": false,
+        "property_type": "Single Family",
+        "sqft": 2916,
+        "status": "Active",
+        "year_built": 2009
+      },
+      {
+        "address": "9596 Elm St, 78701",
+        "bathrooms": 3,
+        "bedrooms": 5,
+        "days_on_market": 113,
+        "features": [
+          "Deck",
+          "Solar"
+        ],
+        "list_price": 880000,
+        "listing_date": "2026-04-14",
+        "listing_id": "MLS-58812946",
+        "lot_sqft": 5236,
+        "original_price": 880000,
+        "price_per_sqft": 318.15,
+        "price_reduced": false,
+        "property_type": "Single Family",
+        "sqft": 2766,
+        "status": "Active",
+        "year_built": 1986
+      },
+      {
+        "address": "3579 Cedar Ln, 78701",
+        "bathrooms": 2,
+        "bedrooms": 5,
+        "days_on_market": 156,
+        "features": [
+          "New Roof",
+          "Solar",
+          "Pool"
+        ],
+        "list_price": 944000,
+        "listing_date": "2026-03-02",
+        "listing_id": "MLS-64408353",
+        "lot_sqft": 6395,
+        "original_price": 944000,
+        "price_per_sqft": 378.81,
+        "price_reduced": false,
+        "property_type": "Single Family",
+        "sqft": 2492,
+        "status": "Coming Soon",
+        "year_built": 1984
+      }
+    ],
+    "market_active_listings": 420,
+    "market_median_price": 528000,
+    "market_median_price_per_sqft": 306.86,
+    "page": 1,
+    "page_size": 10,
+    "search_criteria": {
+      "beds_min": 3,
+      "property_type": "single_family",
+      "zipcode": "78701"
+    },
+    "source": "simulated",
+    "summary": {
+      "avg_days_on_market": 75,
+      "avg_price_per_sqft": 298.3,
+      "max_price": 944000,
+      "median_price": 776000,
+      "min_price": 375000,
+      "pct_with_price_reduction": 20.0
+    },
+    "total_results": 210,
+    "zipcode": "78701"
+  },
+  "stress_test_portfolio": {
+    "portfolio_value": 250000.0,
+    "recommendation": "Consider hedging strategies (puts, inverse ETFs) if stress losses exceed risk tolerance.",
+    "scenarios": {
+      "2008_financial_crisis": {
+        "crisis_duration_months": 17,
+        "drawdown_pct": -54.0,
+        "estimated_loss": -135000.0,
+        "estimated_recovery_months": 49,
+        "portfolio_value_at_trough": 115000.0
+      },
+      "black_monday_1987": {
+        "crisis_duration_months": 0.1,
+        "drawdown_pct": -22.0,
+        "estimated_loss": -55000.0,
+        "estimated_recovery_months": 2,
+        "portfolio_value_at_trough": 195000.0
+      },
+      "covid_crash_2020": {
+        "crisis_duration_months": 1,
+        "drawdown_pct": -34.0,
+        "estimated_loss": -85000.0,
+        "estimated_recovery_months": 5,
+        "portfolio_value_at_trough": 165000.0
+      },
+      "dot_com_bubble": {
+        "crisis_duration_months": 30,
+        "drawdown_pct": -49.0,
+        "estimated_loss": -122500.0,
+        "estimated_recovery_months": 56,
+        "portfolio_value_at_trough": 127500.0
+      },
+      "interest_rate_shock": {
+        "crisis_duration_months": 6,
+        "drawdown_pct": -20.0,
+        "estimated_loss": -50000.0,
+        "estimated_recovery_months": 12,
+        "portfolio_value_at_trough": 200000.0
+      }
+    },
+    "worst_case": {
+      "loss": -135000.0,
+      "scenario": "2008_financial_crisis"
+    }
+  }
+}

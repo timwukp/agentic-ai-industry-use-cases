@@ -1,4 +1,7 @@
+import { getCurrentLocale } from '../i18n/index.ts'
 import { config } from './config'
+import { languageDirective } from './replyLanguage'
+import { createToolTrace, type ToolCall } from './toolTrace'
 
 /**
  * Generates an AgentCore runtime session id. The runtime requires session ids
@@ -15,6 +18,13 @@ interface InvokeOptions {
   /** Harness ARN override (per-industry); defaults to config.harnessArn. */
   harnessArn?: string
   signal?: AbortSignal
+  /**
+   * Called for each tool call that completed successfully, with the JSON payload
+   * the agent received. This is a side channel rather than part of the yielded
+   * stream because the generator's values are the assistant's prose, which the
+   * chat panel appends verbatim to a bubble; tool payloads must not land there.
+   */
+  onToolCall?: (call: ToolCall) => void
 }
 
 /** Defensive text extraction across the event shapes AgentCore may emit. */
@@ -138,8 +148,18 @@ export async function* invokeAgent(
       'Content-Type': 'application/json',
       Accept: 'text/event-stream',
     },
+    // The language directive rides along with the sent text but is NOT what the
+    // UI displays — ChatPanel keeps the user's own words in the bubble. Appended
+    // here rather than in the component so every call site gets it. The UI
+    // locale comes from the module cell (written only by LocaleProvider), so
+    // this module stays React-free.
     body: JSON.stringify({
-      messages: [{ role: 'user', content: [{ text: prompt }] }],
+      messages: [
+        {
+          role: 'user',
+          content: [{ text: prompt + languageDirective(prompt, getCurrentLocale()) }],
+        },
+      ],
       ...(options.actorId ? { actorId: options.actorId } : {}),
     }),
   })
@@ -170,13 +190,23 @@ export async function* invokeAgent(
   // AWS binary eventstream (application/vnd.amazon.eventstream) — the format
   // the AgentCore data plane actually returns for InvokeHarness.
   if (contentType.includes('vnd.amazon.eventstream')) {
-    for await (const payload of parseEventStream(response.body, options.signal)) {
-      const isError = (payload as { message?: unknown }).message
-      if (isError && typeof isError === 'string' && !extractText(payload)) {
-        throw new Error(isError)
+    // The same events carry the tool payloads. Collected as they pass rather than
+    // buffered, so the chart panel can appear while the prose is still streaming.
+    const trace = options.onToolCall ? createToolTrace(options.onToolCall) : null
+    try {
+      for await (const payload of parseEventStream(response.body, options.signal)) {
+        trace?.push(payload)
+        const isError = (payload as { message?: unknown }).message
+        if (isError && typeof isError === 'string' && !extractText(payload)) {
+          throw new Error(isError)
+        }
+        const text = extractText(payload)
+        if (text) yield text
       }
-      const text = extractText(payload)
-      if (text) yield text
+    } finally {
+      // Releases a block whose stop event never arrived — including when the
+      // caller aborts mid-answer, where the tools have usually already returned.
+      trace?.flush()
     }
     return
   }

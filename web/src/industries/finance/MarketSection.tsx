@@ -9,6 +9,7 @@ import {
   XAxis,
   YAxis,
 } from 'recharts'
+import { useLocale } from '../../i18n/LocaleContext'
 import { useApi } from '../../lib/api'
 import type { MarketOverviewResponse } from './types'
 import { Card, ErrorPane, LoadingPane, fmtSigned, pnlClass } from './widgets'
@@ -27,15 +28,16 @@ const TREASURY_LABELS: Record<string, string> = {
 }
 
 export default function MarketSection() {
+  const { t } = useLocale()
   const { data, loading, error, reload } = useApi<MarketOverviewResponse>(
     '/api/finance/market/overview',
   )
 
-  if (loading) return <LoadingPane label="Loading market data…" />
+  if (loading) return <LoadingPane label={t('finance.loadingMarket')} />
   if (error || !data) {
     return (
-      <Card title="Market Overview">
-        <ErrorPane message={error ?? 'No market data'} onRetry={reload} />
+      <Card title={t('finance.marketOverview')}>
+        <ErrorPane message={error ?? t('finance.noMarketData')} onRetry={reload} />
       </Card>
     )
   }
@@ -71,7 +73,7 @@ export default function MarketSection() {
       </div>
 
       {/* Sector performance chart */}
-      <Card title="Sector Performance (Daily)">
+      <Card title={t('finance.sectorPerformanceDaily')}>
         <div className="p-4 @lg:p-5">
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
@@ -106,7 +108,7 @@ export default function MarketSection() {
                   color: '#e2e8f0',
                 }}
                 labelStyle={{ color: '#94a3b8' }}
-                formatter={(value: number) => [fmtSigned(value, '%'), 'Daily change']}
+                formatter={(value: number) => [fmtSigned(value, '%'), t('finance.dailyChange')]}
               />
               <Bar dataKey="daily_change_pct" barSize={14} radius={[0, 4, 4, 0]}>
                 {data.sectors.map((sector) => (
@@ -128,7 +130,7 @@ export default function MarketSection() {
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <Activity className="w-4 h-4 text-slate-400" />
-                <span className="text-sm text-slate-400">Volatility (VIX)</span>
+                <span className="text-sm text-slate-400">{t('finance.volatilityVix')}</span>
               </div>
               <span
                 className={`px-2 py-0.5 rounded-full text-[11px] border ${
@@ -137,7 +139,7 @@ export default function MarketSection() {
                     : 'bg-green-950/50 border-green-800/50 text-green-300'
                 }`}
               >
-                {vixElevated ? 'Elevated' : 'Normal'}
+                {vixElevated ? t('finance.elevated') : t('finance.normal')}
               </span>
             </div>
             <div
@@ -152,15 +154,15 @@ export default function MarketSection() {
               />
             </div>
             <div className="flex justify-between text-[11px] text-slate-500 mt-1">
-              <span>Low</span>
-              <span>Normal</span>
-              <span>Elevated</span>
-              <span>High</span>
+              <span>{t('finance.meterLow')}</span>
+              <span>{t('finance.meterNormal')}</span>
+              <span>{t('finance.meterElevated')}</span>
+              <span>{t('finance.meterHigh')}</span>
             </div>
           </div>
         </Card>
 
-        <Card title="Treasury Yields">
+        <Card title={t('finance.treasuryYields')}>
           <div className="p-5 space-y-3.5">
             {Object.entries(data.treasury).map(([maturity, yieldPct]) => (
               <div key={maturity} className="flex items-center justify-between">
@@ -179,7 +181,7 @@ export default function MarketSection() {
           <div className="p-5">
             <div className="flex items-center gap-2 mb-3">
               <Gauge className="w-4 h-4 text-slate-400" />
-              <span className="text-sm text-slate-400">Fear &amp; Greed</span>
+              <span className="text-sm text-slate-400">{t('finance.fearGreed')}</span>
             </div>
             <div className="flex items-baseline gap-3">
               <span className="text-3xl font-bold text-white tabular-nums">{fearGreed}</span>
@@ -202,9 +204,9 @@ export default function MarketSection() {
               />
             </div>
             <div className="flex justify-between text-[11px] text-slate-500 mt-1">
-              <span>Fear</span>
-              <span>Neutral</span>
-              <span>Greed</span>
+              <span>{t('finance.meterFear')}</span>
+              <span>{t('finance.meterNeutral')}</span>
+              <span>{t('finance.meterGreed')}</span>
             </div>
           </div>
         </Card>

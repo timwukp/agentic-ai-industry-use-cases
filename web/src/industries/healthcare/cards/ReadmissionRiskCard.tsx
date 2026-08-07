@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { BookOpen, Car, ChevronDown, Home, Utensils, type LucideIcon } from 'lucide-react'
 import { Card } from '../../finance/widgets'
+import { useLocale } from '../../../i18n/LocaleContext'
 import { AskAgentButton, PriorityPill, StatusPill, type PillTone } from '../widgets'
 import type { ReadmissionRisk } from '../types'
 
@@ -21,19 +22,27 @@ function pctOfScale(score: number): number {
 
 const SDOH_ROWS: Array<{
   icon: LucideIcon
-  label: string
+  labelKey: string
   active: (s: NonNullable<ReadmissionRisk['social_determinants']>) => boolean
 }> = [
-  { icon: Home, label: 'Lives alone', active: (s) => s.lives_alone === true },
+  {
+    icon: Home,
+    labelKey: 'healthcare.livesAlone',
+    active: (s) => s.lives_alone === true,
+  },
   {
     icon: Car,
-    label: 'Transportation barriers',
+    labelKey: 'healthcare.transportBarriers',
     active: (s) => s.transportation_barriers === true,
   },
-  { icon: Utensils, label: 'Food insecurity', active: (s) => s.food_insecurity === true },
+  {
+    icon: Utensils,
+    labelKey: 'healthcare.foodInsecurity',
+    active: (s) => s.food_insecurity === true,
+  },
   {
     icon: BookOpen,
-    label: 'Limited health literacy',
+    labelKey: 'healthcare.healthLiteracy',
     active: (s) => (s.health_literacy ?? '').toLowerCase() === 'limited',
   },
 ]
@@ -45,6 +54,7 @@ export default function ReadmissionRiskCard({
   risk?: ReadmissionRisk
   patientId: string
 }) {
+  const { t } = useLocale()
   const [showAllInterventions, setShowAllInterventions] = useState(false)
 
   const level = (risk?.risk_level ?? '').toUpperCase()
@@ -61,7 +71,7 @@ export default function ReadmissionRiskCard({
 
   return (
     <Card
-      title="30-Day Readmission Risk"
+      title={t('healthcare.readmissionRisk')}
       action={
         <AskAgentButton
           prompt={`Summarize readmission risk for ${patientId} and draft the intervention plan`}
@@ -69,7 +79,7 @@ export default function ReadmissionRiskCard({
       }
     >
       {!risk ? (
-        <p className="p-5 text-sm text-slate-500">No readmission risk data.</p>
+        <p className="p-5 text-sm text-slate-500">{t('healthcare.noReadmissionData')}</p>
       ) : (
         <div className="p-4 @lg:p-5 space-y-4">
           {/* Hero score */}
@@ -77,7 +87,12 @@ export default function ReadmissionRiskCard({
             <span className={`text-4xl font-bold tabular-nums ${style.text}`}>
               {score != null ? score : '—'}
             </span>
-            <StatusPill tone={style.tone} label={`${level || 'UNKNOWN'} RISK`} />
+            <StatusPill
+              tone={style.tone}
+              label={t('healthcare.riskPill', {
+                level: level || t('healthcare.unknown'),
+              })}
+            />
           </div>
 
           {/* Meter (scaled 5–55, ticks at 15 and 30) */}
@@ -105,10 +120,15 @@ export default function ReadmissionRiskCard({
           </div>
 
           <div className="text-xs text-slate-400 tabular-nums">
-            30-day probability: {risk.probability_30day_readmission ?? '—'}
+            {t('healthcare.probability30day', {
+              p: risk.probability_30day_readmission ?? '—',
+            })}
             <span className="text-slate-500">
               {' '}
-              · natl avg {risk.benchmark?.national_avg_readmission_rate ?? '15.6%'}
+              ·{' '}
+              {t('healthcare.natlAvg', {
+                p: risk.benchmark?.national_avg_readmission_rate ?? '15.6%',
+              })}
             </span>
           </div>
 
@@ -116,12 +136,15 @@ export default function ReadmissionRiskCard({
           {sdohRows.length > 0 && (
             <div className="space-y-1.5">
               <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
-                Social determinants
+                {t('healthcare.socialDeterminants')}
               </div>
-              {sdohRows.map(({ icon: Icon, label }) => (
-                <div key={label} className="flex items-center gap-2 text-xs text-slate-300">
+              {sdohRows.map(({ icon: Icon, labelKey }) => (
+                <div
+                  key={labelKey}
+                  className="flex items-center gap-2 text-xs text-slate-300"
+                >
                   <Icon className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  {label}
+                  {t(labelKey)}
                 </div>
               ))}
             </div>
@@ -131,7 +154,7 @@ export default function ReadmissionRiskCard({
           {interventions.length > 0 && (
             <div className="space-y-1.5">
               <div className="text-[11px] font-medium uppercase tracking-wider text-slate-500">
-                Recommended interventions
+                {t('healthcare.recommendedInterventions')}
               </div>
               <ul className="space-y-1.5">
                 {visibleInterventions.map((iv, i) => (
@@ -152,7 +175,9 @@ export default function ReadmissionRiskCard({
                   onClick={() => setShowAllInterventions((v) => !v)}
                   className="text-xs text-rose-300 hover:text-rose-200 transition-colors"
                 >
-                  {showAllInterventions ? 'Show fewer' : `+${hiddenCount} more`}
+                  {showAllInterventions
+                    ? t('healthcare.showFewer')
+                    : t('healthcare.showMore', { n: hiddenCount })}
                 </button>
               )}
             </div>
@@ -163,7 +188,7 @@ export default function ReadmissionRiskCard({
             <details className="group">
               <summary className="flex items-center gap-1.5 text-xs text-slate-400 cursor-pointer select-none hover:text-slate-300 list-none">
                 <ChevronDown className="w-3.5 h-3.5 transition-transform group-open:rotate-180" />
-                Contributing factors ({factors.length})
+                {t('healthcare.contributingFactors', { n: factors.length })}
               </summary>
               <ul className="mt-2 space-y-1 pl-5">
                 {factors.map((factor) => (

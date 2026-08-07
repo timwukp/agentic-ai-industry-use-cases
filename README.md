@@ -130,6 +130,67 @@ the list, which would drift) and asserts every SKU, asset, provider, patient, ma
 against the shared catalogs, every stated enum against the handler's own accepted set, and calls
 all 26 tool paths to confirm each returns populated data.
 
+### Reading the answers
+
+An answer arriving as an unreadable wall of text is fixed at three layers.
+
+**Markdown rendering.** Assistant replies are parsed as GitHub-flavored Markdown
+(`web/src/components/Markdown.tsx`). Before this they went through `whitespace-pre-wrap`, so a
+model that was already emitting a correct table rendered it as raw `|` pipes. Every element is
+styled explicitly rather than via a typography plugin, because the defaults assume a light
+background and a full-width article; tables get a horizontal scroller, since six numeric columns
+do not fit a phone and silent clipping loses the last column — usually the one being asked about.
+
+**A transient chart panel.** When an answer is built on a tool whose payload is worth plotting,
+a chart appears above the industry dashboard (`web/src/components/AnswerChartPanel.tsx`); below
+`lg` it renders inline under the message instead. It stacks over the dashboard rather than
+replacing it and is dismissible — the dashboard is the standing view and this is a by-product of
+one question.
+
+The charts are drawn from the tool payload **the agent itself received**, extracted from the
+invoke event stream (`web/src/lib/toolTrace.ts`). It is deliberately not a re-fetch of the
+matching dashboard route: a re-fetch can return different numbers than the reply on screen
+(different arguments, a later timestamp), and a chart that silently disagrees with the text
+beside it is worse than no chart. Forty-six recognizers (`web/src/lib/chartSpec.ts`) — enough
+that every starter question in every industry produces a panel (26/26, measured against the
+live app by `tests/e2e/starter-charts-audit.spec.ts`) — each re-validate the shape they expect
+and return nothing on a mismatch, so an unrecognized tool produces no panel rather than a
+guess. Threshold lines obey two more rules: a line recharts would silently drop for sitting
+outside the axis extends the axis instead (`ifOverflow="extendDomain"`), and a recognizer
+withholds a line so far out that the series itself would be squashed below a third of the plot
+— except a sensor chart's nearest limit, where the gap between the reading and the line *is*
+the answer.
+
+Correlating those events is the subtle part: a `toolResult` carries neither a tool name nor a
+`toolUseId`, so the name is recoverable only via `contentBlockIndex` → `toolUseId` → `name`, and
+block indexes are **reused within a single turn** — the failure mode being one tool's payload
+filed under another tool's name. Results that failed, that carry a non-JSON body, or whose name
+was never seen are all refused; during a gateway outage the agent wrote a confident market
+summary with invented index levels, and charting *attempted* calls would have drawn an empty
+chart beside fabricated prose.
+
+**UI language.** The interface is user-selectable across sixteen languages (English, Traditional
+and Simplified Chinese, Japanese, Korean, French, Spanish, Italian, Portuguese, German,
+Indonesian, Malay, Thai, Vietnamese, Filipino, Hindi) via a picker in the header and on the login
+page. The i18n layer is hand-rolled (`web/src/i18n/`): one TypeScript catalog per locale typed
+`satisfies Messages` against the English schema, so a missing translation key in any language is
+a compile error; English ships in the main bundle as the fallback and the other fifteen load as
+their own lazy chunks (~10 kB gzip each). Chart titles are translated at render time only — the
+spec's English strings remain its identity (dedupe, pagination, E2E hooks), pinned by a
+reconstruction test that rebuilds every English string from its catalog key and parameters
+(`tests/unit/chartI18n.test.ts`). Payload values (ids, enums, backend prose) deliberately pass
+through untranslated.
+
+**Reply language.** The agent answers in the language of the question, and the UI locale fills in
+where the text is ambiguous (`web/src/lib/replyLanguage.ts`). Two ranked signals: a decisive
+non-Latin script in the typed message wins outright (kana → Japanese, Hangul → Korean, Thai,
+Devanagari → Hindi; Han uses the picker as the Traditional-vs-Simplified tiebreaker), while Latin
+prose — which script alone cannot pin to one language — follows the picker, so a canned English
+starter question asked under a Thai UI is answered in Thai. Technical Chinese full of English
+tickers stays Chinese, a stray CJK character in an English sentence stays English, and with the
+untouched English default anything genuinely ambiguous still sends no directive at all, since a
+wrong explicit instruction is worse than none.
+
 ## Data honesty
 
 Market data is a **deterministic simulation** (`tools/shared/toolkit/market_sim.py`) — stable

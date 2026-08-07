@@ -1,25 +1,28 @@
 import { Card } from '../../finance/widgets'
+import { useLocale } from '../../../i18n/LocaleContext'
 import { StatusPill, type PillTone } from '../widgets'
 import type { AppointmentsResponse } from '../types'
-
-function statusTone(status?: string): { tone: PillTone; label: string } {
-  const s = (status ?? '').toLowerCase()
-  if (s === 'confirmed') return { tone: 'green', label: 'Confirmed' }
-  if (s === 'pending confirmation') return { tone: 'amber', label: 'Pending Confirmation' }
-  return { tone: 'slate', label: status ?? '—' }
-}
 
 export default function AppointmentsCard({
   appointments,
 }: {
   appointments?: AppointmentsResponse
 }) {
+  const { t } = useLocale()
   const rows = appointments?.appointments ?? []
 
+  const statusTone = (status?: string): { tone: PillTone; label: string } => {
+    const s = (status ?? '').toLowerCase()
+    if (s === 'confirmed') return { tone: 'green', label: t('healthcare.pillConfirmed') }
+    if (s === 'pending confirmation')
+      return { tone: 'amber', label: t('healthcare.pillPending') }
+    return { tone: 'slate', label: status ?? '—' }
+  }
+
   return (
-    <Card title={`Upcoming Appointments${rows.length ? ` (${rows.length})` : ''}`}>
+    <Card title={t('healthcare.appointments', { n: rows.length })}>
       {rows.length === 0 ? (
-        <p className="p-5 text-sm text-slate-500">No upcoming appointments.</p>
+        <p className="p-5 text-sm text-slate-500">{t('healthcare.noAppointments')}</p>
       ) : (
         <ul className="p-2 @lg:p-3 divide-y divide-slate-800/70">
           {rows.map((appt, i) => {
