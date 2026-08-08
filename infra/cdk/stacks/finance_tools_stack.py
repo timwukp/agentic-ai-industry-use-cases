@@ -17,6 +17,7 @@ from aws_cdk import (
     aws_s3 as s3,
     aws_s3_deployment as s3_deploy,
     aws_s3vectors as s3vectors,
+    aws_scheduler as scheduler,
 )
 from constructs import Construct
 
@@ -50,6 +51,8 @@ class FinanceToolsStack(cdk.Stack):
         kms_key: kms.IKey,
         portfolio_table: dynamodb.ITable,
         orders_table: dynamodb.ITable,
+        market_snapshots_table: dynamodb.ITable,
+        market_lake_bucket: s3.IBucket,
         **kwargs,
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
@@ -164,6 +167,7 @@ class FinanceToolsStack(cdk.Stack):
         common_env = {
             "PORTFOLIO_TABLE": portfolio_table.table_name,
             "ORDERS_TABLE": orders_table.table_name,
+            "MARKET_SNAPSHOTS_TABLE": market_snapshots_table.table_name,
         }
         runtime_kwargs = dict(
             runtime=lambda_.Runtime.PYTHON_3_13,
@@ -174,7 +178,14 @@ class FinanceToolsStack(cdk.Stack):
         )
 
         self.tool_lambdas: dict[str, lambda_.Function] = {}
-        for name in ("market_data", "portfolio", "risk", "trading", "kb_search"):
+        for name in (
+            "market_data",
+            "market_live",
+            "portfolio",
+            "risk",
+            "trading",
+            "kb_search",
+        ):
             fn = lambda_.Function(
                 self,
                 f"Tool{name.title().replace('_', '')}",
@@ -195,12 +206,79 @@ class FinanceToolsStack(cdk.Stack):
         portfolio_table.grant_read_data(self.tool_lambdas["portfolio"])
         portfolio_table.grant_read_write_data(self.tool_lambdas["trading"])
         orders_table.grant_read_write_data(self.tool_lambdas["trading"])
+        market_snapshots_table.grant_read_data(self.tool_lambdas["market_live"])
         self.tool_lambdas["kb_search"].add_to_role_policy(
             iam.PolicyStatement(
                 actions=["bedrock:Retrieve"],
                 resources=[knowledge_base.attr_knowledge_base_arn],
             )
         )
+
+        # ---------------- Market data collector (scheduled, NOT a gateway tool) -----
+        # Named outside the finance-tool- prefix: it is invoked by EventBridge
+        # Scheduler, never by the Gateway, and gateway-tool count assertions
+        # rely on the prefix staying meaningful. Tool Lambdas never call the
+        # upstream providers — only this collector does, so provider quota use
+        # is fixed by the schedules below regardless of dashboard/agent load.
+        self.collector_lambda = lambda_.Function(
+            self,
+            "MarketCollector",
+            function_name="finance-market-collector",
+            code=lambda_.Code.from_asset(_stage("market_collector")),
+            environment={
+                **common_env,
+                "MARKET_LAKE_BUCKET": market_lake_bucket.bucket_name,
+                "SSM_KEY_PREFIX": "/agentic/finance",
+            },
+            **{**runtime_kwargs, "timeout": cdk.Duration.seconds(120)},
+        )
+        market_snapshots_table.grant_read_write_data(self.collector_lambda)
+        market_lake_bucket.grant_put(self.collector_lambda)
+        self.collector_lambda.add_to_role_policy(
+            iam.PolicyStatement(
+                actions=["ssm:GetParameter"],
+                resources=[
+                    f"arn:aws:ssm:{self.region}:{self.account}:parameter/agentic/finance/*"
+                ],
+            )
+        )
+        kms_key.grant_decrypt(self.collector_lambda)
+
+        scheduler_role = iam.Role(
+            self,
+            "CollectorScheduleRole",
+            assumed_by=iam.ServicePrincipal(
+                "scheduler.amazonaws.com",
+                conditions={"StringEquals": {"aws:SourceAccount": self.account}},
+            ),
+        )
+        self.collector_lambda.grant_invoke(scheduler_role)
+
+        # EventBridge Scheduler (not classic rules): native America/New_York
+        # timezone, so market-hours windows survive DST without cron hacks.
+        collector_schedules = {
+            # (cron in ET, job payload)
+            "Quotes": ("cron(*/15 9-16 ? * MON-FRI *)", "quotes"),
+            "Index": ("cron(*/15 9-16 ? * MON-FRI *)", "index"),
+            "Daily": ("cron(30 18 ? * MON-FRI *)", "daily"),
+            "Fundamentals": ("cron(0 7 * * ? *)", "fundamentals"),
+        }
+        for sched_id, (cron, job) in collector_schedules.items():
+            scheduler.CfnSchedule(
+                self,
+                f"CollectorSchedule{sched_id}",
+                name=f"finance-market-collector-{job}",
+                schedule_expression=cron,
+                schedule_expression_timezone="America/New_York",
+                flexible_time_window=scheduler.CfnSchedule.FlexibleTimeWindowProperty(
+                    mode="OFF"
+                ),
+                target=scheduler.CfnSchedule.TargetProperty(
+                    arn=self.collector_lambda.function_arn,
+                    role_arn=scheduler_role.role_arn,
+                    input=f'{{"job": "{job}"}}',
+                ),
+            )
 
         # ---------------- Dashboard REST Lambda (API Gateway target) ----------------
         self.dashboard_lambda = lambda_.Function(
@@ -216,6 +294,10 @@ class FinanceToolsStack(cdk.Stack):
                         / "portfolio"
                         / "handler.py",
                         "trading_tools": TOOLS / "finance" / "trading" / "handler.py",
+                        "market_live_tools": TOOLS
+                        / "finance"
+                        / "market_live"
+                        / "handler.py",
                     },
                 )
             ),
@@ -224,6 +306,7 @@ class FinanceToolsStack(cdk.Stack):
         )
         portfolio_table.grant_read_data(self.dashboard_lambda)
         orders_table.grant_read_data(self.dashboard_lambda)
+        market_snapshots_table.grant_read_data(self.dashboard_lambda)
 
         # ---------------- AgentCore Gateway execution role --------------------------
         self.gateway_role = iam.Role(

@@ -13,6 +13,7 @@ INDUSTRIES = {
         "gateway_name": "finance-trading-gw",
         "targets": {
             "market-data": ("market_data", "ToolLambdaMarketDataArn"),
+            "market-live": ("market_live", "ToolLambdaMarketLiveArn"),
             "portfolio": ("portfolio", "ToolLambdaPortfolioArn"),
             "risk": ("risk", "ToolLambdaRiskArn"),
             "trading": ("trading", "ToolLambdaTradingArn"),

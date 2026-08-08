@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import type { LucideIcon } from 'lucide-react'
-import { AlertTriangle, FlaskConical, Loader2, RotateCw } from 'lucide-react'
+import { AlertTriangle, FlaskConical, Loader2, RadioTower, RotateCw } from 'lucide-react'
 import { getCurrentLocale } from '../../i18n'
 import { useLocale } from '../../i18n/LocaleContext'
 
@@ -96,6 +96,42 @@ export function ErrorPane({
         </button>
       )}
     </div>
+  )
+}
+
+/** Data-provenance disclosure for real market data: provider + as-of + delay.
+ *  The live counterpart of SimulatedBadge — every real-data surface must show
+ *  one so a reader can always tell which world a number belongs to. */
+export function LiveBadge({
+  provider,
+  fetchedAt,
+  delay,
+  stale,
+}: {
+  provider: string
+  fetchedAt: string
+  delay: string
+  stale?: boolean
+}) {
+  const { t } = useLocale()
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-[11px] ${
+        stale
+          ? 'bg-orange-950/50 border-orange-800/50 text-orange-300'
+          : 'bg-green-950/50 border-green-800/50 text-green-300'
+      }`}
+      data-live-badge={stale ? 'stale' : 'fresh'}
+    >
+      <RadioTower className="w-3 h-3" />
+      {stale ? t('widgets.staleData') : t('widgets.live')}
+      {' · '}
+      {provider}
+      {' · '}
+      {t('widgets.asOf')} {new Date(fetchedAt).toLocaleString(getCurrentLocale())}
+      {' · '}
+      {delay}
+    </span>
   )
 }
 

@@ -46,6 +46,8 @@ tools = FinanceToolsStack(
     kms_key=shared.kms_key,
     portfolio_table=data.portfolio_table,
     orders_table=data.orders_table,
+    market_snapshots_table=data.market_snapshots_table,
+    market_lake_bucket=data.market_lake_bucket,
 )
 
 api = ApiStack(

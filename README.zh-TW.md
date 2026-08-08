@@ -189,10 +189,39 @@ E2E hook），由一個重建測試釘死：從目錄 key 加參數必須精確�
 
 ## 數據誠實原則
 
-行情數據是**確定性模擬**（`tools/shared/toolkit/market_sim.py`）——同一交易日內穩定、
-可重現、無需 API key。所有模擬數據都帶有 `"source": "simulated"` 標記，且代理被指示
-必須披露。訂單是對演示訂單簿（DynamoDB）的真實寫入，會真正改變持倉。真實世界查詢
-（新聞、SEC 文件）通過 harness 內建瀏覽器工具完成。
+金融行業現在有**兩個明確分離的數據世界**，每筆數據都標明自己屬於哪一個：
+
+- **`"source": "live"`** —— 真實美國市場數據（追蹤股票報價、指數行情走 QQQ/SPY ETF 代理
+  ——Twelve Data 免費層不含真指數符號，故用 ETF 代理並標記 `proxy: true`；Nasdaq 綜合指數
+  官方日線收盤來自 FRED `NASDAQCOM`——完整國債殖利率曲線、政策利率、基本面），僅來自
+  官方數據源：**Finnhub**、**Twelve Data**（黃金，Phase 2 用）、**FRED**（聖路易斯聯儲）。唯一調用外部 API 的組件是排程採集 Lambda（EventBridge
+  Scheduler，`America/New_York` 時區的交易時段）；工具和儀表板都只讀它寫入的 DynamoDB
+  快照，所以磁貼上的數字和代理引用的數字來自同一行。Live 數據帶 `provider`、
+  `fetched_at`、`delay`，UI 以綠色 **LIVE** 徽章呈現；快照超過採集週期 2 倍即標記
+  `"stale": true`。歷史數據落入 S3（`market/<dataset>/dt=…/*.jsonl.gz`，可用 Athena 查詢）。
+  我們刻意**拒絕了爬蟲方案**（例如用瀏覽器工具抓 bloomberg.com）：違反網站服務條款、
+  DOM 一改版就斷、抓到的數字沒有任何新鮮度契約。
+- **`"source": "simulated"`** —— 演示交易系統（`tools/shared/toolkit/market_sim.py`）：
+  確定性、可重現、無需 API key。投組、訂單、風險和模擬行情區塊留在這個世界，成交價
+  與 P&L 保持內部一致（琥珀色徽章）。訂單是對演示訂單簿（DynamoDB）的真實寫入，會
+  真正改變持倉。
+
+代理的系統提示要求：呈現 live 數字必須披露數據源與時點；答案若混合 live 市場背景與
+模擬投組狀態，必須明說。真實世界查詢（新聞、SEC 文件）通過 harness 內建瀏覽器工具完成。
+
+### Live 行情初始設置（一次性）
+
+採集器需要 3 個免費 API key 存入 SSM（`secrets` 部署步驟會檢查，缺失時打印以下命令）：
+
+```bash
+aws ssm put-parameter --name /agentic/finance/finnhub-api-key    --type SecureString --value '<key>'
+aws ssm put-parameter --name /agentic/finance/twelvedata-api-key --type SecureString --value '<key>'
+aws ssm put-parameter --name /agentic/finance/fred-api-key       --type SecureString --value '<key>'
+```
+
+註冊：[Finnhub](https://finnhub.io/register) · [Twelve Data](https://twelvedata.com/register)
+· [FRED](https://fredaccount.stlouisfed.org/apikeys)。免費額度綽綽有餘：排程用量 <2% 的
+Finnhub 配額、約 10% 的 Twelve Data 日配額；FRED 無限制。
 
 ## 成本
 

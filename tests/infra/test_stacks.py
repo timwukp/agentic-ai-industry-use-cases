@@ -1,5 +1,6 @@
 """CDK assertions: the security regressions from the old repo stay fixed."""
 
+import json
 import sys
 from pathlib import Path
 
@@ -33,6 +34,8 @@ def templates():
         kms_key=shared.kms_key,
         portfolio_table=data.portfolio_table,
         orders_table=data.orders_table,
+        market_snapshots_table=data.market_snapshots_table,
+        market_lake_bucket=data.market_lake_bucket,
     )
     web = WebStack(
         app,
@@ -89,7 +92,7 @@ def test_harness_and_gateway_roles_exist(templates):
 
 def test_tables_use_kms_and_pitr(templates):
     tables = templates["data"].find_resources("AWS::DynamoDB::Table")
-    assert len(tables) == 2
+    assert len(tables) == 3  # portfolio, orders, market snapshots
     for t in tables.values():
         assert t["Properties"]["SSESpecification"]["SSEType"] == "KMS"
         assert t["Properties"]["PointInTimeRecoverySpecification"][
@@ -122,14 +125,36 @@ def test_cognito_hardening(templates):
         assert c["Properties"].get("GenerateSecret") is not True
 
 
-def test_five_tool_lambdas(templates):
+def test_six_tool_lambdas(templates):
     fns = templates["tools"].find_resources("AWS::Lambda::Function")
     tool_fns = [
         f
         for f in fns.values()
         if f["Properties"].get("FunctionName", "").startswith("finance-tool-")
     ]
-    assert len(tool_fns) == 5
+    assert len(tool_fns) == 6  # 5 original targets + market_live
+
+
+def test_market_collector_scheduled(templates):
+    """The collector exists outside the finance-tool- prefix and every job
+    has a schedule; without a schedule the live-data layer silently never
+    collects (no deploy path = no component)."""
+    fns = templates["tools"].find_resources("AWS::Lambda::Function")
+    collectors = [
+        f
+        for f in fns.values()
+        if f["Properties"].get("FunctionName", "") == "finance-market-collector"
+    ]
+    assert len(collectors) == 1
+
+    schedules = templates["tools"].find_resources("AWS::Scheduler::Schedule")
+    jobs = sorted(
+        json.loads(s["Properties"]["Target"]["Input"])["job"]
+        for s in schedules.values()
+    )
+    assert jobs == ["daily", "fundamentals", "index", "quotes"]
+    for s in schedules.values():
+        assert s["Properties"]["ScheduleExpressionTimezone"] == "America/New_York"
 
 
 def test_site_buckets_private(templates):
