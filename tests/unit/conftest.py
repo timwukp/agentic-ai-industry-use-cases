@@ -8,7 +8,15 @@ import pytest
 REPO = Path(__file__).resolve().parents[2]
 # Lambda packaging flattens these; tests mirror that layout on sys.path
 sys.path.insert(0, str(REPO / "tools" / "shared"))
-for target in ("market_data", "portfolio", "risk", "trading", "kb_search"):
+for target in (
+    "market_data",
+    "market_live",
+    "market_collector",
+    "portfolio",
+    "risk",
+    "trading",
+    "kb_search",
+):
     sys.path.insert(0, str(REPO / "tools" / "finance" / target))
 
 os.environ.setdefault("AWS_DEFAULT_REGION", "us-east-1")
@@ -16,6 +24,8 @@ os.environ.setdefault("AWS_ACCESS_KEY_ID", "testing")
 os.environ.setdefault("AWS_SECRET_ACCESS_KEY", "testing")
 os.environ["PORTFOLIO_TABLE"] = "finance-portfolio-test"
 os.environ["ORDERS_TABLE"] = "finance-orders-test"
+os.environ["MARKET_SNAPSHOTS_TABLE"] = "finance-market-snapshots-test"
+os.environ["MARKET_LAKE_BUCKET"] = "finance-market-lake-test"
 
 
 class FakeContext:
@@ -90,4 +100,33 @@ def ddb_tables():
                 }
             )
         yield ddb
+        tdyn._resource = None
+
+
+@pytest.fixture
+def market_snapshots():
+    """Moto DynamoDB snapshots table + S3 lake bucket for market-live tests."""
+    from moto import mock_aws
+
+    with mock_aws():
+        ddb = boto3.resource("dynamodb", region_name="us-east-1")
+        ddb.create_table(
+            TableName=os.environ["MARKET_SNAPSHOTS_TABLE"],
+            KeySchema=[
+                {"AttributeName": "pk", "KeyType": "HASH"},
+                {"AttributeName": "sk", "KeyType": "RANGE"},
+            ],
+            AttributeDefinitions=[
+                {"AttributeName": "pk", "AttributeType": "S"},
+                {"AttributeName": "sk", "AttributeType": "S"},
+            ],
+            BillingMode="PAY_PER_REQUEST",
+        )
+        boto3.client("s3", region_name="us-east-1").create_bucket(
+            Bucket=os.environ["MARKET_LAKE_BUCKET"]
+        )
+        import toolkit.dynamo as tdyn
+
+        tdyn._resource = None
+        yield ddb.Table(os.environ["MARKET_SNAPSHOTS_TABLE"])
         tdyn._resource = None

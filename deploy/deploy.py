@@ -77,6 +77,61 @@ def step_cdk(args) -> None:
     scratch.unlink()
 
 
+SSM_KEYS = ("finnhub-api-key", "twelvedata-api-key", "fred-api-key")
+
+
+def step_secrets(args) -> None:
+    """Preflight (finance only): the live-market collector needs 3 provider
+    API keys in SSM. Fail fast with the exact commands instead of letting the
+    collector 403 silently after deploy."""
+    if args.industry != "finance":
+        return
+    import boto3
+
+    ssm = boto3.client("ssm", region_name=args.region)
+    missing = []
+    for key in SSM_KEYS:
+        name = f"/agentic/finance/{key}"
+        try:
+            ssm.get_parameter(Name=name)
+        except ssm.exceptions.ParameterNotFound:
+            missing.append(name)
+    if missing:
+        print("Missing SSM parameters for the live-market collector:\n")
+        for name in missing:
+            print(
+                f"  aws ssm put-parameter --name {name} \\\n"
+                f"    --type SecureString --value '<your key>' "
+                f"--region {args.region}\n"
+            )
+        print(
+            "Free keys: https://finnhub.io/register  "
+            "https://twelvedata.com/register  "
+            "https://fredaccount.stlouisfed.org/apikeys"
+        )
+        raise SystemExit(1)
+    print("secrets: all 3 provider API keys present")
+
+
+def step_collect(args) -> None:
+    """Invoke every collector job synchronously (finance only) so the
+    snapshot table has data before smoke runs."""
+    if args.industry != "finance":
+        return
+    import boto3
+
+    lam = boto3.client("lambda", region_name=args.region)
+    for job in ("daily", "index", "quotes", "fundamentals"):
+        resp = lam.invoke(
+            FunctionName="finance-market-collector",
+            Payload=json.dumps({"job": job}).encode(),
+        )
+        body = json.loads(resp["Payload"].read())
+        print(f"collect {job}: {body}")
+        if "errorMessage" in body:
+            raise SystemExit(f"collector job {job} failed: {body['errorMessage']}")
+
+
 def step_seed(args) -> None:
     run(
         [
@@ -374,9 +429,11 @@ def _find_harness_arn(args) -> str:
 
 
 STEPS = [
+    ("secrets", step_secrets),
     ("cdk", step_cdk),
     ("seed", step_seed),
     ("gateway", step_gateway),
+    ("collect", step_collect),
     ("render", step_render),
     ("harness", step_harness),
     ("memory", step_memory),

@@ -1,0 +1,71 @@
+[
+  {
+    "name": "get_live_quote",
+    "description": "Get the REAL latest quote for a tracked US stock: price, daily change, high/low, previous close. Live data from Finnhub (official API), refreshed every 15 minutes during US market hours. Payload includes source=live, provider, fetched_at (UTC), and delay; stale=true if the snapshot is older than expected.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "symbol": {
+          "type": "string",
+          "description": "US stock ticker symbol from the tracked list, e.g. 'AAPL', 'NVDA'. Use list_tracked_symbols to see the watchlist."
+        }
+      },
+      "required": [
+        "symbol"
+      ]
+    }
+  },
+  {
+    "name": "get_index_level",
+    "description": "Get the REAL current level of a US index via its ETF proxy, from Finnhub (official API), refreshed every 15 minutes during market hours. Supported: 'QQQ' (tracks Nasdaq-100) and 'SPY' (tracks S&P 500) — payload carries proxy=true and a 'tracks' field; disclose that these are ETF proxies, not the index itself. For the official Nasdaq Composite daily close (FRED NASDAQCOM), the treasury/rates tools' daily pipeline collects it as INDEX_HISTORY. Payload includes source=live, provider, fetched_at, delay.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "index": {
+          "type": "string",
+          "description": "ETF proxy symbol: 'QQQ' (Nasdaq-100) or 'SPY' (S&P 500) (Default: 'QQQ')"
+        }
+      }
+    }
+  },
+  {
+    "name": "get_treasury_yields",
+    "description": "Get the REAL US Treasury yield curve (1M through 30Y) from FRED (Federal Reserve Bank of St. Louis, official), end-of-day T+1. Includes the computed 10Y-2Y spread and a curve_inverted flag. Payload includes source=live, provider, fetched_at, delay, and per-series as_of_date.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "get_policy_rates",
+    "description": "Get REAL US policy rates from FRED (official): Effective Federal Funds Rate, Fed Funds target range (upper/lower), and SOFR. End-of-day T+1. Payload includes source=live, provider, fetched_at, delay.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "get_fundamentals",
+    "description": "Get REAL fundamental metrics for a tracked US stock from Finnhub (official): market cap, P/E (TTM), P/B, dividend yield, ROE, debt/equity, 5-year EPS growth, 52-week range. Refreshed daily. For value-investing analysis. Payload includes source=live, provider, fetched_at, delay.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "symbol": {
+          "type": "string",
+          "description": "US stock ticker symbol from the tracked list, e.g. 'AAPL', 'BRK.B'"
+        }
+      },
+      "required": [
+        "symbol"
+      ]
+    }
+  },
+  {
+    "name": "list_tracked_symbols",
+    "description": "List the US stock symbols currently tracked by the live market data collector (the watchlist for quotes and fundamentals).",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  }
+]

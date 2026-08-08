@@ -214,11 +214,45 @@ wrong explicit instruction is worse than none.
 
 ## Data honesty
 
-Market data is a **deterministic simulation** (`tools/shared/toolkit/market_sim.py`) — stable
-within a trading day, reproducible, no API keys. Every simulated payload carries
-`"source": "simulated"` and the agent is instructed to disclose it. Orders are real writes to
-the demo order book (DynamoDB) and genuinely mutate positions. Real-world lookups (news, SEC
-filings) go through the harness's built-in browser tool.
+Finance now runs **two clearly-separated data worlds**, and every payload says which one it
+belongs to:
+
+- **`"source": "live"`** — real US market data (tracked-stock quotes, index levels via QQQ/SPY
+  ETF proxies — Twelve Data's free tier gates true index symbols, so proxies are used and
+  labeled `proxy: true`; the official Nasdaq Composite daily close comes from FRED `NASDAQCOM` —
+  the full Treasury yield curve, policy rates, fundamentals) from official providers only:
+  **Finnhub**, **Twelve Data** (gold, Phase 2), and **FRED** (St. Louis Fed). A scheduled collector Lambda is
+  the sole component that calls providers (EventBridge Scheduler, market hours in
+  `America/New_York`); tools and dashboard read the DynamoDB snapshot it writes, so a tile
+  number and the agent's quoted number come from the same row. Live payloads carry `provider`,
+  `fetched_at`, and `delay`, surfaced in the UI as a green **LIVE** badge; snapshots older than
+  2× their cadence are flagged `"stale": true`. History accumulates in S3
+  (`market/<dataset>/dt=…/*.jsonl.gz`, Athena-queryable).
+  We deliberately **rejected scraping** (e.g. bloomberg.com via the browser tool): it violates
+  the site's ToS, breaks on every DOM change, and delivers numbers with no freshness contract.
+- **`"source": "simulated"`** — the demo trading system (`tools/shared/toolkit/market_sim.py`):
+  deterministic, reproducible, no API keys. Portfolio, orders, risk, and the simulated market
+  section stay in this world so fills and P&L remain internally coherent (amber badge). Orders
+  are real writes to the demo order book (DynamoDB) and genuinely mutate positions.
+
+The agent's system prompt requires disclosing provider + as-of time for live numbers and
+saying explicitly when an answer mixes live market context with simulated portfolio state.
+Real-world lookups (news, SEC filings) go through the harness's built-in browser tool.
+
+### Live-market setup (one-time)
+
+The collector needs three free API keys in SSM (the `secrets` deploy step checks and prints
+these commands if missing):
+
+```bash
+aws ssm put-parameter --name /agentic/finance/finnhub-api-key    --type SecureString --value '<key>'
+aws ssm put-parameter --name /agentic/finance/twelvedata-api-key --type SecureString --value '<key>'
+aws ssm put-parameter --name /agentic/finance/fred-api-key       --type SecureString --value '<key>'
+```
+
+Register: [Finnhub](https://finnhub.io/register) · [Twelve Data](https://twelvedata.com/register)
+· [FRED](https://fredaccount.stlouisfed.org/apikeys). Free tiers are ample: the schedules use
+<2% of Finnhub's and ~10% of Twelve Data's daily quota; FRED is unlimited.
 
 ## Costs
 

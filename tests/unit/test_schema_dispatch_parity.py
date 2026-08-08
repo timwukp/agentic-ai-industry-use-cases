@@ -17,6 +17,7 @@ TOOLS_DIR = REPO / "tools"
 INDUSTRY_TARGETS = {
     "finance": {
         "market_data": "market_data",
+        "market_live": "market_live",
         "portfolio": "portfolio",
         "risk": "risk",
         "trading": "trading",
@@ -60,8 +61,9 @@ INDUSTRY_TARGETS = {
 }
 
 # Each industry ships 4 domain targets x 4 tools + 1 KB search tool.
+# Finance additionally has the market-live target (6 real-data tools).
 EXPECTED_TOOL_COUNTS = {
-    "finance": 17,  # 16 domain tools + 1 KB search
+    "finance": 23,  # 16 domain tools + 6 market-live tools + 1 KB search
     "healthcare": 17,
     "insurance": 17,
     "retail": 17,

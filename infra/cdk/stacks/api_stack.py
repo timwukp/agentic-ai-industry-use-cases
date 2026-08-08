@@ -15,6 +15,7 @@ ROUTES = [
     "/api/finance/portfolio",
     "/api/finance/orders",
     "/api/finance/market/overview",
+    "/api/finance/market/live",
 ]
 
 

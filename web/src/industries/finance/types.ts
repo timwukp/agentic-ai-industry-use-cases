@@ -48,6 +48,60 @@ export interface MarketOverviewResponse {
   source?: string
 }
 
+/** Live-provenance envelope shared by every real-data payload. */
+export interface LiveEnvelope {
+  source: 'live'
+  provider: string
+  fetched_at: string
+  delay: string
+  stale?: boolean
+  error?: string
+}
+
+export interface LiveIndex extends LiveEnvelope {
+  index: string
+  name: string
+  level: number
+  change: number
+  change_pct: number
+}
+
+export interface LiveQuote extends LiveEnvelope {
+  symbol: string
+  price: number
+  change: number
+  change_pct: number
+  high: number
+  low: number
+  open: number
+  prev_close: number
+}
+
+export interface FredEntry {
+  series: string
+  label: string
+  value: number
+  as_of_date: string
+}
+
+export interface LiveTreasury extends LiveEnvelope {
+  curve: Record<string, FredEntry>
+  spread_10y_2y?: number
+  curve_inverted?: boolean
+}
+
+export interface LiveRates extends LiveEnvelope {
+  rates: Record<string, FredEntry>
+}
+
+export interface MarketLiveResponse {
+  indices: LiveIndex[]
+  treasury: LiveTreasury
+  rates: LiveRates
+  quotes: LiveQuote[]
+  tracked: { symbols: string[] } & Partial<LiveEnvelope>
+}
+
 export interface Order {
   orderId: string
   portfolioId: string
