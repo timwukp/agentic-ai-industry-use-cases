@@ -125,14 +125,14 @@ def test_cognito_hardening(templates):
         assert c["Properties"].get("GenerateSecret") is not True
 
 
-def test_six_tool_lambdas(templates):
+def test_seven_tool_lambdas(templates):
     fns = templates["tools"].find_resources("AWS::Lambda::Function")
     tool_fns = [
         f
         for f in fns.values()
         if f["Properties"].get("FunctionName", "").startswith("finance-tool-")
     ]
-    assert len(tool_fns) == 6  # 5 original targets + market_live
+    assert len(tool_fns) == 7  # 5 original targets + market_live + macro_signals
 
 
 def test_market_collector_scheduled(templates):
@@ -152,7 +152,7 @@ def test_market_collector_scheduled(templates):
         json.loads(s["Properties"]["Target"]["Input"])["job"]
         for s in schedules.values()
     )
-    assert jobs == ["daily", "fundamentals", "index", "quotes"]
+    assert jobs == ["daily", "fundamentals", "index", "news", "quotes"]
     for s in schedules.values():
         assert s["Properties"]["ScheduleExpressionTimezone"] == "America/New_York"
 

@@ -74,6 +74,7 @@ export const en = {
     live: 'LIVE',
     asOf: 'as of',
     staleData: 'STALE',
+    derived: 'DERIVED · hypothesis',
     forecastLow: 'Low',
     forecastRange: 'Confidence range',
     forecastProjection: 'Projection',
@@ -213,6 +214,14 @@ export const en = {
     inverted: 'curve inverted',
     policyRates: 'Policy Rates',
     trackedSymbols: 'Tracked Stocks',
+    signalsHeading: 'Global Signals',
+    loadingSignals: 'Loading global signals…',
+    noSignalsData: 'No signals collected yet',
+    macroHeading: 'Macro Indicators',
+    factorsHeading: 'Geopolitical Factor Loadings (news-derived)',
+    hotspotsHeading: 'Top hotspots today',
+    derivedDisclaimer:
+      'LLM-scored from news headlines. Hypothesis-grade signals, not validated indicators — bar right = intensifying, left = de-escalating; last column = headline count.',
   },
 
   healthcare: {

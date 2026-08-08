@@ -61,6 +61,7 @@ export const ja = {
     live: 'ライブ',
     asOf: '時点:',
     staleData: '古いデータ',
+    derived: '導出 · 仮説',
     forecastLow: '低',
     forecastRange: '信頼区間',
     forecastProjection: '予測値',
@@ -194,6 +195,13 @@ export const ja = {
     inverted: '逆イールド',
     policyRates: '政策金利',
     trackedSymbols: '追跡銘柄',
+    signalsHeading: 'グローバルシグナル',
+    loadingSignals: 'グローバルシグナルを読み込み中…',
+    noSignalsData: 'シグナルはまだ収集されていません',
+    macroHeading: 'マクロ指標',
+    factorsHeading: '地政学ファクター負荷（ニュース由来）',
+    hotspotsHeading: '本日の主要ホットスポット',
+    derivedDisclaimer: 'ニュース見出しをLLMがスコアリング。仮説段階のシグナルであり検証済み指標ではありません — バー右 = 激化、左 = 沈静化；最終列 = 見出し数。',
   },
 
   healthcare: {

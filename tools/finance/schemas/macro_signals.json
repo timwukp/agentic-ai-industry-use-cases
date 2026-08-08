@@ -1,0 +1,56 @@
+[
+  {
+    "name": "get_factor_snapshot",
+    "description": "Get today's news-derived geopolitical/macro factor loadings. Each of the 13 factors (energy-supply, shipping-logistics, aviation, us-china, war-conflict, us-policy, fed-policy, china-policy, tech-supply-chain, semiconductors, precious-metals, rare-earths, economic-cycle) has a loading in [-1,+1] aggregated from Haiku-scored headlines (Finnhub + GDELT). ALWAYS disclose these are hypothesis-grade derived signals (grade=hypothesis), not validated indicators. Omit the factor argument to get all 13.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "factor": {
+          "type": "string",
+          "description": "Factor id, e.g. 'energy-supply', 'us-china', 'war-conflict'. Empty for all factors. (Default: all)"
+        }
+      }
+    }
+  },
+  {
+    "name": "get_factor_history",
+    "description": "Get the daily time series of one factor's news-derived loading over the last N days (max 30). Useful for spotting trend shifts in geopolitical intensity. grade=hypothesis — disclose it.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "factor": {
+          "type": "string",
+          "description": "Factor id, e.g. 'war-conflict'"
+        },
+        "days": {
+          "type": "integer",
+          "description": "Days of history, max 30 (Default: 30)"
+        }
+      },
+      "required": [
+        "factor"
+      ]
+    }
+  },
+  {
+    "name": "get_news_hotspots",
+    "description": "Get today's top global news hotspots ranked by factor intensity (|loading| weighted by event volume), each with its top headlines. The daily 'what is moving in the world' view: wars, oil, US-China, Fed, China policy, supply chains, rare earths. grade=hypothesis — disclose it.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "get_macro_series",
+    "description": "Get REAL official macro data: WTI/Brent crude oil (DCOILWTICO/DCOILBRENTEU), VIX (VIXCLS), trade-weighted dollar (DTWEXBGS), 10Y breakeven inflation (T10YIE), CPI (CPIAUCSL) from FRED, or gold spot (XAUUSD) from Twelve Data. Omit the series argument to get all FRED macro series at once. source=live with provider/fetched_at/delay.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "series": {
+          "type": "string",
+          "description": "Series id: 'DCOILWTICO', 'DCOILBRENTEU', 'VIXCLS', 'DTWEXBGS', 'T10YIE', 'CPIAUCSL', or 'XAUUSD' for gold. Empty for all FRED macro series. (Default: all)"
+        }
+      }
+    }
+  }
+]

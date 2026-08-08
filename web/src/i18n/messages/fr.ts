@@ -61,6 +61,7 @@ export const fr = {
     live: 'EN DIRECT',
     asOf: 'au',
     staleData: 'OBSOLÈTE',
+    derived: 'DÉRIVÉ · hypothèse',
     forecastLow: 'Bas',
     forecastRange: 'Intervalle de confiance',
     forecastProjection: 'Projection',
@@ -200,6 +201,13 @@ export const fr = {
     inverted: 'courbe inversée',
     policyRates: 'Taux directeurs',
     trackedSymbols: 'Actions suivies',
+    signalsHeading: 'Signaux mondiaux',
+    loadingSignals: 'Chargement des signaux mondiaux…',
+    noSignalsData: 'Aucun signal collecté pour l’instant',
+    macroHeading: 'Indicateurs macro',
+    factorsHeading: 'Charges factorielles géopolitiques (dérivées de l’actualité)',
+    hotspotsHeading: 'Principaux points chauds du jour',
+    derivedDisclaimer: 'Noté par LLM à partir des titres. Signaux de niveau hypothèse, pas des indicateurs validés — barre à droite = intensification, à gauche = désescalade ; dernière colonne = nombre de titres.',
   },
 
   healthcare: {
