@@ -81,6 +81,27 @@ that both the smoke script and the web client discarded. So the check asks a liv
 tools produces confident-looking text, which is why asserting on wording would be worse than no
 check at all.
 
+### Observability & online evaluations
+
+Each harness ships OTel spans to X-Ray Transaction Search (the `aws/spans` log group), and an
+online evaluator per industry (`<industry>_harness_quality`) scores those spans on a schedule;
+results land in `/aws/bedrock-agentcore/evaluations/results/…` and in the AgentCore console
+under **Evaluations**.
+
+This pipeline has its own silent failure mode, and we hit it: the harness role was missing
+`xray:PutTraceSegments` / `xray:PutTelemetryRecords` / `cloudwatch:PutMetricData`, so the
+runtime's OTel exporter got 403 on every span batch. Nothing surfaced the error — harness
+responses stayed perfect, log delivery was `ENABLED`, evaluators sat `ACTIVE` — but `aws/spans`
+never saw a span, so every evaluator had nothing to score and the result log groups stayed empty
+for six months. The `IndustryStack` harness role now carries an `ObservabilityTraces` statement
+(resource `*` because `xray:Put*` has no resource-level scoping). To check the pipeline is live,
+verify spans arrive, not that components report healthy:
+
+```bash
+aws logs filter-log-events --log-group-name aws/spans \
+  --filter-pattern '"harness_finance_trading"' --max-items 1   # expect ≥1 event after any chat
+```
+
 ## The six industries
 
 Every industry runs the same shape: 4 domain tool Lambdas + a KB-search Lambda behind its own

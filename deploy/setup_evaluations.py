@@ -5,6 +5,15 @@ Samples 100% of live traffic from the runtime's OTel log group and scores it
 with built-in evaluators. Results land in AgentCore Observability
 (CloudWatch → /aws/bedrock-agentcore/evaluations/results/<config-id>).
 
+PREREQUISITE: the harness role must be able to write traces (the
+ObservabilityTraces statement in IndustryStack: xray:PutTraceSegments,
+xray:PutTelemetryRecords, cloudwatch:PutMetricData). Without it the OTel
+exporter gets 403, no span ever reaches aws/spans, and this evaluator sits
+ACTIVE forever with an empty results log group — there is no error surfaced
+anywhere. Verify spans arrive before trusting the evaluator:
+  aws logs filter-log-events --log-group-name aws/spans \
+    --filter-pattern '"harness_<name>"' --max-items 1
+
 Usage: python deploy/setup_evaluations.py --industry finance [--region us-east-1]
 """
 

@@ -6,6 +6,11 @@ skill's setup_observability.py leaves out:
   APPLICATION_LOGS → CloudWatch log group   (evaluations read from here)
   TRACES           → X-Ray
 
+NOTE: a delivery only routes what the exporter successfully pushes. The
+harness role also needs xray:PutTraceSegments / xray:PutTelemetryRecords /
+cloudwatch:PutMetricData (ObservabilityTraces in IndustryStack) or the
+exporter is rejected with 403 before any of these deliveries see a span.
+
 Usage: python deploy/setup_log_delivery.py --industry finance [--region us-east-1]
 """
 
