@@ -76,6 +76,26 @@ IAM 模擬結果是 `allowed`、每個部署步驟 exit code 都是 0。唯一�
 **實際使用**一個工具，然後讀 **tool-result 事件而不是讀文字**——一個連不到工具的 agent 會產出
 看起來很有信心的文字，所以拿文字內容做斷言比不檢查更糟。
 
+### 可觀測性與線上評估
+
+每個 harness 會把 OTel span 送到 X-Ray Transaction Search（`aws/spans` log group），每個行業
+配有一個線上評估器（`<industry>_harness_quality`）定期對這些 span 打分；結果落在
+`/aws/bedrock-agentcore/evaluations/results/…`，也可在 AgentCore 控制台的 **Evaluations**
+頁面查看。
+
+這條管線有自己的靜默故障模式，而我們親身踩到了：harness role 缺少
+`xray:PutTraceSegments` / `xray:PutTelemetryRecords` / `cloudwatch:PutMetricData`，導致
+runtime 的 OTel exporter 每一批 span 都被 403 拒絕。沒有任何地方浮現這個錯誤——harness
+回應一切正常、log delivery 顯示 `ENABLED`、評估器顯示 `ACTIVE`——但 `aws/spans` 從未收到
+span，評估器無料可評，結果 log group 空了六個月。現在 `IndustryStack` 的 harness role 帶有
+`ObservabilityTraces` statement（resource 為 `*`，因為 `xray:Put*` 不支持資源級限定）。
+要確認管線活著，請驗證 span 有到達，而不是看各組件自報健康：
+
+```bash
+aws logs filter-log-events --log-group-name aws/spans \
+  --filter-pattern '"harness_finance_trading"' --max-items 1   # 任一次對話後應 ≥1 筆
+```
+
 ## 六個行業
 
 每個行業都是同一種結構：4 個領域工具 Lambda + 1 個知識庫搜索 Lambda，掛在各自的 Gateway

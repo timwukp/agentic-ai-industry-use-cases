@@ -289,6 +289,24 @@ class IndustryStack(cdk.Stack):
                 ],
             )
         )
+        # Without this, the runtime's OTel exporter gets 403 Forbidden pushing
+        # span batches, so nothing from this harness ever reaches the aws/spans
+        # log group (X-Ray Transaction Search) — and the online evaluators, which
+        # read spans from there, sit on six months of empty result log groups.
+        # Diagnosed by diffing this role against the llmops harness role, whose
+        # spans DO arrive: the only telemetry difference was its BaselineTelemetry
+        # statement. xray:Put* does not support resource-level scoping, hence "*".
+        self.harness_role.add_to_policy(
+            iam.PolicyStatement(
+                sid="ObservabilityTraces",
+                actions=[
+                    "xray:PutTraceSegments",
+                    "xray:PutTelemetryRecords",
+                    "cloudwatch:PutMetricData",
+                ],
+                resources=["*"],
+            )
+        )
 
         # ---- Outputs (same keys the deploy scripts read for finance) ----
         cdk.CfnOutput(
