@@ -182,3 +182,13 @@ def test_unknown_job_is_rejected(market_snapshots, monkeypatch):
     h = _load(monkeypatch, {})
     out = h.lambda_handler({"job": "nope"}, None)
     assert "error" in out and "nope" in out["error"]
+
+
+def test_http_json_refuses_non_https(market_snapshots, monkeypatch):
+    """The B310 scheme guard must actually reject, not just annotate."""
+    import pytest
+
+    h = _load(monkeypatch, {})
+    for url in ("http://finnhub.io/x", "file:///etc/passwd", "ftp://x"):
+        with pytest.raises(ValueError, match="refusing non-https"):
+            h._http_json(url)

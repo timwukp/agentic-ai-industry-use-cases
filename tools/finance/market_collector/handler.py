@@ -97,8 +97,12 @@ def _api_key(name: str) -> str:
 
 
 def _http_json(url: str) -> dict:
+    # B310 guard: every URL here is built from a hardcoded https:// provider
+    # base + urlencoded params; refuse anything else (file://, custom schemes).
+    if not url.startswith("https://"):
+        raise ValueError(f"refusing non-https URL: {url.split(':', 1)[0]}")
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(req, timeout=HTTP_TIMEOUT) as resp:
+    with urllib.request.urlopen(req, timeout=HTTP_TIMEOUT) as resp:  # nosec B310
         return json.loads(resp.read().decode("utf-8"))
 
 
