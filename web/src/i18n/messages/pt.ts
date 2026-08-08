@@ -61,6 +61,7 @@ export const pt = {
     live: 'AO VIVO',
     asOf: 'em',
     staleData: 'DESATUALIZADO',
+    derived: 'DERIVADO · hipótese',
     forecastLow: 'Baixo',
     forecastRange: 'Intervalo de confiança',
     forecastProjection: 'Projeção',
@@ -200,6 +201,13 @@ export const pt = {
     inverted: 'curva invertida',
     policyRates: 'Taxas de política monetária',
     trackedSymbols: 'Ações acompanhadas',
+    signalsHeading: 'Sinais globais',
+    loadingSignals: 'Carregando sinais globais…',
+    noSignalsData: 'Nenhum sinal coletado ainda',
+    macroHeading: 'Indicadores macro',
+    factorsHeading: 'Cargas fatoriais geopolíticas (derivadas de notícias)',
+    hotspotsHeading: 'Principais focos de hoje',
+    derivedDisclaimer: 'Pontuado por LLM a partir de manchetes. Sinais em grau de hipótese, não indicadores validados — barra à direita = intensificando, à esquerda = desescalando; última coluna = número de manchetes.',
   },
 
   healthcare: {

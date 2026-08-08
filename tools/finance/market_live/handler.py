@@ -7,14 +7,19 @@ when the snapshot is older than twice its expected refresh cadence.
 """
 
 from datetime import datetime, timezone
+from zoneinfo import ZoneInfo
 
 from toolkit import tool_error, tool_live
 from toolkit.dispatch import dispatch
 from toolkit.dynamo import from_decimal, table
 
-# pk-class → max acceptable snapshot age (seconds) before we flag stale:
-# 2× the collection cadence (15-min jobs → 30 min; daily jobs → 2 days,
-# covering weekends via the Friday close).
+# pk-class → max acceptable snapshot age (seconds) before we flag stale.
+# Intraday classes (QUOTE/INDEX) collect every 15 min but ONLY during market
+# hours — so 2× cadence applies only while the market is open. Off-hours the
+# Friday close IS the freshest data that can exist; flagging it stale would be
+# dishonest the other way. MAX_AGE is the off-hours backstop: longer than the
+# longest normal gap (Fri 16:00 → Mon 09:30 ET ≈ 2.7 days), so a collector
+# that silently dies still surfaces as stale within a couple of sessions.
 STALE_AFTER = {
     "QUOTE": 30 * 60,
     "INDEX": 30 * 60,
@@ -22,6 +27,20 @@ STALE_AFTER = {
     "RATES": 2 * 86400,
     "FUNDAMENTALS": 2 * 86400,
 }
+INTRADAY = ("QUOTE", "INDEX")
+MAX_AGE_INTRADAY = int(3.5 * 86400)
+
+NYSE = ZoneInfo("America/New_York")
+
+
+def _market_open(now_utc: datetime) -> bool:
+    """US cash session approximation: Mon–Fri 09:30–16:00 ET (ignores holidays;
+    a holiday misclassified as open just makes the stale check stricter)."""
+    et = now_utc.astimezone(NYSE)
+    if et.weekday() >= 5:
+        return False
+    minutes = et.hour * 60 + et.minute
+    return 9 * 60 + 30 <= minutes < 16 * 60
 
 
 def _read(pk: str) -> tuple[dict | None, dict | None]:
@@ -39,11 +58,15 @@ def _read(pk: str) -> tuple[dict | None, dict | None]:
 
 def _envelope(item: dict) -> dict:
     payload = dict(item["payload"])
-    age_limit = STALE_AFTER.get(item["pk"].split("#")[0], 2 * 86400)
+    pk_class = item["pk"].split("#")[0]
+    age_limit = STALE_AFTER.get(pk_class, 2 * 86400)
+    now = datetime.now(timezone.utc)
+    if pk_class in INTRADAY and not _market_open(now):
+        age_limit = MAX_AGE_INTRADAY
     fetched = datetime.strptime(item["fetched_at"], "%Y-%m-%dT%H:%M:%SZ").replace(
         tzinfo=timezone.utc
     )
-    if (datetime.now(timezone.utc) - fetched).total_seconds() > age_limit:
+    if (now - fetched).total_seconds() > age_limit:
         payload["stale"] = True
     return tool_live(
         payload,

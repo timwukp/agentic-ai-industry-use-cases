@@ -53,8 +53,10 @@ def test_live_quote_envelope(market_snapshots):
     assert "stale" not in out
 
 
-def test_stale_flag_when_snapshot_old(market_snapshots):
-    # quotes cadence is 15 min; 2x = 30 min. 45 min old => stale.
+def test_stale_flag_when_snapshot_old_during_market_hours(
+    market_snapshots, monkeypatch
+):
+    # quotes cadence is 15 min; 2x = 30 min. 45 min old DURING the session => stale.
     _put(
         market_snapshots,
         "QUOTE#MSFT",
@@ -62,7 +64,49 @@ def test_stale_flag_when_snapshot_old(market_snapshots):
         age_s=45 * 60,
     )
     h = _load()
+    monkeypatch.setattr(h, "_market_open", lambda now: True)
     assert h.get_live_quote("MSFT")["stale"] is True
+
+
+def test_friday_close_not_stale_on_weekend(market_snapshots, monkeypatch):
+    # Off-hours the last session close IS the freshest possible data —
+    # a 20h-old quote on Saturday must NOT be stale.
+    _put(
+        market_snapshots,
+        "QUOTE#MSFT",
+        {"symbol": "MSFT", "price": Decimal("500")},
+        age_s=20 * 3600,
+    )
+    h = _load()
+    monkeypatch.setattr(h, "_market_open", lambda now: False)
+    assert "stale" not in h.get_live_quote("MSFT")
+
+
+def test_dead_collector_still_flags_stale_off_hours(market_snapshots, monkeypatch):
+    # Off-hours backstop: >3.5 days means the collector died, not a weekend.
+    _put(
+        market_snapshots,
+        "QUOTE#MSFT",
+        {"symbol": "MSFT", "price": Decimal("500")},
+        age_s=4 * 86400,
+    )
+    h = _load()
+    monkeypatch.setattr(h, "_market_open", lambda now: False)
+    assert h.get_live_quote("MSFT")["stale"] is True
+
+
+def test_market_open_boundaries():
+    h = _load()
+    from datetime import datetime, timezone
+
+    # Friday 15:59 ET (19:59 UTC in August, EDT) => open
+    assert h._market_open(datetime(2026, 8, 7, 19, 59, tzinfo=timezone.utc))
+    # Friday 16:00 ET => closed
+    assert not h._market_open(datetime(2026, 8, 7, 20, 0, tzinfo=timezone.utc))
+    # Saturday => closed
+    assert not h._market_open(datetime(2026, 8, 8, 15, 0, tzinfo=timezone.utc))
+    # Monday 09:30 ET => open
+    assert h._market_open(datetime(2026, 8, 10, 13, 30, tzinfo=timezone.utc))
 
 
 def test_daily_series_not_stale_within_two_days(market_snapshots):

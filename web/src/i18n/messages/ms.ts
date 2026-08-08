@@ -61,6 +61,7 @@ export const ms = {
     live: 'LANGSUNG',
     asOf: 'setakat',
     staleData: 'LAPUK',
+    derived: 'TERBITAN · hipotesis',
     forecastLow: 'Rendah',
     forecastRange: 'Julat keyakinan',
     forecastProjection: 'Unjuran',
@@ -200,6 +201,13 @@ export const ms = {
     inverted: 'keluk songsang',
     policyRates: 'Kadar Dasar',
     trackedSymbols: 'Saham Dijejaki',
+    signalsHeading: 'Isyarat Global',
+    loadingSignals: 'Memuatkan isyarat global…',
+    noSignalsData: 'Belum ada isyarat dikumpul',
+    macroHeading: 'Penunjuk Makro',
+    factorsHeading: 'Muatan Faktor Geopolitik (terbitan berita)',
+    hotspotsHeading: 'Hotspot utama hari ini',
+    derivedDisclaimer: 'Diskor oleh LLM daripada tajuk berita. Isyarat bertaraf hipotesis, bukan penunjuk tersahkan — bar ke kanan = memuncak, ke kiri = mereda; lajur akhir = bilangan tajuk.',
   },
 
   healthcare: {

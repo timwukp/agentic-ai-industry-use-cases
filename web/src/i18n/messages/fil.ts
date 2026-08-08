@@ -66,6 +66,7 @@ export const fil = {
     live: 'LIVE',
     asOf: 'noong',
     staleData: 'LUMA NA',
+    derived: 'HINANGO · hypothesis',
     forecastLow: 'Mababa',
     forecastRange: 'Confidence range',
     forecastProjection: 'Projection',
@@ -205,6 +206,13 @@ export const fil = {
     inverted: 'baligtad ang curve',
     policyRates: 'Mga Policy Rate',
     trackedSymbols: 'Sinusubaybayang Stocks',
+    signalsHeading: 'Mga Global na Signal',
+    loadingSignals: 'Nilo-load ang mga global na signal…',
+    noSignalsData: 'Wala pang nakolektang signal',
+    macroHeading: 'Mga Macro Indicator',
+    factorsHeading: 'Geopolitical Factor Loadings (mula sa balita)',
+    hotspotsHeading: 'Mga pangunahing hotspot ngayon',
+    derivedDisclaimer: 'Na-score ng LLM mula sa mga headline. Hypothesis-grade na signal, hindi validated na indicator — bar pakanan = tumitindi, pakaliwa = humuhupa; huling column = bilang ng headline.',
   },
 
   healthcare: {

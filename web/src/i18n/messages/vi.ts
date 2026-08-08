@@ -61,6 +61,7 @@ export const vi = {
     live: 'TRỰC TIẾP',
     asOf: 'tính đến',
     staleData: 'CŨ',
+    derived: 'SUY RA · giả thuyết',
     forecastLow: 'Thấp',
     forecastRange: 'Khoảng tin cậy',
     forecastProjection: 'Dự phóng',
@@ -200,6 +201,13 @@ export const vi = {
     inverted: 'đường cong đảo ngược',
     policyRates: 'Lãi suất chính sách',
     trackedSymbols: 'Cổ phiếu theo dõi',
+    signalsHeading: 'Tín hiệu toàn cầu',
+    loadingSignals: 'Đang tải tín hiệu toàn cầu…',
+    noSignalsData: 'Chưa thu thập được tín hiệu',
+    macroHeading: 'Chỉ số vĩ mô',
+    factorsHeading: 'Tải nhân tố địa chính trị (suy ra từ tin tức)',
+    hotspotsHeading: 'Điểm nóng hàng đầu hôm nay',
+    derivedDisclaimer: 'Được LLM chấm điểm từ tiêu đề tin tức. Tín hiệu mức giả thuyết, không phải chỉ báo đã xác thực — thanh sang phải = leo thang, sang trái = hạ nhiệt; cột cuối = số tiêu đề.',
   },
 
   healthcare: {

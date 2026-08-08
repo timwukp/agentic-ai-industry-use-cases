@@ -61,6 +61,7 @@ export const id = {
     live: 'LANGSUNG',
     asOf: 'per',
     staleData: 'USANG',
+    derived: 'TURUNAN · hipotesis',
     forecastLow: 'Rendah',
     forecastRange: 'Rentang keyakinan',
     forecastProjection: 'Proyeksi',
@@ -200,6 +201,13 @@ export const id = {
     inverted: 'kurva terbalik',
     policyRates: 'Suku Bunga Kebijakan',
     trackedSymbols: 'Saham yang Dipantau',
+    signalsHeading: 'Sinyal Global',
+    loadingSignals: 'Memuat sinyal global…',
+    noSignalsData: 'Belum ada sinyal terkumpul',
+    macroHeading: 'Indikator Makro',
+    factorsHeading: 'Loading Faktor Geopolitik (turunan berita)',
+    hotspotsHeading: 'Hotspot teratas hari ini',
+    derivedDisclaimer: 'Dinilai LLM dari judul berita. Sinyal tingkat hipotesis, bukan indikator tervalidasi — bar ke kanan = meningkat, ke kiri = mereda; kolom terakhir = jumlah judul.',
   },
 
   healthcare: {

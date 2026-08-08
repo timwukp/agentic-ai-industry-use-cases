@@ -61,6 +61,7 @@ export const zhTW = {
     live: '即時',
     asOf: '截至',
     staleData: '資料過期',
+    derived: '衍生 · 假設級',
     forecastLow: '低',
     forecastRange: '信賴區間',
     forecastProjection: '預測值',
@@ -194,6 +195,13 @@ export const zhTW = {
     inverted: '曲線倒掛',
     policyRates: '政策利率',
     trackedSymbols: '追蹤股票',
+    signalsHeading: '全球信號',
+    loadingSignals: '正在載入全球信號…',
+    noSignalsData: '尚未採集到信號',
+    macroHeading: '宏觀指標',
+    factorsHeading: '地緣政治因子載荷（新聞衍生）',
+    hotspotsHeading: '今日熱點',
+    derivedDisclaimer: '由 LLM 從新聞標題打分。假設級信號，非經驗證的指標——條形向右 = 升級，向左 = 緩和；末欄 = 標題數。',
   },
 
   healthcare: {

@@ -102,6 +102,55 @@ export interface MarketLiveResponse {
   tracked: { symbols: string[] } & Partial<LiveEnvelope>
 }
 
+/** News-derived factor signals (Phase 2). grade is always "hypothesis". */
+export interface FactorEntry {
+  factor: string
+  label: string
+  loading: number
+  event_count: number
+  top_headlines: string[]
+}
+
+export interface FactorsResponse {
+  factors?: Record<string, FactorEntry>
+  taxonomy_version?: string
+  grade?: string
+  source?: string
+  provider?: string
+  fetched_at?: string
+  error?: string
+}
+
+export interface HotspotsResponse {
+  hotspots?: FactorEntry[]
+  grade?: string
+  fetched_at?: string
+  error?: string
+}
+
+export interface MacroResponse {
+  series?: Record<string, FredEntry>
+  source?: string
+  provider?: string
+  fetched_at?: string
+  delay?: string
+  error?: string
+}
+
+export interface GoldResponse extends Partial<LiveEnvelope> {
+  series?: string
+  label?: string
+  value?: number
+  change_pct?: number
+}
+
+export interface SignalsResponse {
+  factors: FactorsResponse
+  hotspots: HotspotsResponse
+  macro: MacroResponse
+  gold: GoldResponse
+}
+
 export interface Order {
   orderId: string
   portfolioId: string

@@ -67,6 +67,7 @@ export const hi = {
     live: 'लाइव',
     asOf: 'के अनुसार',
     staleData: 'पुराना',
+    derived: 'व्युत्पन्न · परिकल्पना',
     forecastLow: 'निम्न',
     forecastRange: 'विश्वास सीमा',
     forecastProjection: 'प्रक्षेपण',
@@ -206,6 +207,13 @@ export const hi = {
     inverted: 'कर्व उलटा है',
     policyRates: 'नीतिगत दरें',
     trackedSymbols: 'ट्रैक किए गए स्टॉक',
+    signalsHeading: 'वैश्विक संकेत',
+    loadingSignals: 'वैश्विक संकेत लोड हो रहे हैं…',
+    noSignalsData: 'अभी तक कोई संकेत एकत्र नहीं हुआ',
+    macroHeading: 'मैक्रो संकेतक',
+    factorsHeading: 'भू-राजनीतिक फैक्टर लोडिंग (समाचार-व्युत्पन्न)',
+    hotspotsHeading: 'आज के शीर्ष हॉटस्पॉट',
+    derivedDisclaimer: 'समाचार शीर्षकों से LLM द्वारा स्कोर किया गया। परिकल्पना-स्तर के संकेत, प्रमाणित संकेतक नहीं — दाईं ओर बार = तीव्र होना, बाईं ओर = शांत होना; अंतिम स्तंभ = शीर्षकों की संख्या।',
   },
 
   healthcare: {

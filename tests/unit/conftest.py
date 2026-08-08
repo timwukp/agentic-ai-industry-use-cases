@@ -12,6 +12,7 @@ for target in (
     "market_data",
     "market_live",
     "market_collector",
+    "macro_signals",
     "portfolio",
     "risk",
     "trading",
