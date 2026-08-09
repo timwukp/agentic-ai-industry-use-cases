@@ -1,0 +1,203 @@
+{
+  "cohort": "C10",
+  "audit": {
+    "expected_bdays": 2764,
+    "rows": 2762,
+    "fraction": 0.9993,
+    "passed": true
+  },
+  "window": [
+    "2016-01-05",
+    "2026-08-07"
+  ],
+  "H1a": {
+    "auroc": 0.8465,
+    "converged": true,
+    "stress_days": 311,
+    "verdict": "支持"
+  },
+  "H1b": {
+    "auroc": 0.7438,
+    "median_lag_bd": 16.5,
+    "n_episodes": 4,
+    "n_days": 1959,
+    "verdict": "大體一致"
+  },
+  "H2": {
+    "edges": [
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "documented_era": "moderation",
+        "expectation": "significant in 1986-2007, weakens post-2008",
+        "per_era": {
+          "zirp": {
+            "q": 0.5622,
+            "h": 1
+          },
+          "covid_inflation": {
+            "q": 0.7463,
+            "h": 5
+          }
+        },
+        "verdict": "分歧"
+      },
+      {
+        "source": "VIXCLS_diff",
+        "target": "NASDAQCOM_ret",
+        "documented_era": "all eras >= 1990",
+        "expectation": "contemporaneous/lead relation, negative sign",
+        "per_era": {
+          "zirp": {
+            "q": 0.6453,
+            "h": 1
+          },
+          "covid_inflation": {
+            "q": 0.0242,
+            "h": 1
+          }
+        },
+        "verdict": "大體一致"
+      }
+    ],
+    "verdict": "分歧"
+  },
+  "H3": {
+    "VIXCLS_diff->NASDAQCOM_ret": {
+      "beta_h1_5": [
+        0.001548,
+        0.000449,
+        0.000371,
+        0.000397,
+        6.7e-05
+      ],
+      "band95_excludes_zero_h1_5": false,
+      "sign": 1.0,
+      "wf_folds": 15,
+      "wf_edge_frac": 0.467,
+      "dm_p": 0.044,
+      "verdict": "分歧"
+    },
+    "DCOILWTICO_ret->DGS10_diff": {
+      "beta_h1_5": [
+        0.000242,
+        0.001134,
+        0.001914,
+        0.001295,
+        0.002504
+      ],
+      "band95_excludes_zero_h1_5": false,
+      "sign": 1.0,
+      "wf_folds": 15,
+      "wf_edge_frac": 0.667,
+      "dm_p": 0.3766,
+      "verdict": "分歧"
+    }
+  },
+  "H4": {
+    "NASDAQCOM": {
+      "n_days": 2243,
+      "violations": 31,
+      "rate": 0.01382,
+      "kupiec_p": 0.0856,
+      "cc_p": 0.0464,
+      "basel": "amber",
+      "verdict": "分歧"
+    },
+    "DGS10": {
+      "n_days": 2243,
+      "violations": 36,
+      "rate": 0.01605,
+      "kupiec_p": 0.0081,
+      "cc_p": 0.002,
+      "basel": "amber",
+      "verdict": "分歧"
+    }
+  },
+  "H8": {
+    "NASDAQCOM": {
+      "xi_per_era": {
+        "zirp": -0.4364,
+        "covid_inflation": 0.179
+      },
+      "jump_auroc": 0.4874,
+      "verdict": "分歧"
+    },
+    "DGS10": {
+      "xi_per_era": {
+        "zirp": -0.1754,
+        "covid_inflation": -0.0652
+      },
+      "jump_auroc": 0.4539,
+      "verdict": "分歧"
+    }
+  },
+  "H5": {
+    "verdict": "n/a",
+    "note": "insufficient overlap"
+  },
+  "H5b": {
+    "war-conflict": {
+      "hits": 1,
+      "events": 3,
+      "hit_rate": 0.3333,
+      "base_window_prob": 0.214,
+      "p": 0.5144,
+      "verdict": "分歧"
+    },
+    "fed-policy": {
+      "hits": 0,
+      "events": 3,
+      "hit_rate": 0.0,
+      "base_window_prob": 0.1688,
+      "p": 1.0,
+      "verdict": "分歧"
+    },
+    "economic-cycle": {
+      "hits": 1,
+      "events": 3,
+      "hit_rate": 0.3333,
+      "base_window_prob": 0.1831,
+      "p": 0.4548,
+      "verdict": "分歧"
+    }
+  },
+  "H7": {
+    "VIXCLS_diff->NASDAQCOM_ret": {
+      "per_era": {
+        "zirp": {
+          "beta5": 0.000528,
+          "sig95": false
+        },
+        "covid_inflation": {
+          "beta5": -0.000153,
+          "sig95": false
+        }
+      },
+      "sup_chow_reject": false,
+      "verdict": "分歧"
+    },
+    "DCOILWTICO_ret->DGS10_diff": {
+      "per_era": {
+        "zirp": {
+          "beta5": -0.000685,
+          "sig95": false
+        },
+        "covid_inflation": {
+          "beta5": 0.003723,
+          "sig95": false
+        }
+      },
+      "sup_chow_reject": true,
+      "verdict": "分歧"
+    }
+  },
+  "H6": {
+    "n_strategies": 18,
+    "best": "VIXCLS_diff->DGS10_diff@h1",
+    "best_sharpe_net": 0.268,
+    "spa_p": 0.7043,
+    "verdict": "分歧 (no economic predictability)"
+  },
+  "runtime_s": 64.0
+}

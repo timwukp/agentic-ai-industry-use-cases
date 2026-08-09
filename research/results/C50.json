@@ -1,0 +1,125 @@
+{
+  "cohort": "C50",
+  "audit": {
+    "expected_bdays": 13093,
+    "rows": 13093,
+    "fraction": 1.0,
+    "passed": true
+  },
+  "window": [
+    "1976-06-02",
+    "2026-08-07"
+  ],
+  "H1a": {
+    "auroc": 0.6667,
+    "converged": true,
+    "stress_days": 1830,
+    "verdict": "大體一致"
+  },
+  "H1b": {
+    "auroc": 0.685,
+    "median_lag_bd": 6.5,
+    "n_episodes": 18,
+    "n_days": 12290,
+    "verdict": "分歧"
+  },
+  "H2": {
+    "edges": [
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "documented_era": "moderation",
+        "expectation": "significant in 1986-2007, weakens post-2008",
+        "verdict": "n/a (series absent)"
+      },
+      {
+        "source": "VIXCLS_diff",
+        "target": "NASDAQCOM_ret",
+        "documented_era": "all eras >= 1990",
+        "expectation": "contemporaneous/lead relation, negative sign",
+        "verdict": "n/a (series absent)"
+      }
+    ]
+  },
+  "H3": {},
+  "H4": {
+    "NASDAQCOM": {
+      "n_days": 12572,
+      "violations": 191,
+      "rate": 0.01519,
+      "kupiec_p": 0.0,
+      "cc_p": 0.0,
+      "basel": "red",
+      "verdict": "分歧"
+    },
+    "DGS10": {
+      "n_days": 12572,
+      "violations": 156,
+      "rate": 0.01241,
+      "kupiec_p": 0.0089,
+      "cc_p": 0.0,
+      "basel": "amber",
+      "verdict": "分歧"
+    }
+  },
+  "H8": {
+    "NASDAQCOM": {
+      "xi_per_era": {
+        "volcker": 0.2986,
+        "moderation": 0.1334,
+        "zirp": 0.0607,
+        "covid_inflation": 0.178
+      },
+      "jump_auroc": 0.4936,
+      "verdict": "分歧"
+    },
+    "DGS10": {
+      "xi_per_era": {
+        "volcker": 0.0448,
+        "moderation": -0.194,
+        "zirp": 0.1692,
+        "covid_inflation": -0.0652
+      },
+      "jump_auroc": 0.4875,
+      "verdict": "分歧"
+    }
+  },
+  "H5": {
+    "n_tested": 42,
+    "n_significant": 0,
+    "overlap_days": 9167,
+    "significant_edges": [],
+    "verdict": "分歧 (clean null — Phase 2 premise not supported by proxies)"
+  },
+  "H5b": {
+    "war-conflict": {
+      "hits": 1,
+      "events": 3,
+      "hit_rate": 0.3333,
+      "base_window_prob": 0.214,
+      "p": 0.5144,
+      "verdict": "分歧"
+    },
+    "fed-policy": {
+      "hits": 0,
+      "events": 3,
+      "hit_rate": 0.0,
+      "base_window_prob": 0.1688,
+      "p": 1.0,
+      "verdict": "分歧"
+    },
+    "economic-cycle": {
+      "hits": 1,
+      "events": 3,
+      "hit_rate": 0.3333,
+      "base_window_prob": 0.1831,
+      "p": 0.4548,
+      "verdict": "分歧"
+    }
+  },
+  "H7": {},
+  "H6": {
+    "verdict": "n/a"
+  },
+  "runtime_s": 238.8
+}
