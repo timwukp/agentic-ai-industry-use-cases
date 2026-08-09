@@ -21,6 +21,7 @@ from prism import (
     causality_scan,
     confirm,
     factor_series,
+    fit_gpd_by_regime,
     fit_gpd_pot,
     bipower_jump_stat,
     fit_regimes,
@@ -218,11 +219,19 @@ def lambda_handler(event, context):
         causality_payload.update(factor_note)
     _write("PRISM#CAUSALITY", causality_payload)
 
-    # ---- tails ----
+    # ---- tails: unconditional VaR stays the headline. Per-regime tails
+    # are DESCRIPTIVE ONLY: the validation addendum's back-test showed
+    # conditioning VaR on the (lagged) estimated regime WORSENS calibration
+    # — the H1b detection lag compounds at regime transitions, exactly when
+    # violations strike. What survives is the descriptive claim "the
+    # stress-regime tail is fatter", which the synthetic test proves the
+    # fit recovers correctly. ----
+    current_state = regime.to_payload()["current_state"]
     tails = {}
     for asset, col in (("NASDAQCOM", "NASDAQCOM_ret"), ("DGS10", "DGS10_diff")):
         tr = fit_gpd_pot(rets[col])
         jumps = bipower_jump_stat(rets[col])
+        by_regime = fit_gpd_by_regime(rets[col], regime.state_probs)
         tails[asset] = {
             **tr.to_payload(),
             "jump_stat": (
@@ -230,6 +239,13 @@ def lambda_handler(event, context):
                 if jumps.notna().any()
                 else None
             ),
+            "by_regime": {state: res.to_payload() for state, res in by_regime.items()},
+            "by_regime_note": (
+                "descriptive only — regime-conditional VaR back-tested WORSE "
+                "than unconditional (validation addendum); use for tail-shape "
+                "context, not risk limits"
+            ),
+            "current_regime": current_state,
         }
     _write("PRISM#TAILS", {"assets": tails})
 

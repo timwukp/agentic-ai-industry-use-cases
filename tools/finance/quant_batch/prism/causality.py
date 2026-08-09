@@ -8,6 +8,7 @@ far exceeds the cost of a missed edge (it stays HYPOTHESIS a while longer).
 
 import numpy as np
 import pandas as pd
+from scipy.stats import chi2
 from statsmodels.tsa.stattools import grangercausalitytests
 
 
@@ -117,7 +118,17 @@ def causality_scan(
                 te = transfer_entropy(x, y, lag=h)
                 te_p = te_pvalue(x, y, seed=seed, lag=h)
                 g_p = granger_pvalue(x, y, maxlag=h)
-                combined = np.nanmax([te_p, g_p])
+                # Fisher combination (was max): the validation study's power
+                # audit measured max at 10-55% detection for realistic effect
+                # sizes vs Fisher's 85-100%, at ~1-grid-in-20 extra false
+                # positives — and max missed the literature oil->10Y edge
+                # entirely (H2). BH-FDR downstream still bounds the grid.
+                ps = [p for p in (te_p, g_p) if not np.isnan(p)]
+                if ps:
+                    fisher_stat = -2.0 * sum(np.log(max(p, 1e-12)) for p in ps)
+                    combined = float(chi2.sf(fisher_stat, df=2 * len(ps)))
+                else:
+                    combined = np.nan
                 rows.append(
                     {
                         "source": src,

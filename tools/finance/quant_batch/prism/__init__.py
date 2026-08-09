@@ -7,7 +7,9 @@ decides CONFIRMED vs HYPOTHESIS. Pure functions over pandas inputs; all
 AWS I/O lives in runner.py.
 """
 
-PRISM_VERSION = "2026-08-09.1"
+PRISM_VERSION = (
+    "2026-08-09.2"  # +regime-conditional EVT (validation study H4/H8 revision)
+)
 
 from .data import build_panel, factor_series, to_returns  # noqa: E402,F401
 from .regime import RegimeResult, fit_regimes  # noqa: E402,F401
@@ -18,5 +20,10 @@ from .causality import (  # noqa: E402,F401
     transfer_entropy,
 )
 from .impact import ImpactResult, local_projection  # noqa: E402,F401
-from .tails import TailResult, bipower_jump_stat, fit_gpd_pot  # noqa: E402,F401
+from .tails import (  # noqa: E402,F401
+    TailResult,
+    bipower_jump_stat,
+    fit_gpd_by_regime,
+    fit_gpd_pot,
+)
 from .validate import confirm, walk_forward  # noqa: E402,F401

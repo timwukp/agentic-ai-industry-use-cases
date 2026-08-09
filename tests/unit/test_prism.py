@@ -27,6 +27,7 @@ from prism import (  # noqa: E402
     causality_scan,
     confirm,
     factor_series,
+    fit_gpd_by_regime,
     fit_gpd_pot,
     fit_regimes,
     granger_pvalue,
@@ -99,14 +100,28 @@ def test_granger_same_direction():
     assert granger_pvalue(df.y.to_numpy(), df.x.to_numpy(), maxlag=1) > 0.05
 
 
-def test_bh_zero_false_positives_on_pure_noise():
-    rng = np.random.default_rng(3)
-    idx = pd.bdate_range("2018-01-01", periods=800)
-    panel = pd.DataFrame({f"n{i}": rng.normal(0, 1, 800) for i in range(8)}, index=idx)
-    scan = causality_scan(
-        panel, sources=["n0", "n1", "n2", "n3"], targets=["n4", "n5", "n6", "n7"]
-    )
-    assert int(scan["significant"].sum()) == 0
+def test_bh_false_positive_rate_on_pure_noise_within_fdr_bound():
+    """Under all-null, BH at q<0.10 bounds P(any false discovery) by ~q.
+    The original zero-FP assertion encoded the max-rule's over-conservatism
+    (power 10-55% on realistic effects — validation study H2 audit), not a
+    theoretical guarantee. Fisher combination restores power; this test
+    checks the actual FDR contract across seeds: few grids may show one
+    discovery, most must show none."""
+    grids_with_fp = 0
+    n_seeds = 8
+    for seed in range(n_seeds):
+        rng = np.random.default_rng(100 + seed)
+        idx = pd.bdate_range("2018-01-01", periods=800)
+        panel = pd.DataFrame(
+            {f"n{i}": rng.normal(0, 1, 800) for i in range(8)}, index=idx
+        )
+        scan = causality_scan(
+            panel, sources=["n0", "n1", "n2", "n3"], targets=["n4", "n5", "n6", "n7"]
+        )
+        if int(scan["significant"].sum()) > 0:
+            grids_with_fp += 1
+    # binomial(8, 0.10): P(>=3) < 4% — 3+ signals a broken FDR control
+    assert grids_with_fp <= 2, f"{grids_with_fp}/{n_seeds} noise grids had discoveries"
 
 
 def test_scan_finds_planted_edge_amid_noise():
@@ -155,6 +170,52 @@ def test_gpd_recovers_heavy_tail_from_student_t():
     losses = -ret
     assert tr.var_99 > float(np.quantile(losses, 0.95))
     assert tr.es_99 > tr.var_99
+
+
+def test_regime_conditional_gpd_separates_planted_tails():
+    """Two planted regimes with different tail fatness: the conditional fit
+    must recover a fatter tail in the stress state than the calm state —
+    the property the validation study's H4/H8 failures demand."""
+    rng = np.random.default_rng(17)
+    n = 4000
+    # calm: thin normal tail; stress: fat t(2.5) tail, in two long blocks
+    stress_mask = np.zeros(n, dtype=bool)
+    stress_mask[1000:1800] = True
+    stress_mask[3000:3600] = True
+    ret = np.where(
+        stress_mask,
+        rng.standard_t(2.5, n) * 0.02,
+        rng.normal(0, 0.005, n),
+    )
+    idx = pd.bdate_range("2010-01-01", periods=n)
+    returns = pd.Series(ret, index=idx)
+    probs = pd.DataFrame(
+        {
+            "stress": stress_mask.astype(float),
+            "risk-on": (~stress_mask).astype(float),
+        },
+        index=idx,
+    )
+    by = fit_gpd_by_regime(returns, probs)
+    assert by["stress"].valid and by["risk-on"].valid
+    # stress tail must be fatter AND its VaR materially larger
+    assert by["stress"].xi > by["risk-on"].xi
+    assert by["stress"].var_99 > 2 * by["risk-on"].var_99
+
+
+def test_regime_conditional_gpd_rejects_thin_slices():
+    rng = np.random.default_rng(18)
+    n = 1000
+    returns = pd.Series(
+        rng.normal(0, 0.01, n), index=pd.bdate_range("2020-01-01", periods=n)
+    )
+    probs = pd.DataFrame(
+        {"stress": np.full(n, 0.05), "risk-on": np.full(n, 0.95)},
+        index=returns.index,
+    )
+    by = fit_gpd_by_regime(returns, probs, min_weight_days=250)
+    assert by["stress"].valid is False  # 5% of 1000 days is not enough
+    assert by["risk-on"].valid is True
 
 
 # ---------------- validation ----------------
