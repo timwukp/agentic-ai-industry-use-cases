@@ -151,6 +151,57 @@ export interface SignalsResponse {
   gold: GoldResponse
 }
 
+/** PRISM model outputs (Phase 3). source is "model"; grade per edge. */
+export interface RegimeResponse {
+  current_state?: string
+  state_probs?: Record<string, number>
+  states?: Record<
+    string,
+    { label: string; mean_equity_ret?: number; expected_duration_days?: number }
+  >
+  converged?: boolean
+  prism_version?: string
+  fetched_at?: string
+  error?: string
+}
+
+export interface CausalEdge {
+  source: string
+  target: string
+  horizon: number
+  q_value: number
+  grade: 'CONFIRMED' | 'HYPOTHESIS' | string
+}
+
+export interface RegularitiesResponse {
+  edges?: CausalEdge[]
+  confirmed?: CausalEdge[]
+  hypothesis_count?: number
+  factor_causality?: string
+  days_available?: number
+  days_needed?: number
+  fetched_at?: string
+  error?: string
+}
+
+export interface TailRiskEntry {
+  asset?: string
+  xi?: number
+  var_99?: number
+  es_99?: number
+  var_999?: number
+  n_exceed?: number
+  valid?: boolean
+  jump_stat?: number
+  error?: string
+}
+
+export interface PrismResponse {
+  regime: RegimeResponse
+  regularities: RegularitiesResponse
+  tails: Record<string, TailRiskEntry>
+}
+
 export interface Order {
   orderId: string
   portfolioId: string

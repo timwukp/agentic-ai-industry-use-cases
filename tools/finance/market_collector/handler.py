@@ -362,6 +362,57 @@ def job_fundamentals() -> dict:
     return {"ok": ok, "failed": failed}
 
 
+def job_backfill() -> dict:
+    """Phase 3: one-shot full-history FRED pull into the lake so PRISM can
+    fit regimes/tails immediately instead of waiting years for the daily
+    collector to accumulate. Writes market/history/<series>.jsonl.gz
+    (idempotent overwrite — one object per series, not partitioned by day)."""
+    key = _api_key("fred-api-key")
+    ok, failed = 0, []
+    for series_id, (group, label) in FRED_SERIES.items():
+        url = (
+            "https://api.stlouisfed.org/fred/series/observations?"
+            + urllib.parse.urlencode(
+                {
+                    "series_id": series_id,
+                    "api_key": key,
+                    "file_type": "json",
+                    "observation_start": "2010-01-01",
+                }
+            )
+        )
+        try:
+            obs = [
+                {"date": o["date"], "value": float(o["value"])}
+                for o in _http_json(url)["observations"]
+                if o["value"] not in (".", "")
+            ]
+            if not obs:
+                raise ValueError(f"no observations for {series_id}")
+            buf = io.BytesIO()
+            with gzip.GzipFile(fileobj=buf, mode="wb") as gz:
+                for row in obs:
+                    gz.write(
+                        (
+                            json.dumps(
+                                {"series": series_id, "label": label, **row},
+                                separators=(",", ":"),
+                            )
+                            + "\n"
+                        ).encode()
+                    )
+            boto3.client("s3").put_object(
+                Bucket=os.environ["MARKET_LAKE_BUCKET"],
+                Key=f"market/history/{series_id}.jsonl.gz",
+                Body=buf.getvalue(),
+            )
+            ok += 1
+            print(json.dumps({"backfilled": series_id, "observations": len(obs)}))
+        except (urllib.error.URLError, ValueError, KeyError) as exc:
+            failed.append(f"{series_id}: {exc}")
+    return {"ok": ok, "failed": failed}
+
+
 def job_news() -> dict:
     """Phase 2: headlines -> Haiku factor scoring -> daily factor series."""
     from news_job import run_news_job
@@ -382,6 +433,7 @@ JOBS = {
     "daily": job_daily,
     "fundamentals": job_fundamentals,
     "news": job_news,
+    "backfill": job_backfill,
 }
 
 

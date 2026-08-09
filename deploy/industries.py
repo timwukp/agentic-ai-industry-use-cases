@@ -15,6 +15,7 @@ INDUSTRIES = {
             "market-data": ("market_data", "ToolLambdaMarketDataArn"),
             "market-live": ("market_live", "ToolLambdaMarketLiveArn"),
             "macro-signals": ("macro_signals", "ToolLambdaMacroSignalsArn"),
+            "quant-insights": ("quant_insights", "ToolLambdaQuantInsightsArn"),
             "portfolio": ("portfolio", "ToolLambdaPortfolioArn"),
             "risk": ("risk", "ToolLambdaRiskArn"),
             "trading": ("trading", "ToolLambdaTradingArn"),

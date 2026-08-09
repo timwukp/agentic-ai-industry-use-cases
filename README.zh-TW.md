@@ -209,6 +209,21 @@ E2E hook），由一個重建測試釘死：從目錄 key 加參數必須精確�
 代理的系統提示要求：呈現 live 數字必須披露數據源與時點；答案若混合 live 市場背景與
 模擬投組狀態，必須明說。真實世界查詢（新聞、SEC 文件）通過 harness 內建瀏覽器工具完成。
 
+在 live/simulated 之外還有兩個數據來源類別：
+
+- **`"source": "derived"`**（紫色徽章）—— 每晚由 Haiku 從新聞標題（Finnhub + GDELT）
+  打分出的 13 因子地緣政治載荷。永遠標 `grade: "hypothesis"`：未經驗證的信號，
+  用於刻畫「世界正在擔心什麼」。
+- **`"source": "model"`**（天藍徽章）—— **PRISM**（*Probabilistic Regime & Impact
+  Shock Model*，概率體制與衝擊影響模型）的輸出：夜間容器 Lambda 批次，基於回填的
+  10 年以上官方數據擬合——高斯 HMM 市場體制；傳遞熵 + Granger 因果掃描（Benjamini-
+  Hochberg FDR 校正）；貝葉斯局部投影影響函數（含可信帶）；EVT（GPD 超閾值法）尾部
+  風險。一條規律只有同時通過 FDR 校正**和** walk-forward 樣本外驗證（對照 AR(1)/
+  隨機遊走基準）才標 **CONFIRMED**，其餘一律 **HYPOTHESIS**。CONFIRMED 列表為空
+  （新聞因子歷史積累期的預期狀態）就如實顯示空——誠實的空列表勝過粉飾的列表。
+  quant 批次是本 repo 對 zip-only Lambda 打包規則的唯一受批例外
+  （numpy/scipy/statsmodels/hmmlearn 需要容器鏡像）。
+
 ### Live 行情初始設置（一次性）
 
 採集器需要 3 個免費 API key 存入 SSM（`secrets` 部署步驟會檢查，缺失時打印以下命令）：

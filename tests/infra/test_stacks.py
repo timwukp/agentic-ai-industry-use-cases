@@ -23,7 +23,10 @@ ENV = cdk.Environment(account="123456789012", region="us-east-1")
 
 @pytest.fixture(scope="module")
 def templates():
-    app = cdk.App()
+    # Skip asset bundling: the quant-batch DockerImageFunction would otherwise
+    # docker-build during synth, making unit-style assertions slow and
+    # docker-dependent. Assertions only need the template, not the image.
+    app = cdk.App(context={"aws:cdk:bundling-stacks": []})
     shared = SharedSecurityStack(app, "S", env=ENV)
     auth = AuthStack(app, "A", env=ENV)
     data = FinanceDataStack(app, "D", env=ENV, kms_key=shared.kms_key)
@@ -125,14 +128,15 @@ def test_cognito_hardening(templates):
         assert c["Properties"].get("GenerateSecret") is not True
 
 
-def test_seven_tool_lambdas(templates):
+def test_eight_tool_lambdas(templates):
     fns = templates["tools"].find_resources("AWS::Lambda::Function")
     tool_fns = [
         f
         for f in fns.values()
         if f["Properties"].get("FunctionName", "").startswith("finance-tool-")
     ]
-    assert len(tool_fns) == 7  # 5 original targets + market_live + macro_signals
+    # 5 original targets + market_live + macro_signals + quant_insights
+    assert len(tool_fns) == 8
 
 
 def test_market_collector_scheduled(templates):
@@ -149,10 +153,17 @@ def test_market_collector_scheduled(templates):
 
     schedules = templates["tools"].find_resources("AWS::Scheduler::Schedule")
     jobs = sorted(
-        json.loads(s["Properties"]["Target"]["Input"])["job"]
+        json.loads(s["Properties"]["Target"]["Input"]).get("job", "<quant-batch>")
         for s in schedules.values()
     )
-    assert jobs == ["daily", "fundamentals", "index", "news", "quotes"]
+    assert jobs == [
+        "<quant-batch>",  # PRISM nightly (no job payload)
+        "daily",
+        "fundamentals",
+        "index",
+        "news",
+        "quotes",
+    ]
     for s in schedules.values():
         assert s["Properties"]["ScheduleExpressionTimezone"] == "America/New_York"
 

@@ -186,6 +186,7 @@ class FinanceToolsStack(cdk.Stack):
             "market_data",
             "market_live",
             "macro_signals",
+            "quant_insights",
             "portfolio",
             "risk",
             "trading",
@@ -213,6 +214,7 @@ class FinanceToolsStack(cdk.Stack):
         orders_table.grant_read_write_data(self.tool_lambdas["trading"])
         market_snapshots_table.grant_read_data(self.tool_lambdas["market_live"])
         market_snapshots_table.grant_read_data(self.tool_lambdas["macro_signals"])
+        market_snapshots_table.grant_read_data(self.tool_lambdas["quant_insights"])
         self.tool_lambdas["kb_search"].add_to_role_policy(
             iam.PolicyStatement(
                 actions=["bedrock:Retrieve"],
@@ -273,6 +275,34 @@ class FinanceToolsStack(cdk.Stack):
         )
         self.collector_lambda.grant_invoke(scheduler_role)
 
+        # ---------------- PRISM quant batch (container image — the one --------
+        # sanctioned exception to zip-only packaging: HMM/EVT/local-projection
+        # math needs numpy/scipy/statsmodels/hmmlearn, and results must be
+        # scheduled + reproducible, which the interactive code interpreter
+        # cannot provide. Everything else stays stdlib zip.
+        self.quant_batch_lambda = lambda_.DockerImageFunction(
+            self,
+            "QuantBatch",
+            function_name="finance-quant-batch",
+            # ARM: the image is built on the deploy machine (Apple Silicon);
+            # without this the x86_64 default yields Runtime.InvalidEntrypoint
+            # at invoke time — the deploy itself succeeds, so this is the only
+            # place the mismatch surfaces.
+            architecture=lambda_.Architecture.ARM_64,
+            code=lambda_.DockerImageCode.from_image_asset(
+                str(TOOLS / "finance" / "quant_batch")
+            ),
+            timeout=cdk.Duration.minutes(14),
+            memory_size=2048,
+            environment={
+                "MARKET_SNAPSHOTS_TABLE": market_snapshots_table.table_name,
+                "MARKET_LAKE_BUCKET": market_lake_bucket.bucket_name,
+            },
+            environment_encryption=kms_key,
+        )
+        market_snapshots_table.grant_read_write_data(self.quant_batch_lambda)
+        market_lake_bucket.grant_read_write(self.quant_batch_lambda)
+
         # EventBridge Scheduler (not classic rules): native America/New_York
         # timezone, so market-hours windows survive DST without cron hacks.
         collector_schedules = {
@@ -301,6 +331,24 @@ class FinanceToolsStack(cdk.Stack):
                 ),
             )
 
+        # PRISM nightly: after news (19:00) so factor series include today
+        self.quant_batch_lambda.grant_invoke(scheduler_role)
+        scheduler.CfnSchedule(
+            self,
+            "QuantBatchSchedule",
+            name="finance-quant-batch-nightly",
+            schedule_expression="cron(0 21 ? * MON-FRI *)",
+            schedule_expression_timezone="America/New_York",
+            flexible_time_window=scheduler.CfnSchedule.FlexibleTimeWindowProperty(
+                mode="OFF"
+            ),
+            target=scheduler.CfnSchedule.TargetProperty(
+                arn=self.quant_batch_lambda.function_arn,
+                role_arn=scheduler_role.role_arn,
+                input="{}",
+            ),
+        )
+
         # ---------------- Dashboard REST Lambda (API Gateway target) ----------------
         self.dashboard_lambda = lambda_.Function(
             self,
@@ -322,6 +370,10 @@ class FinanceToolsStack(cdk.Stack):
                         "macro_signals_tools": TOOLS
                         / "finance"
                         / "macro_signals"
+                        / "handler.py",
+                        "quant_insights_tools": TOOLS
+                        / "finance"
+                        / "quant_insights"
                         / "handler.py",
                     },
                 )
