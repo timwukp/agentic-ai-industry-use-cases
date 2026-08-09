@@ -58,7 +58,6 @@ def test_conditional_coverage_combines_both():
 
 
 def test_basel_zones():
-    rng = np.random.default_rng(7)
     n = 250
     green = np.zeros(n, dtype=bool)
     green[:2] = True  # 2 violations in 250d @99% is comfortably green
