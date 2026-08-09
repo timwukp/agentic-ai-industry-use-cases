@@ -76,9 +76,7 @@ def get_tail_risk(asset: str = "NASDAQCOM") -> dict:
     out = _envelope(item)
     assets = out.get("assets", {})
     if asset.upper() not in assets:
-        return tool_error(
-            f"No tail model for {asset!r}", available=sorted(assets)
-        )
+        return tool_error(f"No tail model for {asset!r}", available=sorted(assets))
     return {
         **assets[asset.upper()],
         "asset": asset.upper(),
