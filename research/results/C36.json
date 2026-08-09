@@ -1,0 +1,242 @@
+{
+  "cohort": "C36",
+  "audit": {
+    "expected_bdays": 9548,
+    "rows": 9546,
+    "fraction": 0.9998,
+    "passed": true
+  },
+  "window": [
+    "1990-01-03",
+    "2026-08-07"
+  ],
+  "H1a": {
+    "auroc": 0.8396,
+    "converged": true,
+    "stress_days": 1292,
+    "verdict": "支持"
+  },
+  "H1b": {
+    "auroc": 0.7379,
+    "median_lag_bd": 15.5,
+    "n_episodes": 14,
+    "n_days": 8743,
+    "verdict": "大體一致"
+  },
+  "H2": {
+    "edges": [
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "documented_era": "moderation",
+        "expectation": "significant in 1986-2007, weakens post-2008",
+        "per_era": {
+          "moderation": {
+            "q": 0.8486,
+            "h": 1
+          },
+          "zirp": {
+            "q": 0.7388,
+            "h": 1
+          },
+          "covid_inflation": {
+            "q": 0.7463,
+            "h": 5
+          }
+        },
+        "verdict": "分歧"
+      },
+      {
+        "source": "VIXCLS_diff",
+        "target": "NASDAQCOM_ret",
+        "documented_era": "all eras >= 1990",
+        "expectation": "contemporaneous/lead relation, negative sign",
+        "per_era": {
+          "moderation": {
+            "q": 0.5933,
+            "h": 1
+          },
+          "zirp": {
+            "q": 0.0299,
+            "h": 20
+          },
+          "covid_inflation": {
+            "q": 0.0242,
+            "h": 1
+          }
+        },
+        "verdict": "大體一致"
+      }
+    ],
+    "verdict": "分歧"
+  },
+  "H3": {
+    "VIXCLS_diff->NASDAQCOM_ret": {
+      "beta_h1_5": [
+        0.000863,
+        0.000891,
+        0.000974,
+        0.001008,
+        0.001065
+      ],
+      "band95_excludes_zero_h1_5": true,
+      "sign": 1.0,
+      "wf_folds": 67,
+      "wf_edge_frac": 0.448,
+      "dm_p": 0.89,
+      "verdict": "大體一致"
+    },
+    "DCOILWTICO_ret->DGS10_diff": {
+      "beta_h1_5": [
+        0.000185,
+        0.000265,
+        0.000835,
+        0.00113,
+        0.000999
+      ],
+      "band95_excludes_zero_h1_5": false,
+      "sign": 1.0,
+      "wf_folds": 67,
+      "wf_edge_frac": 0.716,
+      "dm_p": 0.1738,
+      "verdict": "分歧"
+    }
+  },
+  "H4": {
+    "NASDAQCOM": {
+      "n_days": 9026,
+      "violations": 137,
+      "rate": 0.01518,
+      "kupiec_p": 0.0,
+      "cc_p": 0.0,
+      "basel": "red",
+      "verdict": "分歧"
+    },
+    "DGS10": {
+      "n_days": 9026,
+      "violations": 100,
+      "rate": 0.01108,
+      "kupiec_p": 0.3112,
+      "cc_p": 0.0,
+      "basel": "green",
+      "verdict": "大體一致"
+    }
+  },
+  "H8": {
+    "NASDAQCOM": {
+      "xi_per_era": {
+        "moderation": 0.1336,
+        "zirp": 0.0607,
+        "covid_inflation": 0.179
+      },
+      "jump_auroc": 0.5069,
+      "verdict": "分歧"
+    },
+    "DGS10": {
+      "xi_per_era": {
+        "moderation": -0.194,
+        "zirp": 0.1692,
+        "covid_inflation": -0.0652
+      },
+      "jump_auroc": 0.4958,
+      "verdict": "分歧"
+    }
+  },
+  "H5": {
+    "n_tested": 63,
+    "n_significant": 0,
+    "overlap_days": 6295,
+    "significant_edges": [],
+    "verdict": "分歧 (clean null — Phase 2 premise not supported by proxies)"
+  },
+  "H5b": {
+    "war-conflict": {
+      "hits": 1,
+      "events": 3,
+      "hit_rate": 0.3333,
+      "base_window_prob": 0.214,
+      "p": 0.5144,
+      "verdict": "分歧"
+    },
+    "fed-policy": {
+      "hits": 0,
+      "events": 3,
+      "hit_rate": 0.0,
+      "base_window_prob": 0.1688,
+      "p": 1.0,
+      "verdict": "分歧"
+    },
+    "economic-cycle": {
+      "hits": 1,
+      "events": 3,
+      "hit_rate": 0.3333,
+      "base_window_prob": 0.1831,
+      "p": 0.4548,
+      "verdict": "分歧"
+    }
+  },
+  "H7": {
+    "VIXCLS_diff->NASDAQCOM_ret": {
+      "per_era": {
+        "moderation": {
+          "beta5": 0.000427,
+          "sig95": false
+        },
+        "zirp": {
+          "beta5": 0.002579,
+          "sig95": true
+        },
+        "covid_inflation": {
+          "beta5": -0.000153,
+          "sig95": false
+        }
+      },
+      "sup_chow_reject": true,
+      "verdict": "大體一致"
+    },
+    "VIXCLS_diff->DGS10_diff": {
+      "per_era": {
+        "moderation": {
+          "beta5": -0.001161,
+          "sig95": false
+        },
+        "zirp": {
+          "beta5": 0.008996,
+          "sig95": true
+        },
+        "covid_inflation": {
+          "beta5": 0.005383,
+          "sig95": false
+        }
+      },
+      "sup_chow_reject": true,
+      "verdict": "大體一致"
+    },
+    "DCOILWTICO_ret->DGS10_diff": {
+      "per_era": {
+        "moderation": {
+          "beta5": -0.000848,
+          "sig95": false
+        },
+        "zirp": {
+          "beta5": 0.00171,
+          "sig95": false
+        },
+        "covid_inflation": {
+          "beta5": 0.003723,
+          "sig95": false
+        }
+      },
+      "sup_chow_reject": true,
+      "verdict": "分歧"
+    }
+  },
+  "H6": {
+    "n_strategies": 12,
+    "best": "VIXCLS_diff->DGS10_diff@h1",
+    "best_sharpe_net": 0.169,
+    "spa_p": 0.3437,
+    "verdict": "分歧 (no economic predictability)"
+  },
+  "runtime_s": 269.3
+}

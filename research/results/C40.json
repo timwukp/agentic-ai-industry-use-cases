@@ -1,0 +1,209 @@
+{
+  "cohort": "C40",
+  "audit": {
+    "expected_bdays": 10484,
+    "rows": 10482,
+    "fraction": 0.9998,
+    "passed": true
+  },
+  "window": [
+    "1986-06-03",
+    "2026-08-07"
+  ],
+  "H1a": {
+    "auroc": 0.8589,
+    "converged": true,
+    "stress_days": 1305,
+    "verdict": "支持"
+  },
+  "H1b": {
+    "auroc": 0.7609,
+    "median_lag_bd": 11.0,
+    "n_episodes": 15,
+    "n_days": 9678,
+    "verdict": "大體一致"
+  },
+  "H2": {
+    "edges": [
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "documented_era": "moderation",
+        "expectation": "significant in 1986-2007, weakens post-2008",
+        "per_era": {
+          "volcker": {
+            "q": 0.7164,
+            "h": 1
+          },
+          "moderation": {
+            "q": 0.847,
+            "h": 1
+          },
+          "zirp": {
+            "q": 0.7388,
+            "h": 1
+          },
+          "covid_inflation": {
+            "q": 0.7463,
+            "h": 5
+          }
+        },
+        "verdict": "分歧"
+      },
+      {
+        "source": "VIXCLS_diff",
+        "target": "NASDAQCOM_ret",
+        "documented_era": "all eras >= 1990",
+        "expectation": "contemporaneous/lead relation, negative sign",
+        "verdict": "n/a (series absent)"
+      }
+    ],
+    "verdict": "分歧"
+  },
+  "H3": {
+    "DCOILWTICO_ret->DGS10_diff": {
+      "beta_h1_5": [
+        9.5e-05,
+        0.000145,
+        0.000866,
+        0.000877,
+        0.000926
+      ],
+      "band95_excludes_zero_h1_5": false,
+      "sign": 1.0,
+      "wf_folds": 74,
+      "wf_edge_frac": 0.703,
+      "dm_p": 0.072,
+      "verdict": "分歧"
+    }
+  },
+  "H4": {
+    "NASDAQCOM": {
+      "n_days": 9961,
+      "violations": 142,
+      "rate": 0.01426,
+      "kupiec_p": 0.0001,
+      "cc_p": 0.0,
+      "basel": "red",
+      "verdict": "分歧"
+    },
+    "DGS10": {
+      "n_days": 9961,
+      "violations": 101,
+      "rate": 0.01014,
+      "kupiec_p": 0.8889,
+      "cc_p": 0.0,
+      "basel": "green",
+      "verdict": "大體一致"
+    }
+  },
+  "H8": {
+    "NASDAQCOM": {
+      "xi_per_era": {
+        "volcker": 0.534,
+        "moderation": 0.1334,
+        "zirp": 0.0607,
+        "covid_inflation": 0.179
+      },
+      "jump_auroc": 0.5,
+      "verdict": "分歧"
+    },
+    "DGS10": {
+      "xi_per_era": {
+        "volcker": 0.2059,
+        "moderation": -0.194,
+        "zirp": 0.1692,
+        "covid_inflation": -0.0652
+      },
+      "jump_auroc": 0.4839,
+      "verdict": "分歧"
+    }
+  },
+  "H5": {
+    "n_tested": 63,
+    "n_significant": 0,
+    "overlap_days": 7231,
+    "significant_edges": [],
+    "verdict": "分歧 (clean null — Phase 2 premise not supported by proxies)"
+  },
+  "H5b": {
+    "war-conflict": {
+      "hits": 1,
+      "events": 3,
+      "hit_rate": 0.3333,
+      "base_window_prob": 0.214,
+      "p": 0.5144,
+      "verdict": "分歧"
+    },
+    "fed-policy": {
+      "hits": 0,
+      "events": 3,
+      "hit_rate": 0.0,
+      "base_window_prob": 0.1688,
+      "p": 1.0,
+      "verdict": "分歧"
+    },
+    "economic-cycle": {
+      "hits": 1,
+      "events": 3,
+      "hit_rate": 0.3333,
+      "base_window_prob": 0.1831,
+      "p": 0.4548,
+      "verdict": "分歧"
+    }
+  },
+  "H7": {
+    "DCOILWTICO_ret->NASDAQCOM_ret": {
+      "per_era": {
+        "volcker": {
+          "beta5": -0.000101,
+          "sig95": false
+        },
+        "moderation": {
+          "beta5": 0.000139,
+          "sig95": false
+        },
+        "zirp": {
+          "beta5": -0.000205,
+          "sig95": false
+        },
+        "covid_inflation": {
+          "beta5": 0.000325,
+          "sig95": false
+        }
+      },
+      "sup_chow_reject": true,
+      "verdict": "分歧"
+    },
+    "DCOILWTICO_ret->DGS10_diff": {
+      "per_era": {
+        "volcker": {
+          "beta5": 0.000361,
+          "sig95": false
+        },
+        "moderation": {
+          "beta5": -0.00085,
+          "sig95": false
+        },
+        "zirp": {
+          "beta5": 0.00171,
+          "sig95": false
+        },
+        "covid_inflation": {
+          "beta5": 0.003723,
+          "sig95": false
+        }
+      },
+      "sup_chow_reject": true,
+      "verdict": "分歧"
+    }
+  },
+  "H6": {
+    "n_strategies": 6,
+    "best": "DCOILWTICO_ret->DGS10_diff@h1",
+    "best_sharpe_net": -0.066,
+    "spa_p": 1.0,
+    "verdict": "分歧 (no economic predictability)"
+  },
+  "runtime_s": 279.1
+}

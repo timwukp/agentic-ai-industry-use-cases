@@ -28,6 +28,12 @@ test: ## Unit + infra tests (python + web)
 	$(PYTHON) -m pytest tests/unit tests/infra -q
 	$(MAKE) test-web
 
+.PHONY: study
+study: ## Reproduce the PRISM historical validation study (research/)
+	$(PYTHON) research/fetch_data.py
+	$(PYTHON) research/run_study.py
+	$(PYTHON) research/render_report.py
+
 # Node runs the .ts test directly via native type stripping (>=22.6), so the web
 # app gains no test runner or transpiler for this. Wired into `test` because a
 # suite nothing invokes is a suite that rots.
