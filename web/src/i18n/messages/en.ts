@@ -75,6 +75,7 @@ export const en = {
     asOf: 'as of',
     staleData: 'STALE',
     derived: 'DERIVED · hypothesis',
+    model: 'MODEL · PRISM',
     forecastLow: 'Low',
     forecastRange: 'Confidence range',
     forecastProjection: 'Projection',
@@ -222,6 +223,21 @@ export const en = {
     hotspotsHeading: 'Top hotspots today',
     derivedDisclaimer:
       'LLM-scored from news headlines. Hypothesis-grade signals, not validated indicators — bar right = intensifying, left = de-escalating; last column = headline count.',
+    prismHeading: 'PRISM Model',
+    loadingPrism: 'Loading PRISM model results…',
+    noPrismData: 'No PRISM results yet — the nightly batch has not run',
+    regimeHeading: 'Market Regime (HMM)',
+    regimeSub: 'most likely state, fitted nightly on 10y of official data',
+    regularitiesHeading: 'Causal Regularities',
+    confirmedLabel: 'CONFIRMED',
+    hypothesisLabel: 'hypothesis',
+    noConfirmedYet:
+      'No regularity has passed out-of-sample validation yet — an honest empty list beats a dressed-up one.',
+    factorDataAccruing: 'News-factor history still accruing',
+    tailRiskHeading: 'Tail Risk (EVT)',
+    lowSample: 'low sample',
+    prismDisclaimer:
+      'Statistical estimates from the nightly PRISM batch (GPD peaks-over-threshold; daily horizon), not guarantees.',
   },
 
   healthcare: {

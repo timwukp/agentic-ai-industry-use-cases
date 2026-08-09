@@ -24,6 +24,11 @@ from macro_signals_tools import (
     get_macro_series,
     get_news_hotspots,
 )
+from quant_insights_tools import (
+    get_confirmed_regularities,
+    get_regime_state,
+    get_tail_risk,
+)
 from toolkit import MarketSim
 
 CORS_HEADERS_BASE = {
@@ -72,6 +77,18 @@ def lambda_handler(event, context):
                 "rates": get_policy_rates(),
                 "quotes": [get_live_quote(s) for s in symbols],
                 "tracked": tracked,
+            },
+        )
+    if route == "GET /api/finance/prism":
+        return _response(
+            200,
+            {
+                "regime": get_regime_state(),
+                "regularities": get_confirmed_regularities(),
+                "tails": {
+                    "NASDAQCOM": get_tail_risk("NASDAQCOM"),
+                    "DGS10": get_tail_risk("DGS10"),
+                },
             },
         )
     if route == "GET /api/finance/signals":

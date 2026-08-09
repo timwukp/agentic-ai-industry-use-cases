@@ -13,6 +13,7 @@ for target in (
     "market_live",
     "market_collector",
     "macro_signals",
+    "quant_insights",
     "portfolio",
     "risk",
     "trading",

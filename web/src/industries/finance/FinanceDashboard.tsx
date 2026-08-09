@@ -1,6 +1,7 @@
 import { useLocale } from '../../i18n/LocaleContext'
 import MarketLiveSection from './MarketLiveSection'
 import MarketSection from './MarketSection'
+import PrismSection from './PrismSection'
 import SignalsSection from './SignalsSection'
 import OrdersSection from './OrdersSection'
 import PortfolioSection from './PortfolioSection'
@@ -19,6 +20,7 @@ export default function FinanceDashboard() {
         </div>
         <MarketLiveSection />
         <SignalsSection />
+        <PrismSection />
 
         {/* Simulated demo book: portfolio/orders price off MarketSim so the
             fills, P&L, and the simulated market section stay coherent */}

@@ -1,0 +1,52 @@
+[
+  {
+    "name": "get_regime_state",
+    "description": "Get the current market regime from PRISM's hidden Markov model fitted nightly on 10+ years of official data (equity returns, curve slope, VIX, oil, dollar): probabilities of risk-on / neutral / stress states, current most-likely state, per-state characteristics, expected persistence. source=model; disclose it is a statistical model estimate, not an observation.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "get_impact_function",
+    "description": "Get PRISM's estimated response curve of an asset to a 1-sigma shock in a driver variable: posterior mean response at horizons 1-20 days with 68%/95% credible bands, and the validation grade. CONFIRMED = survived FDR-controlled causality testing AND out-of-sample walk-forward validation; HYPOTHESIS = estimated but not validated — ALWAYS state the grade. Example pairs: shock='DCOILWTICO_ret' response='DGS10_diff' (oil to 10Y yield), shock='VIXCLS_diff' response='NASDAQCOM_ret'.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "shock": {
+          "type": "string",
+          "description": "Shock variable id, e.g. 'DCOILWTICO_ret' (oil return), 'VIXCLS_diff' (VIX change), or a news factor id like 'war-conflict' once enough factor history exists"
+        },
+        "response": {
+          "type": "string",
+          "description": "Response variable id, e.g. 'NASDAQCOM_ret', 'DGS10_diff'"
+        }
+      },
+      "required": [
+        "shock",
+        "response"
+      ]
+    }
+  },
+  {
+    "name": "get_confirmed_regularities",
+    "description": "List the causal edges (driver leads asset) that PRISM has CONFIRMED: significant under Benjamini-Hochberg FDR control across the full hypothesis grid AND positive out-of-sample edge in walk-forward validation. Also reports the count still at HYPOTHESIS grade. An EMPTY confirmed list is a valid honest answer, especially while news-factor history is still accumulating — say so rather than overstating.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {}
+    }
+  },
+  {
+    "name": "get_tail_risk",
+    "description": "Get PRISM's extreme-value-theory tail risk for an asset: GPD (peaks-over-threshold) tail index, VaR and Expected Shortfall at 99% and 99.9%, and a jump-activity indicator. Fitted on 10+ years of daily data. source=model — these are statistical estimates of tail behavior, not guarantees.",
+    "inputSchema": {
+      "type": "object",
+      "properties": {
+        "asset": {
+          "type": "string",
+          "description": "Asset id: 'NASDAQCOM' (Nasdaq daily returns) or 'DGS10' (10Y yield changes) (Default: 'NASDAQCOM')"
+        }
+      }
+    }
+  }
+]

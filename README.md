@@ -239,6 +239,22 @@ The agent's system prompt requires disclosing provider + as-of time for live num
 saying explicitly when an answer mixes live market context with simulated portfolio state.
 Real-world lookups (news, SEC filings) go through the harness's built-in browser tool.
 
+There are two more provenance classes beyond live/simulated:
+
+- **`"source": "derived"`** (violet badge) — geopolitical factor loadings scored nightly from
+  news headlines (Finnhub + GDELT) by Haiku into a 13-factor taxonomy. Always
+  `grade: "hypothesis"`: unvalidated signals framing what the world is worried about.
+- **`"source": "model"`** (sky-blue badge) — outputs of **PRISM** (*Probabilistic Regime &
+  Impact Shock Model*), a nightly container-Lambda batch fitted on 10+ years of backfilled
+  official data: Gaussian-HMM market regimes; transfer-entropy + Granger causality scans under
+  Benjamini-Hochberg FDR control; Bayesian local-projection impact functions with credible
+  bands; EVT (GPD peaks-over-threshold) tail risk. A regularity is labeled **CONFIRMED** only
+  if it survives FDR control AND walk-forward out-of-sample validation against AR(1)/random-walk
+  baselines; everything else stays **HYPOTHESIS**. An empty CONFIRMED list — expected while
+  news-factor history accrues — is rendered as-is: an honest empty list beats a dressed-up one.
+  The quant batch is the repo's one sanctioned exception to zip-only Lambda packaging
+  (numpy/scipy/statsmodels/hmmlearn need a container image).
+
 ### Live-market setup (one-time)
 
 The collector needs three free API keys in SSM (the `secrets` deploy step checks and prints

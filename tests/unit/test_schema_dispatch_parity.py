@@ -19,6 +19,7 @@ INDUSTRY_TARGETS = {
         "market_data": "market_data",
         "market_live": "market_live",
         "macro_signals": "macro_signals",
+        "quant_insights": "quant_insights",
         "portfolio": "portfolio",
         "risk": "risk",
         "trading": "trading",
@@ -62,10 +63,10 @@ INDUSTRY_TARGETS = {
 }
 
 # Each industry ships 4 domain targets x 4 tools + 1 KB search tool.
-# Finance additionally has market-live (6 real-data tools) and
-# macro-signals (4 factor/macro tools).
+# Finance additionally has market-live (6 real-data tools), macro-signals
+# (4 factor/macro tools), and quant-insights (4 PRISM model tools).
 EXPECTED_TOOL_COUNTS = {
-    "finance": 27,  # 16 domain + 6 market-live + 4 macro-signals + 1 KB
+    "finance": 31,  # 16 domain + 6 live + 4 signals + 4 prism + 1 KB
     "healthcare": 17,
     "insurance": 17,
     "retail": 17,
