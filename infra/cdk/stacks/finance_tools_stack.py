@@ -30,12 +30,16 @@ EMBEDDING_DIM = 1024
 
 
 def _stage(name: str, extra_modules: dict[str, Path] | None = None) -> str:
-    """Build a Lambda asset dir: handler.py + toolkit/ (+ optional aliased modules)."""
+    """Build a Lambda asset dir: every *.py in the tool dir + toolkit/
+    (+ optional aliased modules). Whole-dir copy so multi-module tools
+    (e.g. market_collector's news_job.py) actually ship — a module the
+    bundle omits fails only at runtime, not at synth."""
     dest = STAGING / name
     if dest.exists():
         shutil.rmtree(dest)
     dest.mkdir(parents=True)
-    shutil.copy(TOOLS / "finance" / name / "handler.py", dest / "handler.py")
+    for py in (TOOLS / "finance" / name).glob("*.py"):
+        shutil.copy(py, dest / py.name)
     shutil.copytree(TOOLS / "shared" / "toolkit", dest / "toolkit")
     for alias, src in (extra_modules or {}).items():
         shutil.copy(src, dest / f"{alias}.py")
@@ -181,6 +185,7 @@ class FinanceToolsStack(cdk.Stack):
         for name in (
             "market_data",
             "market_live",
+            "macro_signals",
             "portfolio",
             "risk",
             "trading",
@@ -207,6 +212,7 @@ class FinanceToolsStack(cdk.Stack):
         portfolio_table.grant_read_write_data(self.tool_lambdas["trading"])
         orders_table.grant_read_write_data(self.tool_lambdas["trading"])
         market_snapshots_table.grant_read_data(self.tool_lambdas["market_live"])
+        market_snapshots_table.grant_read_data(self.tool_lambdas["macro_signals"])
         self.tool_lambdas["kb_search"].add_to_role_policy(
             iam.PolicyStatement(
                 actions=["bedrock:Retrieve"],
@@ -230,7 +236,9 @@ class FinanceToolsStack(cdk.Stack):
                 "MARKET_LAKE_BUCKET": market_lake_bucket.bucket_name,
                 "SSM_KEY_PREFIX": "/agentic/finance",
             },
-            **{**runtime_kwargs, "timeout": cdk.Duration.seconds(120)},
+            # 15 min: the news job runs ~10 sequential Haiku scoring batches;
+            # the market jobs finish in well under 2.
+            **{**runtime_kwargs, "timeout": cdk.Duration.seconds(900)},
         )
         market_snapshots_table.grant_read_write_data(self.collector_lambda)
         market_lake_bucket.grant_put(self.collector_lambda)
@@ -243,6 +251,17 @@ class FinanceToolsStack(cdk.Stack):
             )
         )
         kms_key.grant_decrypt(self.collector_lambda)
+        # news job scores headline batches with Haiku via the Bedrock runtime
+        self.collector_lambda.add_to_role_policy(
+            iam.PolicyStatement(
+                sid="NewsScoringModel",
+                actions=["bedrock:InvokeModel"],
+                resources=[
+                    "arn:aws:bedrock:*::foundation-model/anthropic.claude-haiku*",
+                    f"arn:aws:bedrock:*:{self.account}:inference-profile/*.anthropic.claude-haiku*",
+                ],
+            )
+        )
 
         scheduler_role = iam.Role(
             self,
@@ -262,6 +281,8 @@ class FinanceToolsStack(cdk.Stack):
             "Index": ("cron(*/15 9-16 ? * MON-FRI *)", "index"),
             "Daily": ("cron(30 18 ? * MON-FRI *)", "daily"),
             "Fundamentals": ("cron(0 7 * * ? *)", "fundamentals"),
+            # after the daily macro batch so factor context is same-day
+            "News": ("cron(0 19 ? * MON-FRI *)", "news"),
         }
         for sched_id, (cron, job) in collector_schedules.items():
             scheduler.CfnSchedule(
@@ -297,6 +318,10 @@ class FinanceToolsStack(cdk.Stack):
                         "market_live_tools": TOOLS
                         / "finance"
                         / "market_live"
+                        / "handler.py",
+                        "macro_signals_tools": TOOLS
+                        / "finance"
+                        / "macro_signals"
                         / "handler.py",
                     },
                 )

@@ -135,7 +135,7 @@ def test_quote_failure_is_isolated_per_symbol(market_snapshots, monkeypatch):
     assert "Item" in market_snapshots.get_item(Key={"pk": "QUOTE#GOOD", "sk": "latest"})
 
 
-def test_daily_job_builds_curve_and_rates(market_snapshots, monkeypatch):
+def test_daily_job_builds_curve_rates_macro_and_gold(market_snapshots, monkeypatch):
     h = _load(
         monkeypatch,
         {
@@ -144,7 +144,8 @@ def test_daily_job_builds_curve_and_rates(market_snapshots, monkeypatch):
                     {"date": "2026-08-07", "value": "4.25"},
                     {"date": "2026-08-06", "value": "."},  # FRED missing marker
                 ]
-            }
+            },
+            "api.twelvedata.com": {"close": "4342.35", "percent_change": "0.4"},
         },
     )
     result = h.job_daily()
@@ -158,6 +159,34 @@ def test_daily_job_builds_curve_and_rates(market_snapshots, monkeypatch):
         "Item"
     ]
     assert "DFF" in rates["payload"]["rates"]
+    # Phase 2: macro series snapshot + rollup + gold
+    oil = market_snapshots.get_item(Key={"pk": "MACRO#DCOILWTICO", "sk": "latest"})[
+        "Item"
+    ]
+    assert float(oil["payload"]["value"]) == 4.25
+    rollup = market_snapshots.get_item(Key={"pk": "MACRO#ALL", "sk": "latest"})["Item"]
+    assert "VIXCLS" in rollup["payload"]["series"]
+    gold = market_snapshots.get_item(Key={"pk": "GOLD#XAUUSD", "sk": "latest"})["Item"]
+    assert gold["provider"] == "twelvedata"
+    assert float(gold["payload"]["value"]) == 4342.35
+
+
+def test_daily_job_gold_failure_does_not_sink_fred(market_snapshots, monkeypatch):
+    h = _load(
+        monkeypatch,
+        {
+            "api.stlouisfed.org": {
+                "observations": [{"date": "2026-08-07", "value": "4.25"}]
+            },
+            "api.twelvedata.com": {"status": "error", "message": "quota exhausted"},
+        },
+    )
+    result = h.job_daily()
+    assert len(result["failed"]) == 1 and "XAU/USD" in result["failed"][0]
+    # FRED data still landed
+    assert "Item" in market_snapshots.get_item(
+        Key={"pk": "TREASURY#CURVE", "sk": "latest"}
+    )
 
 
 def test_tracked_symbols_seeds_default_watchlist(market_snapshots, monkeypatch):

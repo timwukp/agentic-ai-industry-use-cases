@@ -61,6 +61,7 @@ export const de = {
     live: 'LIVE',
     asOf: 'Stand:',
     staleData: 'VERALTET',
+    derived: 'ABGELEITET · Hypothese',
     forecastLow: 'Tief',
     forecastRange: 'Konfidenzbereich',
     forecastProjection: 'Projektion',
@@ -200,6 +201,13 @@ export const de = {
     inverted: 'Kurve invertiert',
     policyRates: 'Leitzinsen',
     trackedSymbols: 'Beobachtete Aktien',
+    signalsHeading: 'Globale Signale',
+    loadingSignals: 'Globale Signale werden geladen…',
+    noSignalsData: 'Noch keine Signale erfasst',
+    macroHeading: 'Makro-Indikatoren',
+    factorsHeading: 'Geopolitische Faktorladungen (aus Nachrichten abgeleitet)',
+    hotspotsHeading: 'Heutige Top-Brennpunkte',
+    derivedDisclaimer: 'Per LLM aus Schlagzeilen bewertet. Hypothesen-Signale, keine validierten Indikatoren — Balken rechts = eskalierend, links = deeskalierend; letzte Spalte = Anzahl Schlagzeilen.',
   },
 
   healthcare: {

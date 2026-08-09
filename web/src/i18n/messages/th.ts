@@ -61,6 +61,7 @@ export const th = {
     live: 'สด',
     asOf: 'ณ',
     staleData: 'ข้อมูลเก่า',
+    derived: 'อนุมาน · สมมติฐาน',
     forecastLow: 'ต่ำ',
     forecastRange: 'ช่วงความเชื่อมั่น',
     forecastProjection: 'ค่าคาดการณ์',
@@ -200,6 +201,13 @@ export const th = {
     inverted: 'เส้นโค้งกลับหัว',
     policyRates: 'อัตราดอกเบี้ยนโยบาย',
     trackedSymbols: 'หุ้นที่ติดตาม',
+    signalsHeading: 'สัญญาณโลก',
+    loadingSignals: 'กำลังโหลดสัญญาณโลก…',
+    noSignalsData: 'ยังไม่มีสัญญาณที่เก็บรวบรวม',
+    macroHeading: 'ตัวชี้วัดมหภาค',
+    factorsHeading: 'ค่าปัจจัยภูมิรัฐศาสตร์ (อนุมานจากข่าว)',
+    hotspotsHeading: 'จุดร้อนสำคัญวันนี้',
+    derivedDisclaimer: 'ให้คะแนนโดย LLM จากพาดหัวข่าว เป็นสัญญาณระดับสมมติฐาน ไม่ใช่ตัวชี้วัดที่ผ่านการตรวจสอบ — แถบขวา = ทวีความรุนแรง ซ้าย = คลี่คลาย; คอลัมน์สุดท้าย = จำนวนพาดหัว',
   },
 
   healthcare: {

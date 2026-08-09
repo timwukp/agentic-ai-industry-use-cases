@@ -61,6 +61,7 @@ export const zhCN = {
     live: '实时',
     asOf: '截至',
     staleData: '数据过期',
+    derived: '衍生 · 假设级',
     forecastLow: '低',
     forecastRange: '置信区间',
     forecastProjection: '预测值',
@@ -194,6 +195,13 @@ export const zhCN = {
     inverted: '曲线倒挂',
     policyRates: '政策利率',
     trackedSymbols: '跟踪股票',
+    signalsHeading: '全球信号',
+    loadingSignals: '正在加载全球信号…',
+    noSignalsData: '尚未采集到信号',
+    macroHeading: '宏观指标',
+    factorsHeading: '地缘政治因子载荷（新闻衍生）',
+    hotspotsHeading: '今日热点',
+    derivedDisclaimer: '由 LLM 从新闻标题打分。假设级信号，非经验证的指标——条形向右 = 升级，向左 = 缓和；末列 = 标题数。',
   },
 
   healthcare: {

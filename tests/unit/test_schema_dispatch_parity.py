@@ -18,6 +18,7 @@ INDUSTRY_TARGETS = {
     "finance": {
         "market_data": "market_data",
         "market_live": "market_live",
+        "macro_signals": "macro_signals",
         "portfolio": "portfolio",
         "risk": "risk",
         "trading": "trading",
@@ -61,9 +62,10 @@ INDUSTRY_TARGETS = {
 }
 
 # Each industry ships 4 domain targets x 4 tools + 1 KB search tool.
-# Finance additionally has the market-live target (6 real-data tools).
+# Finance additionally has market-live (6 real-data tools) and
+# macro-signals (4 factor/macro tools).
 EXPECTED_TOOL_COUNTS = {
-    "finance": 23,  # 16 domain tools + 6 market-live tools + 1 KB search
+    "finance": 27,  # 16 domain + 6 market-live + 4 macro-signals + 1 KB
     "healthcare": 17,
     "insurance": 17,
     "retail": 17,

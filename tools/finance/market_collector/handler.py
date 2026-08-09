@@ -80,6 +80,15 @@ FRED_SERIES = {
     "DFEDTARU": ("rates", "Fed Funds Target Upper"),
     "DFEDTARL": ("rates", "Fed Funds Target Lower"),
     "SOFR": ("rates", "SOFR"),
+    # Phase 2 macro layer — geopolitics-sensitive series for the factor model.
+    # CPI/breakevens are monthly/daily mixes; the 90-day observation window in
+    # job_daily is wide enough for the monthly ones.
+    "DCOILWTICO": ("macro", "Crude Oil WTI ($/bbl)"),
+    "DCOILBRENTEU": ("macro", "Crude Oil Brent ($/bbl)"),
+    "VIXCLS": ("macro", "VIX Volatility Index"),
+    "DTWEXBGS": ("macro", "Trade-Weighted US Dollar Index"),
+    "T10YIE": ("macro", "10Y Breakeven Inflation (%)"),
+    "CPIAUCSL": ("macro", "CPI All Urban Consumers (index)"),
 }
 
 DATED_TTL_DAYS = 30
@@ -228,12 +237,16 @@ def job_index() -> dict:
 
 
 def job_daily() -> dict:
-    """FRED daily batch: index history, treasury curve, policy rates."""
+    """FRED daily batch: index history, treasury curve, policy rates, macro
+    series (oil/VIX/dollar/breakevens/CPI), plus gold spot from Twelve Data."""
     key = _api_key("fred-api-key")
-    start = (datetime.now(timezone.utc) - timedelta(days=14)).strftime("%Y-%m-%d")
+    # 90-day window: monthly series (CPIAUCSL) publish with ~2 weeks lag, so a
+    # 14-day window would silently return no observations for them.
+    start = (datetime.now(timezone.utc) - timedelta(days=90)).strftime("%Y-%m-%d")
     ok, failed, rows = 0, [], []
     treasury: dict[str, dict] = {}
     rates: dict[str, dict] = {}
+    macro: dict[str, dict] = {}
     for series_id, (group, label) in FRED_SERIES.items():
         url = (
             "https://api.stlouisfed.org/fred/series/observations?"
@@ -266,6 +279,9 @@ def job_daily() -> dict:
                 treasury[series_id] = entry
             elif group == "rates":
                 rates[series_id] = entry
+            elif group == "macro":
+                macro[series_id] = entry
+                _snapshot(f"MACRO#{series_id}", entry, "fred", "eod-t+1")
             else:
                 _snapshot(f"INDEX_HISTORY#{series_id}", entry, "fred", "eod-t+1")
             rows.append({**entry, "fetched_at": _now_iso()})
@@ -276,6 +292,30 @@ def job_daily() -> dict:
         _snapshot("TREASURY#CURVE", {"curve": treasury}, "fred", "eod-t+1")
     if rates:
         _snapshot("RATES#POLICY", {"rates": rates}, "fred", "eod-t+1")
+    if macro:
+        _snapshot("MACRO#ALL", {"series": macro}, "fred", "eod-t+1")
+    # Gold spot: FRED's LBMA gold series was discontinued; Twelve Data's
+    # XAU/USD is on the free tier (verified live 2026-08-08). 1 credit/day.
+    try:
+        td_key = _api_key("twelvedata-api-key")
+        q = _http_json(
+            "https://api.twelvedata.com/quote?"
+            + urllib.parse.urlencode({"symbol": "XAU/USD", "apikey": td_key})
+        )
+        if q.get("status") == "error" or "close" not in q:
+            raise ValueError(q.get("message", "no close for XAU/USD"))
+        entry = {
+            "series": "XAUUSD",
+            "label": "Gold Spot ($/oz)",
+            "value": float(q["close"]),
+            "change_pct": float(q.get("percent_change", 0)),
+            "as_of_date": _today(),
+        }
+        _snapshot("GOLD#XAUUSD", entry, "twelvedata", "delayed-15m")
+        rows.append({**entry, "fetched_at": _now_iso()})
+        ok += 1
+    except (urllib.error.URLError, ValueError, KeyError) as exc:
+        failed.append(f"XAU/USD: {exc}")
     _lake_append("fred_daily", rows)
     return {"ok": ok, "failed": failed}
 
@@ -322,11 +362,26 @@ def job_fundamentals() -> dict:
     return {"ok": ok, "failed": failed}
 
 
+def job_news() -> dict:
+    """Phase 2: headlines -> Haiku factor scoring -> daily factor series."""
+    from news_job import run_news_job
+
+    return run_news_job(
+        http_json=_http_json,
+        api_key=_api_key,
+        snapshot=_snapshot,
+        lake_append=_lake_append,
+        today=_today,
+        now_iso=_now_iso,
+    )
+
+
 JOBS = {
     "quotes": job_quotes,
     "index": job_index,
     "daily": job_daily,
     "fundamentals": job_fundamentals,
+    "news": job_news,
 }
 
 

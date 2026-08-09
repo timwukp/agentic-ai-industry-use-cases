@@ -1,6 +1,13 @@
 import type { ReactNode } from 'react'
 import type { LucideIcon } from 'lucide-react'
-import { AlertTriangle, FlaskConical, Loader2, RadioTower, RotateCw } from 'lucide-react'
+import {
+  AlertTriangle,
+  FlaskConical,
+  Loader2,
+  RadioTower,
+  RotateCw,
+  Sparkles,
+} from 'lucide-react'
 import { getCurrentLocale } from '../../i18n'
 import { useLocale } from '../../i18n/LocaleContext'
 
@@ -131,6 +138,29 @@ export function LiveBadge({
       {t('widgets.asOf')} {new Date(fetchedAt).toLocaleString(getCurrentLocale())}
       {' · '}
       {delay}
+    </span>
+  )
+}
+
+/** Data-provenance disclosure for news-derived signals: LLM-scored factor
+ *  loadings are hypothesis-grade until Phase 3 validation confirms them.
+ *  Violet — the third provenance class after live (green) and simulated
+ *  (amber); never present derived numbers without it. */
+export function DerivedBadge({ fetchedAt }: { fetchedAt?: string }) {
+  const { t } = useLocale()
+  return (
+    <span
+      className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-violet-950/50 border border-violet-800/50 text-[11px] text-violet-300"
+      data-derived-badge
+    >
+      <Sparkles className="w-3 h-3" />
+      {t('widgets.derived')}
+      {fetchedAt && (
+        <>
+          {' · '}
+          {t('widgets.asOf')} {new Date(fetchedAt).toLocaleString(getCurrentLocale())}
+        </>
+      )}
     </span>
   )
 }

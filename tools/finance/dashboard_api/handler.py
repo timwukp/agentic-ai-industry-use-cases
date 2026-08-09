@@ -5,6 +5,7 @@ Routes:
   GET /api/finance/orders           — recent orders
   GET /api/finance/market/overview  — indices, VIX, treasury, sectors (simulated)
   GET /api/finance/market/live      — real quotes/index/treasury/rates snapshots
+  GET /api/finance/signals          — factor loadings, hotspots, macro series
 """
 
 import json
@@ -17,6 +18,11 @@ from market_live_tools import (
     get_policy_rates,
     get_treasury_yields,
     list_tracked_symbols,
+)
+from macro_signals_tools import (
+    get_factor_snapshot,
+    get_macro_series,
+    get_news_hotspots,
 )
 from toolkit import MarketSim
 
@@ -66,6 +72,16 @@ def lambda_handler(event, context):
                 "rates": get_policy_rates(),
                 "quotes": [get_live_quote(s) for s in symbols],
                 "tracked": tracked,
+            },
+        )
+    if route == "GET /api/finance/signals":
+        return _response(
+            200,
+            {
+                "factors": get_factor_snapshot(),
+                "hotspots": get_news_hotspots(),
+                "macro": get_macro_series(),
+                "gold": get_macro_series("XAUUSD"),
             },
         )
     return _response(404, {"error": f"Unknown route: {route}"})

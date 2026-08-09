@@ -61,6 +61,7 @@ export const ko = {
     live: '실시간',
     asOf: '기준:',
     staleData: '오래된 데이터',
+    derived: '파생 · 가설',
     forecastLow: '낮음',
     forecastRange: '신뢰 구간',
     forecastProjection: '예측치',
@@ -194,6 +195,13 @@ export const ko = {
     inverted: '곡선 역전',
     policyRates: '정책 금리',
     trackedSymbols: '추적 종목',
+    signalsHeading: '글로벌 시그널',
+    loadingSignals: '글로벌 시그널 로드 중…',
+    noSignalsData: '아직 수집된 시그널이 없습니다',
+    macroHeading: '매크로 지표',
+    factorsHeading: '지정학 팩터 로딩(뉴스 기반)',
+    hotspotsHeading: '오늘의 주요 핫스팟',
+    derivedDisclaimer: '뉴스 헤드라인을 LLM이 채점. 가설 수준 시그널이며 검증된 지표가 아님 — 막대 오른쪽 = 격화, 왼쪽 = 완화; 마지막 열 = 헤드라인 수.',
   },
 
   healthcare: {
