@@ -26,10 +26,12 @@ from prism import (  # noqa: E402
     build_panel,
     causality_scan,
     confirm,
+    ewma_sigma,
     factor_series,
     fit_gpd_by_regime,
     fit_gpd_pot,
     fit_regimes,
+    fit_vol_filtered_var,
     granger_pvalue,
     local_projection,
     te_pvalue,
@@ -201,6 +203,47 @@ def test_regime_conditional_gpd_separates_planted_tails():
     # stress tail must be fatter AND its VaR materially larger
     assert by["stress"].xi > by["risk-on"].xi
     assert by["stress"].var_99 > 2 * by["risk-on"].var_99
+
+
+def test_ewma_sigma_is_strictly_causal_and_tracks_vol():
+    rng = np.random.default_rng(23)
+    n = 2000
+    # planted vol step: sigma jumps 4x at midpoint
+    sd = np.where(np.arange(n) < n // 2, 0.005, 0.02)
+    r = pd.Series(rng.normal(0, sd), index=pd.bdate_range("2018-01-01", periods=n))
+    sigma = ewma_sigma(r)
+    # causality: sigma at the step day must NOT yet reflect the step
+    assert sigma.iloc[n // 2] < 0.010
+    # adaptation: within ~30 days the filter reaches the new level
+    assert sigma.iloc[n // 2 + 30] > 0.013
+    # long-run levels approximately correct in both halves
+    assert abs(sigma.iloc[n // 4] - 0.005) < 0.002
+    assert abs(sigma.iloc[-1] - 0.02) < 0.006
+
+
+def test_vol_filtered_var_calibrates_on_planted_garch():
+    """Back-to-back on synthetic vol-clustered returns: violations ~1%."""
+    rng = np.random.default_rng(29)
+    n = 3000
+    sigma = np.zeros(n)
+    r = np.zeros(n)
+    sigma[0] = 0.01
+    for t in range(1, n):
+        # GARCH(1,1)-ish: strong clustering
+        sigma[t] = np.sqrt(
+            0.02 * 0.01**2 + 0.10 * r[t - 1] ** 2 + 0.88 * sigma[t - 1] ** 2
+        )
+        r[t] = rng.normal(0, sigma[t])
+    returns = pd.Series(r, index=pd.bdate_range("2014-01-01", periods=n))
+    out = fit_vol_filtered_var(returns)
+    assert out["valid"]
+    # OOS-style check on the last 500 days using the frozen quantile
+    sig = ewma_sigma(returns)
+    z_q = out["var_99"] / out["sigma_next"]  # recovered residual quantile
+    var_series = sig.iloc[-500:] * z_q
+    losses = -returns.iloc[-500:]
+    rate = float((losses > var_series).mean())
+    assert 0.002 < rate < 0.03  # near the 1% target, not wildly off
 
 
 def test_regime_conditional_gpd_rejects_thin_slices():
