@@ -1,0 +1,134 @@
+{
+  "C10": {
+    "cohort": "C10",
+    "n_oos_days": 1176,
+    "train_budget_fa_per_250bd": 1.793,
+    "thresholds": {
+      "bocpd_tau": 0.279,
+      "cusum_h": 40.0
+    },
+    "incumbent": {
+      "episodes": 3,
+      "detected": 0,
+      "median_lag": null,
+      "fa_per_250bd": 0.0
+    },
+    "bocpd": {
+      "episodes": 3,
+      "detected": 0,
+      "median_lag": null,
+      "fa_per_250bd": 0.512,
+      "paired_mean_lag_gain": 0.0,
+      "bootstrap_p": null
+    },
+    "cusum": {
+      "episodes": 3,
+      "detected": 3,
+      "median_lag": 1.0,
+      "fa_per_250bd": 11.527,
+      "paired_mean_lag_gain": 8.0,
+      "bootstrap_p": null
+    },
+    "eras": {
+      "covid_inflation": {
+        "incumbent": null,
+        "bocpd": null,
+        "cusum": 1.0
+      }
+    },
+    "runtime_s": 7.4
+  },
+  "C20": {
+    "cohort": "C20",
+    "n_oos_days": 2441,
+    "train_budget_fa_per_250bd": 0.789,
+    "thresholds": {
+      "bocpd_tau": 0.218,
+      "cusum_h": 40.0
+    },
+    "incumbent": {
+      "episodes": 6,
+      "detected": 1,
+      "median_lag": 20.0,
+      "fa_per_250bd": 1.056
+    },
+    "bocpd": {
+      "episodes": 6,
+      "detected": 2,
+      "median_lag": 8.5,
+      "fa_per_250bd": 1.056,
+      "paired_mean_lag_gain": 4.0,
+      "bootstrap_p": NaN
+    },
+    "cusum": {
+      "episodes": 6,
+      "detected": 4,
+      "median_lag": 9.5,
+      "fa_per_250bd": 12.089,
+      "paired_mean_lag_gain": 7.0,
+      "bootstrap_p": NaN
+    },
+    "eras": {
+      "zirp": {
+        "incumbent": null,
+        "bocpd": 1.0,
+        "cusum": 3.0
+      },
+      "covid_inflation": {
+        "incumbent": 20.0,
+        "bocpd": 16.0,
+        "cusum": 13.0
+      }
+    },
+    "runtime_s": 23.9
+  },
+  "C36": {
+    "cohort": "C36",
+    "n_oos_days": 5246,
+    "train_budget_fa_per_250bd": 2.049,
+    "thresholds": {
+      "bocpd_tau": 0.172,
+      "cusum_h": 40.0
+    },
+    "incumbent": {
+      "episodes": 10,
+      "detected": 4,
+      "median_lag": 52.5,
+      "fa_per_250bd": 1.341
+    },
+    "bocpd": {
+      "episodes": 10,
+      "detected": 5,
+      "median_lag": 8.0,
+      "fa_per_250bd": 1.118,
+      "paired_mean_lag_gain": 30.5,
+      "bootstrap_p": NaN
+    },
+    "cusum": {
+      "episodes": 10,
+      "detected": 8,
+      "median_lag": 5.0,
+      "fa_per_250bd": 11.79,
+      "paired_mean_lag_gain": 116.1,
+      "bootstrap_p": NaN
+    },
+    "eras": {
+      "moderation": {
+        "incumbent": null,
+        "bocpd": null,
+        "cusum": 5.0
+      },
+      "zirp": {
+        "incumbent": 103.5,
+        "bocpd": 6.0,
+        "cusum": 5.0
+      },
+      "covid_inflation": {
+        "incumbent": 52.5,
+        "bocpd": 16.0,
+        "cusum": 5.0
+      }
+    },
+    "runtime_s": 83.8
+  }
+}
