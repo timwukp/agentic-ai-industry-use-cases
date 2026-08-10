@@ -1,0 +1,47 @@
+{
+  "NASDAQCOM": {
+    "ewma": {
+      "arm": "ewma",
+      "n": 9026,
+      "violations": 94,
+      "rate": 0.01041,
+      "kupiec_p": 0.6943,
+      "cc_p": 0.6088,
+      "basel": "green",
+      "max_cluster_22bd": 4
+    },
+    "rfsv": {
+      "arm": "rfsv",
+      "n": 8526,
+      "violations": 87,
+      "rate": 0.0102,
+      "kupiec_p": 0.8503,
+      "cc_p": 0.1997,
+      "basel": "green",
+      "max_cluster_22bd": 4
+    }
+  },
+  "DGS10": {
+    "ewma": {
+      "arm": "ewma",
+      "n": 9026,
+      "violations": 90,
+      "rate": 0.00997,
+      "kupiec_p": 0.978,
+      "cc_p": 0.9939,
+      "basel": "green",
+      "max_cluster_22bd": 3
+    },
+    "rfsv": {
+      "arm": "rfsv",
+      "n": 8526,
+      "violations": 88,
+      "rate": 0.01032,
+      "kupiec_p": 0.7667,
+      "cc_p": 0.0093,
+      "basel": "green",
+      "max_cluster_22bd": 3
+    }
+  },
+  "runtime_s": 5.7
+}
