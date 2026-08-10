@@ -221,11 +221,15 @@ def test_prompt_finance_symbols_are_simulated(starters):
     from toolkit.market_sim import BASE_PRICES
 
     # Only all-caps standalone tickers; skip words like VaR that survive a
-    # naive [A-Z]{2,5} match.
+    # naive [A-Z]{2,5} match. NON_TICKERS: product/model names the prompts
+    # legitimately mention that must not be mistaken for symbols.
+    non_tickers = {"PRISM"}
     for industry, label, prompt in _all_prompts(starters):
         if industry != "finance":
             continue
         for word in re.findall(r"\b([A-Z]{3,5})\b", prompt):
+            if word in non_tickers:
+                continue
             assert word in BASE_PRICES, f"{label}: {word} is not a simulated symbol"
 
 

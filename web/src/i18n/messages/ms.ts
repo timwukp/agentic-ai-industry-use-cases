@@ -105,10 +105,11 @@ export const ms = {
 
   starters: {
     finance: {
-      marketSnapshot: 'Snapshot pasaran',
-      reviewPortfolio: 'Semak portfolio saya',
-      downsideRisk: 'Risiko penurunan',
-      quoteNvda: 'Sebut harga NVDA',
+      liveBrief: 'Ringkasan pasaran langsung',
+      hotspots: 'Hotspot global',
+      regime: 'Rejim apa sekarang',
+      crashRisk: 'Risiko crash hari ini',
+      proven: 'Apa yang terbukti',
     },
     healthcare: {
       careGaps: 'Jurang penjagaan PT-1001',

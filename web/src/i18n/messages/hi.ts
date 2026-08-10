@@ -111,10 +111,11 @@ export const hi = {
 
   starters: {
     finance: {
-      marketSnapshot: 'बाज़ार स्नैपशॉट',
-      reviewPortfolio: 'मेरा पोर्टफोलियो देखें',
-      downsideRisk: 'डाउनसाइड जोखिम',
-      quoteNvda: 'NVDA का भाव',
+      liveBrief: 'लाइव बाज़ार सार',
+      hotspots: 'वैश्विक हॉटस्पॉट',
+      regime: 'हम किस व्यवस्था में हैं',
+      crashRisk: 'आज क्रैश जोखिम',
+      proven: 'क्या सिद्ध है',
     },
     healthcare: {
       careGaps: 'PT-1001 के केयर गैप',

@@ -105,10 +105,11 @@ export const it = {
 
   starters: {
     finance: {
-      marketSnapshot: 'Istantanea di mercato',
-      reviewPortfolio: 'Analizza il mio portafoglio',
-      downsideRisk: 'Rischio al ribasso',
-      quoteNvda: 'Quotazione NVDA',
+      liveBrief: 'Brief di mercato live',
+      hotspots: 'Hotspot globali',
+      regime: 'In che regime siamo',
+      crashRisk: 'Rischio crash oggi',
+      proven: 'Cosa è provato',
     },
     healthcare: {
       careGaps: 'Gap di cura per PT-1001',

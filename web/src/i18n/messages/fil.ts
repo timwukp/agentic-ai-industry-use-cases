@@ -110,10 +110,11 @@ export const fil = {
 
   starters: {
     finance: {
-      marketSnapshot: 'Market snapshot',
-      reviewPortfolio: 'Suriin ang portfolio ko',
-      downsideRisk: 'Downside risk',
-      quoteNvda: 'Quote ng NVDA',
+      liveBrief: 'Live na market brief',
+      hotspots: 'Mga global na hotspot',
+      regime: 'Anong regime tayo ngayon',
+      crashRisk: 'Panganib ng crash ngayon',
+      proven: 'Ano ang napatunayan',
     },
     healthcare: {
       careGaps: 'Care gaps para sa PT-1001',

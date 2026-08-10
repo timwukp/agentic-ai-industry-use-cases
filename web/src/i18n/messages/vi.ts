@@ -105,10 +105,11 @@ export const vi = {
 
   starters: {
     finance: {
-      marketSnapshot: 'Tổng quan thị trường',
-      reviewPortfolio: 'Xem lại danh mục của tôi',
-      downsideRisk: 'Rủi ro giảm giá',
-      quoteNvda: 'Báo giá NVDA',
+      liveBrief: 'Tóm tắt thị trường trực tiếp',
+      hotspots: 'Điểm nóng toàn cầu',
+      regime: 'Đang ở chế độ nào',
+      crashRisk: 'Rủi ro sụp đổ hôm nay',
+      proven: 'Điều gì đã được chứng minh',
     },
     healthcare: {
       careGaps: 'Khoảng trống chăm sóc PT-1001',

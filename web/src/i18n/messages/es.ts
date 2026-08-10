@@ -105,10 +105,11 @@ export const es = {
 
   starters: {
     finance: {
-      marketSnapshot: 'Resumen del mercado',
-      reviewPortfolio: 'Revisar mi cartera',
-      downsideRisk: 'Riesgo a la baja',
-      quoteNvda: 'Cotización de NVDA',
+      liveBrief: 'Resumen de mercado en vivo',
+      hotspots: 'Focos globales',
+      regime: 'En qué régimen estamos',
+      crashRisk: 'Riesgo de crash hoy',
+      proven: 'Qué está probado',
     },
     healthcare: {
       careGaps: 'Brechas de atención PT-1001',

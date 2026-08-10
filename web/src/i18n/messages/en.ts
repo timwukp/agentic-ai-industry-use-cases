@@ -118,10 +118,11 @@ export const en = {
 
   starters: {
     finance: {
-      marketSnapshot: 'Market snapshot',
-      reviewPortfolio: 'Review my portfolio',
-      downsideRisk: 'Downside risk',
-      quoteNvda: 'Quote NVDA',
+      liveBrief: 'Live market brief',
+      hotspots: 'Global hotspots',
+      regime: 'What regime are we in',
+      crashRisk: 'Crash risk today',
+      proven: 'What is proven',
     },
     healthcare: {
       careGaps: 'Care gaps for PT-1001',

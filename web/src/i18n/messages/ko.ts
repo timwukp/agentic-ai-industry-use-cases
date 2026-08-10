@@ -99,10 +99,11 @@ export const ko = {
 
   starters: {
     finance: {
-      marketSnapshot: '시장 스냅숏',
-      reviewPortfolio: '내 포트폴리오 검토',
-      downsideRisk: '하방 리스크',
-      quoteNvda: 'NVDA 시세',
+      liveBrief: '실시간 시장 브리핑',
+      hotspots: '글로벌 핫스팟',
+      regime: '지금 어떤 국면인가',
+      crashRisk: '오늘의 폭락 위험',
+      proven: '무엇이 입증되었나',
     },
     healthcare: {
       careGaps: 'PT-1001의 케어 갭',

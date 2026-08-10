@@ -34,27 +34,34 @@ export interface StarterPrompt {
 export const STARTER_PROMPTS: Record<string, StarterPrompt[]> = {
   finance: [
     {
-      label: 'Market snapshot',
-      labelKey: 'starters.finance.marketSnapshot',
+      label: 'Live market brief',
+      labelKey: 'starters.finance.liveBrief',
       prompt:
-        'Give me a market overview and tell me which sectors are leading and lagging today.',
+        'Give me a live market brief: Nasdaq and S&P levels, the Treasury yield curve with the 10Y-2Y spread, and how my tracked stocks are moving. Cite your data sources and as-of times.',
     },
     {
-      label: 'Review my portfolio',
-      labelKey: 'starters.finance.reviewPortfolio',
+      label: 'Global hotspots',
+      labelKey: 'starters.finance.hotspots',
       prompt:
-        'Show my portfolio positions and allocation, then tell me whether it looks concentrated.',
+        "What are today's global news hotspots — wars, oil, US-China, Fed — and how might they transmit to my tech-heavy portfolio? Be clear about signal quality.",
     },
     {
-      label: 'Downside risk',
-      labelKey: 'starters.finance.downsideRisk',
+      label: 'What regime are we in',
+      labelKey: 'starters.finance.regime',
       prompt:
-        'Calculate 1-day 95% VaR on a $250,000 portfolio and stress test it against the 2008 financial crisis.',
+        'What market regime does PRISM say we are in right now, how confident is it, and what has that regime historically meant for stocks and bonds?',
     },
     {
-      label: 'Quote NVDA',
-      labelKey: 'starters.finance.quoteNvda',
-      prompt: 'What is NVDA trading at, and how does that compare to its 30-day history?',
+      label: 'Crash risk today',
+      labelKey: 'starters.finance.crashRisk',
+      prompt:
+        'How fragile is the market right now? Show me the tail risk on the Nasdaq, jump activity, and yield-curve signals — and explain why crash timing itself cannot be predicted.',
+    },
+    {
+      label: 'What is proven',
+      labelKey: 'starters.finance.proven',
+      prompt:
+        'Which market regularities has PRISM actually CONFIRMED with out-of-sample validation, and what remains hypothesis? Explain the confirmed one and how I should read it.',
     },
   ],
 
