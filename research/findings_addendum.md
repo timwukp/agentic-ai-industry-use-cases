@@ -113,6 +113,36 @@ the transfer to tiny-p regime detection does not hold. The self-calibrated
 LARGE-p application (e.g. a cross-sectional portfolio layer), where the
 literature's evidence actually lives.
 
+## RFSV rough-volatility challenger vs EWMA — **FAST FAILURE, EWMA stays**
+
+Pre-registered test (`protocol_rfsv.md`, tag `rfsv-test-preregistered`).
+Deep-research shortlist item #4. Same C36 point-in-time protocol as PR #51;
+arms differ only in sigma_next (EWMA 0.94 vs RFSV Nuzman-Poor kernel with
+monthly-re-estimated Hurst on a 5-day realized-vol proxy):
+
+| Asset | arm | rate (target 1%) | Kupiec p | CC p | Basel | max cluster |
+|---|---|---|---|---|---|---|
+| NASDAQ | EWMA | 1.041% | 0.69 | 0.61 | green | 4 |
+| NASDAQ | RFSV | 1.020% | 0.85 | **0.20** | green | 4 |
+| DGS10 | EWMA | 0.997% | 0.98 | 0.99 | green | 3 |
+| DGS10 | RFSV | 1.032% | 0.77 | **0.009 (reject)** | green | 3 |
+
+**Gate verdict (frozen criteria)**: condition 1 fails — RFSV's DGS10
+conditional-coverage test REJECTS (p=0.009: violations show serial
+dependence), losing parity with the incumbent. Condition 2 splits (NASDAQ
+point-rate marginally better, DGS10 worse). **EWMA stays.**
+
+Estimated Hurst on the daily proxy: persistently low (rough), consistent
+with the RFSV literature — the roughness stylized fact reproduces, but at
+daily granularity the kernel forecast adds no calibration value over EWMA
+and degrades independence on rates. Per the pre-registered limitation:
+this null reads "RFSV with daily-data proxies does not beat EWMA", not
+"rough volatility is false" — a re-test would require intraday realized
+variance, which our data lake does not carry.
+
+Scoreboard: pre-registered tests now 2 promoted / 3 fast-failed
+(regime-EVT ❌, Fisher ✅, vol-EVT ✅, QIS ❌, RFSV ❌).
+
 ## Revision 3: system prompt — shipped
 
 Regime = validated historical lens (AUROC 0.85–0.91 cited) with explicit
