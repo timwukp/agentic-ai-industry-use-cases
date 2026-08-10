@@ -99,10 +99,11 @@ export const zhTW = {
 
   starters: {
     finance: {
-      marketSnapshot: '市場快照',
-      reviewPortfolio: '檢視我的投資組合',
-      downsideRisk: '下行風險',
-      quoteNvda: 'NVDA 報價',
+      liveBrief: '即時市場簡報',
+      hotspots: '全球熱點',
+      regime: '當前處於什麼體制',
+      crashRisk: '今日崩盤風險',
+      proven: '哪些已被證實',
     },
     healthcare: {
       careGaps: 'PT-1001 的照護缺口',

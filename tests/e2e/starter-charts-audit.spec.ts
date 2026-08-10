@@ -32,7 +32,13 @@ const PASSWORD = process.env.E2E_PASSWORD!;
 const INDUSTRIES: Array<{ id: string; labels: string[] }> = [
   {
     id: 'finance',
-    labels: ['Market snapshot', 'Review my portfolio', 'Downside risk', 'Quote NVDA'],
+    labels: [
+      'Live market brief',
+      'Global hotspots',
+      'What regime are we in',
+      'Crash risk today',
+      'What is proven',
+    ],
   },
   {
     id: 'healthcare-medical',

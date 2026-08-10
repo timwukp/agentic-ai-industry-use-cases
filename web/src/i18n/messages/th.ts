@@ -105,10 +105,11 @@ export const th = {
 
   starters: {
     finance: {
-      marketSnapshot: 'ภาพรวมตลาด',
-      reviewPortfolio: 'ทบทวนพอร์ตของฉัน',
-      downsideRisk: 'ความเสี่ยงขาลง',
-      quoteNvda: 'ราคา NVDA',
+      liveBrief: 'สรุปตลาดสด',
+      hotspots: 'จุดร้อนทั่วโลก',
+      regime: 'ตอนนี้อยู่ในระบอบใด',
+      crashRisk: 'ความเสี่ยงตลาดพังวันนี้',
+      proven: 'อะไรได้รับการพิสูจน์แล้ว',
     },
     healthcare: {
       careGaps: 'ช่องว่างการดูแลของ PT-1001',

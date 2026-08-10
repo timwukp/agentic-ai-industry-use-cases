@@ -105,10 +105,11 @@ export const id = {
 
   starters: {
     finance: {
-      marketSnapshot: 'Ringkasan pasar',
-      reviewPortfolio: 'Tinjau portofolio saya',
-      downsideRisk: 'Risiko penurunan',
-      quoteNvda: 'Kuotasi NVDA',
+      liveBrief: 'Ringkasan pasar langsung',
+      hotspots: 'Hotspot global',
+      regime: 'Rezim apa sekarang',
+      crashRisk: 'Risiko crash hari ini',
+      proven: 'Apa yang terbukti',
     },
     healthcare: {
       careGaps: 'Kesenjangan perawatan PT-1001',

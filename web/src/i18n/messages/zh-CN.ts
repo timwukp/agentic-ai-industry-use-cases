@@ -99,10 +99,11 @@ export const zhCN = {
 
   starters: {
     finance: {
-      marketSnapshot: '市场快照',
-      reviewPortfolio: '查看我的投资组合',
-      downsideRisk: '下行风险',
-      quoteNvda: 'NVDA 报价',
+      liveBrief: '实时市场简报',
+      hotspots: '全球热点',
+      regime: '当前处于什么体制',
+      crashRisk: '今日崩盘风险',
+      proven: '哪些已被证实',
     },
     healthcare: {
       careGaps: 'PT-1001 的护理缺口',

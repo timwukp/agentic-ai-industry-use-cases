@@ -99,10 +99,11 @@ export const ja = {
 
   starters: {
     finance: {
-      marketSnapshot: '市場スナップショット',
-      reviewPortfolio: 'ポートフォリオを確認',
-      downsideRisk: '下落リスク',
-      quoteNvda: 'NVDA の株価',
+      liveBrief: 'ライブ市場ブリーフ',
+      hotspots: '世界のホットスポット',
+      regime: '今どのレジームか',
+      crashRisk: '今日のクラッシュリスク',
+      proven: '何が実証済みか',
     },
     healthcare: {
       careGaps: 'PT-1001 のケアギャップ',
