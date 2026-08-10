@@ -23,6 +23,7 @@ from prism import (
     factor_series,
     fit_gpd_by_regime,
     fit_gpd_pot,
+    fit_vol_filtered_var,
     bipower_jump_stat,
     fit_regimes,
     local_projection,
@@ -232,8 +233,12 @@ def lambda_handler(event, context):
         tr = fit_gpd_pot(rets[col])
         jumps = bipower_jump_stat(rets[col])
         by_regime = fit_gpd_by_regime(rets[col], regime.state_probs)
+        vol_var = fit_vol_filtered_var(rets[col])
         tails[asset] = {
             **tr.to_payload(),
+            # headline forward-looking VaR: the only variant that PASSED the
+            # point-in-time calibration back-test (green Kupiec/CC/Basel)
+            "calibrated": vol_var,
             "jump_stat": (
                 round(float(jumps.dropna().iloc[-1]), 4)
                 if jumps.notna().any()
@@ -244,6 +249,10 @@ def lambda_handler(event, context):
                 "descriptive only — regime-conditional VaR back-tested WORSE "
                 "than unconditional (validation addendum); use for tail-shape "
                 "context, not risk limits"
+            ),
+            "unconditional_note": (
+                "long-run tail shape; for tomorrow's risk level prefer "
+                "'calibrated' (vol-filtered, back-tested green)"
             ),
             "current_regime": current_state,
         }

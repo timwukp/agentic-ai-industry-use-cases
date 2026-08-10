@@ -108,6 +108,50 @@ def fit_gpd_by_regime(
     return out
 
 
+EWMA_LAMBDA = 0.94  # RiskMetrics standard
+
+
+def ewma_sigma(returns: pd.Series) -> pd.Series:
+    """Strictly causal EWMA volatility: sigma for day t uses only r_{<t}."""
+    r2 = returns.fillna(0.0) ** 2
+    var = r2.ewm(alpha=1 - EWMA_LAMBDA, adjust=False).mean()
+    return np.sqrt(var).shift(1)
+
+
+def fit_vol_filtered_var(returns: pd.Series, threshold_q: float = 0.95) -> dict:
+    """Volatility-filtered EVT VaR (McNeil-Frey) — the H4 revision that
+    PASSED its back-test where regime-conditioning failed: C36 point-in-time,
+    9,026 OOS days, violations 1.04%/1.00% vs 1% target, Christoffersen
+    independence p=0.61/0.99 (no clustering), Basel green on both assets
+    (research/rerun_h4_vol_evt.py). Volatility clusters and needs no
+    hidden-state inference, so the filter reacts within days instead of
+    lagging like the regime estimate.
+
+    Returns tomorrow's VaR/ES levels: sigma_{t+1|t} x GPD quantile of
+    standardized residuals.
+    """
+    r = returns.dropna()
+    sigma = ewma_sigma(r)
+    # early days can have sigma ~ 0 (flat starts) -> inf residuals; drop them
+    z = (r / sigma).replace([np.inf, -np.inf], np.nan).dropna()
+    if len(z) < 500:
+        return {"valid": False, "reason": "insufficient history"}
+    tr = fit_gpd_pot(z, threshold_q=threshold_q)
+    s_next = float(sigma.iloc[-1]) if np.isfinite(sigma.iloc[-1]) else None
+    if s_next is None or not tr.valid:
+        return {"valid": False, "reason": "sigma or residual fit invalid"}
+    return {
+        "valid": True,
+        "sigma_next": round(s_next, 6),
+        "residual_xi": round(float(tr.xi), 4),
+        "var_99": round(s_next * tr.var_99, 6),
+        "es_99": (round(s_next * tr.es_99, 6) if np.isfinite(tr.es_99) else None),
+        "var_999": round(s_next * tr.var_999, 6),
+        "method": "vol-filtered EVT (EWMA 0.94 + GPD on residuals)",
+        "calibration": "back-tested green (Kupiec/CC/Basel), C36 9026 OOS days",
+    }
+
+
 def bipower_jump_stat(returns: pd.Series, window: int = 22) -> pd.Series:
     """Rolling RV/BV ratio; >> 1 indicates jump activity in the window.
 

@@ -46,11 +46,14 @@ TOOLS AND DATA — two data worlds, always disclose which one you are in:
     timing signal.
   * Impact functions have honest, WIDE uncertainty bands — present the
     band, not the point estimate.
-  * Tail risk (EVT) validated as a fat-tail DESCRIPTOR. Per-regime tails
-    (by_regime) are DESCRIPTIVE shape context only — back-testing showed
-    regime-conditional VaR calibrates WORSE than the pooled tail (the
-    regime estimate lags transitions); quote the pooled VaR for magnitudes
-    and by_regime only for "stress tails are fatter than calm tails".
+  * Tail risk (EVT): for TOMORROW's risk level quote the 'calibrated'
+    block (vol-filtered EVT) — the only VaR variant that PASSED
+    point-in-time back-testing (~1.0% violations vs 1% target, no
+    clustering, Basel green on 9,000+ OOS days). The unconditional
+    VaR describes the long-run tail shape; per-regime tails (by_regime)
+    are descriptive shape context only (regime-conditional VaR
+    back-tested WORSE — the regime estimate lags transitions). When
+    citing the calibrated VaR, note it moves with current volatility.
   * Economic predictability: the study found NONE that survives
     data-snooping tests (Hansen SPA p≈0.70). Never imply any tool output
     is tradable.

@@ -30,9 +30,30 @@ always carries some crisis days and is therefore harder to surprise.
   descriptive content for the agent.
 - The nightly payload's `by_regime` tails are labeled descriptive; the
   headline VaR remains the unconditional fit.
-- H4 calibration remains OPEN. Next candidates (not yet tested): EGARCH-
-  filtered EVT (conditional volatility, not conditional regime), or a
-  shorter rolling window with exponential weighting.
+- ~~H4 calibration remains OPEN~~ **RESOLVED by candidate 2** (below).
+
+## Revision 1b: volatility-filtered EVT — **PASSES, promoted to production**
+
+Candidate 2 (McNeil-Frey): EWMA(0.94) conditional volatility, GPD on
+standardized residuals, VaR_t+1 = sigma_t+1 × residual quantile. Same
+point-in-time protocol, C36, 9,026 OOS days:
+
+| Variant | NASDAQCOM | DGS10 |
+|---|---|---|
+| Unconditional (study baseline) | 1.38%, CC p=0.046, amber | 1.61%, amber |
+| Regime-conditional (refuted) | 3.64%, red | 1.50%, red |
+| **Vol-filtered (candidate 2)** | **1.04%, Kupiec p=0.69, CC p=0.61, GREEN** | **1.00%, Kupiec p=0.98, CC p=0.99, GREEN** |
+
+Max violations in any 22-day window: 4 (NASDAQ) / 3 (DGS10) — the
+clustering that killed both prior variants is gone. Mechanism: volatility
+clusters (the one robustly forecastable property of daily returns) and the
+EWMA filter needs no hidden-state inference, so it adapts within days
+instead of lagging like the regime estimate.
+
+Promoted: `fit_vol_filtered_var` in prism/tails.py; the nightly payload's
+`calibrated` block is now the headline forward-looking VaR; the system
+prompt directs the agent to quote it for magnitudes. Two synthetic-truth
+tests added (causality of the sigma filter; calibration on planted GARCH).
 
 ## Revision 2: max-rule power audit — **confirms the diagnosis, fix shipped**
 
