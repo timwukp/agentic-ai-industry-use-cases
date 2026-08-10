@@ -1,0 +1,96 @@
+{
+  "question": "Research question: Which frontier results in pure and applied mathematics — with special focus on Terence Tao's (陶哲軒) research output — are highly relevant to quantitative finance, and which are concretely usable in our existing system (PRISM: Gaussian-HMM market regimes, transfer-entropy + Granger causality under Benjamini-Hochberg FDR control, Bayesian local projections for impact functions, EVT/GPD tail risk with EWMA vol-filtering, walk-forward validation with Hansen SPA against data snooping; plus an LLM-scored geopolitical news-factor pipeline feeding daily factor time series)?\n\nSpecific sub-questions to cover:\n1. Terence Tao's major research areas (compressed sensing, random matrix theory, additive combinatorics, harmonic analysis, PDE/Navier-Stokes, pseudorandomness, recent work incl. any 2023-2026 output and AI/formal-math work) — which have documented finance applications or plausible transfer paths?\n2. Random matrix theory in finance specifically: Marchenko-Pastur cleaning of correlation matrices, Tao-Vu universality results — state of the art for portfolio/covariance estimation and whether it would improve a system like ours.\n3. Compressed sensing / sparse recovery (Candès-Romberg-Tao): applications to factor models, sparse signal extraction from many weak predictors — relevant to our 13-factor news pipeline?\n4. Other frontier applied math with strong finance traction 2020-2026: rough volatility (rough paths / Hairer school), signature methods, optimal transport in finance, score-based diffusion for scenario generation, conformal prediction for uncertainty — what does the recent literature say works?\n5. What do practitioners' and academics' assessments say about which of these actually survive out-of-sample / data-snooping scrutiny (our system's bar) vs which are academic fashion?\n\nDeliverable: a cited report ranking candidate techniques by (a) mathematical maturity, (b) documented finance evidence, (c) fit with our existing PRISM architecture and honest-validation philosophy, with a concrete \"worth prototyping next\" shortlist. User reads Chinese; report in English is fine but key takeaways will be relayed in Chinese.",
+  "summary": "Terence Tao's research connects to quantitative finance through two proven, mature channels: (1) compressed sensing / L1 sparse recovery (Candès-Romberg-Tao 2006), which underpins the theory of LASSO-style sparse factor selection with documented out-of-sample Sharpe improvements in equities, and (2) random matrix universality (Tao-Vu Four Moment Theorem), which guarantees that RMT-based covariance cleaning does not depend on Gaussianity beyond four moments — directly licensing its use on heavy-tailed financial returns. However, the practical state of the art for covariance cleaning has moved past Tao-adjacent Marchenko-Pastur eigenvalue clipping to Ledoit-Wolf quadratic-inverse shrinkage (QIS: ~97-99.8% PRIAL, milliseconds-to-seconds runtime, provably optimal under the Markowitz minimum-variance loss) and, at the frontier, end-to-end learned rotation-invariant cleaners — while practitioner-scale tests warn that sophisticated estimators can fail on implementability (10x turnover, leverage, concentration) rather than statistics. Among 2020-2026 frontier methods, rough volatility (RFSV) has verified out-of-sample realized-volatility forecasting gains (contested in generality) and signature methods have theorem-level universality plus principled truncation for compressing multivariate factor streams; both are plausible PRISM upgrades but with thinner finance evidence than covariance cleaning. Concrete \"worth prototyping next\" shortlist for PRISM, ranked by maturity x evidence x fit: (1) QIS/RIE covariance cleaning wherever PRISM estimates correlation structure (regime-conditional covariance for the Gaussian-HMM, factor covariance for the news pipeline) — mature, cheap, finance-native loss function; (2) LASSO/elastic-net sparse selection over the 13 news factors, but benchmarked against a dense ridge/Bayesian-shrinkage model per the \"Illusion of Sparsity\" evidence and gated by the existing Hansen SPA / walk-forward bar; (3) truncated signature features (depth 2, ~182 features from 13 channels) of the factor stream as inputs to regime detection or impact functions; (4) RFSV-style rough-volatility forecasting as a challenger to EWMA vol-filtering ahead of the EVT/GPD layer — lower priority because the improvement is modest and asset-class-dependent.",
+  "findings": [
+    {
+      "claim": "RMT covariance cleaning is the mature, finance-native math frontier most relevant to PRISM: the Marchenko-Pastur framework separates signal from noise in empirical correlation matrices, and eigenvector-based Rotationally Invariant Estimators (RIE) strictly dominate plain MP eigenvalue clipping without requiring a structural prior.",
+      "confidence": "high",
+      "sources": [
+        "https://arxiv.org/abs/1610.08104"
+      ],
+      "evidence": "Bun, Bouchaud & Potters (Physics Reports 666, 2017): MP equation 'provides information on the resolvent of multiplicatively corrupted noisy matrices'; eigenvector statistics 'can be used to build consistent Rotationally Invariant estimators (RIE) for large correlation matrices when there is no prior on the structure of the underlying process.' Merges claims [0]+[1], both verified verbatim against the peer-reviewed primary source. Note: the stronger claim that RIE empirically beat ALL prior methods was refuted (1-2 vote) — the theoretical dominance stands, the empirical superlative does not.",
+      "vote": "3-0 (x2 claims); one adjacent superlative claim refuted 1-2"
+    },
+    {
+      "claim": "Tao's most direct finance-relevant result is the Tao-Vu Four Moment Theorem: local eigenvalue statistics (gap distributions, k-point correlations) of Wigner matrices are determined entirely by the first four moments of the entry distribution — meaning RMT spectral predictions used in covariance cleaning do not require Gaussian returns, a rigorous license to apply RMT to heavy-tailed financial data.",
+      "confidence": "high",
+      "sources": [
+        "https://arxiv.org/abs/0906.0510"
+      ],
+      "evidence": "Tao & Vu, Acta Mathematica (2011), abstract verbatim: 'Our main result shows that these statistics are determined by the first four moments of the distribution of the entries... universality of eigenvalue gap distribution and k-point correlation... for both Wigner Hermitian matrices and Wigner real symmetric matrices.' Merges claims [4]+[5]. Caveat: theorem is for Wigner ensembles; finance covariance matrices are Wishart-type, so the transfer is conceptual justification rather than a drop-in tool.",
+      "vote": "3-0 (x2 claims)"
+    },
+    {
+      "claim": "Top PRISM prototyping candidate: Ledoit-Wolf quadratic-inverse shrinkage (QIS) makes state-of-the-art nonlinear covariance shrinkage computationally trivial and finance-aligned — 97% PRIAL at ~3 ms (p=200, n=600) vs NERCOME 2,117 ms / QuEST 1,644 ms; 99.8% PRIAL in 31 s at p=10,000, n=30,000 where numerical competitors cannot run; and the same shrinkage formula is provably simultaneously optimal under Frobenius, Inverse-Stein, and the Markowitz Minimum-Variance loss (out-of-sample portfolio volatility). Derived from classical Stein statistics rather than the Marchenko-Pastur equation, it confirms the practical frontier has moved beyond MP clipping.",
+      "confidence": "high",
+      "sources": [
+        "https://www.ledoit.net/BEJ1911-021R1A0.pdf"
+      ],
+      "evidence": "Ledoit & Wolf, Bernoulli 28(3):1519-1547 (2022), verified against the full PDF: Table 2/Table 3 figures exact; 'The latter [MV loss] is ideal whenever the objective is to optimize the reward-to-risk ratio (finance)... these three loss functions... lead to the same optimal nonlinear shrinkage formula'; 'we attain the same performance in the large-dimensional limit as the best nonlinear shrinkage formulas based on the fundamental equation of RMT.' Merges claims [11]+[12]+[13]+[14]. Caveat: PRIAL benchmarks are the authors' own Monte Carlo; optimality is within the rotation-equivariant class.",
+      "vote": "3-0 (x4 claims)"
+    },
+    {
+      "claim": "Practitioner reality check for PRISM's honest-validation philosophy: sophisticated covariance machinery can fail on implementability, not statistics — DCC+NLS portfolios show ~10x higher turnover plus excessive gross leverage and concentration that mechanically depress realized Sharpe versus a simple averaging benchmark, even while sometimes achieving the lowest realized volatility. Any covariance-cleaning prototype must be scored on turnover/leverage/concentration, not just estimation accuracy.",
+      "confidence": "medium",
+      "sources": [
+        "https://arxiv.org/abs/2309.17219"
+      ],
+      "evidence": "Bongiorno & Challet (Quantitative Finance 2024), abstract verbatim: 'their excessive gross leverage and investment concentration, and their 10-time larger turnover contribute to smaller average portfolio returns, which mechanically result in smaller realized Sharpe ratios than the Average Oracle.' Claim [9], verified 3-0. Downgraded to medium: single research group with proponent COI (Average Oracle is their own method), and the companion claim that Average Oracle beats DCC+NLS as the empirical frontier was REFUTED 0-3 — use this as a diagnostic checklist, not a method ranking.",
+      "vote": "3-0; companion superiority claim refuted 0-3"
+    },
+    {
+      "claim": "The 2025-2026 frontier in covariance cleaning is learned: a rotation-invariant neural network trained end-to-end on realized minimum variance outperformed state-of-the-art nonlinear shrinkage out-of-sample Jan 2000 - Dec 2024 (lower realized volatility, smaller max drawdowns, higher Sharpe) — a watch-item rather than an immediate PRISM adoption.",
+      "confidence": "medium",
+      "sources": [
+        "https://arxiv.org/abs/2507.01918"
+      ],
+      "evidence": "Bongiorno, Manolakis & Mantegna, Journal of Finance and Data Science 12 (2026) 100179; abstract verified: 'delivers systematically lower realized volatility, smaller maximum drawdowns, and higher Sharpe ratios than the best competitors, including state-of-the-art non-linear shrinkage.' Claim [10], 3-0. Medium confidence: single self-benchmark, <14 months old, no independent replication found; the sub-claim that the advantage survives realistic frictions was refuted 1-2 in verification.",
+      "vote": "3-0; frictions sub-claim refuted 1-2"
+    },
+    {
+      "claim": "Tao's compressed-sensing line (Candès-Romberg-Tao) is mathematically settled and quantitatively sharp: exact recovery of a sparse signal from ~S·log N random measurements via L1 convex optimization, the foundational result whose S·log N scaling is the theoretical basis for recovering sparse loadings among PRISM's 13 news factors from limited daily history.",
+      "confidence": "high",
+      "sources": [
+        "https://arxiv.org/abs/math/0409186"
+      ],
+      "evidence": "CRT, IEEE Trans. Inf. Theory 52(2):489-509 (2006), ~15-20k citations, abstract verbatim: '#{t, f(t) != 0} <= alpha(M)·(log N)^-1·#Omega, then with probability at least 1-O(N^-M), f can be reconstructed exactly as the solution to the l1 minimization problem... exact recovery may be obtained by solving a convex optimization problem'; the log factor aside, 'the condition on the size of the support is sharp.' Merges claims [2]+[3]. Caveat: noiseless/exactly-sparse theorem; the noisy 13-factor regression case rests on the Dantzig-selector/Lasso extensions preserving the same scaling. Note lineage correction from verification: LASSO (Tibshirani 1996) predates CRT — CRT provides its rigorous recovery guarantees, not its origin.",
+      "vote": "3-0 (x2 claims)"
+    },
+    {
+      "claim": "Sparse recovery has real, out-of-sample finance evidence: LASSO on the entire cross-section of lagged returns for rolling 1-minute-ahead forecasts 'increases both out-of-sample fit and forecast-implied Sharpe ratios' — meeting an OOS validation bar, though at high frequency and gross of costs.",
+      "confidence": "high",
+      "sources": [
+        "https://www.nber.org/papers/w23933"
+      ],
+      "evidence": "Chinco, Clark-Joseph & Ye, Journal of Finance 74(1):449-492 (2019); both quotes verified verbatim against NBER w23933. Merges claims [15]+[16]. Caveats: 1-minute frequency (transaction costs may erode realized profit); 'forecast-implied' Sharpe is not a live net-of-cost record; the companion claims that true signals are sparse/transient and that selected predictors coincide with fundamental news were both REFUTED 0-3 — so this is evidence that L1 selection can add OOS value, not that the sparse-world premise or a news-LASSO coupling is validated.",
+      "vote": "3-0 (x2 claims); two companion claims refuted 0-3"
+    },
+    {
+      "claim": "Counter-evidence PRISM must design against: in economic big-data prediction across macro, micro, and finance, a prior allowing both selection and shrinkage yields a posterior that does not concentrate on any single sparse model but spreads over a wide set — the data typically do not identify a small set of dominant predictors ('Illusion of Sparsity'). Any sparse selection over the 13 news factors should be benchmarked against a dense/ridge alternative under the same walk-forward + SPA protocol.",
+      "confidence": "high",
+      "sources": [
+        "https://www.newyorkfed.org/research/staff_reports/sr847"
+      ],
+      "evidence": "Giannone, Lenza & Primiceri, Econometrica 89(5) (2021); abstract verbatim: 'We compare sparse and dense representations of predictive models in macroeconomics, microeconomics, and finance... The posterior distribution does not typically concentrate on a single sparse or dense model, but on a wide set of models.' Merges claims [17]+[18]. Caveats verifiers attached: keep the 'typically' hedge, and note Fava & Lopes (arXiv:2009.14296) show the pattern is prior-sensitive — contested interpretation, not contested finding.",
+      "vote": "3-0 (x2 claims)"
+    },
+    {
+      "claim": "Rough volatility (RFSV, Gatheral-Jaisson-Rosenbaum) has verified out-of-sample realized-volatility forecasting improvements and is the only confirmed challenger to PRISM's EWMA vol-filter for the EVT/GPD layer — but gains are modest, asset-class-dependent, and the underlying 'volatility is rough at all scales, H~0.1' claim did not survive verification.",
+      "confidence": "medium",
+      "sources": [
+        "https://arxiv.org/abs/1410.3394"
+      ],
+      "evidence": "'Volatility is rough,' Quantitative Finance (2018), abstract verbatim: 'one application is that it enables us to obtain improved forecasts of realized volatility'; re-confirmed vs HAR by Rosenbaum & Zhang (2022). Claim [6], 3-0 but verifier confidence medium: Cont & Das (arXiv:2203.13820) argue roughness is a microstructure artifact (without disputing forecast performance); Alfeus & Nikitopoulos (2020) find HAR beats rough models OOS in 22 commodity markets. The universal-roughness claim was separately refuted 0-3.",
+      "vote": "3-0 (medium verifier confidence); H~0.1 universality claim refuted 0-3"
+    },
+    {
+      "claim": "Signature methods (Lyons rough-path school) offer a theorem-level tool for PRISM's multivariate factor streams: the path signature is a universal feature set — linear regression on truncated signatures can characterize the map from a stream-valued input to the conditional distribution of a stream-valued response — and its grading permits principled truncation (13 channels at depth 2 ~ 182 features), giving a fixed-dimension compression of the 13-factor daily news series for regime or impact modeling. Mathematical maturity is high; direct finance OOS evidence in this verification set is thin.",
+      "confidence": "medium",
+      "sources": [
+        "https://arxiv.org/abs/1309.0260"
+      ],
+      "evidence": "Levin, Lyons & Ni (2013), abstract verbatim: signature 'has a universality that allows formally, linear regression to be used to characterise the functional relationship... The grading allows truncation of the feature set... potentially significant, even transformational dimension reduction.' Merges claims [7]+[8], both 3-0, corroborated by Chevyrev-Oberhauser and the Lyons-McLeod 2022 survey. Caveats: universality holds on compact path sets up to tree-like equivalence (time-augmentation standard); feature count grows exponentially in truncation depth; no confirmed claim in this set documents a finance OOS win for signatures, so medium confidence for PRISM applicability despite high confidence in the math.",
+      "vote": "3-0 (x2 claims)"
+    }
+  ]
+}
