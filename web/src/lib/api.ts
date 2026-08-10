@@ -20,6 +20,28 @@ export async function apiGet<T>(path: string, signal?: AbortSignal): Promise<T> 
   return (await response.json()) as T
 }
 
+/** POSTs JSON to `${VITE_API_URL}${path}` with the Cognito access token. */
+export async function apiPost<T>(path: string, body: unknown): Promise<T> {
+  const token = await getAccessToken()
+  if (!token) throw new Error('Not signed in')
+
+  const response = await fetch(`${config.apiUrl}${path}`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+  })
+  if (!response.ok) {
+    const detail = await response.text().catch(() => '')
+    throw new Error(
+      `POST ${path} failed (${response.status})${detail ? `: ${detail.slice(0, 200)}` : ''}`,
+    )
+  }
+  return (await response.json()) as T
+}
+
 export interface ApiState<T> {
   data: T | null
   loading: boolean

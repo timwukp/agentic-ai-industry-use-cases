@@ -1,10 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import {
   Bot,
   LayoutDashboard,
   LogOut,
+  Maximize2,
   MessageSquare,
+  Minimize2,
   PanelLeftClose,
   PanelLeftOpen,
   PanelRightClose,
@@ -22,6 +24,25 @@ import LocalePicker from './LocalePicker'
 
 export type ShellView = 'dashboard' | 'chat'
 
+/** Desktop chat pane display mode. 'normal' honors the resizable width;
+ *  'max' fills the main area (dashboard hidden); 'min' collapses to a thin
+ *  rail with just a restore button — distinct from hidden, which removes it
+ *  entirely and is toggled from the header. */
+type ChatMode = 'normal' | 'max' | 'min'
+
+const CHAT_WIDTH_KEY = 'chat-panel-width'
+const CHAT_MIN_W = 280
+const CHAT_MAX_W = 720
+const CHAT_DEFAULT_W = 400
+
+function initialChatWidth(): number {
+  const stored = Number(localStorage.getItem(CHAT_WIDTH_KEY))
+  if (Number.isFinite(stored) && stored >= CHAT_MIN_W && stored <= CHAT_MAX_W) {
+    return stored
+  }
+  return CHAT_DEFAULT_W
+}
+
 export default function AppShell({ view }: { view: ShellView }) {
   const { industryId } = useParams()
   const navigate = useNavigate()
@@ -34,6 +55,54 @@ export default function AppShell({ view }: { view: ShellView }) {
   const [chatCollapsed, setChatCollapsed] = useState(false)
   const [railExpanded, setRailExpanded] = useState(false)
   const [industriesOpen, setIndustriesOpen] = useState(false)
+  // Resizable chat pane (desktop): width persists across sessions; mode
+  // handles maximize/minimize without losing the user's chosen width.
+  const [chatWidth, setChatWidth] = useState(initialChatWidth)
+  const [chatMode, setChatMode] = useState<ChatMode>('normal')
+  const dragging = useRef(false)
+
+  const beginDrag = useCallback(
+    (event: React.PointerEvent) => {
+      event.preventDefault()
+      dragging.current = true
+      const startX = event.clientX
+      const startW = chatWidth
+      const onMove = (e: PointerEvent) => {
+        if (!dragging.current) return
+        // handle sits left of the chat pane: dragging left widens the chat
+        const next = Math.min(
+          CHAT_MAX_W,
+          Math.max(CHAT_MIN_W, startW + (startX - e.clientX)),
+        )
+        setChatWidth(next)
+      }
+      const onUp = () => {
+        dragging.current = false
+        setChatWidth((w) => {
+          localStorage.setItem(CHAT_WIDTH_KEY, String(w))
+          return w
+        })
+        window.removeEventListener('pointermove', onMove)
+        window.removeEventListener('pointerup', onUp)
+      }
+      window.addEventListener('pointermove', onMove)
+      window.addEventListener('pointerup', onUp)
+    },
+    [chatWidth],
+  )
+
+  // Keyboard resize on the separator (a11y): arrows nudge 24px.
+  const onHandleKeyDown = useCallback((event: React.KeyboardEvent) => {
+    const delta =
+      event.key === 'ArrowLeft' ? 24 : event.key === 'ArrowRight' ? -24 : 0
+    if (!delta) return
+    event.preventDefault()
+    setChatWidth((w) => {
+      const next = Math.min(CHAT_MAX_W, Math.max(CHAT_MIN_W, w + delta))
+      localStorage.setItem(CHAT_WIDTH_KEY, String(next))
+      return next
+    })
+  }, [])
   // Charts extracted from the current answer, published by ChatPanel. Held here
   // rather than in the dashboard because the dashboard is per-industry and would
   // lose them on any remount; the panel belongs to the conversation, not the view.
@@ -223,14 +292,14 @@ export default function AppShell({ view }: { view: ShellView }) {
 
         {/* Main area */}
         <main className="flex-1 flex min-w-0 pb-14 md:pb-0">
-          {/* Dashboard pane: active view below lg; always present at lg+.
-              A column so the answer-chart overlay can take the space it needs at
-              the top while the dashboard keeps its own scroller below — the
-              dashboard is the standing view and must not be pushed off-screen. */}
+          {/* Dashboard pane: active view below lg; always present at lg+
+              unless the chat is maximized. A column so the answer-chart
+              overlay can take the space it needs at the top while the
+              dashboard keeps its own scroller below. */}
           <div
             className={`flex-1 min-w-0 flex flex-col @container ${
               view === 'dashboard' ? 'flex' : 'hidden'
-            } lg:flex`}
+            } ${chatMode === 'max' && !chatCollapsed ? 'lg:hidden' : 'lg:flex'}`}
           >
             {/* lg+ only: below lg the same charts render inline under the message
                 (see ChatPanel), because there the dashboard is a different view.
@@ -252,14 +321,91 @@ export default function AppShell({ view }: { view: ShellView }) {
             </div>
           </div>
 
-          {/* Chat pane: active view below lg; right split (collapsible) at lg+ */}
-          <div
-            className={`flex-1 min-w-0 lg:flex-none lg:w-[360px] xl:w-[420px] lg:border-l lg:border-slate-800 ${
-              view === 'chat' ? 'block' : 'hidden'
-            } ${chatCollapsed ? 'lg:hidden' : 'lg:block'}`}
-          >
-            <ChatPanel industryId={industry.id} />
-          </div>
+          {/* Resize handle: desktop only, hidden when chat is collapsed,
+              minimized, or maximized (no boundary to drag in those states). */}
+          {!chatCollapsed && chatMode === 'normal' && (
+            <div
+              role="separator"
+              aria-orientation="vertical"
+              aria-label={t('chrome.resizeChat')}
+              tabIndex={0}
+              onPointerDown={beginDrag}
+              onKeyDown={onHandleKeyDown}
+              className="hidden lg:flex w-1.5 shrink-0 cursor-col-resize items-center justify-center bg-slate-800/40 hover:bg-blue-500/60 focus:bg-blue-500/60 focus:outline-none transition-colors"
+              data-testid="chat-resize-handle"
+            >
+              <div className="h-8 w-0.5 rounded bg-slate-600" />
+            </div>
+          )}
+
+          {/* Chat pane: active view below lg; right split at lg+ with
+              normal (resizable) / max / min modes. */}
+          {chatMode === 'min' && !chatCollapsed ? (
+            <div className="hidden lg:flex w-11 shrink-0 border-l border-slate-800 bg-slate-900/60 flex-col items-center pt-3 gap-2">
+              <button
+                onClick={() => setChatMode('normal')}
+                className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+                title={t('chrome.restoreChat')}
+                aria-label={t('chrome.restoreChat')}
+                data-testid="chat-restore"
+              >
+                <MessageSquare className="w-5 h-5" />
+              </button>
+            </div>
+          ) : (
+            <div
+              className={`min-w-0 lg:border-l lg:border-slate-800 ${
+                view === 'chat' ? 'flex-1 block' : 'hidden'
+              } ${chatCollapsed ? 'lg:hidden' : 'lg:block'} ${
+                chatMode === 'max' ? 'lg:flex-1' : 'lg:flex-none'
+              }`}
+              style={
+                chatMode === 'normal'
+                  ? ({ ['--chat-w' as string]: `${chatWidth}px` } as React.CSSProperties)
+                  : undefined
+              }
+              data-chat-mode={chatMode}
+            >
+              <div
+                className={`h-full flex flex-col ${
+                  chatMode === 'normal' ? 'lg:w-[var(--chat-w)]' : ''
+                }`}
+              >
+                {/* Chat window controls: max/min (desktop only) */}
+                <div className="hidden lg:flex items-center justify-end gap-1 px-2 pt-2">
+                  <button
+                    onClick={() => setChatMode(chatMode === 'max' ? 'normal' : 'max')}
+                    className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-slate-800 transition-colors"
+                    title={
+                      chatMode === 'max'
+                        ? t('chrome.restoreChat')
+                        : t('chrome.maximizeChat')
+                    }
+                    aria-label={
+                      chatMode === 'max'
+                        ? t('chrome.restoreChat')
+                        : t('chrome.maximizeChat')
+                    }
+                    data-testid="chat-maximize"
+                  >
+                    <Maximize2 className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    onClick={() => setChatMode('min')}
+                    className="p-1.5 rounded-lg text-slate-500 hover:text-white hover:bg-slate-800 transition-colors"
+                    title={t('chrome.minimizeChat')}
+                    aria-label={t('chrome.minimizeChat')}
+                    data-testid="chat-minimize"
+                  >
+                    <Minimize2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div className="flex-1 min-h-0">
+                  <ChatPanel industryId={industry.id} />
+                </div>
+              </div>
+            </div>
+          )}
         </main>
       </div>
 

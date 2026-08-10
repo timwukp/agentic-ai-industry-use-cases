@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type FormEvent } from 'react'
-import { Bot, Loader2, RefreshCw, Send, User } from 'lucide-react'
+import { Bot, History, Loader2, RefreshCw, Send, User } from 'lucide-react'
 import { invokeAgent, newSessionId } from '../lib/agentClient'
 import Markdown from './Markdown'
 import { ChartCard } from './AnswerChartPanel'
@@ -9,6 +9,8 @@ import { industries } from '../industries/registry'
 import { starterPrompts, type StarterPrompt } from '../industries/starterPrompts'
 import { useLocale } from '../i18n/LocaleContext'
 import { useAuth } from '../lib/AuthContext'
+import { apiPost } from '../lib/api'
+import ChatHistoryDrawer, { type SavedTranscript } from './ChatHistoryDrawer'
 
 interface ChatMessage {
   id: string
@@ -40,9 +42,62 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
   const [input, setInput] = useState('')
   const [streaming, setStreaming] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [historyOpen, setHistoryOpen] = useState(false)
   const endRef = useRef<HTMLDivElement>(null)
   const abortRef = useRef<AbortController | null>(null)
   const inputRef = useRef<HTMLTextAreaElement>(null)
+
+  // Durable history: after each completed exchange, persist the transcript.
+  // Fire-and-forget with a small debounce — a save failure must never
+  // interrupt the conversation (history is a convenience, not the chat).
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const persist = useCallback(
+    (msgs: ChatMessage[], sid: string) => {
+      const payload = msgs
+        .filter((m) => m.content && !m.streaming)
+        .map((m) => ({ role: m.role, content: m.content }))
+      if (payload.length < 2) return // nothing worth indexing yet
+      if (saveTimer.current) clearTimeout(saveTimer.current)
+      saveTimer.current = setTimeout(() => {
+        void apiPost('/api/chat/save', {
+          sessionId: sid,
+          industryId,
+          messages: payload,
+        }).catch(() => {
+          /* silent: surfaced only in the history drawer if listing fails */
+        })
+      }, 800)
+    },
+    [industryId],
+  )
+  useEffect(
+    () => () => {
+      if (saveTimer.current) clearTimeout(saveTimer.current)
+    },
+    [],
+  )
+
+  // Loading a saved transcript: continue that same session (the AgentCore
+  // session may have expired server-side, but the id is still the storage
+  // key, so follow-ups keep appending to the same saved history).
+  const loadTranscript = useCallback(
+    (transcript: SavedTranscript) => {
+      abortRef.current?.abort()
+      setStreaming(false)
+      setError(null)
+      publishAnswerCharts([])
+      sessionStorage.setItem(sessionKey(industryId), transcript.sessionId)
+      setSessionId(transcript.sessionId)
+      setMessages(
+        transcript.messages.map((m) => ({
+          id: crypto.randomUUID(),
+          role: m.role,
+          content: m.content,
+        })),
+      )
+    },
+    [industryId],
+  )
 
   // Prompt bus: dashboard "Ask agent" buttons prefill the input (never auto-send).
   useEffect(() => {
@@ -174,13 +229,17 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
           )
         }
       } finally {
-        setMessages((prev) =>
-          prev.map((m) => (m.id === assistantId ? { ...m, streaming: false } : m)),
-        )
+        setMessages((prev) => {
+          const done = prev.map((m) =>
+            m.id === assistantId ? { ...m, streaming: false } : m,
+          )
+          persist(done, sessionId)
+          return done
+        })
         setStreaming(false)
       }
     },
-    [streaming, sessionId, user?.sub, getToken, t],
+    [streaming, sessionId, user?.sub, getToken, t, persist],
   )
 
   const handleSubmit = (event: FormEvent) => {
@@ -191,7 +250,12 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
   }
 
   return (
-    <div className="flex flex-col h-full bg-slate-950">
+    <div className="relative flex flex-col h-full bg-slate-950">
+      <ChatHistoryDrawer
+        open={historyOpen}
+        onClose={() => setHistoryOpen(false)}
+        onLoad={loadTranscript}
+      />
       {/* Header */}
       <div className="px-4 py-3 border-b border-slate-800 bg-slate-900/60 flex items-center justify-between gap-2">
         <div className="min-w-0">
@@ -202,14 +266,26 @@ export default function ChatPanel({ industryId }: { industryId: string }) {
             {t('chat.sessionLine', { id: sessionId.slice(0, 8) })}
           </p>
         </div>
-        <button
-          onClick={newSession}
-          title={t('chat.newSessionTitle')}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 transition-colors shrink-0"
-        >
-          <RefreshCw className="w-3.5 h-3.5" />
-          {t('chat.newSession')}
-        </button>
+        <div className="flex items-center gap-1.5 shrink-0">
+          <button
+            onClick={() => setHistoryOpen(true)}
+            title={t('chat.historyTitle')}
+            aria-label={t('chat.historyTitle')}
+            data-testid="history-open"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 transition-colors"
+          >
+            <History className="w-3.5 h-3.5" />
+            <span className="hidden xl:inline">{t('chat.history')}</span>
+          </button>
+          <button
+            onClick={newSession}
+            title={t('chat.newSessionTitle')}
+            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-lg bg-slate-800 border border-slate-700 text-slate-300 hover:bg-slate-700 transition-colors"
+          >
+            <RefreshCw className="w-3.5 h-3.5" />
+            {t('chat.newSession')}
+          </button>
+        </div>
       </div>
 
       {/* Messages */}
