@@ -81,6 +81,38 @@ order of magnitude closer than daily (q≈0.85). Consistent with the
 literature operating at monthly+ horizons; a monthly-frequency scan tier
 is a possible future addition.
 
+## QIS covariance cleaning in the HMM regime layer — **FAST FAILURE, not promoted**
+
+Pre-registered test (`protocol_qis.md`, tag `qis-test-preregistered`;
+motivated by the deep-research report's #1 shortlist item). Baseline vs
+shrunk-covariance HMM, identical in everything else, three cohorts,
+point-in-time:
+
+| Cohort | baseline H1b AUROC | QIS AUROC | Δ | bootstrap p | lag Δ |
+|---|---|---|---|---|---|
+| C10 | 0.7438 | 0.7403 | **−0.0035** | 0.62 | 0 |
+| C20 | 0.7634 | 0.7653 | +0.0019 | 0.068 | 0 |
+| C36 (primary) | 0.7379 | 0.7377 | **−0.0002** | 0.009* | 0 |
+
+*C36's small p attaches to a NEGATIVE point difference — evidence of a
+tiny systematic degradation, not improvement.
+
+**Gate verdict (frozen criteria)**: condition 1 fails (improvement in only
+1/3 cohorts), condition 2 fails (no significant pooled improvement in the
+right direction), era stability mixed (3/6 eras). **QIS does not enter
+PRISM.**
+
+**Why the null makes sense in hindsight** (post-hoc interpretation,
+labeled as such): shrinkage earns its keep when p/n is adverse. Our regime
+layer runs p=4-5 variables against 750+ training days (p/n < 0.01) — the
+sample covariance is already nearly optimal, so shrinkage mostly nudges
+probabilities by noise. The deep-research report itself scoped QIS's
+evidence to p in the hundreds (portfolio covariance); the test confirms
+the transfer to tiny-p regime detection does not hold. The self-calibrated
+`studylib/qis.py` implementation remains available for any future
+LARGE-p application (e.g. a cross-sectional portfolio layer), where the
+literature's evidence actually lives.
+
 ## Revision 3: system prompt — shipped
 
 Regime = validated historical lens (AUROC 0.85–0.91 cited) with explicit

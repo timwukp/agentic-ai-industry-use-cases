@@ -146,3 +146,53 @@ def test_sup_chow_detects_planted_break_and_not_stability():
     r = sup_chow(y_break, X)
     assert r["reject_5pct"] is True
     assert abs(r["break_idx"] - n // 2) < 60
+
+
+# ---------------- QIS/shrinkage (protocol_qis.md self-calibration) ----------------
+
+
+def test_shrinkage_reduces_frobenius_loss_vs_sample_cov():
+    from studylib.qis import shrunk_covariance
+
+    rng = np.random.default_rng(7)
+    p = 5
+    A = rng.normal(0, 1, (p, p))
+    true_cov = A @ A.T + p * np.eye(p)
+    L = np.linalg.cholesky(true_cov)
+    wins_short = 0
+    trials = 40
+    for t in range(trials):
+        rng_t = np.random.default_rng(100 + t)
+        X = (L @ rng_t.normal(0, 1, (p, 30))).T  # n=30: p/n ~ 0.17, noisy
+        S = np.cov(X, rowvar=False, bias=True)
+        Sh = shrunk_covariance(X)
+        loss_s = np.sum((S - true_cov) ** 2)
+        loss_sh = np.sum((Sh - true_cov) ** 2)
+        if loss_sh < loss_s:
+            wins_short += 1
+    # shrinkage must help in the clear majority of noisy-sample trials
+    assert wins_short >= 0.7 * trials, f"only {wins_short}/{trials} wins"
+
+
+def test_shrinkage_does_not_fabricate_structure_on_identity():
+    from studylib.qis import shrunk_covariance
+
+    rng = np.random.default_rng(11)
+    X = rng.normal(0, 1, (2000, 5))  # true cov = I, n >> p
+    Sh = shrunk_covariance(X)
+    off = Sh - np.diag(np.diag(Sh))
+    assert np.abs(off).max() < 0.08  # no invented correlations
+    assert np.abs(np.diag(Sh) - 1.0).max() < 0.15
+
+
+def test_shrinkage_always_positive_definite_and_weighted():
+    from studylib.qis import shrunk_covariance
+
+    rng = np.random.default_rng(13)
+    # degenerate: fewer effective observations than dimensions
+    X = rng.normal(0, 1, (50, 5))
+    w = np.zeros(50)
+    w[:3] = 1.0  # only 3 effective rows for p=5
+    Sh = shrunk_covariance(X, weights=w)
+    eigvals = np.linalg.eigvalsh(Sh)
+    assert eigvals.min() > 0, "shrunk covariance must be PD even when degenerate"

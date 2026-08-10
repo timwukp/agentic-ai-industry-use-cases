@@ -1,0 +1,104 @@
+{
+  "C10": {
+    "cohort": "C10",
+    "cols": [
+      "NASDAQCOM_ret",
+      "slope_diff",
+      "VIXCLS_diff",
+      "DCOILWTICO_ret"
+    ],
+    "baseline": {
+      "h1b_auroc": 0.7438,
+      "median_lag": 16.5,
+      "n_days": 1959
+    },
+    "qis": {
+      "h1b_auroc": 0.7403,
+      "median_lag": 16.5,
+      "n_days": 1959
+    },
+    "paired_mean_diff": -0.000553,
+    "bootstrap_p": 0.6194,
+    "eras": {
+      "covid_inflation": {
+        "baseline": 0.7873,
+        "qis": 0.783,
+        "improved": false
+      }
+    },
+    "runtime_s": 17.4
+  },
+  "C20": {
+    "cohort": "C20",
+    "cols": [
+      "NASDAQCOM_ret",
+      "slope_diff",
+      "VIXCLS_diff",
+      "DCOILWTICO_ret"
+    ],
+    "baseline": {
+      "h1b_auroc": 0.7634,
+      "median_lag": 15.5,
+      "n_days": 4068
+    },
+    "qis": {
+      "h1b_auroc": 0.7653,
+      "median_lag": 15.5,
+      "n_days": 4068
+    },
+    "paired_mean_diff": 0.002067,
+    "bootstrap_p": 0.0679,
+    "eras": {
+      "zirp": {
+        "baseline": 0.6768,
+        "qis": 0.6807,
+        "improved": true
+      },
+      "covid_inflation": {
+        "baseline": 0.7778,
+        "qis": 0.7802,
+        "improved": true
+      }
+    },
+    "runtime_s": 56.8
+  },
+  "C36": {
+    "cohort": "C36",
+    "cols": [
+      "NASDAQCOM_ret",
+      "slope_diff",
+      "VIXCLS_diff",
+      "DCOILWTICO_ret"
+    ],
+    "baseline": {
+      "h1b_auroc": 0.7379,
+      "median_lag": 15.5,
+      "n_days": 8743
+    },
+    "qis": {
+      "h1b_auroc": 0.7377,
+      "median_lag": 15.5,
+      "n_days": 8743
+    },
+    "paired_mean_diff": 0.002726,
+    "bootstrap_p": 0.009,
+    "eras": {
+      "moderation": {
+        "baseline": 0.7551,
+        "qis": 0.7534,
+        "improved": false
+      },
+      "zirp": {
+        "baseline": 0.8123,
+        "qis": 0.8062,
+        "improved": false
+      },
+      "covid_inflation": {
+        "baseline": 0.708,
+        "qis": 0.7086,
+        "improved": true
+      }
+    },
+    "runtime_s": 196.3
+  }
+}
