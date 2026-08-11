@@ -37,6 +37,7 @@ CloudFront，Lambda 最小權限 IAM，數據存儲 KMS 加密，私有 S3 + Clo
 | `deploy/` | 編排器 + 冪等腳本（gateway、memory、seed、render、smoke） |
 | `web/` | 統一響應式 PWA（Vite + React 19 + Tailwind + Amplify Auth） |
 | `tests/` | 單元測試（pytest + moto）、基礎設施（CDK assertions）、E2E（Playwright） |
+| `research/` | 預註冊驗證研究 + 10 個預註冊方法測試（10–50 年真實數據）：凍結協議、自校準儀器、結果與判定（[記分板](research/findings_addendum.md)） |
 
 ## 部署
 
@@ -218,11 +219,30 @@ E2E hook），由一個重建測試釘死：從目錄 key 加參數必須精確�
   Shock Model*，概率體制與衝擊影響模型）的輸出：夜間容器 Lambda 批次，基於回填的
   10 年以上官方數據擬合——高斯 HMM 市場體制；傳遞熵 + Granger 因果掃描（Benjamini-
   Hochberg FDR 校正）；貝葉斯局部投影影響函數（含可信帶）；EVT（GPD 超閾值法）尾部
-  風險。一條規律只有同時通過 FDR 校正**和** walk-forward 樣本外驗證（對照 AR(1)/
-  隨機遊走基準）才標 **CONFIRMED**，其餘一律 **HYPOTHESIS**。CONFIRMED 列表為空
-  （新聞因子歷史積累期的預期狀態）就如實顯示空——誠實的空列表勝過粉飾的列表。
-  quant 批次是本 repo 對 zip-only Lambda 打包規則的唯一受批例外
+  風險——校準過的頭條 99% VaR 採用波動率過濾（McNeil-Frey）方法。一條規律只有同時
+  通過 FDR 校正**和** walk-forward 樣本外驗證（對照 AR(1)/隨機遊走基準）才標
+  **CONFIRMED**，其餘一律 **HYPOTHESIS**。第一條 CONFIRMED 規律——VIX→10 年期美債的
+  避險資金流（1/5/20 天視界，q=0.0018）——是在一次預註冊的功效審計更換了因果掃描的
+  合併規則之後才浮現的；CONFIRMED 列表短或空就如實顯示——誠實的空列表勝過粉飾的
+  列表。quant 批次是本 repo 對 zip-only Lambda 打包規則的唯一受批例外
   （numpy/scipy/statsmodels/hmmlearn 需要容器鏡像）。
+
+### 預註冊驗證研究（`research/`）
+
+PRISM 的聲稱不靠信任，靠檢驗。一項期刊級驗證研究用 10/20/30/40/50 年真實數據對每一層
+做了背靠背回測（協議在任何測試代碼之前凍結並打 git tag；全程 point-in-time 紀律——在
+t 日只用 ≤t 的數據）：體制層作為歷史透鏡成立（對照 NBER 衰退 + 已知崩盤，AUROC
+0.85–0.91），但實時檢測滯後超過 10 個交易日，所以代理將其呈現為背景而非預警；頭條
+VaR 校準全綠（Kupiec/Christoffersen）；崩盤「擇時」類問題以脆弱度-對-觸發器框架回答，
+因為沒有任何經濟可預測性通過 Hansen SPA 檢驗（見
+[research/report.md](research/report.md)、[research/findings.md](research/findings.md)）。
+
+同一套紀律隨後為兩次深度調研（前沿數學 + 經典應用數學）的每個候選方法把關：每個候選
+都有凍結協議、數值判定門檻、自校準儀器（植入真值的合成測試）和機械化判定。
+**記分板：10 個預註冊測試，2 晉升 / 8 快速失敗**——失敗與晉升以同樣的嚴謹記錄在
+[research/findings_addendum.md](research/findings_addendum.md)，因為沒有記錄的失敗一定會
+被重複。僅因系統當前表示規模太小而失敗的方法（如 p=5 下的協方差收縮）帶著重啟條件
+歸檔於 [research/conditional_candidates.md](research/conditional_candidates.md)。
 
 ### Live 行情初始設置（一次性）
 

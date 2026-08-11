@@ -39,6 +39,7 @@ S3 behind CloudFront OAC, no long-lived secrets in code.
 | `deploy/` | Orchestrator + idempotent scripts (gateway, memory, seed, render, smoke) |
 | `web/` | Unified responsive PWA (Vite + React 19 + Tailwind + Amplify Auth) |
 | `tests/` | Unit (pytest + moto), infra (CDK assertions), E2E (Playwright) |
+| `research/` | Pre-registered validation study + 10 pre-registered method tests against 10–50 years of real data: frozen protocols, self-calibrating instruments, results, verdicts ([scoreboard](research/findings_addendum.md)) |
 
 ## Deploy
 
@@ -248,12 +249,37 @@ There are two more provenance classes beyond live/simulated:
   Impact Shock Model*), a nightly container-Lambda batch fitted on 10+ years of backfilled
   official data: Gaussian-HMM market regimes; transfer-entropy + Granger causality scans under
   Benjamini-Hochberg FDR control; Bayesian local-projection impact functions with credible
-  bands; EVT (GPD peaks-over-threshold) tail risk. A regularity is labeled **CONFIRMED** only
+  bands; EVT (GPD peaks-over-threshold) tail risk with a volatility-filtered (McNeil-Frey)
+  99% VaR as the calibrated headline number. A regularity is labeled **CONFIRMED** only
   if it survives FDR control AND walk-forward out-of-sample validation against AR(1)/random-walk
-  baselines; everything else stays **HYPOTHESIS**. An empty CONFIRMED list — expected while
-  news-factor history accrues — is rendered as-is: an honest empty list beats a dressed-up one.
+  baselines; everything else stays **HYPOTHESIS**. The first CONFIRMED edge —
+  VIX→10Y-Treasury flight-to-quality (q=0.0018 at 1/5/20-day horizons) — emerged only after a
+  pre-registered power audit replaced the causality scan's combination rule; an empty or short
+  CONFIRMED list is rendered as-is: an honest empty list beats a dressed-up one.
   The quant batch is the repo's one sanctioned exception to zip-only Lambda packaging
   (numpy/scipy/statsmodels/hmmlearn need a container image).
+
+### Pre-registered validation research (`research/`)
+
+PRISM's claims are not taken on faith. A journal-style validation study back-tested every
+layer against 10/20/30/40/50 years of real data (protocol frozen and git-tagged **before**
+any test code; point-in-time discipline throughout — at date *t*, only data ≤ *t*): the
+regime layer is validated as a historical lens (AUROC 0.85–0.91 vs NBER recessions + known
+crashes) but lags real-time detection by >10 business days, so the agent presents it as
+context, never as an early-warning; the headline VaR is calibration-green
+(Kupiec/Christoffersen); crash-*timing* questions are answered with a fragility-vs-trigger
+framing because no economic predictability survived Hansen SPA (see
+[research/report.md](research/report.md), [research/findings.md](research/findings.md)).
+
+The same discipline then gated every candidate method from two deep-research surveys
+(frontier + classical mathematics): each got a frozen protocol with numeric decision gates,
+self-calibrating instruments (planted-truth synthetic tests), and a mechanical verdict.
+**Scoreboard: 10 pre-registered tests, 2 promoted / 8 fast-failed** — the failures are
+documented in [research/findings_addendum.md](research/findings_addendum.md) with the same
+care as the promotions, because an unrecorded failure gets repeated. Methods that failed
+only because the system's current representation is small (e.g. covariance shrinkage at
+p=5) are archived with re-activation conditions in
+[research/conditional_candidates.md](research/conditional_candidates.md).
 
 ### Live-market setup (one-time)
 
