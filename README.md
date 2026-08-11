@@ -117,6 +117,8 @@ Gateway (5 MCP targets), one harness, one Knowledge Base, one Memory.
 | Manufacturing Maintenance | `manufacturing_maintenance_assistant` | equipment / prediction / maintenance / parts / kb | Asset health dashboard + chat |
 | Real Estate Valuation | `real_estate_valuation_assistant` | valuation / market / investment / property / kb | Valuation dashboard + chat |
 
+Business decision flows for all six industries — stage-by-stage gates, thresholds, and human-approval points, written for practitioners — are documented in [docs/business-flows.md](docs/business-flows.md).
+
 All six were brought online by the same command — `python deploy/deploy.py --industry <name>` —
 with **zero new stack code** per industry: the parameterized `IndustryStack` plus the
 gateway/harness/memory/observability scripts read everything from `deploy/industries.py`.
