@@ -34,9 +34,9 @@ S3 behind CloudFront OAC, no long-lived secrets in code.
 | `tools/<industry>/` | Gateway Lambda tool handlers + MCP tool schemas |
 | `tools/shared/toolkit/` | Shared dispatch, DynamoDB helpers, deterministic market simulator |
 | `kb/<industry>/seed-docs/` | Knowledge-base seed documents (policies, product guides) |
-| `skills/` | AgentCore Skills (git-sourced; wired post-merge) |
+| `skills/` | AgentCore Skills (git-sourced from main; `theory-to-production` is live-loaded by the autonomous theory scout) |
 | `infra/cdk/` | 11 CDK stacks: SharedSecurity, Auth, FinanceData, FinanceTools, Api, Web + one `IndustryStack` per non-finance industry (Healthcare, Insurance, Retail, Manufacturing, Realestate) |
-| `deploy/` | Orchestrator + idempotent scripts (gateway, memory, seed, render, smoke) |
+| `deploy/` | Orchestrator + idempotent scripts (gateway, memory, seed, render, smoke); `deploy/theory-scout/` is the monthly research-scout driver + schedule ([docs](deploy/theory-scout/README.md)) |
 | `web/` | Unified responsive PWA (Vite + React 19 + Tailwind + Amplify Auth) |
 | `tests/` | Unit (pytest + moto), infra (CDK assertions), E2E (Playwright) |
 | `research/` | Pre-registered validation study + 10 pre-registered method tests against 10–50 years of real data: frozen protocols, self-calibrating instruments, results, verdicts ([scoreboard](research/findings_addendum.md)) |
@@ -280,6 +280,27 @@ care as the promotions, because an unrecorded failure gets repeated. Methods tha
 only because the system's current representation is small (e.g. covariance shrinkage at
 p=5) are archived with re-activation conditions in
 [research/conditional_candidates.md](research/conditional_candidates.md).
+
+### Autonomous theory scout (`deploy/theory-scout/` + `skills/theory-to-production/`)
+
+The research pipeline above no longer depends on a human remembering to run it. A scheduled
+**AgentCore Harness** (the *PRISM Theory Scout*) executes Phases 0–2 of the
+[theory-to-production skill](skills/theory-to-production/SKILL.md) monthly (1st, 02:00 UTC):
+it reads the scoreboard and conditional-candidates list from `main` first, surveys new
+mathematical theory against PRISM's *current* constraint fingerprint, and — for at most one
+candidate per run — drafts a protocol and runs the pre-registered positive-control power
+check as a synthetic simulation **before any real-data spend**.
+
+The human-in-the-loop gate is the pull request itself: the scout's mandate hard-stops at
+`DRAFT_protocol_*.md` on a branch (no tags, no merges, no production paths); a human
+reviews, freezes+tags, and schedules the real-data test. A run that finds nothing worth
+drafting opens **no** PR — an honest empty-handed cycle is a valid outcome, not a failure.
+The first full validation cycle (2026-08-11) demonstrated exactly this: the scout found a
+literature-star candidate (Smooth Local Projections, *ReStat* 2019) with an exact
+deficiency match, then rejected it when its own power check topped out at 28.7% against
+the 80% gate — zero branches, zero commits, one production-code calibration lead handed
+to the humans. Delivery chain: EventBridge Scheduler → CodeBuild (source = this repo's
+`main`, so the driver that runs is always the reviewed one) → `InvokeHarness`.
 
 ### Live-market setup (one-time)
 
