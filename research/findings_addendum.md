@@ -174,6 +174,98 @@ own pre-registration.
 
 Scoreboard: 2 promoted / 4 fast-failed across 6 pre-registered tests.
 
+## BOCPD/CUSUM fast-alarm channel — **FAST FAILURE per frozen gate, with
+protocol-design findings that justify (but do not auto-license) a v2**
+
+Pre-registered test (`protocol_bocpd.md`, tag `bocpd-test-preregistered`;
+converged independently from the skill-trial draft and the classical-math
+survey). Three arms at training-matched false-alarm thresholds, PIT, OOS =
+last 60% of each cohort:
+
+| Cohort | arm | detected | median lag (bd) | FA/250bd |
+|---|---|---|---|---|
+| C10 | incumbent | 0/3 | — | 0.000 |
+| C10 | bocpd | 0/3 | — | 0.512 |
+| C10 | cusum | 3/3 | 1.0 | **11.5** |
+| C20 | incumbent | 1/6 | 20.0 | 1.056 |
+| C20 | bocpd | 2/6 | 8.5 | 1.056 |
+| C20 | cusum | 4/6 | 9.5 | **12.1** |
+| C36 (primary) | incumbent | 4/10 | 52.5 | 1.341 |
+| C36 | bocpd | **5/10** | **8.0** | **1.118** |
+| C36 | cusum | 8/10 | 5.0 | **11.8** |
+
+**Gate verdict (mechanical):**
+- **CUSUM: fast failure, decisive.** Training-matched thresholds did not
+  hold out-of-sample: OOS false alarms ran ~10x the budget in every cohort
+  (11.5-12.1 vs 0.8-2.0). Its spectacular lag numbers are exactly the
+  ARL≈7-style mirage finding [1] of the survey warned about — the
+  co-primary FA endpoint exists for this.
+- **BOCPD: fast failure on condition 2** — C10 FA 0.512 vs incumbent 0.000
+  ("≤ in EVERY cohort" fails) — and condition 3 unevaluable (see defects).
+
+**Two protocol-design defects surfaced in execution (recorded, not
+patched post hoc):**
+1. **Degenerate zero comparison**: on C10 the incumbent never fired at all
+   (0 detections → trivially 0 false alarms). A "FA ≤ incumbent" gate
+   against a never-firing incumbent can only be met by another
+   never-firing detector — the gate compares against silence, not skill.
+2. **Bootstrap/instrument mismatch**: the frozen significance test (block
+   bootstrap, n≥100) cannot run on 3-10 paired episode differences; a
+   sign/permutation test was the right instrument. Discovered at judging
+   time; per discipline, NOT swapped in after the fact.
+
+**Honest observations (non-gated):** on the PRIMARY cohort (C36, 10 stress
+episodes) robust BOCPD strictly dominated the incumbent on all three
+endpoints simultaneously — more episodes detected (5 vs 4), 6.5x faster
+median detection (8.0 vs 52.5bd), AND fewer false alarms (1.118 vs 1.341).
+Same direction on C20. The Student-t robustification also did its job:
+BOCPD held its FA budget OOS where CUSUM blew through it.
+
+**Disposition**: fast failure recorded; nothing enters PRISM. A v2 protocol
+(non-degenerate FA gate — budget floor instead of comparison-to-zero;
+sign/permutation small-sample test; identical arms otherwise) is
+scientifically justified by the defects above — but re-registering after
+seeing results carries gate-shopping risk, so v2 requires explicit user
+sign-off, and its verdict must report v1's failure alongside any v2 pass.
+
+Scoreboard: 2 promoted / 5 fast-failed across 7 pre-registered tests.
+
+## BOCPD v2 (user-approved gate-defect fix) — **FAILS on significance;
+candidate TERMINALLY CLOSED per the one-shot clause**
+
+v2 protocol (`protocol_bocpd_v2.md`, tag `bocpd-v2-preregistered`,
+user-approved 2026-08-11 after gate-shopping disclosure) fixed exactly the
+two recorded v1 defects: absolute FA budget (≤2.0/250bd) replacing the
+degenerate vs-silent-incumbent comparison, and an exact paired
+sign-permutation test replacing the infeasible bootstrap. Arms, data,
+thresholds identical to v1 (measurements reused; deterministic seed 7).
+
+**v2 gate results (v1 failure presented alongside, as required):**
+
+| Condition | v1 | v2 |
+|---|---|---|
+| 1. Lag ≥3bd better in ≥2/3 cohorts, none worse | pass (C20 20→8.5, C36 52.5→8.0, C10 tie) | pass (same data) |
+| 2. False alarms | FAIL (degenerate C10 comparison) | **pass** — BOCPD ≤2.0/250bd in all cohorts (0.512/1.056/1.118); CUSUM fails (11.5-12.1) |
+| 3. Significance | unevaluable (bootstrap n≥100) | **FAIL — exact sign-permutation p = 0.172** (19 pooled episodes, mean lag gain 17.3bd) |
+| 5. Missed-detection guardrail | pass | pass (BOCPD ≥ incumbent everywhere) |
+
+**Verdict: fast failure.** The lag improvement is large in point estimate
+(17.3bd pooled mean) but with only 19 stress episodes in 40 years of OOS
+data and high variance across them, the exact test cannot exclude chance
+at the frozen 5% level (p=0.17). The evidence is suggestive, not
+sufficient — and suggestive does not clear a pre-registered gate.
+
+**Per the one-shot clause: no v3.** The candidate closes with an honest
+epitaph: robust BOCPD dominated the incumbent on the primary cohort's
+point estimates and held its false-alarm budget where CUSUM exploded, but
+stress episodes are too rare for daily-close data to certify the speed
+gain at journal-grade significance. Re-opening requires a categorically
+different setting (e.g. the news-factor stream as the alarm input once
+its history matures — listed in conditional_candidates.md), not a re-roll
+of this design.
+
+Scoreboard: 2 promoted / 6 fast-failed across 8 pre-registered tests.
+
 ## Revision 3: system prompt — shipped
 
 Regime = validated historical lens (AUROC 0.85–0.91 cited) with explicit
