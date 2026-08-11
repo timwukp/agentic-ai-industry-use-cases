@@ -376,7 +376,7 @@ def test_cusum_detects_and_stays_quiet():
     assert crossings <= 2, f"{crossings} CUSUM false alarms on noise"
 
 
-# ---------------- BC frequency-domain causality (protocol_bc_freq.md) ----------------
+# ------- BC frequency-domain causality (protocol_bc_freq.md + _v2.md) -------
 
 
 def test_bc_flags_planted_lowfreq_causality_in_correct_band():
@@ -408,7 +408,44 @@ def test_bc_allfreq_causality_flags_everywhere():
     y = np.zeros(n)
     y[1:] = 0.5 * x[:-1] + rng.normal(0, 1, n - 1)
     for w in (0.03, 0.3, 1.5, 2.8):
-        assert bc_freq_pvalue(y, x, omega=w, p=5) < 0.01, f"missed at omega={w}"
+        assert bc_freq_pvalue(y, x, omega=w) < 0.01, f"missed at omega={w}"
+
+
+def test_bc_band_scan_distinguishes_bands_at_fixed_lag():
+    """v1's fatal defect as a permanent regression test: BIC chose lag 1,
+    at which every band returned the SAME p-value. The production path
+    (band_scan, fixed p=22 per protocol_bc_freq_v2.md) must produce
+    band-distinguishable p-values, with the planted low-frequency band
+    strictly the most significant."""
+    from studylib.bcfreq import band_scan
+
+    rng = np.random.default_rng(7)
+    n = 4000
+    x = rng.normal(0, 1, n)
+    ma = np.convolve(x, np.ones(20) / 20, mode="full")[:n]
+    y = np.zeros(n)
+    y[1:] = 1.5 * ma[:-1] + rng.normal(0, 0.5, n - 1)
+    idx = pd.bdate_range("2010-01-01", periods=n)
+    panel = pd.DataFrame({"x": x, "y": y}, index=idx)
+
+    scan = band_scan(panel, [("x", "y")]).set_index("band")["p"]
+    assert scan.nunique() > 1, "all bands identical — lag collapse regressed"
+    low = min(scan["quarterly_1y"], scan["monthly_quarterly"])
+    assert low < 0.01
+    assert scan["sub_weekly"] > 0.05
+    assert low < scan["sub_weekly"]
+
+
+def test_bc_band_scan_raises_on_missing_column():
+    """v1's second defect: pairs absent from the cohort panel were silently
+    dropped, voiding the positive control. Must now raise."""
+    from studylib.bcfreq import band_scan
+
+    rng = np.random.default_rng(7)
+    idx = pd.bdate_range("2015-01-01", periods=300)
+    panel = pd.DataFrame({"a": rng.normal(0, 1, 300)}, index=idx)
+    with pytest.raises(KeyError):
+        band_scan(panel, [("a", "missing_col")])
 
 
 def test_bc_silent_on_pure_noise_grid():

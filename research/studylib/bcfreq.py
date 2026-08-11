@@ -16,21 +16,18 @@ import pandas as pd
 from scipy import stats
 
 
-def bc_freq_pvalue(
-    y: np.ndarray, x: np.ndarray, omega: float, p: int | None = None, p_max: int = 22
-) -> float:
+def bc_freq_pvalue(y: np.ndarray, x: np.ndarray, omega: float, p: int = 22) -> float:
     """P-value of BC's F-test for 'x does not cause y at frequency omega'.
 
-    y, x: stationary series (returns/diffs). p: VAR lag order (BIC-chosen
-    over 1..p_max when None). omega in (0, pi).
+    y, x: stationary series (returns/diffs). p: VAR lag order, FIXED at 22
+    per protocol_bc_freq_v2.md — v1's BIC rule chose p=1, at which the two
+    restriction rows collapse and every band returns the same p-value.
+    omega in (0, pi).
     """
     y = np.asarray(y, float)
     x = np.asarray(x, float)
     n = min(len(y), len(x))
     y, x = y[:n], x[:n]
-
-    if p is None:
-        p = _bic_lag(y, x, p_max)
 
     # unrestricted y-equation: y_t on [1, y_{t-1..t-p}, x_{t-1..t-p}]
     T = n - p
@@ -71,28 +68,6 @@ def bc_freq_pvalue(
     return float(stats.f.sf(F, q, dof))
 
 
-def _bic_lag(y: np.ndarray, x: np.ndarray, p_max: int) -> int:
-    n = len(y)
-    best_p, best_bic = 1, np.inf
-    for p in range(1, p_max + 1):
-        T = n - p
-        Y = y[p:]
-        cols = [np.ones(T)]
-        for k in range(1, p + 1):
-            cols.append(y[p - k : n - k])
-        for k in range(1, p + 1):
-            cols.append(x[p - k : n - k])
-        X = np.column_stack(cols)
-        beta, *_ = np.linalg.lstsq(X, Y, rcond=None)
-        ssr = float(np.sum((Y - X @ beta) ** 2))
-        if ssr <= 0:
-            continue
-        bic = T * np.log(ssr / T) + X.shape[1] * np.log(T)
-        if bic < best_bic:
-            best_bic, best_p = bic, p
-    return best_p
-
-
 # Pre-registered bands (radians/day), 3 grid points each — protocol §Method.
 BANDS = {
     "over_1y": (0.005, 0.015, 0.025),
@@ -103,14 +78,19 @@ BANDS = {
 }
 
 
-def band_scan(panel: pd.DataFrame, pairs: list[tuple[str, str]]) -> pd.DataFrame:
+def band_scan(
+    panel: pd.DataFrame, pairs: list[tuple[str, str]], p_lag: int = 22
+) -> pd.DataFrame:
     """BC p-value per (pair, band): band p = max over its grid points
-    (conservative — the whole band must show causality)."""
+    (conservative — the whole band must show causality). Missing columns
+    raise (v1 silently dropped the positive control); lag fixed at 22 per
+    protocol_bc_freq_v2.md."""
     rows = []
     for src, tgt in pairs:
+        if src not in panel.columns or tgt not in panel.columns:
+            raise KeyError(f"pair ({src}, {tgt}) not in panel — wrong cohort")
         y = panel[tgt].to_numpy()
         x = panel[src].to_numpy()
-        p_lag = _bic_lag(y, x, 22)
         for band, omegas in BANDS.items():
             ps = [bc_freq_pvalue(y, x, w, p=p_lag) for w in omegas]
             ps = [p for p in ps if not np.isnan(p)]

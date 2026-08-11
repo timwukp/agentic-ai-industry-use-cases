@@ -1,0 +1,543 @@
+{
+  "full_sample": [
+    {
+      "source": "DCOILWTICO_ret",
+      "target": "DGS10_diff",
+      "band": "over_1y",
+      "p": 0.22558941732779775,
+      "var_lag": 22,
+      "cohort": "C40",
+      "q": 0.501309816283995,
+      "significant": false
+    },
+    {
+      "source": "DCOILWTICO_ret",
+      "target": "DGS10_diff",
+      "band": "quarterly_1y",
+      "p": 0.22380047935464478,
+      "var_lag": 22,
+      "cohort": "C40",
+      "q": 0.501309816283995,
+      "significant": false
+    },
+    {
+      "source": "DCOILWTICO_ret",
+      "target": "DGS10_diff",
+      "band": "monthly_quarterly",
+      "p": 0.99436824734378,
+      "var_lag": 22,
+      "cohort": "C40",
+      "q": 0.99436824734378,
+      "significant": false
+    },
+    {
+      "source": "DCOILWTICO_ret",
+      "target": "DGS10_diff",
+      "band": "weekly_monthly",
+      "p": 0.6506029339458208,
+      "var_lag": 22,
+      "cohort": "C40",
+      "q": 0.7977998594621437,
+      "significant": false
+    },
+    {
+      "source": "DCOILWTICO_ret",
+      "target": "DGS10_diff",
+      "band": "sub_weekly",
+      "p": 0.648330855213792,
+      "var_lag": 22,
+      "cohort": "C40",
+      "q": 0.7977998594621437,
+      "significant": false
+    },
+    {
+      "source": "DGS10_diff",
+      "target": "DCOILWTICO_ret",
+      "band": "over_1y",
+      "p": 0.15543246893348933,
+      "var_lag": 22,
+      "cohort": "C40",
+      "q": 0.501309816283995,
+      "significant": false
+    },
+    {
+      "source": "DGS10_diff",
+      "target": "DCOILWTICO_ret",
+      "band": "quarterly_1y",
+      "p": 0.14509860837767005,
+      "var_lag": 22,
+      "cohort": "C40",
+      "q": 0.501309816283995,
+      "significant": false
+    },
+    {
+      "source": "DGS10_diff",
+      "target": "DCOILWTICO_ret",
+      "band": "monthly_quarterly",
+      "p": 0.04913788790111811,
+      "var_lag": 22,
+      "cohort": "C40",
+      "q": 0.501309816283995,
+      "significant": false
+    },
+    {
+      "source": "DGS10_diff",
+      "target": "DCOILWTICO_ret",
+      "band": "weekly_monthly",
+      "p": 0.9520125215897005,
+      "var_lag": 22,
+      "cohort": "C40",
+      "q": 0.99436824734378,
+      "significant": false
+    },
+    {
+      "source": "DGS10_diff",
+      "target": "DCOILWTICO_ret",
+      "band": "sub_weekly",
+      "p": 0.6781298805428222,
+      "var_lag": 22,
+      "cohort": "C40",
+      "q": 0.7977998594621437,
+      "significant": false
+    },
+    {
+      "source": "VIXCLS_diff",
+      "target": "NASDAQCOM_ret",
+      "band": "over_1y",
+      "p": 0.6697800748302424,
+      "var_lag": 22,
+      "cohort": "C36",
+      "q": 0.7977998594621437,
+      "significant": false
+    },
+    {
+      "source": "VIXCLS_diff",
+      "target": "NASDAQCOM_ret",
+      "band": "quarterly_1y",
+      "p": 0.6680014446231577,
+      "var_lag": 22,
+      "cohort": "C36",
+      "q": 0.7977998594621437,
+      "significant": false
+    },
+    {
+      "source": "VIXCLS_diff",
+      "target": "NASDAQCOM_ret",
+      "band": "monthly_quarterly",
+      "p": 0.4949023779232513,
+      "var_lag": 22,
+      "cohort": "C36",
+      "q": 0.7977998594621437,
+      "significant": false
+    },
+    {
+      "source": "VIXCLS_diff",
+      "target": "NASDAQCOM_ret",
+      "band": "weekly_monthly",
+      "p": 0.3409291158948901,
+      "var_lag": 22,
+      "cohort": "C36",
+      "q": 0.6818582317897802,
+      "significant": false
+    },
+    {
+      "source": "VIXCLS_diff",
+      "target": "NASDAQCOM_ret",
+      "band": "sub_weekly",
+      "p": 0.22429879164797728,
+      "var_lag": 22,
+      "cohort": "C36",
+      "q": 0.501309816283995,
+      "significant": false
+    },
+    {
+      "source": "NASDAQCOM_ret",
+      "target": "VIXCLS_diff",
+      "band": "over_1y",
+      "p": 0.06298845390144756,
+      "var_lag": 22,
+      "cohort": "C36",
+      "q": 0.501309816283995,
+      "significant": false
+    },
+    {
+      "source": "NASDAQCOM_ret",
+      "target": "VIXCLS_diff",
+      "band": "quarterly_1y",
+      "p": 0.07920257370614078,
+      "var_lag": 22,
+      "cohort": "C36",
+      "q": 0.501309816283995,
+      "significant": false
+    },
+    {
+      "source": "NASDAQCOM_ret",
+      "target": "VIXCLS_diff",
+      "band": "monthly_quarterly",
+      "p": 0.5592762029139035,
+      "var_lag": 22,
+      "cohort": "C36",
+      "q": 0.7977998594621437,
+      "significant": false
+    },
+    {
+      "source": "NASDAQCOM_ret",
+      "target": "VIXCLS_diff",
+      "band": "weekly_monthly",
+      "p": 0.10183132904046306,
+      "var_lag": 22,
+      "cohort": "C36",
+      "q": 0.501309816283995,
+      "significant": false
+    },
+    {
+      "source": "NASDAQCOM_ret",
+      "target": "VIXCLS_diff",
+      "band": "sub_weekly",
+      "p": 0.9775608923256309,
+      "var_lag": 22,
+      "cohort": "C36",
+      "q": 0.99436824734378,
+      "significant": false
+    }
+  ],
+  "eras_c40": {
+    "volcker": [
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "over_1y",
+        "p": 0.8533290665468004,
+        "var_lag": 22,
+        "q": 0.9521778330938501
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "quarterly_1y",
+        "p": 0.8569600497844649,
+        "var_lag": 22,
+        "q": 0.9521778330938501
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "monthly_quarterly",
+        "p": 0.8413178473046856,
+        "var_lag": 22,
+        "q": 0.9521778330938501
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "weekly_monthly",
+        "p": 0.9949187727834916,
+        "var_lag": 22,
+        "q": 0.9949187727834916
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "sub_weekly",
+        "p": 0.6044289923937622,
+        "var_lag": 22,
+        "q": 0.9521778330938501
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "over_1y",
+        "p": 0.19047090658429222,
+        "var_lag": 22,
+        "q": 0.9521778330938501
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "quarterly_1y",
+        "p": 0.18763987853090258,
+        "var_lag": 22,
+        "q": 0.9521778330938501
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "monthly_quarterly",
+        "p": 0.8027338563807382,
+        "var_lag": 22,
+        "q": 0.9521778330938501
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "weekly_monthly",
+        "p": 0.5479250933587765,
+        "var_lag": 22,
+        "q": 0.9521778330938501
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "sub_weekly",
+        "p": 0.48538745650258147,
+        "var_lag": 22,
+        "q": 0.9521778330938501
+      }
+    ],
+    "moderation": [
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "over_1y",
+        "p": 0.9772408280103635,
+        "var_lag": 22,
+        "q": 0.9772408280103635
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "quarterly_1y",
+        "p": 0.9741234381491676,
+        "var_lag": 22,
+        "q": 0.9772408280103635
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "monthly_quarterly",
+        "p": 0.8766981008211308,
+        "var_lag": 22,
+        "q": 0.9772408280103635
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "weekly_monthly",
+        "p": 0.669304010711246,
+        "var_lag": 22,
+        "q": 0.9772408280103635
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "sub_weekly",
+        "p": 0.872005713979603,
+        "var_lag": 22,
+        "q": 0.9772408280103635
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "over_1y",
+        "p": 0.31630765344097395,
+        "var_lag": 22,
+        "q": 0.9772408280103635
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "quarterly_1y",
+        "p": 0.3109973135401223,
+        "var_lag": 22,
+        "q": 0.9772408280103635
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "monthly_quarterly",
+        "p": 0.47287570739107726,
+        "var_lag": 22,
+        "q": 0.9772408280103635
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "weekly_monthly",
+        "p": 0.7963533984862909,
+        "var_lag": 22,
+        "q": 0.9772408280103635
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "sub_weekly",
+        "p": 0.8343099770455902,
+        "var_lag": 22,
+        "q": 0.9772408280103635
+      }
+    ],
+    "zirp": [
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "over_1y",
+        "p": 0.14816306249721692,
+        "var_lag": 22,
+        "q": 0.4499209965087092
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "quarterly_1y",
+        "p": 0.22332696526528403,
+        "var_lag": 22,
+        "q": 0.4499209965087092
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "monthly_quarterly",
+        "p": 0.8711976006968533,
+        "var_lag": 22,
+        "q": 0.8711976006968533
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "weekly_monthly",
+        "p": 0.6468204798540095,
+        "var_lag": 22,
+        "q": 0.7186894220600105
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "sub_weekly",
+        "p": 0.2699525979052255,
+        "var_lag": 22,
+        "q": 0.4499209965087092
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "over_1y",
+        "p": 0.09258386482582083,
+        "var_lag": 22,
+        "q": 0.4499209965087092
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "quarterly_1y",
+        "p": 0.0971384375779866,
+        "var_lag": 22,
+        "q": 0.4499209965087092
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "monthly_quarterly",
+        "p": 0.2685373773327369,
+        "var_lag": 22,
+        "q": 0.4499209965087092
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "weekly_monthly",
+        "p": 0.5204170865388367,
+        "var_lag": 22,
+        "q": 0.6505213581735458
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "sub_weekly",
+        "p": 0.4172835548166076,
+        "var_lag": 22,
+        "q": 0.5961193640237251
+      }
+    ],
+    "covid_inflation": [
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "over_1y",
+        "p": 0.2917910284317124,
+        "var_lag": 22,
+        "q": 0.4591531795165148
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "quarterly_1y",
+        "p": 0.28738262322440905,
+        "var_lag": 22,
+        "q": 0.4591531795165148
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "monthly_quarterly",
+        "p": 0.7935815448415933,
+        "var_lag": 22,
+        "q": 0.8817572720462148
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "weekly_monthly",
+        "p": 0.7801769230662569,
+        "var_lag": 22,
+        "q": 0.8817572720462148
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "sub_weekly",
+        "p": 0.8923275244699399,
+        "var_lag": 22,
+        "q": 0.8923275244699399
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "over_1y",
+        "p": 0.12230214578916061,
+        "var_lag": 22,
+        "q": 0.4591531795165148
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "quarterly_1y",
+        "p": 0.18981941958842524,
+        "var_lag": 22,
+        "q": 0.4591531795165148
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "monthly_quarterly",
+        "p": 0.21208737105785128,
+        "var_lag": 22,
+        "q": 0.4591531795165148
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "weekly_monthly",
+        "p": 0.3214072256615604,
+        "var_lag": 22,
+        "q": 0.4591531795165148
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "sub_weekly",
+        "p": 0.28476207192721653,
+        "var_lag": 22,
+        "q": 0.4591531795165148
+      }
+    ]
+  },
+  "gate": {
+    "c1_recovery": false,
+    "c1_bands": [],
+    "c2_specificity": true,
+    "c3_positive_control": false,
+    "c4_direction_control": null,
+    "c5_era_stability": null,
+    "promote": false
+  }
+}
