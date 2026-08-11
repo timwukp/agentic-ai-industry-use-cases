@@ -5,15 +5,23 @@ Invokes the harness data-plane, streams the run to stdout (lands in
 CloudWatch via CodeBuild logs), and exits non-zero if the stream errors or
 produces no text — a failed run must look failed.
 """
+
 import os
 import secrets
 import sys
 import time
 
 import boto3
+from botocore.config import Config
 
 HARNESS_ARN = os.environ["HARNESS_ARN"]
 REGION = os.environ.get("AWS_REGION", "us-east-1")
+
+# The agent goes silent for minutes during research (browser/arXiv work), so
+# the stream read timeout must exceed the harness timeoutSeconds (3600) or the
+# default 60s kills a healthy run mid-phase (observed 2026-08-11). Retries
+# MUST stay off: a retry would re-invoke the whole session (double spend).
+BOTO_CONFIG = Config(connect_timeout=15, read_timeout=3900, retries={"max_attempts": 0})
 
 PROMPT = (
     "Run one full scout cycle now, following your system prompt exactly: "
@@ -25,7 +33,9 @@ PROMPT = (
 
 
 def main() -> int:
-    client = boto3.client("bedrock-agentcore", region_name=REGION)  # DATA plane
+    client = boto3.client(
+        "bedrock-agentcore", region_name=REGION, config=BOTO_CONFIG
+    )  # DATA plane
     # runtimeSessionId must be >= 33 chars (API constraint)
     session_id = f"scout-{time.strftime('%Y%m%d')}-{secrets.token_hex(16)}"
     print(f"MARKER run-start session={session_id}")
