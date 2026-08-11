@@ -57,6 +57,21 @@ Methods that failed only because of the system's CURRENT representation
 conditions in [`conditional_candidates.md`](conditional_candidates.md) —
 constraints are design choices, not laws.
 
+## Ongoing: the autonomous theory scout
+
+Since 2026-08-11 this pipeline has a standing feeder: a monthly AgentCore
+Harness (*PRISM Theory Scout*, see
+[deploy/theory-scout/README.md](../deploy/theory-scout/README.md)) runs the
+[theory-to-production skill](../skills/theory-to-production/SKILL.md)
+Phases 0–2 — shelf-read first (this directory IS the shelf), survey against
+the current constraint fingerprint, one candidate max, synthetic
+positive-control power check before any real-data spend. Its mandate stops
+at a `DRAFT_protocol_*.md` PR; humans freeze, test, and promote. Candidates
+it rejects *before* a protocol freeze (e.g. Smooth Local Projections,
+2026-08-11: best power 28.7% vs the 80% gate) currently live only in the
+scout's run logs, not on this shelf — treat a scout PR's "searched and
+rejected" section as part of the record when reviewing.
+
 ## File map
 
 - `protocol*.md` — frozen pre-registrations (one per study/test)

@@ -32,9 +32,9 @@ CloudFront，Lambda 最小權限 IAM，數據存儲 KMS 加密，私有 S3 + Clo
 | `tools/<industry>/` | Gateway Lambda 工具處理器 + MCP 工具 schema |
 | `tools/shared/toolkit/` | 共享 dispatch、DynamoDB 輔助、確定性行情模擬器 |
 | `kb/<industry>/seed-docs/` | 知識庫種子文檔（政策、產品指南） |
-| `skills/` | AgentCore Skills（git 源；合併後接線） |
+| `skills/` | AgentCore Skills（git 源讀 main；`theory-to-production` 由自主理論偵察 agent 實時載入） |
 | `infra/cdk/` | 11 個 CDK stack：SharedSecurity、Auth、FinanceData、FinanceTools、Api、Web，以及非金融行業各一個 `IndustryStack`（Healthcare、Insurance、Retail、Manufacturing、Realestate） |
-| `deploy/` | 編排器 + 冪等腳本（gateway、memory、seed、render、smoke） |
+| `deploy/` | 編排器 + 冪等腳本（gateway、memory、seed、render、smoke）；`deploy/theory-scout/` 為月度研究偵察驅動器 + 排程（[文檔](deploy/theory-scout/README.md)） |
 | `web/` | 統一響應式 PWA（Vite + React 19 + Tailwind + Amplify Auth） |
 | `tests/` | 單元測試（pytest + moto）、基礎設施（CDK assertions）、E2E（Playwright） |
 | `research/` | 預註冊驗證研究 + 10 個預註冊方法測試（10–50 年真實數據）：凍結協議、自校準儀器、結果與判定（[記分板](research/findings_addendum.md)） |
@@ -243,6 +243,23 @@ VaR 校準全綠（Kupiec/Christoffersen）；崩盤「擇時」類問題以脆�
 [research/findings_addendum.md](research/findings_addendum.md)，因為沒有記錄的失敗一定會
 被重複。僅因系統當前表示規模太小而失敗的方法（如 p=5 下的協方差收縮）帶著重啟條件
 歸檔於 [research/conditional_candidates.md](research/conditional_candidates.md)。
+
+### 自主理論偵察（`deploy/theory-scout/` + `skills/theory-to-production/`）
+
+上述研究管線不再依賴人記得去跑。一個排程化的 **AgentCore Harness**（*PRISM Theory
+Scout*）每月（1 日 02:00 UTC）執行
+[theory-to-production skill](skills/theory-to-production/SKILL.md) 的 Phase 0–2：先讀
+main 上的記分板與條件候選清單，再以 PRISM **當前**約束指紋為準調研新數學理論，每次
+最多一個候選——起草協議並在**花任何真實數據成本之前**，用合成模擬跑完預註冊的正控制
+功效檢查。
+
+人機環的關卡就是 PR 本身：scout 的授權硬性止步於分支上的 `DRAFT_protocol_*.md`（不打
+tag、不合併、不碰生產路徑）；人來審查、凍結+打 tag、安排真實數據測試。找不到值得起草
+的候選就**不開 PR**——誠實空手的週期是有效結果，不是故障。首次完整驗證週期
+（2026-08-11）恰好演示了這一點：scout 找到文獻明星候選（Smooth Local Projections，
+*ReStat* 2019）且缺陷精確匹配，然後被它自己的功效檢查否決（最佳 28.7% vs 80% 門檻）——
+零分支、零 commit，還給人送上一條生產代碼校準線索。交付鏈：EventBridge Scheduler →
+CodeBuild（源 = 本 repo main，跑的永遠是審過的驅動器）→ `InvokeHarness`。
 
 ### Live 行情初始設置（一次性）
 
