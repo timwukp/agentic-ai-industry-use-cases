@@ -1,0 +1,78 @@
+{
+  "protocol": "bocpd_v2",
+  "fa_budget_per_250bd": 2.0,
+  "per_cohort": {
+    "C10": {
+      "incumbent": {
+        "detected": 0,
+        "episodes": 3,
+        "median_lag": null,
+        "fa_per_250bd": 0.0,
+        "fa_within_budget": true
+      },
+      "bocpd": {
+        "detected": 0,
+        "episodes": 3,
+        "median_lag": null,
+        "fa_per_250bd": 0.512,
+        "fa_within_budget": true
+      },
+      "cusum": {
+        "detected": 3,
+        "episodes": 3,
+        "median_lag": 1.0,
+        "fa_per_250bd": 11.527,
+        "fa_within_budget": false
+      }
+    },
+    "C20": {
+      "incumbent": {
+        "detected": 1,
+        "episodes": 6,
+        "median_lag": 20.0,
+        "fa_per_250bd": 1.056,
+        "fa_within_budget": true
+      },
+      "bocpd": {
+        "detected": 2,
+        "episodes": 6,
+        "median_lag": 8.5,
+        "fa_per_250bd": 1.056,
+        "fa_within_budget": true
+      },
+      "cusum": {
+        "detected": 4,
+        "episodes": 6,
+        "median_lag": 9.5,
+        "fa_per_250bd": 12.089,
+        "fa_within_budget": false
+      }
+    },
+    "C36": {
+      "incumbent": {
+        "detected": 4,
+        "episodes": 10,
+        "median_lag": 52.5,
+        "fa_per_250bd": 1.341,
+        "fa_within_budget": true
+      },
+      "bocpd": {
+        "detected": 5,
+        "episodes": 10,
+        "median_lag": 8.0,
+        "fa_per_250bd": 1.118,
+        "fa_within_budget": true
+      },
+      "cusum": {
+        "detected": 8,
+        "episodes": 10,
+        "median_lag": 5.0,
+        "fa_per_250bd": 11.79,
+        "fa_within_budget": false
+      }
+    }
+  },
+  "pooled_episodes": 19,
+  "pooled_mean_lag_gain_bd": 17.32,
+  "sign_permutation_p": 0.17188
+}

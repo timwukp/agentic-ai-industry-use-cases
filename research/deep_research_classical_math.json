@@ -1,0 +1,104 @@
+{
+  "question": "Research question: Which CLASSICAL applied-mathematics theories (established, pre-2010 mathematical maturity) have documented or plausible value for financial time-series analysis at LOW dimensionality and DAILY frequency — that we have NOT yet tested — and could improve our system?\n\nCRITICAL CONTEXT — our system and its hard constraints (bake these into every angle):\n- System: PRISM — Gaussian-HMM market regimes (3 states, p=4-5 variables: equity returns, yield-curve slope, VIX change, oil returns), Fisher-combined transfer-entropy+Granger causality under BH-FDR, Bayesian local projections for impact functions, EVT/GPD tails with EWMA(0.94) vol-filtering (calibration green), walk-forward validation + Hansen SPA against data snooping. Plus an LLM-scored 13-factor geopolitical news pipeline (daily, only ~2 months of history by Oct 2026).\n- Scale: DELIBERATELY SMALL — 4-5 market variables, 13 news factors, daily closes only (NO intraday data), 10-50 years of history. p/n < 0.01 everywhere.\n- LESSON ALREADY LEARNED (do not re-recommend): we pre-registered-tested and REJECTED at our scale: QIS/Ledoit-Wolf covariance shrinkage (no benefit at p=5), RFSV rough volatility (needs intraday data; daily proxy loses to EWMA), path-signature/Lévy-area features (degrades HMM), regime-conditional EVT (regime lag compounds). PASSED: Fisher p-value combination (1925), EWMA vol-filtering (1994). Pattern: classical low-dimensional methods matched to a diagnosed deficiency win; high-dimensional literature stars fail to transfer.\n- Known remaining deficiencies to match candidates against: (a) H1b regime detection lags stress onset by >10 business days (the biggest open wound); (b) impact-function credible bands are honest but too wide for point claims; (c) causality scan misses the literature's oil→yields edge even with Fisher (possibly a frequency/aggregation issue — monthly probe was closer); (d) news-factor pipeline unvalidated (test window opens ~late Oct).\n\nSub-questions/angles to cover:\n1. Regime/turning-point detection at daily frequency with faster reaction than HMM smoothing: classical sequential change-point detection (CUSUM, Shiryaev-Roberts, Page's test), Bayesian online change-point detection (Adams-MacKay 2007), Markov-switching alternatives — documented finance evidence for stress detection LAG (not just accuracy)?\n2. State-space/filtering classics beyond HMM: Kalman variants (unscented, particle filters), Hamilton regime-switching with time-varying transition probabilities, hidden semi-Markov models (explicit duration) — evidence these reduce detection lag or improve small-p regime inference?\n3. Frequency-domain and multi-scale classics: spectral analysis, wavelet decomposition (Daubechies), empirical mode decomposition — documented value for detecting lead-lag at MIXED frequencies (our oil→yields miss might be a frequency-mismatch problem: daily noise drowning monthly-scale relations)?\n4. Small-sample causal/dependence classics we haven't used: copulas (tail dependence coefficients vs our linear-ish measures), cross-quantilograms, local Gaussian correlation, distance correlation (Székely) — evidence they detect dependence structures our TE+Granger scan misses, at daily frequency, without huge data requirements?\n5. Decision-theoretic and robustness classics: Bayesian model averaging over regimes/models, robust statistics (Huber), shrinkage of the IMPACT-FUNCTION coefficients specifically (not covariance), conformal prediction for calibrated intervals — evidence any of these narrows honest uncertainty bands or improves calibration at our scale?\n6. Practitioner reality check: for each candidate, what does out-of-sample/data-snooping-aware evidence say (our bar: pre-registered walk-forward + SPA)? Which are academic fashion vs which have survived replication?\n\nDeliverable: cited report ranking candidates by (a) mathematical maturity, (b) documented finance evidence AT LOW DIMENSION + DAILY FREQUENCY, (c) precise match to one of our four diagnosed deficiencies (a)-(d) above, (d) testability with daily-close data we actually have. Explicitly flag which deficiency each candidate targets. A shortlist of at most 3 \"worth pre-registered testing next\", each with the specific test design sketch. User reads Chinese; report in English fine.",
+  "summary": "Three classical, pre-2010-mature theory families emerge as untested candidates that precisely match PRISM's diagnosed deficiencies. For deficiency (a) — the >10-business-day regime-detection lag — sequential quickest-detection theory (CUSUM 1954, Shiryaev-Roberts 1961-66, Shiryaev 1963; exact optimality proofs by Moustakides 1986) and Bayesian online change-point detection (Adams-MacKay 2007) are mathematically mature methods whose objective function IS detection-delay minimization under a false-alarm constraint, unlike HMM smoothing; complementarily, the HMM's geometric state-duration is a documented misspecification at daily frequency, fixable via hidden semi-Markov models (Bulla & Bulla 2006), time-varying transition probabilities (Diebold-Lee-Weinbach 1994), or adaptive exponential-forgetting estimation (Nystrup et al. 2016, which reproduced the long-memory stylized fact with a plain 2-state Gaussian HMM). For deficiency (c) — the missed oil→yields edge — Breitung-Candelon (2006) frequency-domain Granger causality decomposes causal links by frequency band and empirically demonstrated frequency-localized lead-lag, directly matching the diagnosis that a monthly-scale relation is drowned in daily noise. The recommended pre-registered shortlist: (1) a CUSUM/SR or robust-BOCPD fast-alarm layer measured on detection lag in days at production-calibrated ARL, (2) Breitung-Candelon band-decomposed causality re-scan of the oil→yields edge, (3) an HSMM/adaptive-HMM duration-structure fix evaluated head-to-head against the current Gaussian HMM under walk-forward + SPA. No verified candidate emerged for deficiencies (b) or (d).",
+  "findings": [
+    {
+      "claim": "Sequential quickest-detection theory (CUSUM, Shiryaev-Roberts, Shiryaev procedures) clears PRISM's pre-2010 maturity bar and its objective function is exactly PRISM's deficiency (a): the field is defined as real-time detection of abrupt changes as quickly as possible after they occur, i.e., detection-DELAY minimization subject to a false-alarm constraint, resting on rigorous Markov optimal-stopping foundations (not ad hoc heuristics) with both Bayesian and non-Bayesian formulations unified by 2008-2010.",
+      "confidence": "high",
+      "sources": [
+        "https://www.tandfonline.com/doi/full/10.1080/07474941003740997",
+        "https://www.cambridge.org/core/books/quickest-detection/4A7686F64138F460CC10148FC58E52F8"
+      ],
+      "evidence": "Tartakovsky & Moustakides (2010, Sequential Analysis) names CUSUM, Shiryaev-Roberts, and Shiryaev as the 'main competitors' analyzed asymptotically and numerically; Poor & Hadjiliadis (CUP 2008/2010) defines quickest detection as 'real-time detection of such changes as quickly as possible after they occur' and provides the unified optimal-stopping treatment (Moustakides 1986 proved CUSUM exactly optimal under Lorden's criterion). HMM smoothing conditions on future data; these methods are the classical remedy for detection lag.",
+      "vote": "3-0 (three merged claims, all unanimous)"
+    },
+    {
+      "claim": "The documented ~1-day detection delay of SR/CUSUM on real daily-close stock data was bought at an unusable false-alarm calibration: thresholds were set so average run length to false alarm was ~7 daily samples (about one false alarm per trading week). Any PRISM test must therefore measure detection lag AT a production-grade ARL (hundreds-to-thousands of days), not headline speed.",
+      "confidence": "high",
+      "sources": [
+        "https://arxiv.org/abs/1509.01570"
+      ],
+      "evidence": "Pepelyshev & Polunchenko state verbatim: 'setting A ≈ 60 and h ≈ 0.3 ensures that the ARL to false alarm of either procedure is approximately 7 samples, which is roughly a week'; the paper's own multi-cyclic framing accepts 'a storm of false alarms' in exchange for maximal speed. A companion claim asserting the ~1-day delay as a directly transferable result was REFUTED 0-3 in verification — the speed-vs-false-alarm tradeoff is the load-bearing fact.",
+      "vote": "3-0 (companion overreach claim refuted 0-3)"
+    },
+    {
+      "claim": "Bayesian Online Changepoint Detection (Adams-MacKay 2007) performs online, one-observation-at-a-time exact inference of the most recent changepoint via a recursively updated run-length posterior — delivering calibrated probabilistic regime-change signals rather than point alarms, in contrast to retrospective Bayesian segmentation and to smoothed HMM inference. This is the strongest classical candidate for reducing PRISM's regime-detection lag while preserving its Bayesian character.",
+      "confidence": "high",
+      "sources": [
+        "https://arxiv.org/abs/0710.3742"
+      ],
+      "evidence": "Abstract verbatim: 'we derive an online algorithm for exact inference of the most recent changepoint' computing 'the probability distribution of the length of the current run... using a simple message-passing algorithm.' Canonical reference (~900 citations). Verifier caveats: exactness requires conjugate models with known hyperparameters; heavy-tailed daily returns and hazard misspecification inflate false alarms, so a Student-t observation model (robust BOCPD, Knoblauch et al. 2018) should be baked into any PRISM test.",
+      "vote": "3-0 and 2-1 (two merged claims)"
+    },
+    {
+      "claim": "Direct finance evidence for BOCPD at exactly PRISM's frequency exists but is weak: on S&P 500 and CSI 300 daily log returns (2019-2025), BOCPD detected regime changepoints aligned with COVID-19 and monetary-policy shifts and 'significantly outperformed' GLR and Kolmogorov-Smirnov baselines — but the comparison set excludes HMM smoothing and no detection-lag-in-days metric is reported, which is the specific quantity deficiency (a) needs.",
+      "confidence": "medium",
+      "sources": [
+        "https://dl.acm.org/doi/full/10.1145/3795154.3795291"
+      ],
+      "evidence": "Abstract quotes verified verbatim via Crossref/Semantic Scholar, but the source is a single-author, zero-citation, low-tier ACM ICPS conference paper (ICCSMT 2025); full text paywalled, so whether the GLR/KS comparison ran on financial or synthetic data is unverified; retrospective alignment with COVID-2020 in daily S&P returns is a low bar. Corroborates plausibility, does not substitute for PRISM's own pre-registered lag test.",
+      "vote": "3-0 and 2-1 (two merged claims; venue quality drives the medium rating)"
+    },
+    {
+      "claim": "PRISM's constant-parameter Gaussian HMM has a DOCUMENTED duration-structure misspecification at daily frequency: standard HMMs cannot reproduce the slow decay of squared-return autocorrelation (the geometric/memoryless sojourn is the culprit), and rolling-window estimates on 21,851 daily S&P 500 observations show parameters varying far beyond bootstrap 95% bounds, confirming non-geometric sojourn times. Classical fixes with finance evidence: hidden semi-Markov models with negative-binomial sojourn (Bulla & Bulla 2006, daily data) and duration-dependent Markov switching (Maheu-McCurdy 2000, which identified all major downturns in 160+ years of monthly data — though at monthly frequency with no lag claim).",
+      "confidence": "high",
+      "sources": [
+        "https://doi.org/10.1016/j.csda.2006.07.021",
+        "https://doi.org/10.1002/for.2447",
+        "https://doi.org/10.1080/07350015.2000.10524851"
+      ],
+      "evidence": "Bulla & Bulla abstract verbatim: HMMs' 'inability... to reproduce... the slow decay in the autocorrelation function of the squared returns,' which 'can be described much better by means of hidden semi-Markov models,' with negative-binomial sojourn 'a more appropriate choice than the geometric.' Nystrup et al. verbatim: 'the sojourn time distribution is not memoryless.' Maheu-McCurdy (JBES, 282 cites): duration-dependent switching in mean and variance sorts returns into bull/bear states. Verifier qualification: t-distributed components also increase persistence (Bulla 2011), so HSMM is not the unique fix.",
+      "vote": "3-0 (six merged claims, all unanimous)"
+    },
+    {
+      "claim": "Time-varying transition probabilities (Diebold-Lee-Weinbach 1994) are a classical, exactly-nesting generalization of Hamilton's model — transition probabilities evolve as logistic functions of lagged observable covariates, collapsing to Hamilton (1990) when extra coefficients are zero — and in a T=100 small-sample simulation TVTP halved mean-squared state-extraction error vs the fixed-probability model (0.13 vs 0.27; infeasible lower bound 0.11). Caveat: the chapter itself contains NO real financial application (exchange-rate application deferred), and the simulation is a single-replication proof-of-concept, so finance evidence must come from successor literature (Filardo 1994).",
+      "confidence": "high",
+      "sources": [
+        "https://doi.org/10.1093/oso/9780198773917.003.0010"
+      ],
+      "evidence": "Verified against the chapter PDF: 'it nevertheless incorporates a potentially severely binding constraint, the constancy of state transition probabilities'; Table 7.1 confirms MSE 0.13 vs 0.27 at T=100; Section 5 confirms 'This paper has been largely methodological.' Directly relevant to PRISM because transitions could be driven by observables PRISM already has (VIX change, news factors), letting stress covariates accelerate regime switching — attacking deficiency (a) inside the existing HMM framework.",
+      "vote": "3-0 (three merged claims, all unanimous)"
+    },
+    {
+      "claim": "Adaptive HMM estimation via exponential forgetting on the score of the predictive likelihood (GAS-related; Nystrup, Madsen & Lindström 2016) is a drop-in retrofit for PRISM's existing Gaussian HMM: with effective memory N_eff=250 days it reproduced the long memory of squared daily S&P 500 returns — 'previously believed to be the most difficult fact to reproduce with a hidden Markov model' — and improved one-step-ahead density forecasts (log-lik 68,034 vs 67,860 for the best rolling-window Gaussian-t model when the 20 most extreme observations are excluded; wins even removing only Black Monday), directly bearing on regime-inference staleness.",
+      "confidence": "high",
+      "sources": [
+        "https://doi.org/10.1002/for.2447"
+      ],
+      "evidence": "Verified against the accepted-manuscript PDF (Journal of Forecasting, 21,851 daily S&P obs 1928-2014, Table II). Key caveats preserved: on the FULL test sample the rolling Gaussian-t model wins (the adaptive Gaussian advantage holds only ex-extremes), the study is univariate 2-state, and it measures density-forecast quality, not multivariate stress-detection lag — so the deficiency-(a) link is a mechanistic inference requiring PRISM's own test.",
+      "vote": "3-0 (three merged claims, all unanimous)"
+    },
+    {
+      "claim": "Breitung-Candelon (2006) frequency-domain Granger causality — built on the Geweke (1982)/Hosoya (1991) framework — decomposes causality by frequency band, and its own empirical application demonstrated that a lead-lag relation (yield spread → output growth) can be concentrated at annual/business-cycle frequencies rather than uniform across the spectrum. This is the precise classical instrument for PRISM's deficiency (c): a monthly-scale oil→yields relation invisible to an all-frequency daily test. Corroborating on-domain application: Gronwald (2009) found frequency-specific causality between oil prices and interest rates.",
+      "confidence": "high",
+      "sources": [
+        "https://cris.maastrichtuniversity.nl/en/publications/testing-for-short-and-long-run-causality-a-frequency-domain-appro"
+      ],
+      "evidence": "Abstract verbatim: 'a simple test for causality in the frequency domain' and 'reasonable leading indicator properties at frequencies around one year and typical business cycle frequencies.' Journal of Econometrics, ~1,289 citations, extensions (Bauer-Maynard 2012) but no refutations. Caveats: original application was quarterly not daily; test is bivariate-VAR-based; full text paywalled so the 'non-uniform across spectrum' reading rests on abstract plus corroborating summaries.",
+      "vote": "3-0 (two merged claims, both unanimous)"
+    },
+    {
+      "claim": "NEGATIVE result for one surveyed alternative: the 2025 PLOS ONE heteroskedastic-network early-warning model (KNN-classified volatility regimes, centrality on a directed weighted transition network over a 240-day window) is NOT a viable PRISM candidate — it is post-2010 (fails the classicality bar), quantifies no detection lag in days, and benchmarks against no HMM/GARCH baseline, so it offers zero evidence of faster stress-onset detection than PRISM's existing Gaussian HMM.",
+      "confidence": "high",
+      "sources": [
+        "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0333734"
+      ],
+      "evidence": "Verified against the full PLOS ONE text: early-warning claims are qualitative only ('early warning nodes with high weighted out-degree'), no comparative benchmark tables exist, and HMM/ARMA-GARCH appear only as internal components, not baselines. A stronger companion claim about its S&P 500 detection capability was REFUTED 0-3. Included for transparency as a screened-out candidate.",
+      "vote": "2-1 and 3-0 (two merged claims; companion capability claim refuted 0-3)"
+    },
+    {
+      "claim": "SHORTLIST — three pre-registered tests worth running next, each matched to a diagnosed deficiency: (1) Deficiency (a), fast-alarm layer: run robust (Student-t) BOCPD and CUSUM/SR in parallel with the existing HMM on the same p=4-5 daily series (or on the HMM's own filtered log-likelihood innovations); pre-register the metric as detection lag in business days to labeled historical stress onsets AT a fixed production ARL (>= 250 trading days to false alarm), walk-forward, SPA against the HMM filtered-probability trigger. (2) Deficiency (c), frequency-band causality: re-run the oil→yields edge with the Breitung-Candelon test on daily data, pre-registering the hypothesis that causality concentrates in the low-frequency (roughly monthly-to-business-cycle) band, with BH-FDR across bands and consistency check against the existing monthly probe. (3) Deficiency (a), duration structure: replace the Gaussian HMM with (i) an HSMM with negative-binomial sojourn and (ii) a TVTP variant with transitions driven by lagged VIX change, comparing out-of-sample state-classification timeliness and density forecasts vs the incumbent under the same walk-forward + SPA harness — mirroring the pattern that classical low-dimensional methods matched to a diagnosed deficiency (Fisher 1925, EWMA 1994) are the ones that pass.",
+      "confidence": "high",
+      "sources": [
+        "https://arxiv.org/abs/0710.3742",
+        "https://arxiv.org/abs/1509.01570",
+        "https://cris.maastrichtuniversity.nl/en/publications/testing-for-short-and-long-run-causality-a-frequency-domain-appro",
+        "https://doi.org/10.1016/j.csda.2006.07.021",
+        "https://doi.org/10.1093/oso/9780198773917.003.0010",
+        "https://doi.org/10.1002/for.2447"
+      ],
+      "evidence": "Synthesis of the confirmed findings above: all three candidates are mathematically mature pre-2010 (BOCPD 2007, CUSUM 1954/SR 1961, Breitung-Candelon 2006 on Geweke 1982, HSMM finance evidence 2006, TVTP 1994), all are testable with daily closes PRISM already has, and each targets a specific diagnosed wound rather than being a literature fashion import — the exact pattern that distinguished PRISM's past passes from its four rejections. No verified candidate emerged for deficiencies (b) (band width) or (d) (news pipeline), so no test is proposed there.",
+      "vote": "synthesis of unanimous findings"
+    }
+  ]
+}
