@@ -266,6 +266,44 @@ of this design.
 
 Scoreboard: 2 promoted / 6 fast-failed across 8 pre-registered tests.
 
+## Breitung-Candelon frequency-domain causality — **FAST FAILURE, with two
+recorded protocol defects (candidate's core question left unanswered)**
+
+Pre-registered test (`protocol_bc_freq.md`, tag `bcfreq-test-preregistered`).
+Last untested survey candidate, targeting deficiency (c): the oil→10Y edge
+invisible to the all-frequency daily scan.
+
+**Result**: zero BH survivors across the grid; oil→DGS10 q=0.87 in every
+band. Gate conditions 1 and 3 fail → fast failure.
+
+**Two protocol defects discovered in execution (recorded, not patched):**
+1. **Positive control unrunnable on the frozen cohort.** The protocol froze
+   C40 (1986+, oil exists) AND named VIX→NASDAQ as the positive control —
+   but C40's panel does not carry VIXCLS (it enters at C36/1990). The
+   control silently dropped out of the grid; an instrument whose positive
+   control never ran cannot certify a null. Same failure class as BOCPD
+   v1's degenerate comparison: a frozen design whose parts are mutually
+   inconsistent.
+2. **BIC lag selection collapsed the frequency resolution.** The protocol
+   delegated VAR lag order to BIC (capped 22); BIC chose **lag 1** on the
+   real pair. With p=1 the BC restrictions [a₁cos(ω)=0, a₁sin(ω)=0] reduce
+   to a₁=0 at EVERY frequency — all five bands returned literally identical
+   p-values (0.8207). The band decomposition never happened; the test run
+   was an ordinary Granger test wearing five costumes. The instrument
+   itself is sound (calibration gates passed with forced p=22); the
+   protocol's lag rule defeated it.
+
+**Honest epistemic status**: the frequency-localization hypothesis for the
+oil→yields miss remains **untested in any meaningful sense** — what failed
+is this protocol's design. A v2 (minimum lag floor ≥ 22 for band
+resolution; positive control on C36 where VIX exists) would be
+scientifically justified by the defects, but per the BOCPD precedent,
+**v2 requires explicit user sign-off** (gate-shopping discipline), and the
+one-shot-per-defect-fix rule applies.
+
+Scoreboard: 2 promoted / 7 fast-failed across 9 pre-registered tests
+(this one failing on protocol design rather than candidate merit).
+
 ## Revision 3: system prompt — shipped
 
 Regime = validated historical lens (AUROC 0.85–0.91 cited) with explicit
