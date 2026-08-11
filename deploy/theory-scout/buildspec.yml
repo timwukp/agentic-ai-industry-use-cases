@@ -1,0 +1,15 @@
+version: 0.2
+
+# PrismTheoryScout monthly research run.
+# Started by EventBridge Scheduler (StartBuild). Source = this repo's main
+# branch, so the driver that runs is always the reviewed, merged one.
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.12
+    commands:
+      - pip install --quiet "boto3>=1.43.51"
+  build:
+    commands:
+      - python deploy/theory-scout/driver.py
