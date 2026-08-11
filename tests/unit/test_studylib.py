@@ -196,3 +196,58 @@ def test_shrinkage_always_positive_definite_and_weighted():
     Sh = shrunk_covariance(X, weights=w)
     eigvals = np.linalg.eigvalsh(Sh)
     assert eigvals.min() > 0, "shrunk covariance must be PD even when degenerate"
+
+
+# ---------------- signature features (protocol_signature.md self-calibration) ----------------
+
+
+def test_levy_area_detects_planted_lead_and_flips_sign():
+    from studylib.signature import levy_area
+
+    rng = np.random.default_rng(7)
+    n = 3000
+    k = 3
+    x = pd.Series(
+        rng.normal(0, 1, n), name="x", index=pd.bdate_range("2015-01-01", periods=n)
+    )
+    y_lag = x.shift(k).fillna(0).rename("y")  # x leads y
+    y_lead = x.shift(-k).fillna(0).rename("y")  # y leads x
+
+    a_xy_lag = levy_area(x, y_lag).dropna().mean()
+    a_xy_lead = levy_area(x, y_lead).dropna().mean()
+    # planted lead produces a systematically signed area; reversing the
+    # lead flips the sign
+    assert a_xy_lag * a_xy_lead < 0, f"{a_xy_lag} vs {a_xy_lead}"
+    assert abs(a_xy_lag) > 1.0
+
+
+def test_levy_area_no_drift_on_independent_noise():
+    from studylib.signature import levy_area, zscore_causal
+
+    rng = np.random.default_rng(9)
+    n = 4000
+    idx = pd.bdate_range("2010-01-01", periods=n)
+    x = pd.Series(rng.normal(0, 1, n), name="x", index=idx)
+    y = pd.Series(rng.normal(0, 1, n), name="y", index=idx)
+    z = zscore_causal(levy_area(x, y)).dropna()
+    assert abs(z.mean()) < 0.15
+    assert 0.6 < z.std() < 1.6
+
+
+def test_levy_area_strictly_causal():
+    from studylib.signature import levy_area
+
+    rng = np.random.default_rng(11)
+    n = 600
+    idx = pd.bdate_range("2020-01-01", periods=n)
+    x = pd.Series(rng.normal(0, 1, n), name="x", index=idx)
+    y = pd.Series(rng.normal(0, 1, n), name="y", index=idx)
+    a_full = levy_area(x, y)
+    # mutate the FUTURE beyond t0; values at <= t0 must be bit-identical
+    t0 = 400
+    x2 = x.copy()
+    x2.iloc[t0 + 1 :] = 99.0
+    a_mut = levy_area(x2, y)
+    assert np.allclose(
+        a_full.iloc[: t0 + 1].dropna(), a_mut.iloc[: t0 + 1].dropna()
+    ), "future data leaked into past features"

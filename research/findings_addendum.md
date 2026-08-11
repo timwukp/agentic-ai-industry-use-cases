@@ -143,6 +143,37 @@ variance, which our data lake does not carry.
 Scoreboard: pre-registered tests now 2 promoted / 3 fast-failed
 (regime-EVT ❌, Fisher ✅, vol-EVT ✅, QIS ❌, RFSV ❌).
 
+## Signature (Lévy-area) features for regime detection — **FAST FAILURE**
+
+Pre-registered test (`protocol_signature.md`, tag
+`signature-test-preregistered`). Deep-research shortlist item #3, market-
+stream variant (factor-stream variant deferred — 2 days of history).
+Baseline HMM panel vs panel + 3 depth-2 Lévy-area features, identical
+pipeline otherwise:
+
+| Cohort | baseline AUROC | +signature | Δ | median lag b→s |
+|---|---|---|---|---|
+| C10 | 0.7951 | 0.7317 | **−0.063** | 16.5 → 9.5 |
+| C20 | 0.7327 | 0.7230 | −0.010 | 13.0 → 6.0 |
+| C36 (primary) | 0.7130 | 0.6091 | **−0.104** | 12.0 → 8.5 |
+
+**Gate verdict**: condition 1 fails outright (0/3 cohorts improve; C36
+degrades 5x beyond the 0.02 tolerance). **Signature features do not enter
+PRISM.** The likely mechanism (post-hoc, labeled): tripling the emission
+dimensionality (4→7) with noisy rotation features degrades the Gaussian
+mixture's separation — the HMM spends its states explaining signature
+noise instead of stress.
+
+**Exploratory observation (NOT a gated claim)**: median detection lag
+improved consistently and substantially (e.g. 13.0→6.0bd on C20) at the
+cost of ranking quality — the signature arm reacts faster but less
+reliably. This trade-off was not a pre-registered endpoint and is recorded
+only as a hypothesis for a possible future protocol (e.g. signatures as a
+separate fast-alarm channel rather than HMM inputs), which would need its
+own pre-registration.
+
+Scoreboard: 2 promoted / 4 fast-failed across 6 pre-registered tests.
+
 ## Revision 3: system prompt — shipped
 
 Regime = validated historical lens (AUROC 0.85–0.91 cited) with explicit

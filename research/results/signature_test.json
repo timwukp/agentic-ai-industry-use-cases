@@ -1,0 +1,119 @@
+{
+  "C10": {
+    "cohort": "C10",
+    "base_cols": [
+      "NASDAQCOM_ret",
+      "slope_diff",
+      "VIXCLS_diff",
+      "DCOILWTICO_ret"
+    ],
+    "sig_cols": [
+      "sig_eq_vol",
+      "sig_eq_slope",
+      "sig_vol_slope"
+    ],
+    "baseline": {
+      "h1b_auroc": 0.7951,
+      "median_lag": 16.5,
+      "n_days": 1698
+    },
+    "signature": {
+      "h1b_auroc": 0.7317,
+      "median_lag": 9.5,
+      "n_days": 1698
+    },
+    "paired_mean_diff": 0.003689,
+    "bootstrap_p": 0.3736,
+    "eras": {
+      "covid_inflation": {
+        "baseline": 0.7951,
+        "signature": 0.7317,
+        "improved": false
+      }
+    },
+    "runtime_s": 14.0
+  },
+  "C20": {
+    "cohort": "C20",
+    "base_cols": [
+      "NASDAQCOM_ret",
+      "slope_diff",
+      "VIXCLS_diff",
+      "DCOILWTICO_ret"
+    ],
+    "sig_cols": [
+      "sig_eq_vol",
+      "sig_eq_slope",
+      "sig_vol_slope"
+    ],
+    "baseline": {
+      "h1b_auroc": 0.7327,
+      "median_lag": 13.0,
+      "n_days": 3786
+    },
+    "signature": {
+      "h1b_auroc": 0.723,
+      "median_lag": 6.0,
+      "n_days": 3786
+    },
+    "paired_mean_diff": -0.070632,
+    "bootstrap_p": 1.0,
+    "eras": {
+      "zirp": {
+        "baseline": 0.5678,
+        "signature": 0.7879,
+        "improved": true
+      },
+      "covid_inflation": {
+        "baseline": 0.7842,
+        "signature": 0.7713,
+        "improved": false
+      }
+    },
+    "runtime_s": 54.5
+  },
+  "C36": {
+    "cohort": "C36",
+    "base_cols": [
+      "NASDAQCOM_ret",
+      "slope_diff",
+      "VIXCLS_diff",
+      "DCOILWTICO_ret"
+    ],
+    "sig_cols": [
+      "sig_eq_vol",
+      "sig_eq_slope",
+      "sig_vol_slope"
+    ],
+    "baseline": {
+      "h1b_auroc": 0.713,
+      "median_lag": 12.0,
+      "n_days": 8482
+    },
+    "signature": {
+      "h1b_auroc": 0.6091,
+      "median_lag": 8.5,
+      "n_days": 8482
+    },
+    "paired_mean_diff": -0.059993,
+    "bootstrap_p": 1.0,
+    "eras": {
+      "moderation": {
+        "baseline": 0.7987,
+        "signature": 0.5724,
+        "improved": false
+      },
+      "zirp": {
+        "baseline": 0.7926,
+        "signature": 0.5902,
+        "improved": false
+      },
+      "covid_inflation": {
+        "baseline": 0.7274,
+        "signature": 0.7795,
+        "improved": true
+      }
+    },
+    "runtime_s": 175.6
+  }
+}
