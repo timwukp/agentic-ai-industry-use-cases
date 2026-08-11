@@ -304,6 +304,50 @@ one-shot-per-defect-fix rule applies.
 Scoreboard: 2 promoted / 7 fast-failed across 9 pre-registered tests
 (this one failing on protocol design rather than candidate merit).
 
+## BC v2 (user-approved defect fix) — **FAST FAILURE; instrument fails its
+own positive control on real data; candidate TERMINALLY CLOSED**
+
+Pre-registered one-shot re-test (`protocol_bc_freq_v2.md`, tag
+`bcfreq-v2-test-preregistered`; user approval "批准 BC v2" 2026-08-11).
+v2 fixed exactly the two recorded v1 defects: VAR lag FIXED at 22 (BIC
+rule removed entirely — dry-run bound taken to its strongest form) and
+each pair assigned to a cohort that contains it (oil pairs on C40, VIX
+pairs on C36; runner aborts unless the grid is exactly 20 non-NaN cells).
+Protocol dry-run executed before freezing (variable presence, era sample
+sizes, restriction-matrix rank at all 15 grid points). Calibration suite
+extended to exercise the PRODUCTION path (v1's blind spot: tests passed
+`p=22` explicitly while production used BIC) plus a permanent
+band-distinguishability regression test; 5/5 green before real data.
+
+**Result — zero BH survivors across the full 20-cell grid:**
+
+| pair (cohort) | best band | p | q |
+|---|---|---|---|
+| oil→DGS10 (C40) | quarterly_1y | 0.224 | 0.50 |
+| DGS10→oil (C40) | monthly_quarterly | 0.049 | 0.50 |
+| **VIX→NASDAQ (C36, positive control)** | sub_weekly | 0.224 | 0.50 |
+| NASDAQ→VIX (C36) | over_1y | 0.063 | 0.50 |
+
+**Gate ruling (mechanical)**: condition 1 (recovery) FAILS — oil→DGS10
+p=0.22–0.99 in every low-frequency band; condition 3 (positive control)
+FAILS — the instrument cannot see the known VIX→NASDAQ edge in ANY band.
+Per the frozen protocol's own wording, control failure reads "instrument
+invalid on real data", and under the one-shot clause the candidate is
+**terminally closed — no v3**.
+
+**Post-hoc interpretation (labeled as such)**: with the lag rule removed,
+the honest price declared up front came due — a VAR(22) pair equation
+spends 45 parameters, and the band p = max over 3 grid points is doubly
+conservative; the per-cell power at daily noise levels is evidently too
+low even for a real edge. The two design goals ("enough lags for frequency
+resolution" and "enough power per cell") appear jointly unsatisfiable on
+daily data with this test family — that conclusion, not any single defect,
+is the durable finding. The monthly-frequency probe (Revision 2) remains
+the only promising route to the oil→yields question and stays on the
+to-do list as its own candidate.
+
+Scoreboard: **2 promoted / 8 fast-failed across 10 pre-registered tests.**
+
 ## Revision 3: system prompt — shipped
 
 Regime = validated historical lens (AUROC 0.85–0.91 cited) with explicit
