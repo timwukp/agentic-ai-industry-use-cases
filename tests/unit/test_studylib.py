@@ -374,3 +374,58 @@ def test_cusum_detects_and_stays_quiet():
     x2 = rng.normal(0, 1, 5000)
     crossings = int((cusum_alarm_series(x2) > 8.0).sum())
     assert crossings <= 2, f"{crossings} CUSUM false alarms on noise"
+
+
+# ---------------- BC frequency-domain causality (protocol_bc_freq.md) ----------------
+
+
+def test_bc_flags_planted_lowfreq_causality_in_correct_band():
+    """Plant realizable low-frequency causality: y responds to the trailing
+    20-day MEAN of x (a finite-lag transfer function a VAR can represent —
+    an ideal FFT brick-wall filter is an infinite-lag operator no VAR(22)
+    can capture, which is why the first fixture version failed)."""
+    from studylib.bcfreq import bc_freq_pvalue
+
+    rng = np.random.default_rng(7)
+    n = 4000
+    x = rng.normal(0, 1, n)
+    ma = np.convolve(x, np.ones(20) / 20, mode="full")[:n]
+    y = np.zeros(n)
+    y[1:] = 1.5 * ma[:-1] + rng.normal(0, 0.5, n - 1)
+    # low-frequency points: must reject non-causality decisively
+    assert bc_freq_pvalue(y, x, omega=0.03, p=22) < 0.01
+    assert bc_freq_pvalue(y, x, omega=0.10, p=22) < 0.01
+    # high-frequency point: must NOT reject (20-day MA kills sub-weekly)
+    assert bc_freq_pvalue(y, x, omega=2.5, p=22) > 0.05
+
+
+def test_bc_allfreq_causality_flags_everywhere():
+    from studylib.bcfreq import bc_freq_pvalue
+
+    rng = np.random.default_rng(9)
+    n = 3000
+    x = rng.normal(0, 1, n)
+    y = np.zeros(n)
+    y[1:] = 0.5 * x[:-1] + rng.normal(0, 1, n - 1)
+    for w in (0.03, 0.3, 1.5, 2.8):
+        assert bc_freq_pvalue(y, x, omega=w, p=5) < 0.01, f"missed at omega={w}"
+
+
+def test_bc_silent_on_pure_noise_grid():
+    from studylib.bcfreq import band_scan
+    from prism.causality import _bh_qvalues
+
+    fp_grids = 0
+    for seed in range(8):
+        rng = np.random.default_rng(100 + seed)
+        idx = pd.bdate_range("2010-01-01", periods=2000)
+        panel = pd.DataFrame(
+            {c: rng.normal(0, 1, 2000) for c in ("a", "b", "c", "d")}, index=idx
+        )
+        scan = band_scan(panel, [("a", "b"), ("b", "a"), ("c", "d"), ("d", "c")])
+        ok = scan["p"].notna()
+        q = np.full(len(scan), np.nan)
+        q[ok.to_numpy()] = _bh_qvalues(scan.loc[ok, "p"].to_numpy())
+        if np.nansum(q < 0.10) > 0:
+            fp_grids += 1
+    assert fp_grids <= 2, f"{fp_grids}/8 noise grids had BH survivors"

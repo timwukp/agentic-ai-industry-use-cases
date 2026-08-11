@@ -1,0 +1,464 @@
+{
+  "full_sample": [
+    {
+      "source": "DCOILWTICO_ret",
+      "target": "DGS10_diff",
+      "band": "over_1y",
+      "p": 0.8206772354293876,
+      "var_lag": 1,
+      "q": 0.8749260496597578,
+      "significant": false
+    },
+    {
+      "source": "DCOILWTICO_ret",
+      "target": "DGS10_diff",
+      "band": "quarterly_1y",
+      "p": 0.8206772354293875,
+      "var_lag": 1,
+      "q": 0.8749260496597578,
+      "significant": false
+    },
+    {
+      "source": "DCOILWTICO_ret",
+      "target": "DGS10_diff",
+      "band": "monthly_quarterly",
+      "p": 0.8206772354293875,
+      "var_lag": 1,
+      "q": 0.8749260496597578,
+      "significant": false
+    },
+    {
+      "source": "DCOILWTICO_ret",
+      "target": "DGS10_diff",
+      "band": "weekly_monthly",
+      "p": 0.8206772354293875,
+      "var_lag": 1,
+      "q": 0.8749260496597578,
+      "significant": false
+    },
+    {
+      "source": "DCOILWTICO_ret",
+      "target": "DGS10_diff",
+      "band": "sub_weekly",
+      "p": 0.8206772354293875,
+      "var_lag": 1,
+      "q": 0.8749260496597578,
+      "significant": false
+    },
+    {
+      "source": "DGS10_diff",
+      "target": "DCOILWTICO_ret",
+      "band": "over_1y",
+      "p": 0.8749260496597578,
+      "var_lag": 1,
+      "q": 0.8749260496597578,
+      "significant": false
+    },
+    {
+      "source": "DGS10_diff",
+      "target": "DCOILWTICO_ret",
+      "band": "quarterly_1y",
+      "p": 0.8749260496597578,
+      "var_lag": 1,
+      "q": 0.8749260496597578,
+      "significant": false
+    },
+    {
+      "source": "DGS10_diff",
+      "target": "DCOILWTICO_ret",
+      "band": "monthly_quarterly",
+      "p": 0.8749260496597578,
+      "var_lag": 1,
+      "q": 0.8749260496597578,
+      "significant": false
+    },
+    {
+      "source": "DGS10_diff",
+      "target": "DCOILWTICO_ret",
+      "band": "weekly_monthly",
+      "p": 0.8749260496597578,
+      "var_lag": 1,
+      "q": 0.8749260496597578,
+      "significant": false
+    },
+    {
+      "source": "DGS10_diff",
+      "target": "DCOILWTICO_ret",
+      "band": "sub_weekly",
+      "p": 0.8749260496597578,
+      "var_lag": 1,
+      "q": 0.8749260496597578,
+      "significant": false
+    }
+  ],
+  "eras": {
+    "volcker": [
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "over_1y",
+        "p": 0.5321150989358082,
+        "var_lag": 1,
+        "q": 0.5321150989358084,
+        "significant": false
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "quarterly_1y",
+        "p": 0.5321150989358084,
+        "var_lag": 1,
+        "q": 0.5321150989358084,
+        "significant": false
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "monthly_quarterly",
+        "p": 0.5321150989358082,
+        "var_lag": 1,
+        "q": 0.5321150989358084,
+        "significant": false
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "weekly_monthly",
+        "p": 0.5321150989358083,
+        "var_lag": 1,
+        "q": 0.5321150989358084,
+        "significant": false
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "sub_weekly",
+        "p": 0.5321150989358083,
+        "var_lag": 1,
+        "q": 0.5321150989358084,
+        "significant": false
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "over_1y",
+        "p": 0.03681061253605354,
+        "var_lag": 1,
+        "q": 0.07362122507210725,
+        "significant": true
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "quarterly_1y",
+        "p": 0.036810612536053625,
+        "var_lag": 1,
+        "q": 0.07362122507210725,
+        "significant": true
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "monthly_quarterly",
+        "p": 0.0368106125360536,
+        "var_lag": 1,
+        "q": 0.07362122507210725,
+        "significant": true
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "weekly_monthly",
+        "p": 0.0368106125360536,
+        "var_lag": 1,
+        "q": 0.07362122507210725,
+        "significant": true
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "sub_weekly",
+        "p": 0.0368106125360536,
+        "var_lag": 1,
+        "q": 0.07362122507210725,
+        "significant": true
+      }
+    ],
+    "moderation": [
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "over_1y",
+        "p": 0.7283463018773662,
+        "var_lag": 1,
+        "q": 0.7283463018773662,
+        "significant": false
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "quarterly_1y",
+        "p": 0.7283463018773662,
+        "var_lag": 1,
+        "q": 0.7283463018773662,
+        "significant": false
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "monthly_quarterly",
+        "p": 0.7283463018773662,
+        "var_lag": 1,
+        "q": 0.7283463018773662,
+        "significant": false
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "weekly_monthly",
+        "p": 0.728346301877366,
+        "var_lag": 1,
+        "q": 0.7283463018773662,
+        "significant": false
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "sub_weekly",
+        "p": 0.7283463018773662,
+        "var_lag": 1,
+        "q": 0.7283463018773662,
+        "significant": false
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "over_1y",
+        "p": 0.3859885865827302,
+        "var_lag": 1,
+        "q": 0.7283463018773662,
+        "significant": false
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "quarterly_1y",
+        "p": 0.38598858658273055,
+        "var_lag": 1,
+        "q": 0.7283463018773662,
+        "significant": false
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "monthly_quarterly",
+        "p": 0.38598858658273033,
+        "var_lag": 1,
+        "q": 0.7283463018773662,
+        "significant": false
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "weekly_monthly",
+        "p": 0.38598858658273033,
+        "var_lag": 1,
+        "q": 0.7283463018773662,
+        "significant": false
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "sub_weekly",
+        "p": 0.3859885865827304,
+        "var_lag": 1,
+        "q": 0.7283463018773662,
+        "significant": false
+      }
+    ],
+    "zirp": [
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "over_1y",
+        "p": 0.42322861578371357,
+        "var_lag": 1,
+        "q": 0.42322861578371357,
+        "significant": false
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "quarterly_1y",
+        "p": 0.42322861578371357,
+        "var_lag": 1,
+        "q": 0.42322861578371357,
+        "significant": false
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "monthly_quarterly",
+        "p": 0.42322861578371357,
+        "var_lag": 1,
+        "q": 0.42322861578371357,
+        "significant": false
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "weekly_monthly",
+        "p": 0.4232286157837134,
+        "var_lag": 1,
+        "q": 0.42322861578371357,
+        "significant": false
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "sub_weekly",
+        "p": 0.42322861578371357,
+        "var_lag": 1,
+        "q": 0.42322861578371357,
+        "significant": false
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "over_1y",
+        "p": 0.05132883150884122,
+        "var_lag": 1,
+        "q": 0.10265766301768264,
+        "significant": false
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "quarterly_1y",
+        "p": 0.05132883150884132,
+        "var_lag": 1,
+        "q": 0.10265766301768264,
+        "significant": false
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "monthly_quarterly",
+        "p": 0.05132883150884125,
+        "var_lag": 1,
+        "q": 0.10265766301768264,
+        "significant": false
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "weekly_monthly",
+        "p": 0.051328831508841176,
+        "var_lag": 1,
+        "q": 0.10265766301768264,
+        "significant": false
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "sub_weekly",
+        "p": 0.05132883150884122,
+        "var_lag": 1,
+        "q": 0.10265766301768264,
+        "significant": false
+      }
+    ],
+    "covid_inflation": [
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "over_1y",
+        "p": 0.8534140510931153,
+        "var_lag": 1,
+        "q": 0.8534140510931152,
+        "significant": false
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "quarterly_1y",
+        "p": 0.8534140510931153,
+        "var_lag": 1,
+        "q": 0.8534140510931152,
+        "significant": false
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "monthly_quarterly",
+        "p": 0.8534140510931153,
+        "var_lag": 1,
+        "q": 0.8534140510931152,
+        "significant": false
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "weekly_monthly",
+        "p": 0.8534140510931153,
+        "var_lag": 1,
+        "q": 0.8534140510931152,
+        "significant": false
+      },
+      {
+        "source": "DCOILWTICO_ret",
+        "target": "DGS10_diff",
+        "band": "sub_weekly",
+        "p": 0.8534140510931153,
+        "var_lag": 1,
+        "q": 0.8534140510931152,
+        "significant": false
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "over_1y",
+        "p": 0.699846583867198,
+        "var_lag": 1,
+        "q": 0.8534140510931152,
+        "significant": false
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "quarterly_1y",
+        "p": 0.6998465838671982,
+        "var_lag": 1,
+        "q": 0.8534140510931152,
+        "significant": false
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "monthly_quarterly",
+        "p": 0.6998465838671982,
+        "var_lag": 1,
+        "q": 0.8534140510931152,
+        "significant": false
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "weekly_monthly",
+        "p": 0.6998465838671982,
+        "var_lag": 1,
+        "q": 0.8534140510931152,
+        "significant": false
+      },
+      {
+        "source": "DGS10_diff",
+        "target": "DCOILWTICO_ret",
+        "band": "sub_weekly",
+        "p": 0.6998465838671981,
+        "var_lag": 1,
+        "q": 0.8534140510931152,
+        "significant": false
+      }
+    ]
+  }
+}
