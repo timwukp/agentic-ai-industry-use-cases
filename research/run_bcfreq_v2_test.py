@@ -72,24 +72,27 @@ def main() -> None:
 
     oil = "DCOILWTICO_ret"
     c1_bands = [
-        b for b in LOW_BANDS if (c := cell(full, oil, b)) is not None and c["significant"]
+        b
+        for b in LOW_BANDS
+        if (c := cell(full, oil, b)) is not None and c["significant"]
     ]
     c1 = len(c1_bands) > 0
     c2 = not cell(full, oil, "sub_weekly")["significant"]
     c3 = bool(
         full[(full["source"] == "VIXCLS_diff") & full["significant"]].shape[0] > 0
     )
-    c4 = all(
-        not cell(full, "DGS10_diff", b)["significant"] for b in c1_bands
-    ) if c1 else None
+    c4 = (
+        all(not cell(full, "DGS10_diff", b)["significant"] for b in c1_bands)
+        if c1
+        else None
+    )
     c5 = None
     if c1:
         hits = 0
         for era, rows in eras.items():
             df = pd.DataFrame(rows)
             if any(
-                (r := cell(df, oil, b)) is not None and r["q"] < 0.10
-                for b in c1_bands
+                (r := cell(df, oil, b)) is not None and r["q"] < 0.10 for b in c1_bands
             ):
                 hits += 1
         c5 = hits >= 3
