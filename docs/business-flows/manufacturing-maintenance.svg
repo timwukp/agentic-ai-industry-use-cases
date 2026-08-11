@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="1072" viewBox="0 0 1180 1072" font-family="ui-sans-serif, -apple-system, Helvetica, Arial">
+<rect width="1180" height="1072" fill="#0f172a"/>
+<text x="40" y="44" fill="#e2e8f0" font-size="21" font-weight="700">Manufacturing — Sensor to Work Order</text>
+<text x="40" y="70" fill="#94a3b8" font-size="13">Predictive over reactive · no work order without permits · Zone D stops the machine</text>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker></defs>
+<rect x="430" y="108" width="320" height="72" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="430" y="108" width="4" height="72" rx="2" fill="#3b82f6"/>
+<text x="446" y="136" fill="#e2e8f0" font-size="14.5" font-weight="600">Condition monitoring</text>
+<text x="446" y="154" fill="#94a3b8" font-size="11">health score · ISO 10816 zones A-D</text>
+<rect x="719.2" y="116" width="23" height="16" rx="8" fill="#3b82f6" opacity="0.18" stroke="#3b82f6" stroke-width="0.8"/><text x="731" y="127.5" fill="#3b82f6" font-size="9.5" font-weight="700" text-anchor="middle">AI</text>
+<rect x="430" y="214" width="320" height="72" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="430" y="214" width="4" height="72" rx="2" fill="#3b82f6"/>
+<text x="446" y="242" fill="#e2e8f0" font-size="14.5" font-weight="600">Diagnosis</text>
+<text x="446" y="260" fill="#94a3b8" font-size="11">FFT bearing tones · anomalies · RUL</text>
+<rect x="719.2" y="222" width="23" height="16" rx="8" fill="#3b82f6" opacity="0.18" stroke="#3b82f6" stroke-width="0.8"/><text x="731" y="233.5" fill="#3b82f6" font-size="9.5" font-weight="700" text-anchor="middle">AI</text>
+<polygon points="590,300 616,326 590,352 564,326" fill="#1e293b" stroke="#f59e0b" stroke-width="1.6"/>
+<text x="554" y="314" fill="#f59e0b" font-size="11.5" font-weight="600" text-anchor="end">Zone D + high-crit?</text>
+<rect x="430" y="400" width="320" height="72" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="430" y="400" width="4" height="72" rx="2" fill="#3b82f6"/>
+<text x="446" y="428" fill="#e2e8f0" font-size="14.5" font-weight="600">Urgency validation</text>
+<text x="446" y="446" fill="#94a3b8" font-size="11">criticality x production impact</text>
+<rect x="719.2" y="408" width="23" height="16" rx="8" fill="#3b82f6" opacity="0.18" stroke="#3b82f6" stroke-width="0.8"/><text x="731" y="419.5" fill="#3b82f6" font-size="9.5" font-weight="700" text-anchor="middle">AI</text>
+<rect x="430" y="506" width="320" height="72" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="430" y="506" width="4" height="72" rx="2" fill="#3b82f6"/>
+<text x="446" y="534" fill="#e2e8f0" font-size="14.5" font-weight="600">Parts availability</text>
+<text x="446" y="552" fill="#94a3b8" font-size="11">stock · lead time · alternatives</text>
+<rect x="719.2" y="514" width="23" height="16" rx="8" fill="#3b82f6" opacity="0.18" stroke="#3b82f6" stroke-width="0.8"/><text x="731" y="525.5" fill="#3b82f6" font-size="9.5" font-weight="700" text-anchor="middle">AI</text>
+<polygon points="590,592 616,618 590,644 564,618" fill="#1e293b" stroke="#f59e0b" stroke-width="1.6"/>
+<text x="554" y="606" fill="#f59e0b" font-size="11.5" font-weight="600" text-anchor="end">parts cost?</text>
+<rect x="426" y="688" width="328" height="80" rx="12" fill="none" stroke="#f43f5e" stroke-width="1" opacity="0.55"/>
+<rect x="430" y="692" width="320" height="72" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="430" y="692" width="4" height="72" rx="2" fill="#f43f5e"/>
+<text x="446" y="720" fill="#e2e8f0" font-size="14.5" font-weight="600">Scheduling (permit-gated)</text>
+<text x="446" y="738" fill="#94a3b8" font-size="11">LOTO · confined space · hot work</text>
+<rect x="668.0" y="700" width="74" height="16" rx="8" fill="#f43f5e" opacity="0.18" stroke="#f43f5e" stroke-width="0.8"/><text x="705" y="711.5" fill="#f43f5e" font-size="9.5" font-weight="700" text-anchor="middle">COMPLIANCE</text>
+<rect x="430" y="798" width="320" height="72" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="430" y="798" width="4" height="72" rx="2" fill="#22c55e"/>
+<text x="446" y="826" fill="#e2e8f0" font-size="14.5" font-weight="600">Work order execution</text>
+<text x="446" y="844" fill="#94a3b8" font-size="11">tasks · parts · labor · safety steps</text>
+<rect x="700.0" y="806" width="42" height="16" rx="8" fill="#22c55e" opacity="0.18" stroke="#22c55e" stroke-width="0.8"/><text x="721" y="817.5" fill="#22c55e" font-size="9.5" font-weight="700" text-anchor="middle">WRITE</text>
+<rect x="430" y="904" width="320" height="72" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="430" y="904" width="4" height="72" rx="2" fill="#3b82f6"/>
+<text x="446" y="932" fill="#e2e8f0" font-size="14.5" font-weight="600">Reliability KPIs</text>
+<text x="446" y="950" fill="#94a3b8" font-size="11">OEE target 75% · reactive &lt; 30%</text>
+<rect x="719.2" y="912" width="23" height="16" rx="8" fill="#3b82f6" opacity="0.18" stroke="#3b82f6" stroke-width="0.8"/><text x="731" y="923.5" fill="#3b82f6" font-size="9.5" font-weight="700" text-anchor="middle">AI</text>
+<rect x="60" y="699" width="280" height="58" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="60" y="699" width="4" height="58" rx="2" fill="#06b6d4"/>
+<text x="76" y="727" fill="#e2e8f0" font-size="14.5" font-weight="600">KB: lockout-tagout policy</text>
+<text x="76" y="745" fill="#94a3b8" font-size="11">maintenance standards (ISO 55000)</text>
+<rect x="840" y="297" width="300" height="58" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="840" y="297" width="4" height="58" rx="2" fill="#f43f5e"/>
+<text x="856" y="325" fill="#e2e8f0" font-size="14.5" font-weight="600">Stop machine</text>
+<text x="856" y="343" fill="#94a3b8" font-size="11">notify shift supervisor · same-shift WO</text>
+<rect x="1058.0" y="305" width="74" height="16" rx="8" fill="#f43f5e" opacity="0.18" stroke="#f43f5e" stroke-width="0.8"/><text x="1095" y="316.5" fill="#f43f5e" font-size="9.5" font-weight="700" text-anchor="middle">ESCALATION</text>
+<rect x="840" y="589" width="300" height="58" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="840" y="589" width="4" height="58" rx="2" fill="#f59e0b"/>
+<text x="856" y="617" fill="#e2e8f0" font-size="14.5" font-weight="600">Procurement approval</text>
+<text x="856" y="635" fill="#94a3b8" font-size="11">order placed on sign-off</text>
+<rect x="1090.0" y="597" width="42" height="16" rx="8" fill="#f59e0b" opacity="0.18" stroke="#f59e0b" stroke-width="0.8"/><text x="1111" y="608.5" fill="#f59e0b" font-size="9.5" font-weight="700" text-anchor="middle">HUMAN</text>
+<path id="e1" d="M 590 180 L 590 214" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="0.00s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="0.00s" repeatCount="indefinite"><mpath href="#e1"/></animateMotion></circle>
+<path id="e2" d="M 590 286 L 590 300" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="0.55s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="0.55s" repeatCount="indefinite"><mpath href="#e2"/></animateMotion></circle>
+<path id="e3" d="M 590 352 L 590 400" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="1.10s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="1.10s" repeatCount="indefinite"><mpath href="#e3"/></animateMotion></circle>
+<text x="604" y="368" fill="#94a3b8" font-size="11" text-anchor="start">zones A-C: plan within window</text>
+<path id="e4" d="M 590 472 L 590 506" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="1.65s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="1.65s" repeatCount="indefinite"><mpath href="#e4"/></animateMotion></circle>
+<path id="e5" d="M 590 578 L 590 592" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="2.20s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="2.20s" repeatCount="indefinite"><mpath href="#e5"/></animateMotion></circle>
+<path id="e6" d="M 590 644 L 590 692" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="2.75s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="2.75s" repeatCount="indefinite"><mpath href="#e6"/></animateMotion></circle>
+<text x="604" y="660" fill="#94a3b8" font-size="11" text-anchor="start">&lt; $1k auto-issue</text>
+<path id="e7" d="M 590 764 L 590 798" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="3.30s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="3.30s" repeatCount="indefinite"><mpath href="#e7"/></animateMotion></circle>
+<path id="e8" d="M 590 870 L 590 904" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="3.85s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="3.85s" repeatCount="indefinite"><mpath href="#e8"/></animateMotion></circle>
+<path id="e9" d="M 340 728 L 430 728" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<path id="e10" d="M 616 326 L 790 326 L 840 326" stroke="#f43f5e" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#f43f5e" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="2.04s" begin="2.00s" repeatCount="indefinite"/><animateMotion dur="2.04s" begin="2.00s" repeatCount="indefinite"><mpath href="#e10"/></animateMotion></circle>
+<text x="784" y="318" fill="#94a3b8" font-size="11" text-anchor="end">danger zone</text>
+<path id="e11" d="M 616 618 L 790 618 L 840 618" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="2.04s" begin="2.00s" repeatCount="indefinite"/><animateMotion dur="2.04s" begin="2.00s" repeatCount="indefinite"><mpath href="#e11"/></animateMotion></circle>
+<text x="784" y="610" fill="#94a3b8" font-size="11" text-anchor="end">≥ $1k</text>
+<path id="e12" d="M 430 940 L 28 940 L 28 144 L 430 144" stroke="#f43f5e" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#f43f5e" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="14.55s" begin="3.20s" repeatCount="indefinite"/><animateMotion dur="14.55s" begin="3.20s" repeatCount="indefinite"><mpath href="#e12"/></animateMotion></circle>
+<text x="36" y="542.0" fill="#94a3b8" font-size="11" text-anchor="start">continuous improvement</text>
+<rect x="40" y="998" width="23" height="16" rx="8" fill="#3b82f6" opacity="0.18" stroke="#3b82f6" stroke-width="0.8"/><text x="51" y="1009.5" fill="#3b82f6" font-size="9.5" font-weight="700" text-anchor="middle">AI</text>
+<text x="68.8" y="1010" fill="#94a3b8" font-size="11">AI-executed step</text>
+<rect x="192.0" y="998" width="42" height="16" rx="8" fill="#f59e0b" opacity="0.18" stroke="#f59e0b" stroke-width="0.8"/><text x="213" y="1009.5" fill="#f59e0b" font-size="9.5" font-weight="700" text-anchor="middle">HUMAN</text>
+<text x="240.0" y="1010" fill="#94a3b8" font-size="11">human approval gate</text>
+<rect x="381.8" y="998" width="74" height="16" rx="8" fill="#f43f5e" opacity="0.18" stroke="#f43f5e" stroke-width="0.8"/><text x="419" y="1009.5" fill="#f43f5e" font-size="9.5" font-weight="700" text-anchor="middle">COMPLIANCE</text>
+<text x="461.8" y="1010" fill="#94a3b8" font-size="11">compliance checkpoint</text>
+<rect x="616.0" y="998" width="42" height="16" rx="8" fill="#22c55e" opacity="0.18" stroke="#22c55e" stroke-width="0.8"/><text x="637" y="1009.5" fill="#22c55e" font-size="9.5" font-weight="700" text-anchor="middle">WRITE</text>
+<text x="664.0" y="1010" fill="#94a3b8" font-size="11">transactional action</text>
+<rect x="812.0" y="998" width="74" height="16" rx="8" fill="#f43f5e" opacity="0.18" stroke="#f43f5e" stroke-width="0.8"/><text x="849" y="1009.5" fill="#f43f5e" font-size="9.5" font-weight="700" text-anchor="middle">ESCALATION</text>
+<text x="892.0" y="1010" fill="#94a3b8" font-size="11">escalation path</text>
+<rect x="1009.0" y="1000" width="12" height="12" rx="3" fill="#06b6d4" opacity="0.6"/>
+<text x="1027.0" y="1010" fill="#94a3b8" font-size="11">systems / policy data</text>
+<text x="40" y="1054" fill="#94a3b8" font-size="11.5">Deferred maintenance needs documented risk acceptance by the reliability manager · predictive triggers override calendar PMs</text>
+</svg>

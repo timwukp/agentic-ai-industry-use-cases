@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1180" height="1072" viewBox="0 0 1180 1072" font-family="ui-sans-serif, -apple-system, Helvetica, Arial">
+<rect width="1180" height="1072" fill="#0f172a"/>
+<text x="40" y="44" fill="#e2e8f0" font-size="21" font-weight="700">Finance Trading — Signal to Executed Order</text>
+<text x="40" y="70" fill="#94a3b8" font-size="13">Four labeled data worlds · every recommendation carries a suitability check · confirm-then-execute</text>
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8"/></marker></defs>
+<rect x="430" y="108" width="320" height="72" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="430" y="108" width="4" height="72" rx="2" fill="#3b82f6"/>
+<text x="446" y="136" fill="#e2e8f0" font-size="14.5" font-weight="600">Market intelligence</text>
+<text x="446" y="154" fill="#94a3b8" font-size="11">quotes · macro · news factors</text>
+<rect x="719.2" y="116" width="23" height="16" rx="8" fill="#3b82f6" opacity="0.18" stroke="#3b82f6" stroke-width="0.8"/><text x="731" y="127.5" fill="#3b82f6" font-size="9.5" font-weight="700" text-anchor="middle">AI</text>
+<rect x="430" y="214" width="320" height="72" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="430" y="214" width="4" height="72" rx="2" fill="#3b82f6"/>
+<text x="446" y="242" fill="#e2e8f0" font-size="14.5" font-weight="600">Regime &amp; signal read (PRISM)</text>
+<text x="446" y="260" fill="#94a3b8" font-size="11">regime = lens, never a timing signal</text>
+<rect x="719.2" y="222" width="23" height="16" rx="8" fill="#3b82f6" opacity="0.18" stroke="#3b82f6" stroke-width="0.8"/><text x="731" y="233.5" fill="#3b82f6" font-size="9.5" font-weight="700" text-anchor="middle">AI</text>
+<rect x="430" y="320" width="320" height="72" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="430" y="320" width="4" height="72" rx="2" fill="#3b82f6"/>
+<text x="446" y="348" fill="#e2e8f0" font-size="14.5" font-weight="600">Portfolio review</text>
+<text x="446" y="366" fill="#94a3b8" font-size="11">positions · P&amp;L · concentration</text>
+<rect x="719.2" y="328" width="23" height="16" rx="8" fill="#3b82f6" opacity="0.18" stroke="#3b82f6" stroke-width="0.8"/><text x="731" y="339.5" fill="#3b82f6" font-size="9.5" font-weight="700" text-anchor="middle">AI</text>
+<rect x="430" y="426" width="320" height="72" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="430" y="426" width="4" height="72" rx="2" fill="#3b82f6"/>
+<text x="446" y="454" fill="#e2e8f0" font-size="14.5" font-weight="600">Risk assessment</text>
+<text x="446" y="472" fill="#94a3b8" font-size="11">VaR · stress tests · Monte Carlo</text>
+<rect x="719.2" y="434" width="23" height="16" rx="8" fill="#3b82f6" opacity="0.18" stroke="#3b82f6" stroke-width="0.8"/><text x="731" y="445.5" fill="#3b82f6" font-size="9.5" font-weight="700" text-anchor="middle">AI</text>
+<polygon points="590,512 616,538 590,564 564,538" fill="#1e293b" stroke="#f59e0b" stroke-width="1.6"/>
+<text x="554" y="526" fill="#f59e0b" font-size="11.5" font-weight="600" text-anchor="end">margin call?</text>
+<rect x="426" y="608" width="328" height="80" rx="12" fill="none" stroke="#f43f5e" stroke-width="1" opacity="0.55"/>
+<rect x="430" y="612" width="320" height="72" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="430" y="612" width="4" height="72" rx="2" fill="#f43f5e"/>
+<text x="446" y="640" fill="#e2e8f0" font-size="14.5" font-weight="600">Suitability &amp; compliance check</text>
+<text x="446" y="658" fill="#94a3b8" font-size="11">profile matrix · restricted list</text>
+<rect x="668.0" y="620" width="74" height="16" rx="8" fill="#f43f5e" opacity="0.18" stroke="#f43f5e" stroke-width="0.8"/><text x="705" y="631.5" fill="#f43f5e" font-size="9.5" font-weight="700" text-anchor="middle">COMPLIANCE</text>
+<polygon points="590,698 616,724 590,750 564,724" fill="#1e293b" stroke="#f59e0b" stroke-width="1.6"/>
+<text x="554" y="712" fill="#f59e0b" font-size="11.5" font-weight="600" text-anchor="end">in profile?</text>
+<rect x="430" y="798" width="320" height="72" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="430" y="798" width="4" height="72" rx="2" fill="#f59e0b"/>
+<text x="446" y="826" fill="#e2e8f0" font-size="14.5" font-weight="600">Client confirmation</text>
+<text x="446" y="844" fill="#94a3b8" font-size="11">symbol · side · quantity · type</text>
+<rect x="700.0" y="806" width="42" height="16" rx="8" fill="#f59e0b" opacity="0.18" stroke="#f59e0b" stroke-width="0.8"/><text x="721" y="817.5" fill="#f59e0b" font-size="9.5" font-weight="700" text-anchor="middle">HUMAN</text>
+<rect x="430" y="904" width="320" height="72" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="430" y="904" width="4" height="72" rx="2" fill="#22c55e"/>
+<text x="446" y="932" fill="#e2e8f0" font-size="14.5" font-weight="600">Order placement &amp; management</text>
+<text x="446" y="950" fill="#94a3b8" font-size="11">market fills now · limit stays open</text>
+<rect x="700.0" y="912" width="42" height="16" rx="8" fill="#22c55e" opacity="0.18" stroke="#22c55e" stroke-width="0.8"/><text x="721" y="923.5" fill="#22c55e" font-size="9.5" font-weight="700" text-anchor="middle">WRITE</text>
+<rect x="60" y="115" width="280" height="58" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="60" y="115" width="4" height="58" rx="2" fill="#06b6d4"/>
+<text x="76" y="143" fill="#e2e8f0" font-size="14.5" font-weight="600">Data worlds (labeled)</text>
+<text x="76" y="161" fill="#94a3b8" font-size="11">LIVE · DERIVED · MODEL · SIMULATED</text>
+<rect x="60" y="619" width="280" height="58" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="60" y="619" width="4" height="58" rx="2" fill="#06b6d4"/>
+<text x="76" y="647" fill="#e2e8f0" font-size="14.5" font-weight="600">KB: margin &amp; suitability policy</text>
+<text x="76" y="665" fill="#94a3b8" font-size="11">profile matrix · restricted list</text>
+<rect x="840" y="509" width="300" height="58" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="840" y="509" width="4" height="58" rx="2" fill="#f43f5e"/>
+<text x="856" y="537" fill="#e2e8f0" font-size="14.5" font-weight="600">Risk Desk</text>
+<text x="856" y="555" fill="#94a3b8" font-size="11">margin calls &gt; $250k</text>
+<rect x="1058.0" y="517" width="74" height="16" rx="8" fill="#f43f5e" opacity="0.18" stroke="#f43f5e" stroke-width="0.8"/><text x="1095" y="528.5" fill="#f43f5e" font-size="9.5" font-weight="700" text-anchor="middle">ESCALATION</text>
+<rect x="840" y="695" width="300" height="58" rx="10" fill="#1e293b" stroke="#334155" stroke-width="1.5"/><rect x="840" y="695" width="4" height="58" rx="2" fill="#f59e0b"/>
+<text x="856" y="723" fill="#e2e8f0" font-size="14.5" font-weight="600">Supervisor approval</text>
+<text x="856" y="741" fill="#94a3b8" font-size="11">documented rationale required</text>
+<rect x="1090.0" y="703" width="42" height="16" rx="8" fill="#f59e0b" opacity="0.18" stroke="#f59e0b" stroke-width="0.8"/><text x="1111" y="714.5" fill="#f59e0b" font-size="9.5" font-weight="700" text-anchor="middle">HUMAN</text>
+<path id="e1" d="M 590 180 L 590 214" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="0.00s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="0.00s" repeatCount="indefinite"><mpath href="#e1"/></animateMotion></circle>
+<path id="e2" d="M 590 286 L 590 320" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="0.55s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="0.55s" repeatCount="indefinite"><mpath href="#e2"/></animateMotion></circle>
+<path id="e3" d="M 590 392 L 590 426" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="1.10s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="1.10s" repeatCount="indefinite"><mpath href="#e3"/></animateMotion></circle>
+<path id="e4" d="M 590 498 L 590 512" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="1.65s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="1.65s" repeatCount="indefinite"><mpath href="#e4"/></animateMotion></circle>
+<path id="e5" d="M 590 564 L 590 612" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="2.20s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="2.20s" repeatCount="indefinite"><mpath href="#e5"/></animateMotion></circle>
+<text x="604" y="580" fill="#94a3b8" font-size="11" text-anchor="start">none / cured</text>
+<path id="e6" d="M 590 684 L 590 698" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="2.75s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="2.75s" repeatCount="indefinite"><mpath href="#e6"/></animateMotion></circle>
+<path id="e7" d="M 590 750 L 590 798" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="3.30s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="3.30s" repeatCount="indefinite"><mpath href="#e7"/></animateMotion></circle>
+<text x="604" y="766" fill="#94a3b8" font-size="11" text-anchor="start">within client risk profile</text>
+<path id="e8" d="M 590 870 L 590 904" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="1.00s" begin="3.85s" repeatCount="indefinite"/><animateMotion dur="1.00s" begin="3.85s" repeatCount="indefinite"><mpath href="#e8"/></animateMotion></circle>
+<path id="e9" d="M 340 144 L 430 144" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<path id="e10" d="M 340 648 L 430 648" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<path id="e11" d="M 616 538 L 790 538 L 840 538" stroke="#f43f5e" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#f43f5e" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="2.04s" begin="2.00s" repeatCount="indefinite"/><animateMotion dur="2.04s" begin="2.00s" repeatCount="indefinite"><mpath href="#e11"/></animateMotion></circle>
+<text x="784" y="530" fill="#94a3b8" font-size="11" text-anchor="end">&gt; $250k same day</text>
+<path id="e12" d="M 616 724 L 790 724 L 840 724" stroke="#94a3b8" stroke-width="1.5" fill="none" marker-end="url(#arr)" stroke-dasharray="5 5"><animate attributeName="stroke-dashoffset" from="10" to="0" dur="0.9s" repeatCount="indefinite"/></path>
+<circle r="3.2" fill="#38bdf8" opacity="0"><animate attributeName="opacity" values="0;1;1;0" keyTimes="0;0.08;0.92;1" dur="2.04s" begin="2.00s" repeatCount="indefinite"/><animateMotion dur="2.04s" begin="2.00s" repeatCount="indefinite"><mpath href="#e12"/></animateMotion></circle>
+<text x="784" y="716" fill="#94a3b8" font-size="11" text-anchor="end">out-of-profile rec</text>
+<rect x="40" y="998" width="23" height="16" rx="8" fill="#3b82f6" opacity="0.18" stroke="#3b82f6" stroke-width="0.8"/><text x="51" y="1009.5" fill="#3b82f6" font-size="9.5" font-weight="700" text-anchor="middle">AI</text>
+<text x="68.8" y="1010" fill="#94a3b8" font-size="11">AI-executed step</text>
+<rect x="192.0" y="998" width="42" height="16" rx="8" fill="#f59e0b" opacity="0.18" stroke="#f59e0b" stroke-width="0.8"/><text x="213" y="1009.5" fill="#f59e0b" font-size="9.5" font-weight="700" text-anchor="middle">HUMAN</text>
+<text x="240.0" y="1010" fill="#94a3b8" font-size="11">human approval gate</text>
+<rect x="381.8" y="998" width="74" height="16" rx="8" fill="#f43f5e" opacity="0.18" stroke="#f43f5e" stroke-width="0.8"/><text x="419" y="1009.5" fill="#f43f5e" font-size="9.5" font-weight="700" text-anchor="middle">COMPLIANCE</text>
+<text x="461.8" y="1010" fill="#94a3b8" font-size="11">compliance checkpoint</text>
+<rect x="616.0" y="998" width="42" height="16" rx="8" fill="#22c55e" opacity="0.18" stroke="#22c55e" stroke-width="0.8"/><text x="637" y="1009.5" fill="#22c55e" font-size="9.5" font-weight="700" text-anchor="middle">WRITE</text>
+<text x="664.0" y="1010" fill="#94a3b8" font-size="11">transactional action</text>
+<rect x="812.0" y="998" width="74" height="16" rx="8" fill="#f43f5e" opacity="0.18" stroke="#f43f5e" stroke-width="0.8"/><text x="849" y="1009.5" fill="#f43f5e" font-size="9.5" font-weight="700" text-anchor="middle">ESCALATION</text>
+<text x="892.0" y="1010" fill="#94a3b8" font-size="11">escalation path</text>
+<rect x="1009.0" y="1000" width="12" height="12" rx="3" fill="#06b6d4" opacity="0.6"/>
+<text x="1027.0" y="1010" fill="#94a3b8" font-size="11">systems / policy data</text>
+<text x="40" y="1054" fill="#94a3b8" font-size="11.5">No crash dates or probabilities-by-date — ever · regime lags real time by 10+ trading days and is disclosed as history</text>
+</svg>

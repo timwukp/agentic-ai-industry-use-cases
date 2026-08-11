@@ -111,6 +111,8 @@ aws logs filter-log-events --log-group-name aws/spans \
 | 製造維護 | `manufacturing_maintenance_assistant` | equipment / prediction / maintenance / parts / kb | 設備健康 dashboard + 聊天 |
 | 房地產估值 | `real_estate_valuation_assistant` | valuation / market / investment / property / kb | 估值 dashboard + 聊天 |
 
+六個行業的業務決策流程——逐階段的關卡、閾值與人工審批點，從業者視角撰寫——記錄在 [docs/business-flows.zh-TW.md](docs/business-flows.zh-TW.md)。
+
 六個行業都是同一條命令上線的——`python deploy/deploy.py --industry <name>`——且**每個行業
 零新增 stack 代碼**：參數化的 `IndustryStack` 加上 gateway/harness/memory/observability
 腳本，全部從 `deploy/industries.py` 讀取配置。每個 dashboard 的 REST 路由宣告在
