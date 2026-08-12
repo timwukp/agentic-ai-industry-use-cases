@@ -7,7 +7,7 @@ decides CONFIRMED vs HYPOTHESIS. Pure functions over pandas inputs; all
 AWS I/O lives in runner.py.
 """
 
-PRISM_VERSION = "2026-08-10.1"  # +vol-filtered EVT (H4 candidate 2, back-tested green)
+PRISM_VERSION = "2026-08-12.1"  # scale-matched NIG prior + degenerate refusal + WLS n_eff (bands ~3x narrower at h=1 vs <=2026-08-10.x — instrument change, not a data change)
 
 from .data import build_panel, factor_series, to_returns  # noqa: E402,F401
 from .regime import RegimeResult, fit_regimes  # noqa: E402,F401
