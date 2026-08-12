@@ -160,6 +160,38 @@ def test_local_projection_recovers_planted_response():
     assert imp.prob_positive_20d > 0.9
 
 
+def test_credible_bands_calibrated_at_daily_return_scale():
+    # The sigma^2 prior must not dominate when the response is daily-return
+    # magnitude (~1e-2): an absolute-scale prior inflated 95% bands ~3x at
+    # h=1. Guard: band half-width stays within 30% of the frequentist oracle
+    # 1.96 * sqrt(h) * sigma / sqrt(n) at the scale the pipeline actually runs.
+    n, sigma, beta = 2600, 0.01, 0.002
+    horizons = [1, 5]
+    for seed in (7, 21, 42):
+        rng = np.random.default_rng(seed)
+        shock = rng.normal(0, 1, n)
+        eps = rng.normal(0, sigma, n)
+        resp = beta * np.roll(shock, 1) + eps
+        resp[0] = eps[0]
+        idx = pd.bdate_range("2015-01-01", periods=n)
+        panel = pd.DataFrame({"x": shock, "y": resp}, index=idx)
+        imp = local_projection(panel, "x", "y", horizons=horizons)
+        for h_i, h in enumerate(horizons):
+            lo95, hi95 = imp.band95[h_i]
+            half = (hi95 - lo95) / 2
+            oracle = 1.96 * np.sqrt(h) * sigma / np.sqrt(n)
+            assert half < 1.3 * oracle, (
+                f"seed={seed} h={h}: band half-width {half:.5f} vs oracle "
+                f"{oracle:.5f} — sigma^2 prior is dominating again"
+            )
+            # lower bound too: a collapsed prior would shrink bands BELOW the
+            # frequentist floor, silently overstating certainty
+            assert half > 0.7 * oracle, (
+                f"seed={seed} h={h}: band half-width {half:.5f} suspiciously "
+                f"narrow vs oracle {oracle:.5f}"
+            )
+
+
 # ---------------- tails ----------------
 
 

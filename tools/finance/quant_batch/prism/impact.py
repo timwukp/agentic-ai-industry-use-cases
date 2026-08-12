@@ -51,8 +51,13 @@ def _nig_posterior(X: np.ndarray, y: np.ndarray, ridge_lambda: float):
     cov = np.linalg.inv(prec)
     mean = cov @ (X.T @ y)
     resid = y - X @ mean
-    a_post = 1.0 + n / 2.0
-    b_post = 1.0 + 0.5 * (resid @ resid + mean @ prior_prec @ mean)
+    # The sigma^2 prior must scale with the response's variance: an absolute
+    # prior (b0=1) dominates b_post when y is daily-return magnitude (RSS over
+    # 10y at h=1 is ~0.25) and inflates the bands ~3x at short horizons.
+    a0 = 1e-3
+    b0 = a0 * max(float(np.var(y)), 1e-12)
+    a_post = a0 + n / 2.0
+    b_post = b0 + 0.5 * (resid @ resid + mean @ prior_prec @ mean)
     s2 = b_post / a_post  # posterior mean of sigma^2
     df = 2 * a_post
     return mean, cov, df, s2
