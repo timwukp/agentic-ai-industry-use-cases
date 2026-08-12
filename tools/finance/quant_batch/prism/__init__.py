@@ -17,7 +17,11 @@ from .causality import (  # noqa: E402,F401
     te_pvalue,
     transfer_entropy,
 )
-from .impact import ImpactResult, local_projection  # noqa: E402,F401
+from .impact import (  # noqa: E402,F401
+    ImpactResult,
+    local_projection,
+    regime_conditional,
+)
 from .tails import (  # noqa: E402,F401
     TailResult,
     bipower_jump_stat,

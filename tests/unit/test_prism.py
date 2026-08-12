@@ -34,6 +34,7 @@ from prism import (  # noqa: E402
     fit_vol_filtered_var,
     granger_pvalue,
     local_projection,
+    regime_conditional,
     te_pvalue,
     walk_forward,
 )
@@ -190,6 +191,47 @@ def test_credible_bands_calibrated_at_daily_return_scale():
                 f"seed={seed} h={h}: band half-width {half:.5f} suspiciously "
                 f"narrow vs oracle {oracle:.5f}"
             )
+
+
+def test_constant_response_is_refused_not_certain():
+    # A stale/forward-filled (constant) response carries no information; the
+    # honest output is the NaN refusal path, never a near-zero-width band
+    # presented as certainty.
+    rng = np.random.default_rng(5)
+    n = 500
+    panel = pd.DataFrame(
+        {"x": rng.normal(0, 1, n), "y": np.full(n, 0.0123)},
+        index=pd.bdate_range("2019-01-01", periods=n),
+    )
+    imp = local_projection(panel, "x", "y", horizons=[1, 5])
+    for b, (lo, hi) in zip(imp.beta_mean, imp.band95):
+        assert np.isnan(b) and np.isnan(lo) and np.isnan(hi)
+    assert np.isnan(imp.prob_positive_20d)
+
+
+def test_regime_conditional_counts_effective_sample():
+    # A regime active ~5% of days holds ~5% of the information but 100% of
+    # the rows; without the n_eff correction the sigma^2 update divides by n
+    # and shrinks bands ~sqrt(20)x too far. Guard: weighted bands stay within
+    # a factor ~2 of a fit on the in-regime rows alone.
+    rng = np.random.default_rng(11)
+    n = 4000
+    x = rng.normal(0, 1, n)
+    y = 0.002 * np.roll(x, 1) + rng.normal(0, 0.01, n)
+    y[0] = 0.0
+    idx = pd.bdate_range("2010-01-01", periods=n)
+    panel = pd.DataFrame({"x": x, "y": y}, index=idx)
+    probs = pd.Series(0.0, index=idx)
+    probs.iloc[::20] = 1.0  # hard 5% regime
+    imp_w = regime_conditional(panel, "x", "y", probs, horizons=[1])
+    imp_sub = local_projection(panel[probs == 1.0], "x", "y", horizons=[1])
+    hw_w = (imp_w.band95[0][1] - imp_w.band95[0][0]) / 2
+    hw_sub = (imp_sub.band95[0][1] - imp_sub.band95[0][0]) / 2
+    ratio = hw_w / hw_sub
+    assert 0.4 < ratio < 2.5, (
+        f"weighted/in-regime band ratio {ratio:.3f} — effective-sample "
+        "correction is broken (old bug gave ~0.05)"
+    )
 
 
 # ---------------- tails ----------------
