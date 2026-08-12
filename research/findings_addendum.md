@@ -385,3 +385,33 @@ the old prior fails it, the fix passes.
 instrument defect and repaired — it is no longer an open deficiency for future
 method searches. Any residual H3-flavored question after the next nightly
 refit should be re-diagnosed from scratch, not inherited.
+
+### Amendment (2026-08-12, post-review): deploy reality + instrument-version discontinuity
+
+An independent code review of the fix corrected three claims in the section
+above and surfaced two regressions the fix itself introduced (both repaired
+in the follow-up commit this amendment ships with):
+
+1. **"After the next nightly refit" was wrong**: the nightly quant batch is a
+   manually-deployed Docker Lambda (`finance-quant-batch`, CDK image asset).
+   Merging the fix does NOT deploy it — bands narrow only after the finance
+   stack is redeployed. Until then the nightly output still carries the old
+   ~3x-inflated bands.
+2. **The old b0=1.0 was silently doubling as a degenerate-data floor.** With
+   the scale-matched prior, a constant/near-constant response (stale or
+   forward-filled series) produced near-zero-width bands presented as
+   certainty, and `prob_positive_20d` could saturate to exactly 0/1. Repaired:
+   degenerate responses and near-empty effective samples now take the NaN
+   refusal path.
+3. **`regime_conditional` counted raw rows, not effective sample** — a regime
+   active 5% of days got bands ~sqrt(20)x too narrow (latent: no production
+   caller). Repaired with textbook row-level WLS + n_eff = (Σw)²/Σw²;
+   mutation-checked tests added for both repairs.
+
+**Instrument-version discontinuity**: the sealed C10–C40 results and
+report.md band-gate verdicts (`band95_excludes_zero*`) were generated under
+the pre-2026-08-12 prior. Re-runs under the fixed prior will flip some 分歧
+verdicts purely from the instrument change — such re-runs are new evidence
+under a corrected instrument, not reproductions of the sealed study.
+`run_study.py`'s docstring previously claimed "PRISM is imported frozen";
+it is imported live and the docstring now says so.

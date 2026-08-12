@@ -2,7 +2,12 @@
 
 Executes the pre-registered protocol (research/protocol.md, frozen at tag
 `study-preregistered`) over the cohorts in §2 and hypotheses H1–H8 in §3.
-PRISM is imported frozen; all point-in-time machinery lives in studylib.
+PRISM is imported LIVE from tools/finance/quant_batch (sys.path below), so
+re-runs use the estimator as of the current checkout, not as of the tag:
+the sealed C10–C40 results and report.md were generated under the pre-
+2026-08-12 NIG prior (see findings_addendum "H3 root cause"); band-gate
+verdicts from re-runs after that fix are NOT comparable with the sealed
+artifacts. Point-in-time machinery (data discipline) lives in studylib.
 
 Usage:
     .venv/bin/python research/run_study.py [--cohort C36] [--skip-h1b]
