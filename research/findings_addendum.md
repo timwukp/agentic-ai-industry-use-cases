@@ -354,3 +354,34 @@ Regime = validated historical lens (AUROC 0.85–0.91 cited) with explicit
 lag caveat; impact functions presented as bands; crash-timing questions
 get the fragility-vs-trigger framing with the SPA finding cited; per-regime
 tails offered as descriptive context only.
+
+## H3 root cause found — calibration defect in the incumbent, not a missing method (2026-08-12)
+
+The theory scout's first autonomous cycle (2026-08-11, SLP rejection) escalated
+a lead while rejecting its candidate: the incumbent `_nig_posterior` prior
+looked mis-scaled. A planted-truth audit through the production entry point
+(`local_projection`, 50 seeds, n=2600, sigma=1%, beta=20bp) confirmed it:
+
+| h | band half-width / frequentist oracle | coverage @ nominal 95% |
+|---|---|---|
+| 1 | **2.96x** | 100% |
+| 5 | 1.61x | 100% |
+| 20 | 1.19x | 100% |
+
+Mechanism: the absolute-scale prior (a0=b0=1) contributed **88.7% of b_post**
+at h=1 — ten years of daily-return RSS is only ~0.25, so the prior swamped the
+data, worst exactly where H3 said the bands were widest (h<=5). The original
+unit-scale synthetic test could not see this: at beta=0.5, sigma=0.5 the prior
+is negligible — the instrument was calibrated at a scale the pipeline never
+runs.
+
+Fix (same audit, re-run post-fix): scale-matched weak prior
+`a0=1e-3, b0=a0*var(y)` brings bands within 1–2% of the oracle at every
+horizon with coverage at nominal (92–96%). Mutation-checked regression test
+added at daily-return scale (`test_credible_bands_calibrated_at_daily_return_scale`);
+the old prior fails it, the fix passes.
+
+**Status of H3**: the "bands too wide at h<=5" deficiency is root-caused as an
+instrument defect and repaired — it is no longer an open deficiency for future
+method searches. Any residual H3-flavored question after the next nightly
+refit should be re-diagnosed from scratch, not inherited.
