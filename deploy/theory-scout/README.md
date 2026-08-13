@@ -4,8 +4,10 @@ A scheduled, autonomous research agent that keeps the `research/` pipeline
 fed without a human remembering to run it. It executes **Phases 0–2 only**
 of [skills/theory-to-production](../../skills/theory-to-production/SKILL.md)
 and hard-stops at a `DRAFT_protocol_*.md` pull request: humans freeze, test,
-and promote. An empty-handed run (no candidate survives screening) opens no
-PR and is a valid outcome.
+and promote. An empty-handed run (no candidate survives screening) is a valid
+outcome; it opens a **micro-PR** appending one rejection line per screened
+candidate to `research/rejected_candidates.md` — nothing else — so the shelf
+remembers dead candidates and the next cycle cannot re-shop them.
 
 ## Architecture
 

@@ -67,10 +67,10 @@ Phases 0–2 — shelf-read first (this directory IS the shelf), survey against
 the current constraint fingerprint, one candidate max, synthetic
 positive-control power check before any real-data spend. Its mandate stops
 at a `DRAFT_protocol_*.md` PR; humans freeze, test, and promote. Candidates
-it rejects *before* a protocol freeze (e.g. Smooth Local Projections,
-2026-08-11: best power 28.7% vs the 80% gate) currently live only in the
-scout's run logs, not on this shelf — treat a scout PR's "searched and
-rejected" section as part of the record when reviewing.
+it rejects *before* a protocol freeze land as one-line entries in
+[rejected_candidates.md](rejected_candidates.md) via micro-PRs (merge = human
+acknowledgment), so an empty-handed cycle still leaves a shelf record and the
+next cycle cannot re-shop a dead candidate.
 
 ## File map
 
@@ -84,6 +84,7 @@ rejected" section as part of the record when reviewing.
 - `data/` — local mirror of fetched series (regenerable; not committed)
 - `deep_research_*.json` — adversarially-verified survey archives
 - `conditional_candidates.md` — representation-bound candidates + triggers
+- `rejected_candidates.md` — pre-freeze screening kills (scout-appended)
 
 ## Reproduction
 
