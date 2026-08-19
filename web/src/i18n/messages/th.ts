@@ -7,6 +7,7 @@ export const th = {
     view: 'มุมมอง',
     dashboard: 'แดชบอร์ด',
     chat: 'แชท',
+    architecture: 'สถาปัตยกรรม',
     industries: 'อุตสาหกรรม',
     signOut: 'ออกจากระบบ',
     showChat: 'แสดงแชท',
@@ -20,6 +21,19 @@ export const th = {
     soon: 'เร็วๆ นี้',
     close: 'ปิด',
     language: 'ภาษา',
+  },
+
+  architecture: {
+    title: 'สถาปัตยกรรมโซลูชัน',
+    intro:
+      'เดโมนี้ทำงานบน AWS อย่างไร: React PWA ที่หนุนด้วย Bedrock AgentCore harness รายอุตสาหกรรม เครื่องมือ Gateway MCP และ REST API ของแดชบอร์ด',
+    system: 'สถาปัตยกรรมระบบ',
+    systemCaption:
+      'PWA ที่ปกป้องด้วย Cognito, harness หกอุตสาหกรรม, เครื่องมือ Gateway, คลังความรู้บน S3 Vectors และ API แดชบอร์ด',
+    flow: 'โฟลว์คำขอ',
+    flowCaption:
+      'แชทสตรีมผ่าน AgentCore harness ส่วนแดชบอร์ดใช้ REST — ตรวจสอบ JWT ทุกจุดเข้า',
+    readme: 'รายละเอียดทั้งหมดใน README บน GitHub',
   },
 
   login: {

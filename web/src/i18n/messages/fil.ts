@@ -12,6 +12,7 @@ export const fil = {
     view: 'View',
     dashboard: 'Dashboard',
     chat: 'Chat',
+    architecture: 'Arkitektura',
     industries: 'Mga Industriya',
     signOut: 'Mag-sign out',
     showChat: 'Ipakita ang chat',
@@ -25,6 +26,19 @@ export const fil = {
     soon: 'malapit na',
     close: 'Isara',
     language: 'Wika',
+  },
+
+  architecture: {
+    title: 'Arkitektura ng Solusyon',
+    intro:
+      'Paano tumatakbo ang demo na ito sa AWS: React PWA na suportado ng mga Bedrock AgentCore harness bawat industriya, mga Gateway MCP tool, at REST dashboard API.',
+    system: 'Arkitektura ng sistema',
+    systemCaption:
+      'PWA na protektado ng Cognito, anim na harness ng industriya, mga Gateway tool, knowledge base sa S3 Vectors, at mga dashboard API.',
+    flow: 'Daloy ng kahilingan',
+    flowCaption:
+      'Ang chat ay nag-i-stream sa AgentCore harness; REST ang gamit ng mga dashboard — bine-verify ang JWT sa bawat pasukan.',
+    readme: 'Buong detalye sa GitHub README',
   },
 
   login: {

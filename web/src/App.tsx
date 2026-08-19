@@ -62,6 +62,14 @@ export default function App() {
               }
             />
             <Route
+              path="/:industryId/architecture"
+              element={
+                <RequireAuth>
+                  <AppShell view="architecture" />
+                </RequireAuth>
+              }
+            />
+            <Route
               path="*"
               element={<Navigate to={`/${DEFAULT_INDUSTRY_ID}/dashboard`} replace />}
             />

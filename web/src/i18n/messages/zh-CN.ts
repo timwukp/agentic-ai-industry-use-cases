@@ -7,6 +7,7 @@ export const zhCN = {
     view: '视图',
     dashboard: '仪表盘',
     chat: '对话',
+    architecture: '架构',
     industries: '行业',
     signOut: '退出登录',
     showChat: '显示对话',
@@ -20,6 +21,19 @@ export const zhCN = {
     soon: '即将上线',
     close: '关闭',
     language: '语言',
+  },
+
+  architecture: {
+    title: '解决方案架构',
+    intro:
+      '这个演示在 AWS 上的运行方式：React PWA 前端，后端为各行业的 Bedrock AgentCore harness、Gateway MCP 工具与 REST 仪表板 API。',
+    system: '系统架构',
+    systemCaption:
+      'Cognito 保护的 PWA、六个行业 harness、Gateway 工具、S3 Vectors 知识库与仪表板 API。',
+    flow: '请求流程',
+    flowCaption:
+      '聊天经 AgentCore harness 流式传输；仪表板走 REST——每个入口都验证 JWT。',
+    readme: '完整设计见 GitHub README',
   },
 
   login: {

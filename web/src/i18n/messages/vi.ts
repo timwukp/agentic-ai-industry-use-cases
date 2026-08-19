@@ -7,6 +7,7 @@ export const vi = {
     view: 'Chế độ xem',
     dashboard: 'Bảng điều khiển',
     chat: 'Trò chuyện',
+    architecture: 'Kiến trúc',
     industries: 'Ngành',
     signOut: 'Đăng xuất',
     showChat: 'Hiện trò chuyện',
@@ -20,6 +21,19 @@ export const vi = {
     soon: 'sắp ra mắt',
     close: 'Đóng',
     language: 'Ngôn ngữ',
+  },
+
+  architecture: {
+    title: 'Kiến trúc giải pháp',
+    intro:
+      'Cách demo này chạy trên AWS: PWA React được hỗ trợ bởi harness Bedrock AgentCore theo ngành, công cụ Gateway MCP và API REST cho bảng điều khiển.',
+    system: 'Kiến trúc hệ thống',
+    systemCaption:
+      'PWA bảo vệ bằng Cognito, sáu harness theo ngành, công cụ Gateway, cơ sở tri thức trên S3 Vectors và API bảng điều khiển.',
+    flow: 'Luồng yêu cầu',
+    flowCaption:
+      'Chat truyền trực tuyến qua harness AgentCore; bảng điều khiển dùng REST — JWT được xác minh ở mọi cổng vào.',
+    readme: 'Chi tiết đầy đủ trong README trên GitHub',
   },
 
   login: {

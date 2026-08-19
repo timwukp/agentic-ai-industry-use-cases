@@ -7,6 +7,7 @@ export const ms = {
     view: 'Paparan',
     dashboard: 'Papan Pemuka',
     chat: 'Sembang',
+    architecture: 'Seni bina',
     industries: 'Industri',
     signOut: 'Log keluar',
     showChat: 'Tunjukkan sembang',
@@ -20,6 +21,19 @@ export const ms = {
     soon: 'akan datang',
     close: 'Tutup',
     language: 'Bahasa',
+  },
+
+  architecture: {
+    title: 'Seni Bina Penyelesaian',
+    intro:
+      'Cara demo ini berjalan di AWS: PWA React disokong oleh harness Bedrock AgentCore mengikut industri, alat Gateway MCP dan API papan pemuka REST.',
+    system: 'Seni bina sistem',
+    systemCaption:
+      'PWA dilindungi Cognito, enam harness industri, alat Gateway, pangkalan pengetahuan di S3 Vectors dan API papan pemuka.',
+    flow: 'Aliran permintaan',
+    flowCaption:
+      'Sembang distrim melalui harness AgentCore; papan pemuka menggunakan REST — JWT disahkan pada setiap pintu masuk.',
+    readme: 'Butiran penuh dalam README GitHub',
   },
 
   login: {

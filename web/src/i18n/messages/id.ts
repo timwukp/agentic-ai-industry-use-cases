@@ -7,6 +7,7 @@ export const id = {
     view: 'Tampilan',
     dashboard: 'Dasbor',
     chat: 'Obrolan',
+    architecture: 'Arsitektur',
     industries: 'Industri',
     signOut: 'Keluar',
     showChat: 'Tampilkan obrolan',
@@ -20,6 +21,19 @@ export const id = {
     soon: 'segera',
     close: 'Tutup',
     language: 'Bahasa',
+  },
+
+  architecture: {
+    title: 'Arsitektur Solusi',
+    intro:
+      'Cara demo ini berjalan di AWS: PWA React yang didukung harness Bedrock AgentCore per industri, alat Gateway MCP, dan API dasbor REST.',
+    system: 'Arsitektur sistem',
+    systemCaption:
+      'PWA yang diamankan Cognito, enam harness industri, alat Gateway, basis pengetahuan di S3 Vectors, dan API dasbor.',
+    flow: 'Alur permintaan',
+    flowCaption:
+      'Chat dialirkan melalui harness AgentCore; dasbor memakai REST — JWT diverifikasi di setiap pintu masuk.',
+    readme: 'Detail lengkap di README GitHub',
   },
 
   login: {
