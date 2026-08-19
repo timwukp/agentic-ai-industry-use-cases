@@ -51,7 +51,9 @@ export default function AppShell({ view }: { view: ShellView }) {
   const { user, signOut } = useAuth()
   const { t } = useLocale()
 
-  const industry = getIndustry(industryId)
+  // '/' and '/architecture' render without an :industryId param — fall back
+  // to the default industry for links and dashboard content.
+  const industry = getIndustry(industryId ?? DEFAULT_INDUSTRY_ID)
 
   // Desktop-only chat collapse; md rail expansion; mobile industries sheet.
   const [chatCollapsed, setChatCollapsed] = useState(false)
@@ -146,7 +148,7 @@ export default function AppShell({ view }: { view: ShellView }) {
   }, [])
 
   if (!industry) {
-    return <Navigate to={`/${DEFAULT_INDUSTRY_ID}/dashboard`} replace />
+    return <Navigate to="/" replace />
   }
 
   const Dashboard = industry.Dashboard
@@ -182,7 +184,7 @@ export default function AppShell({ view }: { view: ShellView }) {
     <nav className="space-y-1">
       {industries.map((item) => {
         const Icon = item.icon
-        const active = item.id === industry.id
+        const active = view !== 'architecture' && item.id === industry.id
         return (
           <Link
             key={item.id}
@@ -232,10 +234,19 @@ export default function AppShell({ view }: { view: ShellView }) {
           </button>
         </div>
         <div className="flex items-center gap-2.5 min-w-0">
-          <IndustryIcon className={`w-5 h-5 shrink-0 ${industry.themeColor}`} />
-          <h1 className="text-sm font-semibold text-white truncate">
-            {t(`industries.${industry.id}.name`)}
-          </h1>
+          <Link to="/" className="flex items-center gap-2.5 min-w-0">
+            <Bot className="w-5 h-5 shrink-0 text-blue-400" />
+            <h1 className="text-sm font-semibold text-white truncate">
+              {t('chrome.appTitle')}
+            </h1>
+          </Link>
+          {view !== 'architecture' && (
+            <span className="hidden sm:flex items-center gap-1.5 min-w-0 text-sm text-slate-500">
+              <span className="text-slate-700">/</span>
+              <IndustryIcon className={`w-4 h-4 shrink-0 ${industry.themeColor}`} />
+              <span className="truncate">{t(`industries.${industry.id}.name`)}</span>
+            </span>
+          )}
         </div>
         <div className="flex-1" />
         {/* Desktop chat collapse toggle */}
@@ -287,7 +298,19 @@ export default function AppShell({ view }: { view: ShellView }) {
                 {navLink('dashboard', t('chrome.dashboard'), LayoutDashboard)}
                 {navLink('chat', t('chrome.chat'), MessageSquare)}
               </div>
-              {navLink('architecture', t('chrome.architecture'), Network)}
+              <Link
+                to="/architecture"
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
+                  view === 'architecture'
+                    ? 'bg-slate-800 text-white'
+                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                }`}
+              >
+                <Network className="w-4 h-4 shrink-0" />
+                <span className={`${railExpanded ? 'inline' : 'hidden'} lg:inline truncate`}>
+                  {t('chrome.architecture')}
+                </span>
+              </Link>
             </nav>
           </div>
           <div className="flex-1 min-h-0 overflow-y-auto">
@@ -459,7 +482,7 @@ export default function AppShell({ view }: { view: ShellView }) {
           active={view === 'architecture' && !industriesOpen}
           onClick={() => {
             setIndustriesOpen(false)
-            navigate(`/${industry.id}/architecture`)
+            navigate('/architecture')
           }}
         />
         <MobileTab
@@ -491,7 +514,7 @@ export default function AppShell({ view }: { view: ShellView }) {
             <nav className="space-y-1">
               {industries.map((item) => {
                 const Icon = item.icon
-                const active = item.id === industry.id
+                const active = view !== 'architecture' && item.id === industry.id
                 return (
                   <Link
                     key={item.id}

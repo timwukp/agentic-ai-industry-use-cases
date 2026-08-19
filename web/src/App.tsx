@@ -9,7 +9,6 @@ import {
 import { Loader2 } from 'lucide-react'
 import { LocaleProvider } from './i18n/LocaleContext'
 import { AuthProvider, useAuth } from './lib/AuthContext'
-import { DEFAULT_INDUSTRY_ID } from './industries/registry'
 import AppShell from './components/AppShell'
 import LoginPage from './components/LoginPage'
 
@@ -33,7 +32,7 @@ function RequireAuth({ children }: { children: ReactNode }) {
 function LoginRoute() {
   const { user, loading } = useAuth()
   if (loading) return <FullPageSpinner />
-  if (user) return <Navigate to={`/${DEFAULT_INDUSTRY_ID}/dashboard`} replace />
+  if (user) return <Navigate to="/" replace />
   return <LoginPage />
 }
 
@@ -61,8 +60,9 @@ export default function App() {
                 </RequireAuth>
               }
             />
+            {/* Architecture is industry-agnostic — one canonical URL. */}
             <Route
-              path="/:industryId/architecture"
+              path="/architecture"
               element={
                 <RequireAuth>
                   <AppShell view="architecture" />
@@ -70,9 +70,19 @@ export default function App() {
               }
             />
             <Route
-              path="*"
-              element={<Navigate to={`/${DEFAULT_INDUSTRY_ID}/dashboard`} replace />}
+              path="/:industryId/architecture"
+              element={<Navigate to="/architecture" replace />}
             />
+            {/* The home URL IS the default dashboard — no redirect. */}
+            <Route
+              path="/"
+              element={
+                <RequireAuth>
+                  <AppShell view="dashboard" />
+                </RequireAuth>
+              }
+            />
+            <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </BrowserRouter>
       </AuthProvider>

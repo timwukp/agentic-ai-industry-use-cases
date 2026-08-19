@@ -13,7 +13,11 @@ async function login(page) {
 
 test('architecture page renders both animated diagrams', async ({ page, isMobile }) => {
   await login(page);
+  await page.goto('/architecture');
+
+  // legacy industry-scoped URL canonicalizes
   await page.goto('/finance/architecture');
+  await expect(page).toHaveURL(/\/architecture$/);
 
   for (const name of ['System architecture', 'Request flow']) {
     const img = page.getByRole('img', { name });
@@ -42,7 +46,7 @@ test('switching industry from the architecture page lands on its dashboard', asy
 }) => {
   test.skip(isMobile, 'sidebar industry list is desktop/tablet only');
   await login(page);
-  await page.goto('/finance/architecture');
+  await page.goto('/architecture');
   await expect(page.getByRole('img', { name: 'System architecture' })).toBeVisible({
     timeout: 15_000,
   });
