@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import {
   Bot,
   LayoutDashboard,
+  Network,
   LogOut,
   Maximize2,
   MessageSquare,
@@ -19,10 +20,11 @@ import { AGENT_PROMPT_EVENT, ANSWER_CHARTS_EVENT } from '../lib/promptBus'
 import { useAuth } from '../lib/AuthContext'
 import AnswerChartPanel from './AnswerChartPanel'
 import type { ChartSpec } from '../lib/chartSpec'
+import ArchitecturePage from './ArchitecturePage'
 import ChatPanel from './ChatPanel'
 import LocalePicker from './LocalePicker'
 
-export type ShellView = 'dashboard' | 'chat'
+export type ShellView = 'dashboard' | 'chat' | 'architecture'
 
 /** Desktop chat pane display mode. 'normal' honors the resizable width;
  *  'max' fills the main area (dashboard hidden); 'min' collapses to a thin
@@ -274,8 +276,13 @@ export default function AppShell({ view }: { view: ShellView }) {
               {t('chrome.view')}
             </div>
             <nav className="space-y-1">
-              {navLink('dashboard', t('chrome.dashboard'), LayoutDashboard)}
-              {navLink('chat', t('chrome.chat'), MessageSquare)}
+              {/* Dashboard/Chat switch panes only below lg (at lg+ both panes
+                  are side by side), so the links only exist where they act. */}
+              <div className="lg:hidden space-y-1">
+                {navLink('dashboard', t('chrome.dashboard'), LayoutDashboard)}
+                {navLink('chat', t('chrome.chat'), MessageSquare)}
+              </div>
+              {navLink('architecture', t('chrome.architecture'), Network)}
             </nav>
           </div>
           <div className="flex-1 min-h-0 overflow-y-auto">
@@ -299,7 +306,11 @@ export default function AppShell({ view }: { view: ShellView }) {
           <div
             className={`flex-1 min-w-0 flex flex-col @container ${
               view === 'dashboard' ? 'flex' : 'hidden'
-            } ${chatMode === 'max' && !chatCollapsed ? 'lg:hidden' : 'lg:flex'}`}
+            } ${
+              view === 'architecture' || (chatMode === 'max' && !chatCollapsed)
+                ? 'lg:hidden'
+                : 'lg:flex'
+            }`}
           >
             {/* lg+ only: below lg the same charts render inline under the message
                 (see ChatPanel), because there the dashboard is a different view.
@@ -321,9 +332,17 @@ export default function AppShell({ view }: { view: ShellView }) {
             </div>
           </div>
 
+          {/* Architecture pane: stateless, so mounted only when active
+              (dashboard/chat stay mounted and hide via CSS to keep state). */}
+          {view === 'architecture' && (
+            <div className="flex-1 min-w-0 min-h-0">
+              <ArchitecturePage />
+            </div>
+          )}
+
           {/* Resize handle: desktop only, hidden when chat is collapsed,
               minimized, or maximized (no boundary to drag in those states). */}
-          {!chatCollapsed && chatMode === 'normal' && (
+          {view !== 'architecture' && !chatCollapsed && chatMode === 'normal' && (
             <div
               role="separator"
               aria-orientation="vertical"
@@ -340,7 +359,7 @@ export default function AppShell({ view }: { view: ShellView }) {
 
           {/* Chat pane: active view below lg; right split at lg+ with
               normal (resizable) / max / min modes. */}
-          {chatMode === 'min' && !chatCollapsed ? (
+          {view !== 'architecture' && chatMode === 'min' && !chatCollapsed ? (
             <div className="hidden lg:flex w-11 shrink-0 border-l border-slate-800 bg-slate-900/60 flex-col items-center pt-3 gap-2">
               <button
                 onClick={() => setChatMode('normal')}
@@ -356,7 +375,7 @@ export default function AppShell({ view }: { view: ShellView }) {
             <div
               className={`min-w-0 lg:border-l lg:border-slate-800 ${
                 view === 'chat' ? 'flex-1 block' : 'hidden'
-              } ${chatCollapsed ? 'lg:hidden' : 'lg:block'} ${
+              } ${chatCollapsed || view === 'architecture' ? 'lg:hidden' : 'lg:block'} ${
                 chatMode === 'max' ? 'lg:flex-1' : 'lg:flex-none'
               }`}
               style={
@@ -427,6 +446,15 @@ export default function AppShell({ view }: { view: ShellView }) {
           onClick={() => {
             setIndustriesOpen(false)
             navigate(`/${industry.id}/chat`)
+          }}
+        />
+        <MobileTab
+          label={t('chrome.architecture')}
+          icon={Network}
+          active={view === 'architecture' && !industriesOpen}
+          onClick={() => {
+            setIndustriesOpen(false)
+            navigate(`/${industry.id}/architecture`)
           }}
         />
         <MobileTab
@@ -512,7 +540,7 @@ function MobileTab({
       }`}
     >
       <Icon className="w-5 h-5" />
-      {label}
+      <span className="truncate max-w-full px-0.5">{label}</span>
     </button>
   )
 }

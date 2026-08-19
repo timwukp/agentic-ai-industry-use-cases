@@ -7,6 +7,7 @@ export const de = {
     view: 'Ansicht',
     dashboard: 'Dashboard',
     chat: 'Chat',
+    architecture: 'Architektur',
     industries: 'Branchen',
     signOut: 'Abmelden',
     showChat: 'Chat einblenden',
@@ -20,6 +21,19 @@ export const de = {
     soon: 'bald',
     close: 'Schließen',
     language: 'Sprache',
+  },
+
+  architecture: {
+    title: 'Lösungsarchitektur',
+    intro:
+      'So läuft diese Demo auf AWS: eine React-PWA, getragen von branchenspezifischen Bedrock-AgentCore-Harnessen, Gateway-MCP-Tools und REST-Dashboard-APIs.',
+    system: 'Systemarchitektur',
+    systemCaption:
+      'Cognito-gesicherte PWA, sechs Branchen-Harnesse, Gateway-Tools, Wissensdatenbanken auf S3 Vectors und Dashboard-APIs.',
+    flow: 'Anfragefluss',
+    flowCaption:
+      'Chat streamt über den AgentCore-Harness; Dashboards nutzen REST — das JWT wird an jedem Eingang geprüft.',
+    readme: 'Alle Details im GitHub-README',
   },
 
   login: {

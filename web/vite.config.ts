@@ -42,6 +42,8 @@ export default defineConfig({
         // Never let the SW intercept API / agent streaming calls.
         navigateFallbackDenylist: [/^\/api\//, /^\/agent\//],
         runtimeCaching: [],
+        // default is js/css/html only — include the architecture SVGs (~23KB)
+        globPatterns: ['**/*.{js,css,html,svg}'],
       },
     }),
   ],

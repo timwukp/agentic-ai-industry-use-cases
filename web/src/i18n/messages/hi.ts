@@ -13,6 +13,7 @@ export const hi = {
     view: 'दृश्य',
     dashboard: 'डैशबोर्ड',
     chat: 'चैट',
+    architecture: 'आर्किटेक्चर',
     industries: 'उद्योग',
     signOut: 'साइन आउट',
     showChat: 'चैट दिखाएँ',
@@ -26,6 +27,19 @@ export const hi = {
     soon: 'जल्द',
     close: 'बंद करें',
     language: 'भाषा',
+  },
+
+  architecture: {
+    title: 'समाधान आर्किटेक्चर',
+    intro:
+      'यह डेमो AWS पर कैसे चलता है: React PWA, जिसके पीछे उद्योग-वार Bedrock AgentCore harness, Gateway MCP टूल और REST डैशबोर्ड API हैं।',
+    system: 'सिस्टम आर्किटेक्चर',
+    systemCaption:
+      'Cognito-सुरक्षित PWA, छह उद्योग harness, Gateway टूल, S3 Vectors पर नॉलेज बेस और डैशबोर्ड API।',
+    flow: 'अनुरोध प्रवाह',
+    flowCaption:
+      'चैट AgentCore harness से स्ट्रीम होती है; डैशबोर्ड REST उपयोग करते हैं — हर प्रवेश पर JWT सत्यापित होता है।',
+    readme: 'पूरा विवरण GitHub README में',
   },
 
   login: {

@@ -7,6 +7,7 @@ export const ko = {
     view: '보기',
     dashboard: '대시보드',
     chat: '채팅',
+    architecture: '아키텍처',
     industries: '산업',
     signOut: '로그아웃',
     showChat: '채팅 표시',
@@ -20,6 +21,19 @@ export const ko = {
     soon: '출시 예정',
     close: '닫기',
     language: '언어',
+  },
+
+  architecture: {
+    title: '솔루션 아키텍처',
+    intro:
+      '이 데모의 AWS 구성: React PWA를 업계별 Bedrock AgentCore 하니스, Gateway MCP 도구, REST 대시보드 API가 지원합니다.',
+    system: '시스템 아키텍처',
+    systemCaption:
+      'Cognito로 보호되는 PWA, 6개 업계 하니스, Gateway 도구, S3 Vectors 지식 베이스, 대시보드 API.',
+    flow: '요청 흐름',
+    flowCaption:
+      '채팅은 AgentCore 하니스를 통해 스트리밍되고 대시보드는 REST를 사용하며 모든 진입점에서 JWT를 검증합니다.',
+    readme: '자세한 내용은 GitHub README 참조',
   },
 
   login: {

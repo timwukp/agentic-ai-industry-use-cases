@@ -30,7 +30,7 @@ test('the picker switches the UI language and the choice survives a reload', asy
   await page.goto('/finance/dashboard');
 
   // English baseline: the sidebar nav renders the default locale.
-  await expect(page.getByRole('link', { name: 'Dashboard' }).first()).toBeVisible({
+  await expect(page.getByRole('link', { name: 'Architecture' }).first()).toBeVisible({
     timeout: 30_000,
   });
 
@@ -38,7 +38,7 @@ test('the picker switches the UI language and the choice survives a reload', asy
   await page.getByTestId('locale-picker').first().selectOption('zh-TW');
 
   // Chrome translates: nav links, chat header, and a dashboard StatCard title.
-  await expect(page.getByRole('link', { name: '儀表板' }).first()).toBeVisible({
+  await expect(page.getByRole('link', { name: '架構' }).first()).toBeVisible({
     timeout: 15_000,
   });
   await expect(page.getByText('投資組合價值').first()).toBeVisible({ timeout: 15_000 });
@@ -51,13 +51,13 @@ test('the picker switches the UI language and the choice survives a reload', asy
     .poll(async () => page.evaluate(() => localStorage.getItem('ui-locale')))
     .toBe('zh-TW');
   await page.reload();
-  await expect(page.getByRole('link', { name: '儀表板' }).first()).toBeVisible({
+  await expect(page.getByRole('link', { name: '架構' }).first()).toBeVisible({
     timeout: 30_000,
   });
 
   // And back: the round trip proves the switch is not one-way.
   await page.getByTestId('locale-picker').first().selectOption('en');
-  await expect(page.getByRole('link', { name: 'Dashboard' }).first()).toBeVisible({
+  await expect(page.getByRole('link', { name: 'Architecture' }).first()).toBeVisible({
     timeout: 15_000,
   });
 });

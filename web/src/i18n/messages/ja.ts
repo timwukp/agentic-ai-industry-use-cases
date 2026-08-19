@@ -7,6 +7,7 @@ export const ja = {
     view: '表示',
     dashboard: 'ダッシュボード',
     chat: 'チャット',
+    architecture: 'アーキテクチャ',
     industries: '業界',
     signOut: 'サインアウト',
     showChat: 'チャットを表示',
@@ -20,6 +21,19 @@ export const ja = {
     soon: '近日公開',
     close: '閉じる',
     language: '言語',
+  },
+
+  architecture: {
+    title: 'ソリューションアーキテクチャ',
+    intro:
+      'このデモの AWS 上の構成：React PWA を、業界別の Bedrock AgentCore ハーネス、Gateway MCP ツール、REST ダッシュボード API が支えます。',
+    system: 'システム構成',
+    systemCaption:
+      'Cognito で保護された PWA、6 業界のハーネス、Gateway ツール、S3 Vectors のナレッジベース、ダッシュボード API。',
+    flow: 'リクエストフロー',
+    flowCaption:
+      'チャットは AgentCore ハーネス経由でストリーミング、ダッシュボードは REST——すべての入口で JWT を検証。',
+    readme: '詳細は GitHub README へ',
   },
 
   login: {

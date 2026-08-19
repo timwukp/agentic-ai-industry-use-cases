@@ -7,6 +7,7 @@ export const pt = {
     view: 'Vista',
     dashboard: 'Painel',
     chat: 'Chat',
+    architecture: 'Arquitetura',
     industries: 'Setores',
     signOut: 'Sair',
     showChat: 'Mostrar chat',
@@ -20,6 +21,19 @@ export const pt = {
     soon: 'em breve',
     close: 'Fechar',
     language: 'Idioma',
+  },
+
+  architecture: {
+    title: 'Arquitetura da solução',
+    intro:
+      'Como esta demo funciona na AWS: uma PWA React apoiada por harnesses do Bedrock AgentCore por setor, ferramentas Gateway MCP e APIs REST de painéis.',
+    system: 'Arquitetura do sistema',
+    systemCaption:
+      'PWA protegida pelo Cognito, seis harnesses setoriais, ferramentas Gateway, bases de conhecimento no S3 Vectors e APIs de painéis.',
+    flow: 'Fluxo de requisições',
+    flowCaption:
+      'O chat é transmitido pelo harness do AgentCore; os painéis usam REST — o JWT é verificado em cada entrada.',
+    readme: 'Detalhes completos no README do GitHub',
   },
 
   login: {

@@ -7,6 +7,7 @@ export const fr = {
     view: 'Vue',
     dashboard: 'Tableau de bord',
     chat: 'Chat',
+    architecture: 'Architecture',
     industries: 'Secteurs',
     signOut: 'Se déconnecter',
     showChat: 'Afficher le chat',
@@ -20,6 +21,19 @@ export const fr = {
     soon: 'bientôt',
     close: 'Fermer',
     language: 'Langue',
+  },
+
+  architecture: {
+    title: 'Architecture de la solution',
+    intro:
+      'Fonctionnement de cette démo sur AWS : une PWA React adossée à des harnais Bedrock AgentCore par secteur, des outils Gateway MCP et des API REST de tableaux de bord.',
+    system: 'Architecture du système',
+    systemCaption:
+      'PWA sécurisée par Cognito, six harnais sectoriels, outils Gateway, bases de connaissances sur S3 Vectors et API de tableaux de bord.',
+    flow: 'Flux des requêtes',
+    flowCaption:
+      'Le chat est diffusé via le harnais AgentCore ; les tableaux de bord utilisent REST — le JWT est vérifié à chaque entrée.',
+    readme: 'Tous les détails dans le README GitHub',
   },
 
   login: {
