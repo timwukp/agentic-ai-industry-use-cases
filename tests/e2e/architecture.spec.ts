@@ -28,8 +28,9 @@ test('architecture page renders both animated diagrams', async ({ page, isMobile
     // 4th bottom tab is the mobile entry point
     await expect(page.getByRole('button', { name: 'Architecture' })).toBeVisible();
   } else {
-    // at lg+ the page replaces both panes — no dashboard content bleeding in
-    await expect(page.getByText(/total return/i)).toHaveCount(0);
+    // at lg+ the page replaces both panes. The dashboard stays MOUNTED but
+    // CSS-hidden (state preservation by design) — assert invisibility, not absence.
+    await expect(page.getByText(/total return/i).first()).not.toBeVisible();
   }
 
   await page.screenshot({ path: 'screenshots/architecture.png', fullPage: true });
