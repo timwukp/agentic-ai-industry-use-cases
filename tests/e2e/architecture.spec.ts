@@ -34,3 +34,19 @@ test('architecture page renders both animated diagrams', async ({ page, isMobile
 
   await page.screenshot({ path: 'screenshots/architecture.png', fullPage: true });
 });
+
+test('switching industry from the architecture page lands on its dashboard', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(isMobile, 'sidebar industry list is desktop/tablet only');
+  await login(page);
+  await page.goto('/finance/architecture');
+  await expect(page.getByRole('img', { name: 'System architecture' })).toBeVisible({
+    timeout: 15_000,
+  });
+  // industry links must NOT preserve the architecture view (industry-agnostic
+  // page — preserving it makes every industry click look dead)
+  await page.getByRole('link', { name: /healthcare/i }).first().click();
+  await expect(page).toHaveURL(/\/healthcare-medical\/dashboard/);
+});
