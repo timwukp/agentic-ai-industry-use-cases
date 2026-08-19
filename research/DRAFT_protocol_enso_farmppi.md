@@ -36,10 +36,24 @@ out-of-sample edge over an AR(1) baseline.
    {6, 9, 12} (any).
 3. Era stability: gates 1–2 direction agrees in both halves
    (1974–2000 / 2000–freeze).
-4. Walk-forward out-of-sample: sign hit-rate edge over AR(1) baseline
-   (production `prism.walk_forward`), positive edge required.
-   **Power for this gate is NOT yet simulated** — must be added to the
-   dry-run before the freeze tag, per the joint-constraints rule.
+4. Walk-forward out-of-sample (REVISED after joint power exploration,
+   2026-08-20): production `prism.walk_forward` with monthly-tuned windows
+   `train_years=17, test_months=48`, **horizon h=6**; gate = pooled
+   n_test-weighted `edge_vs_ar1` > **0.0903** (threshold = empirical 95th
+   percentile under the simulated null, frozen here as a number).
+   Simulated power **0.817**, false positive **0.05** (120 seeds).
+
+   Two designs were explored and REJECTED before settling on this one —
+   recorded because the findings are durable:
+   - The production `confirm()` fold-vote rule (≥70% of folds positive) is
+     doubly broken at monthly frequency: with default daily windows every
+     fold is skipped (guards `len(test)<30`, `len(train)<200`); with
+     monthly-tuned windows it has power 0.61 at false-positive 0.17.
+   - At the h=12 horizon NO rule reaches 80% power (best calibrated: 0.27)
+     — a 12-month-cumulation effect gives only ~50 independent draws in 50
+     years. OOS confirmation is only achievable at shorter horizons
+     (h=6: 0.817; h=3: 0.792). Gates 1–2 keep h∈{6,9,12}; the OOS gate
+     runs at h=6 where the data can actually speak.
 
 ## Known limitations (declared up front)
 
@@ -65,11 +79,15 @@ without a new pre-registration. One-shot re-test discipline applies.
 
 - ONI: NOAA CPC `oni.ascii.txt` (season-center month convention).
 - `WPU01`, `CPIUFDSL`: FRED API (key at SSM `/agentic/finance/fred-api-key`).
-- Power check: `research/run_enso_power_check.py` → results committed at
-  `research/results/enso_power_check.json` (seeds fixed, reproducible).
+- Power checks: `research/run_enso_power_check.py` (gates 1–2) and
+  `research/run_enso_gate4_power.py` (gate 4 design space) → results at
+  `research/results/enso_power_check.json` and
+  `research/results/enso_gate4_power.json` (seeds fixed, reproducible).
 
 ## Freeze ceremony (pending)
 
-Merge of this DRAFT = human acknowledgment. Freezing = follow-up commit
-renaming to `protocol_enso_farmppi.md` + tag `enso-farmppi-test-preregistered`,
-only after gate-4 power is added to the dry-run and passes.
+Merge of this DRAFT = human acknowledgment. All four gates now have
+simulated power (1.00 / 1.00 / direction-only / 0.817) with controlled
+false positives — the dry-run is complete. Freezing = follow-up commit
+renaming to `protocol_enso_farmppi.md` + tag `enso-farmppi-test-preregistered`
+on explicit user instruction, after which the real-data runner is written.
