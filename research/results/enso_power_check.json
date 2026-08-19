@@ -1,0 +1,17 @@
+{
+ "A_farm_ppi_3.5pct": {
+  "lp": 1.0,
+  "granger": 1.0,
+  "both": 1.0
+ },
+ "B_food_cpi_0.14pct": {
+  "lp": 0.54,
+  "granger": 0.345,
+  "both": 0.335
+ },
+ "null_false_positive": {
+  "lp": 0.16,
+  "granger": 0.05,
+  "both": 0.03
+ }
+}
