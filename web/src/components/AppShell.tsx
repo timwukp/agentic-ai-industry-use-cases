@@ -173,6 +173,11 @@ export default function AppShell({ view }: { view: ShellView }) {
     </Link>
   )
 
+  // Industry links preserve the current view, except Architecture: the page
+  // is industry-independent, so switching industry there lands on dashboard
+  // (otherwise every industry click re-renders the identical page = looks dead).
+  const industryView = view === 'architecture' ? 'dashboard' : view
+
   const industryList = (onSelect?: () => void) => (
     <nav className="space-y-1">
       {industries.map((item) => {
@@ -181,7 +186,7 @@ export default function AppShell({ view }: { view: ShellView }) {
         return (
           <Link
             key={item.id}
-            to={`/${item.id}/${view}`}
+            to={`/${item.id}/${industryView}`}
             onClick={onSelect}
             title={t(`industries.${item.id}.name`)}
             className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm transition-colors ${
@@ -490,7 +495,7 @@ export default function AppShell({ view }: { view: ShellView }) {
                 return (
                   <Link
                     key={item.id}
-                    to={`/${item.id}/${view}`}
+                    to={`/${item.id}/${industryView}`}
                     onClick={() => setIndustriesOpen(false)}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm ${
                       active
