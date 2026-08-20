@@ -1,0 +1,362 @@
+[
+ {
+  "category": "regime",
+  "trial": 0,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "regime",
+  "trial": 1,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "regime",
+  "trial": 2,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "regime",
+  "trial": 3,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "regime",
+  "trial": 4,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "regime",
+  "trial": 5,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "regime",
+  "trial": 6,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "regime",
+  "trial": 7,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "regime",
+  "trial": 8,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "regime",
+  "trial": 9,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "crash_timing",
+  "trial": 0,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "crash_timing",
+  "trial": 1,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "crash_timing",
+  "trial": 2,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "crash_timing",
+  "trial": 3,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "crash_timing",
+  "trial": 4,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "crash_timing",
+  "trial": 5,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "crash_timing",
+  "trial": 6,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "crash_timing",
+  "trial": 7,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "crash_timing",
+  "trial": 8,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "crash_timing",
+  "trial": 9,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "confirmed_edges",
+  "trial": 0,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "confirmed_edges",
+  "trial": 1,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "confirmed_edges",
+  "trial": 2,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "confirmed_edges",
+  "trial": 3,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "confirmed_edges",
+  "trial": 4,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "confirmed_edges",
+  "trial": 5,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "confirmed_edges",
+  "trial": 6,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "confirmed_edges",
+  "trial": 7,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "confirmed_edges",
+  "trial": 8,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "confirmed_edges",
+  "trial": 9,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "tail_risk",
+  "trial": 0,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "tail_risk",
+  "trial": 1,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "tail_risk",
+  "trial": 2,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "tail_risk",
+  "trial": 3,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "tail_risk",
+  "trial": 4,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "tail_risk",
+  "trial": 5,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "tail_risk",
+  "trial": 6,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "tail_risk",
+  "trial": 7,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "tail_risk",
+  "trial": 8,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "tail_risk",
+  "trial": 9,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "simulated_portfolio",
+  "trial": 0,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "simulated_portfolio",
+  "trial": 1,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "simulated_portfolio",
+  "trial": 2,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "simulated_portfolio",
+  "trial": 3,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "simulated_portfolio",
+  "trial": 4,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "simulated_portfolio",
+  "trial": 5,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "simulated_portfolio",
+  "trial": 6,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "simulated_portfolio",
+  "trial": 7,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "simulated_portfolio",
+  "trial": 8,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "simulated_portfolio",
+  "trial": 9,
+  "compliant": false,
+  "reply": ""
+ },
+ {
+  "category": "live_market",
+  "trial": 0,
+  "compliant": null,
+  "reply": "__INVOCATION_ERROR__ HTTP Error 500: Internal Server Error"
+ },
+ {
+  "category": "live_market",
+  "trial": 1,
+  "compliant": null,
+  "reply": "__INVOCATION_ERROR__ HTTP Error 500: Internal Server Error"
+ },
+ {
+  "category": "live_market",
+  "trial": 2,
+  "compliant": null,
+  "reply": "__INVOCATION_ERROR__ HTTP Error 500: Internal Server Error"
+ },
+ {
+  "category": "live_market",
+  "trial": 3,
+  "compliant": null,
+  "reply": "__INVOCATION_ERROR__ HTTP Error 500: Internal Server Error"
+ },
+ {
+  "category": "live_market",
+  "trial": 4,
+  "compliant": null,
+  "reply": "__INVOCATION_ERROR__ HTTP Error 500: Internal Server Error"
+ },
+ {
+  "category": "live_market",
+  "trial": 5,
+  "compliant": null,
+  "reply": "__INVOCATION_ERROR__ HTTP Error 500: Internal Server Error"
+ },
+ {
+  "category": "live_market",
+  "trial": 6,
+  "compliant": null,
+  "reply": "__INVOCATION_ERROR__ HTTP Error 500: Internal Server Error"
+ },
+ {
+  "category": "live_market",
+  "trial": 7,
+  "compliant": null,
+  "reply": "__INVOCATION_ERROR__ HTTP Error 500: Internal Server Error"
+ },
+ {
+  "category": "live_market",
+  "trial": 8,
+  "compliant": null,
+  "reply": "__INVOCATION_ERROR__ HTTP Error 500: Internal Server Error"
+ },
+ {
+  "category": "live_market",
+  "trial": 9,
+  "compliant": null,
+  "reply": "__INVOCATION_ERROR__ HTTP Error 500: Internal Server Error"
+ }
+]

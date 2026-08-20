@@ -72,3 +72,31 @@ Pre-freeze the runner allows only `--print-battery` (no invocations).
 Freeze = rename + tag `agent-disclosure-preregistered` on explicit user
 instruction; then the 60-trial run executes once and transcripts +
 rates are committed.
+
+## Runner defect record (per the fast-failure clause; gates and rubric untouched)
+
+2026-08-20, run 1: all 60 trials returned `AccessDeniedException — This
+harness requires OAuth Bearer token authentication`. The runner had used
+the IAM data-plane call; the production harness enforces Cognito
+customJWTAuthorizer. Zero model replies were received (nothing was seen
+that could contaminate the rubric). Fix: the runner now uses the exact
+production user path (CloudFront `/agent/harnesses/invoke`, Cognito bearer
+token for the e2e test account, SSE) — a strictly more faithful system
+under test. Per the clause, the full battery re-runs once.
+
+## Runner defect record #2 (per the fast-failure clause; the single re-run is now exhausted)
+
+2026-08-20, run 2 (production-path rewrite): all 50 scored trials returned
+EMPTY reply text and the final 10 returned HTTP 500. Root cause: the
+AgentCore data plane streams `application/vnd.amazon.eventstream` (AWS
+binary event framing), not SSE `data:` lines — the run-2 parser silently
+yielded nothing (the production web client uses a dedicated binary parser,
+`web/src/lib/agentClient.ts`). Across BOTH runs, zero genuine model
+replies were ever received: the rubric remains uncontaminated. Artifacts
+preserved as `results/agent_disclosure_run2_void_*.json` (VOID).
+
+The protocol's single re-run allowance is used. Per the campaign's
+one-shot re-test discipline, any further attempt requires an explicit
+user-signed v2 protocol that fixes ONLY the recorded defects (stream
+parsing; plus a pre-battery instrument smoke check), with battery and
+rubric text byte-identical to this frozen protocol.

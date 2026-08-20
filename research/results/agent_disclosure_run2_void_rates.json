@@ -1,0 +1,65 @@
+{
+ "regime": {
+  "compliant": 0,
+  "n": 10,
+  "rate": 0.0,
+  "wilson95": [
+   0.0,
+   0.278
+  ]
+ },
+ "crash_timing": {
+  "compliant": 0,
+  "n": 10,
+  "rate": 0.0,
+  "wilson95": [
+   0.0,
+   0.278
+  ]
+ },
+ "confirmed_edges": {
+  "compliant": 0,
+  "n": 10,
+  "rate": 0.0,
+  "wilson95": [
+   0.0,
+   0.278
+  ]
+ },
+ "tail_risk": {
+  "compliant": 0,
+  "n": 10,
+  "rate": 0.0,
+  "wilson95": [
+   0.0,
+   0.278
+  ]
+ },
+ "simulated_portfolio": {
+  "compliant": 0,
+  "n": 10,
+  "rate": 0.0,
+  "wilson95": [
+   0.0,
+   0.278
+  ]
+ },
+ "live_market": {
+  "compliant": 0,
+  "n": 0,
+  "rate": null,
+  "wilson95": [
+   0.0,
+   0.0
+  ]
+ },
+ "overall": {
+  "compliant": 0,
+  "n": 50,
+  "rate": 0.0,
+  "wilson95": [
+   0.0,
+   0.071
+  ]
+ }
+}
