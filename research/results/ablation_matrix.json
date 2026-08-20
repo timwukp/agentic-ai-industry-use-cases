@@ -1,0 +1,74 @@
+{
+ "qis": {
+  "R0": true,
+  "R1": true,
+  "R2": true,
+  "R3": false,
+  "R4": false
+ },
+ "signature": {
+  "R0": false,
+  "R1": false,
+  "R2": false,
+  "R3": false,
+  "R4": false
+ },
+ "rfsv": {
+  "R0": false,
+  "R1": true,
+  "R2": false,
+  "R3": false,
+  "R4": false
+ },
+ "bocpd_v1": {
+  "R0": true,
+  "R1": false,
+  "R2": false,
+  "R3": false,
+  "R4": false
+ },
+ "bocpd_v2": {
+  "R0": true,
+  "R1": false,
+  "R2": false,
+  "R3": false,
+  "R4": false
+ },
+ "bcfreq_v1": {
+  "R0": false,
+  "R1": false,
+  "R2": false,
+  "R3": false,
+  "R4": false
+ },
+ "bcfreq_v2": {
+  "R0": true,
+  "R1": true,
+  "R2": false,
+  "R3": false,
+  "R4": false
+ },
+ "regime_evt": {
+  "R0": null,
+  "R1": null,
+  "R2": null,
+  "R3": null,
+  "R4": false
+ },
+ "fisher_combination": {
+  "R0": true,
+  "R1": true,
+  "R2": true,
+  "R3": true,
+  "nested": true,
+  "R4": true
+ },
+ "vol_filtered_var": {
+  "R0": true,
+  "R1": true,
+  "R2": true,
+  "R3": true,
+  "nested": true,
+  "R4": true
+ }
+}
