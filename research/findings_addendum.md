@@ -415,3 +415,28 @@ verdicts purely from the instrument change — such re-runs are new evidence
 under a corrected instrument, not reproductions of the sealed study.
 `run_study.py`'s docstring previously claimed "PRISM is imported frozen";
 it is imported live and the docstring now says so.
+
+## ENSO (ONI) → US farm-products PPI — **POST-FREEZE FAST FAIL, 0/4 gates (2026-08-20)**
+
+Eleventh pre-registered test (protocol frozen at tag
+`enso-farmppi-test-preregistered`; the first candidate sourced from a
+deep-research survey of climate-macro transmission). Real-data verdict on
+1974-06..2026-06 (n=625 months, point-in-time ONI lag applied):
+
+| Gate | Frozen requirement | Measured | Verdict |
+|---|---|---|---|
+| 1 Granger | p < 0.05 (maxlag 3) | p = 0.377 | ✗ |
+| 2 LP bands | 95% band > 0 at any h∈{6,9,12} | betas −0.024..−0.044, all bands straddle 0 | ✗ |
+| 3 Era stability | positive direction, both halves | h1 mixed ~0; h2 all negative | ✗ |
+| 4 Walk-forward | pooled edge > 0.0903 (h=6) | 0.0436 (8 folds) | ✗ |
+
+The instrument was power-checked at 1.00 for the literature's
+world-commodity magnitude (+3.5% cum-12m/1σ), so this is a genuine
+rejection at our data's scale, not a power artifact — per the frozen
+limitation, it reads "US farm-products PPI does not carry the
+world-commodity ENSO effect", not "ENSO does not matter". The excluded
+food-CPI endpoint (power 0.34) stays excluded. No v2 is contemplated:
+no protocol defect was recorded; the candidate is closed.
+
+Scoreboard after this test: **2 promoted / 9 fast-failed across 11
+pre-registered tests.**
