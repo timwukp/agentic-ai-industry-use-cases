@@ -95,7 +95,11 @@ def cognito_token():
 
     sm = boto3.client("secretsmanager", region_name=REGION)
     creds = json.loads(
-        sm.get_secret_value(SecretId="agentic-web/e2e-test-account")["SecretString"]
+        sm.get_secret_value(
+            SecretId="agentic-web/e2e-test-account"
+        )[  # pragma: allowlist secret
+            "SecretString"
+        ]
     )
     idp = boto3.client("cognito-idp", region_name=REGION)
     resp = idp.initiate_auth(
