@@ -266,7 +266,7 @@ There are two more provenance classes beyond live/simulated:
 PRISM's claims are not taken on faith. A journal-style validation study back-tested every
 layer against 10/20/30/40/50 years of real data (protocol frozen and git-tagged **before**
 any test code; point-in-time discipline throughout — at date *t*, only data ≤ *t*): the
-regime layer is validated as a historical lens (AUROC 0.85–0.91 vs NBER recessions + known
+regime layer is validated as a historical lens (AUROC 0.84–0.86 vs NBER recessions + known
 crashes) but lags real-time detection by >10 business days, so the agent presents it as
 context, never as an early-warning; the headline VaR is calibration-green
 (Kupiec/Christoffersen); crash-*timing* questions are answered with a fragility-vs-trigger

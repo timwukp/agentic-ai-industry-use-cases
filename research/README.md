@@ -31,7 +31,7 @@ skill; its usability test is documented in `DRAFT_protocol_skilltest.md` +
 10/20/30/40/50-year back-to-back tests of every PRISM layer against real
 FRED/market data: `protocol.md` (frozen at tag `study-preregistered`) →
 `report.md` (full verdict matrix) → `findings.md` (interpretation).
-Headlines: regime layer valid as a historical lens (AUROC 0.85–0.91) but
+Headlines: regime layer valid as a historical lens (AUROC 0.84–0.86) but
 lagging >10bd in real time; VaR now calibration-green after the
 vol-filtered revision; no economic predictability survives Hansen SPA.
 
