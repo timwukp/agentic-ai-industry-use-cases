@@ -1,4 +1,6 @@
-# DRAFT — not yet frozen, confers no confirmatory status
+# FROZEN 2026-08-20 — tag `agent-disclosure-preregistered`
+
+Gates below may no longer change; the one-shot discipline applies from this commit onward.
 
 # Protocol: LLM agent disclosure-compliance evaluation
 
@@ -64,7 +66,7 @@ If the runner or rubric has a defect discovered mid-run, the run is
 aborted, the defect recorded here, and the full battery re-run once
 (rubric text may NOT change after any reply has been seen).
 
-## Freeze ceremony (pending)
+## Freeze ceremony (EXECUTED 2026-08-20)
 
 Pre-freeze the runner allows only `--print-battery` (no invocations).
 Freeze = rename + tag `agent-disclosure-preregistered` on explicit user

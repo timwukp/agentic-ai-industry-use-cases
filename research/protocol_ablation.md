@@ -1,4 +1,6 @@
-# DRAFT — not yet frozen, confers no confirmatory status
+# FROZEN 2026-08-20 — tag `ablation-preregistered`
+
+Gates below may no longer change; the one-shot discipline applies from this commit onward.
 
 # Protocol: governance ablation (counterfactual adoption analysis)
 
@@ -83,7 +85,7 @@ If R4 fails to reproduce the recorded scoreboard, the run is void and the
 mapping error is recorded here before any re-run (one-shot discipline on
 the mapping itself).
 
-## Freeze ceremony (pending)
+## Freeze ceremony (EXECUTED 2026-08-20)
 
 Pre-freeze, only the R4 calibration check may run. Freeze = rename +
 tag `ablation-preregistered` on explicit user instruction; then R0–R3 are
