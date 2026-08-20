@@ -1,0 +1,551 @@
+{
+ "climate_macro": {
+  "summary": "Synthesis step was skipped or failed — returning 23 verified claims unmerged.",
+  "confirmed": [
+   {
+    "claim": "El Niño weather shocks have causally identifiable macroeconomic effects on growth, inflation, and energy/non-fuel commodity prices — identified via exogenous timing variation of El Niño events across 21 country/region models (GVAR) estimated over 1979Q2–2013Q1, i.e., the relationship is a quantifiable transmission, not random correlation.",
+    "source": "https://ideas.repec.org/a/eee/inecon/v106y2017icp37-54.html",
+    "quote": "We contribute to the climate–macroeconomy literature by exploiting exogenous variation in El Niño weather events over time, and their impact on different regions cross-sectionally, to causatively identify the effects of El Niño shocks (direct and total) on growth, inflation, energy and non-fuel commodity prices.",
+    "vote": "3-0"
+   },
+   {
+    "claim": "El Niño's growth effects are heterogeneous and country-specific in sign: Australia, Chile, Indonesia, India, Japan, New Zealand and South Africa experience a short-lived decline in economic activity, while the United States and the European region experience growth-enhancing effects.",
+    "source": "https://ideas.repec.org/a/eee/inecon/v106y2017icp37-54.html",
+    "quote": "While Australia, Chile, Indonesia, India, Japan, New Zealand and South Africa face a short-lived fall in economic activity in response to an El Niño shock, for other countries (including the United States and European region), an El Niño occurrence has a growth-enhancing effect.",
+    "vote": "3-0"
+   },
+   {
+    "claim": "An El Niño shock produces short-run inflationary pressure in most of the 21 sampled countries/regions, transmitted through rising energy and non-fuel commodity prices — supporting the El Niño → commodity prices → inflation channel at a quarterly time scale.",
+    "source": "https://ideas.repec.org/a/eee/inecon/v106y2017icp37-54.html",
+    "quote": "Furthermore, most countries in our sample experience short-run inflationary pressures as both energy and non-fuel commodity prices increase.",
+    "vote": "3-0"
+   },
+   {
+    "claim": "A one-standard-deviation positive surprise in ENSO intensity raises world real (non-oil) commodity price inflation by about 3.5 to 4 percentage points — a quantified, statistically significant transmission from El Niño to commodity prices.",
+    "source": "https://ideas.repec.org/a/tpr/restat/v84y2002i1p176-183.html",
+    "quote": "A one-standarddeviation positive surprise in ENSO, for example, raises real commodity price inflation about 3.5 to 4 percentage points.",
+    "vote": "3-0"
+   },
+   {
+    "claim": "ENSO accounts for almost 20% of the variation in world commodity price inflation over the sample's recent years, implying the El Niño→commodity-price relationship is a systematic, quantifiable function rather than noise.",
+    "source": "https://ideas.repec.org/a/tpr/restat/v84y2002i1p176-183.html",
+    "quote": "Moreover, ENSO appears to account for almost 20% of commodity price inflation movements over the past several years.",
+    "vote": "3-0"
+   },
+   {
+    "claim": "ENSO has explanatory power beyond commodities: it accounts for roughly 10%–20% of movements in G-7/world consumer price inflation and world economic activity (GDP growth), supporting a macro transmission channel El Niño→prices→inflation→activity.",
+    "source": "https://ideas.repec.org/a/tpr/restat/v84y2002i1p176-183.html",
+    "quote": "ENSO also has some explanatory power for world consumer price inflation and world economic activity, accounting for approximately 10% to 20% of movements in those variables.",
+    "vote": "1-1"
+   },
+   {
+    "claim": "El Niño events cause a persistent (multi-year, not transient) reduction in country-level economic growth — i.e., economies do not simply rebound after ENSO shocks, implying a quantifiable El Niño → GDP-growth transmission channel rather than random noise.",
+    "source": "https://www.science.org/doi/10.1126/science.adf2983",
+    "quote": "Here we show that El Niño persistently reduces country-level economic growth",
+    "vote": "2-0"
+   },
+   {
+    "claim": "Attributed global income losses are $4.1 trillion for the 1982-83 El Niño and $5.7 trillion for the 1997-98 El Niño — specific, checkable dollar magnitudes for the two largest 20th-century events.",
+    "source": "https://www.science.org/doi/10.1126/science.adf2983",
+    "quote": "we attribute $4.1 trillion and $5.7 trillion in global income losses to the 1982-83 and 1997-98 El Niño events, respectively",
+    "vote": "3-0"
+   },
+   {
+    "claim": "Using monthly data on 43 primary commodity prices and Niño3.4 sea surface temperature (SST) anomalies from January 1980 to December 2016, the study finds statistically significant linkages between ENSO (proxied by SST anomalies) and a subset of agricultural commodity prices — i.e., the relationship is quantifiable, not random.",
+    "source": "https://doi.org/10.1093/ajae/aax060",
+    "quote": "I consider monthly series of 43 primary commodity prices and sea surface temperature (SST) anomalies in the Niño3.4 region from January 1980 to December 2016. ... I find statistically significant linkages between SST anomalies and a subset of agricultural commodity prices",
+    "vote": "3-0"
+   },
+   {
+    "claim": "The ENSO→price relationship is exploitable for prediction: including Niño3.4 SST anomalies yields better out-of-sample price forecasts specifically for commodities produced in the tropics.",
+    "source": "https://doi.org/10.1093/ajae/aax060",
+    "quote": "which manifests in a better price forecasting for the commodities produced in the tropics",
+    "vote": "3-0"
+   },
+   {
+    "claim": "The transmission is asymmetric and state-dependent: commodity price responses are more amplified during El Niño events (vs La Niña) and at the onset of the ENSO cycle, as revealed by a time-varying smooth transition autoregressive (nonlinear regime) framework.",
+    "source": "https://doi.org/10.1093/ajae/aax060",
+    "quote": "I apply a time-varying smooth transition autoregressive modeling framework to account for potentially complex dynamic relationships between SST anomalies and prices. The estimated models reveal more amplified price responses during El Niño events, and at the onset of the ENSO cycle.",
+    "vote": "2-0"
+   },
+   {
+    "claim": "For non-agricultural commodities (e.g., timber and metals) there is some in-sample evidence of ENSO effects, but SST anomalies fail to predict these prices out-of-sample — a key scope limitation on any tradable ENSO signal.",
+    "source": "https://doi.org/10.1093/ajae/aax060",
+    "quote": "While I also find some in-sample evidence for prices of selected nonagricultural commodities, for example, timber and metals, the ability of SST anomalies to predict these commodity prices in an out-of-sample setting is lacking.",
+    "vote": "3-0"
+   },
+   {
+    "claim": "El Niño shocks have causally identified, country-heterogeneous effects on GDP growth: Australia, Chile, Indonesia, India, Japan, New Zealand and South Africa suffer short-lived output falls, while the US, Europe and other economies see growth-enhancing effects — i.e. the climate-economy relation is a quantifiable transmission, not noise.",
+    "source": "https://doi.org/10.24149/gwp239",
+    "quote": "While Australia, Chile, Indonesia, India, Japan, New Zealand and South Africa face a short-lived fall in economic activity in response to an El Niño shock, for other countries (including the United States and European region), an El Niño occurrence has a growth-enhancing effect.",
+    "vote": "3-0"
+   },
+   {
+    "claim": "The GVAR estimates give specific, testable magnitudes: after a one-standard-deviation El Niño (SOI anomaly) shock, Indonesian GDP growth falls 0.91% by Q2, South Africa's falls 0.63% by Q3, India's falls 0.15% after Q1, while Argentina, Canada, Mexico and the US gain 1.08%, 0.85%, 1.57% and 0.55% respectively in Q4 — effects materialize at a 1-4 quarter horizon.",
+    "source": "https://doi.org/10.24149/gwp239",
+    "quote": "Table 3 shows an increase in GDP growth of 1.08%, 0.85%, 1.57%, and 0.55% in the fourth quarter following an El Niño shock for Argentina, Canada, Mexico, and the U.S., respectively.",
+    "vote": "3-0"
+   },
+   {
+    "claim": "El Niño shocks raise commodity prices with statistical significance: non-fuel commodity prices rise 5.31% after four quarters and crude oil prices sustain a significant positive change, initially via Asian energy demand and later via a global demand shock — the El Niño→commodity price→inflation channel is the paper's core transmission mechanism.",
+    "source": "https://doi.org/10.24149/gwp239",
+    "quote": "The higher temperatures and droughts following an El Niño event, particularly in Asia-Pacific countries, not only increases the prices of non-fuel commodities (by 5.31% after four quarters, see Table 6), but also leads to higher demand for coal and crude oil as lower electricity output is generated from both thermal power plants and hydroelectric dams.",
+    "vote": "3-0"
+   },
+   {
+    "claim": "For most of the 21 countries/regions El Niño produces statistically significant inflation increases of 0.09 to 1.01 percentage points, and the size of the inflation response is positively correlated (r=0.5) with the food share in each country's CPI basket (e.g. India +0.56pp with 47.6% food share; US +0.14pp; Europe +0.09pp) — a cross-sectionally testable prediction.",
+    "source": "https://doi.org/10.24149/gwp239",
+    "quote": "we find that for most countries in our sample, there exists statistically-significant upward pressure on inflation in the range of 0.09 to 1.01 percentage points (Table 7)... Figure 5 shows a clear positive relationship between the two variables, with a correlation of 0.5, thereby providing further support to the null hypothesis that inflation responses are larger in economies that have higher share of food in their CPI baskets.",
+    "vote": "3-0"
+   },
+   {
+    "claim": "Temperature shocks have a quantifiable, persistent causal effect on inflation: higher monthly temperatures raise both food and headline inflation for about 12 months, in both higher- and lower-income countries — direct statistical evidence that the weather→prices channel is a function, not noise.",
+    "source": "https://doi.org/10.1038/s43247-023-01173-x",
+    "quote": "Higher temperatures increase food and headline inflation persistently over 12 months in both higher- and lower-income countries.",
+    "vote": "3-0"
+   },
+   {
+    "claim": "The temperature→inflation relationship is strongly nonlinear and conditioned on baseline temperature: the same 1°C shock produces larger inflationary impacts in hotter months/regions (e.g., ~0.17 p.p. cumulative food inflation over a year per 1°C at a 25°C baseline), so any predictive signal must interact the shock with local climatology rather than use raw temperature anomalies.",
+    "source": "https://doi.org/10.1038/s43247-023-01173-x",
+    "quote": "Response to average temperature is strongly non-linear, such that increases in hotter months and regions cause larger inflationary impacts",
+    "vote": "3-0"
+   },
+   {
+    "claim": "A specific historical extreme event is quantified: the 2022 European summer heatwave raised European food inflation by roughly 0.43–0.93 percentage points (headline: 0.18–0.41 p.p.), and future warming would amplify the impact of such an extreme by 30–50% by 2035 — a concrete, checkable event-study magnitude usable for backtest calibration.",
+    "source": "https://doi.org/10.1038/s43247-023-01173-x",
+    "quote": "Food inflation impact: \"0.43-0.93 percentage-points\" ... Headline inflation impact: \"0.18–0.41 percentage-points\" ... Future amplification by 2035: \"30–50%\"",
+    "vote": "3-0"
+   },
+   {
+    "claim": "A 1°C warmer year causally reduces per-capita income by ~1.4%, but only in poor countries — identified from exogenous within-country annual weather variation in a 1950-2003 world panel (Dell, Jones & Olken 2012). This is a quantifiable, sign-predictable transmission, not a spurious correlation.",
+    "source": "https://doi.org/10.1257/jel.52.3.740",
+    "quote": "In a world sample from 1950 to 2003, Dell, Jones and Olken (2012) examine how annual variation in temperature and precipitation affects per-capita income. They show that being 1°C warmer in a given year reduces per-capita income by 1.4%, but only in poor countries.",
+    "vote": "3-0"
+   },
+   {
+    "claim": "El Niño (ENSO) has a statistically identified, dose-dependent effect on civil conflict: in countries where ENSO teleconnections are strong, El Niño years show roughly double the civil-conflict rate of La Niña years, with no effect where ENSO is weakly felt (Hsiang, Meng & Cane 2011) — a placebo-consistent pattern supporting a real transmission channel rather than randomness.",
+    "source": "https://doi.org/10.1257/jel.52.3.740",
+    "quote": "in countries where ENSO has strong weather effects, El Nino years are associated with twice the rate of civil conflict compared to La Nina years, yet no observable effects appear in countries where ENSO is weakly felt.",
+    "vote": "3-0"
+   },
+   {
+    "claim": "Independent estimates across labor productivity, industrial output, and aggregate growth converge on a ~1-2% output loss per 1°C in poor countries, and the functional form is nonlinear and heterogeneous (poor countries far more sensitive; extremes drive most effects) — implying any PRISM factor should be specified as a nonlinear/threshold signal conditioned on exposure, not a linear global one.",
+    "source": "https://doi.org/10.1257/jel.52.3.740",
+    "quote": "An interesting linkage appears across studies of labor productivity, industrial output, and economic growth, where estimates converge around a 1-2% loss per 1°C in poor countries.",
+    "vote": "3-0"
+   },
+   {
+    "claim": "Across 1979-2008 and ~13,500 subnational political units, inter-annual climate variability statistically explains ~32-39% of year-to-year yield variability in maize, rice, wheat and soybean — i.e. the climate→yield link is a fitted, quantifiable relationship, not noise. (Note: the paper is Ray, Gerber, MacDonald & West 2015, not Iizumi et al.; rice is the least climate-explained crop at ~32%, maize the most at ~39%.)",
+    "source": "https://doi.org/10.1038/ncomms6989",
+    "quote": "Globally, climate variability accounts for roughly a third (~32–39%) of the observed yield variability.",
+    "vote": "3-0"
+   }
+  ],
+  "refuted": [
+   {
+    "claim": "Temperature shocks are growth effects, not level effects: the income loss is not reversed after the shock passes, and similar effects appear at 10-15 year horizons — i.e., the climate-economy relationship persists at the medium/long time scales the research question asks about.",
+    "vote": "0-3",
+    "source": "https://doi.org/10.1257/jel.52.3.740"
+   },
+   {
+    "claim": "The variance share converts to a concrete physical supply-shock magnitude that can be fed into a price/inflation transmission model: climate-explained annual production fluctuations of ~22 Mt (maize), ~9 Mt (wheat), ~3 Mt (rice) and ~2 Mt (soybean).",
+    "vote": "0-3",
+    "source": "https://doi.org/10.1038/ncomms6989"
+   }
+  ],
+  "sources": [
+   {
+    "url": "https://ideas.repec.org/a/eee/inecon/v106y2017icp37-54.html",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://ideas.repec.org/a/tpr/restat/v84y2002i1p176-183.html",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://www.science.org/doi/10.1126/science.adf2983",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.1093/ajae/aax060",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.24149/gwp239",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.1038/s43247-023-01173-x",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.1257/jel.52.3.740",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.1038/ncomms6989",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.1016/j.jfineco.2014.02.002",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.1016/j.jbankfin.2007.08.004",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.1016/j.jbankfin.2009.11.027",
+    "quality": "primary",
+    "claimCount": 4
+   },
+   {
+    "url": "https://doi.org/10.1007/bf01205784",
+    "quality": "primary",
+    "claimCount": 4
+   },
+   {
+    "url": "https://www.cambridge.org/core/journals/environmental-data-science/article/forecasting-commodity-returns-by-exploiting-climate-model-forecasts-of-the-el-nino-southern-oscillation/DDFF5839AA65ADD1FDCDC2404E690525",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://arc.hhs.se/download.aspx?MediumId=3819",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://onlinelibrary.wiley.com/doi/abs/10.1093/ajae/aax060",
+    "quality": "primary",
+    "claimCount": 4
+   },
+   {
+    "url": "https://www.frontiersin.org/journals/environmental-science/articles/10.3389/fenvs.2022.893879/full",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://onlinelibrary.wiley.com/doi/full/10.1002/for.2914",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://www.cmegroup.com/markets/weather.html",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://psl.noaa.gov/data/climateindices/list/",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://quickstats.nass.usda.gov/api",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://fred.stlouisfed.org/docs/api/fred/",
+    "quality": "primary",
+    "claimCount": 5
+   },
+   {
+    "url": "https://www.worldbank.org/en/research/commodity-markets",
+    "quality": "primary",
+    "claimCount": 4
+   },
+   {
+    "url": "https://www.usda.gov/oce/commodity/wasde",
+    "quality": "primary",
+    "claimCount": 5
+   }
+  ]
+ },
+ "prism_novelty": {
+  "summary": "PRISM 的判定是「部分新穎」。所有五個數學組件均為成熟先行工作(Gaussian HMM 體制模型、傳遞熵/Granger 因果+BH FDR、貝葉斯局部投影、McNeil-Frey EVT/GPD、多重檢定校正),逐項都找到具體引文,無一新穎——這與系統設計預期一致。治理層的每個單一元素也各有先行工作:FDR 作為發現門檻(Harvey-Liu-Zhu 2016)、預註冊建議(Harvey 2017)、registered reports 制度(JAR 2017)、多重測試披露模板(Fabozzi & López de Prado 2018)、樣本外驗證(標準實務)。但關鍵的是:最接近的先行工作(HLZ 2016)明確把「多重檢定校正」與「樣本外驗證」當成二選一的替代方案而非聯合必要條件,且所有先行工作的機制都是自願性人類披露或機率估計量,而非軟體強制執行的 CONFIRMED/HYPOTHESIS 分級門檻——PRISM 的「FDR AND walk-forward 雙門檻 + 機器強制標籤 + 暴露給 LLM agent」組合在本次調查中未找到先行工作(標注為「未找到」,非「確認首創」)。最可發表的角度是方法論/系統論文:「已發表建議(預註冊、披露、多重檢定)的自動化強制實作於生產級系統」,而非任何數學創新。",
+  "findings": [
+   {
+    "claim": "PRISM 的貝葉斯局部投影脈衝響應組件完全是先行工作:Ferreira, Miranda-Agrippino & Ricco 的 'Bayesian Local Projections'(Review of Economics and Statistics 107(5):1424-1438, 2023/2025 刊出,工作論文可追溯至 2016-2017)已提出以資訊性先驗正則化 LP 迴歸、估計脈衝響應並量化後驗不確定性(可信帶)。PRISM 用的更簡單的 Normal-Inverse-Gamma 共軛設定是教科書級貝葉斯迴歸,只會更不新穎。",
+    "confidence": "high",
+    "sources": [
+     "https://direct.mit.edu/rest/article/107/5/1424/116184/Bayesian-Local-Projections",
+     "DOI 10.1162/rest_a_01334"
+    ],
+    "evidence": "Crossref 元數據與摘要逐字驗證:'We propose a Bayesian approach to Local Projections (LPs)...'; 'BLPs regularize LP regressions via informative priors and estimate impulse response functions'; 'retaining a degree of estimation uncertainty comparable to Bayesian VARs'。另有 Tanaka 2019 (Computational Economics) 與 Brugnolini et al. 2023 佐證貝葉斯 LP 正則化是既有方法論。",
+    "vote": "3-0, 3-0, 3-0 (三條主張合併)"
+   },
+   {
+    "claim": "PRISM 的波動率過濾 EVT/GPD 尾部風險組件是 26 年前的直接先行工作:McNeil & Frey (2000, Journal of Empirical Finance 7(3-4):271-300) 已提出 GARCH 偽最大似然波動率估計 + EVT 擬合創新分布尾部的兩步法,同時涵蓋條件 VaR 與條件 expected shortfall。PRISM 描述自己就引用 McNeil-Frey,此組件零新穎性。",
+    "confidence": "high",
+    "sources": [
+     "https://www.sciencedirect.com/science/article/pii/S0927539800000128",
+     "DOI 10.1016/S0927-5398(00)00012-8"
+    ],
+    "evidence": "摘要逐字驗證(Wayback + Crossref + Semantic Scholar,約 1,816 次引用):'combines pseudo-maximum-likelihood fitting of GARCH models... and extreme value theory (EVT) for estimating the tail of the innovation distribution'; 'We use our method to estimate conditional quantiles (VaR) and conditional expected shortfalls'。",
+    "vote": "3-0, 3-0 (兩條主張合併)"
+   },
+   {
+    "claim": "傳遞熵 + Granger 因果掃描金融時間序列是教科書級成熟方法,連「TE 顯著性檢定 + Benjamini-Hochberg FDR 校正」的具體組合也有直接先行工作:TE 作為 Granger 因果的 model-free 非線性推廣可追溯至 Marschinski & Kantz 2002、Barnett-Barrett-Seth 2009(高斯下等價定理)、Dimpfl & Peter 2013;Entropy 期刊 2021-2023 有整個專刊(12 篇,客座編輯 Papana)專門討論金融網絡的 GC/TE;Billio-Getmansky-Lo-Pelizzon (JFE 2012) 已用 Granger 因果網絡於金融部門月報酬;BH FDR 校正 TE 檢定見於 2026 arXiv 論文(9,900 對檢定)並內建於 IDTxl 工具包(Wollstadt et al. 2019, JOSS)。",
+    "confidence": "high",
+    "sources": [
+     "https://arxiv.org/abs/2603.20271",
+     "https://www.sciencedirect.com/science/article/pii/S0304405X11002868 (DOI 10.1016/j.jfineco.2011.12.010)",
+     "https://www.mdpi.com/journal/entropy/special_issues/financial_networks",
+     "Barnett, Barrett & Seth 2009, Phys. Rev. Lett. 103:238701",
+     "Marschinski & Kantz 2002, Eur. Phys. J. B"
+    ],
+    "evidence": "arXiv 2603.20271 PDF 逐字含 'We apply the Benjamini and Hochberg [1995] FDR correction at α=0.05... across the 9,900 tests';MDPI 專刊頁面實測 12 篇已發表論文(2021-2023);JFE 2012 摘要逐字含 'principal components analysis and Granger-causality tests'。注意:PRISM 的「跨視界 Fisher p 值合併」子元素未被任何已驗證主張直接涵蓋。",
+    "vote": "3-0 × 5 (五條主張合併)"
+   },
+   {
+    "claim": "Gaussian HMM 市場體制偵測與含 look-ahead 控制的樣本外驗證都是既有實務:Hamilton 1989 (Econometrica)、Ryden et al. 1998、Ang & Timmermann 2012、Nystrup et al. 2015-2018 構成成熟文獻;2026 arXiv 論文(BIC 選模的三態 Gaussian HMM + 30% OOS 窗 + 一日執行滯後)只是最新例證。Walk-forward OOS 驗證本身(Pardo 1992 已編纂;Bulla et al. 2011 含交易成本的 OOS HMM 配置)不是 PRISM 的創新——只有把它耦合到強制性 CONFIRMED/HYPOTHESIS 標籤門檻可能是。",
+    "confidence": "high",
+    "sources": [
+     "https://arxiv.org/abs/2605.27848",
+     "Hamilton 1989, Econometrica",
+     "Bulla et al. 2011, Journal of Asset Management 12:310-321",
+     "Ang & Timmermann 2012, Annu. Rev. Financ. Econ."
+    ],
+    "evidence": "arXiv 摘要逐字驗證 'estimate a three-state Gaussian Hidden Markov Model (HMM) selected by the Bayesian Information Criterion' 與 '30% out-of-sample test window with a one-day execution lag to avoid look-ahead bias';「established」的地位由 1989-2018 同儕審查文獻支撐,非單靠該預印本。",
+    "vote": "3-0, 3-0 (兩條主張合併)"
+   },
+   {
+    "claim": "「多重檢定校正作為金融統計發現的治理門檻」與「可複製性危機診斷」均為 2013-2017 已確立的先行工作:Harvey-Liu-Zhu (RFS 2016) 提出跨 Bonferroni/Holm/BHY 的 t>3.0 門檻並論證多數已發表因子發現可能為假;Bailey-Borwein-López de Prado-Zhu (2013-2015) 形式化同一數據上重複檢定使假陽性幾乎必然;Harvey 2017 JF 主席演說(DOI 10.1111/jofi.12530)診斷未報告檢定 + 無多重校正 + p-hacking 使許多已發表結果不可複製。PRISM 用 FDR 把關統計規律這一動機和機制本身不新穎。",
+    "confidence": "high",
+    "sources": [
+     "https://doi.org/10.2139/ssrn.2249314 (Harvey, Liu & Zhu, RFS 29(1) 2016, DOI 10.1093/rfs/hhv059)",
+     "https://doi.org/10.2139/ssrn.2326253 (Bailey et al., J. Computational Finance 2017)",
+     "https://doi.org/10.2139/ssrn.2893930 (Harvey 2017, DOI 10.1111/jofi.12530)"
+    ],
+    "evidence": "HLZ 全文驗證:BHY/FDR 出現 57 次,'a t-statistic of 3.9 and 3.0 is needed to control FWER at 5% and FDR at 1%';Harvey 2017 摘要逐字:'many of the results being published will fail to hold up in the future'。注意一處引文瑕疵:Bailey 論文中 'billions of times' 引文為忠實改述而非原文,但論證實質已在原文驗證。",
+    "vote": "3-0, 3-0, 3-0 (三條主張合併)"
+   },
+   {
+    "claim": "預註冊與 registered reports 在金融/會計領域有明確的制度先行工作:Harvey 2017 明文建議在看數據之前凍結假設、樣本期、排除規則、檢定與報告計畫(引 OSF),並提議頂級金融期刊接受 registered reports;2017 Journal of Accounting Research 年會已實際實施(結果無論正負皆保證發表,Bloomfield et al. 2018, JAR 56(2) 佐證)。因此 PRISM 的「協議凍結 + git tag 先於任何測試代碼」是既有建議的實作——可能新穎的只有自動化/強制化的生產系統實作,而非理念本身。",
+    "confidence": "high",
+    "sources": [
+     "https://doi.org/10.2139/ssrn.2893930 (Harvey 2017, J. Finance 72(4))",
+     "Bloomfield, Rennekamp & Steenhoven 2018, JAR 56(2), DOI 10.1111/1475-679X.12208"
+    ],
+    "evidence": "從 Harvey 的 Duke 頁面下載已發表 PDF 逐字驗證:'Before looking at the data, establish a research framework that includes: economic foundation, hypotheses to be tested, data collection methods... See Open Science Foundation http://osf.io' 及腳註 26 'The 2017 Journal of Accounting Research conference implemented this idea'。預註冊本身更早(Cortex 2013 Registered Reports、臨床試驗 2005 ICMJE)。",
+    "vote": "2-0, 3-0 (兩條主張合併)"
+   },
+   {
+    "claim": "PRISM「失敗與成功同等記錄的永久帳本」在概念上有直接先行工作但機制不同:Bailey et al. 診斷已發表回測幾乎從不披露試驗次數並歸因於激勵問題;Fabozzi & López de Prado (2018, J. Portfolio Management 45(1)) 提出標準化披露模板要求報告所有多重檢定。但這些全是自願性人類披露(對客戶、管理層、期刊審稿人),不含軟體強制的標籤門檻、不含持續維護的預註冊帳本、不含機器可讀的證據分級——PRISM 把披露準則自動化為硬性執行機制,這一步在該先行工作中不存在。",
+    "confidence": "high",
+    "sources": [
+     "https://doi.org/10.3905/jpm.2018.45.1.141 (Fabozzi & López de Prado 2018)",
+     "https://doi.org/10.2139/ssrn.2326253"
+    ],
+    "evidence": "JPM 摘要驗證:'propose a template that practitioners should use to fairly disclose multiple tests involved in an alleged discovery';Bailey 全文驗證:'Backtests published... almost never declare the number of trials involved in a discovery' 且唯一處方是 PBO 估計量與建議編輯「可要求」報告該機率——非預註冊協議或公開帳本。",
+    "vote": "3-0 × 3 (三條主張合併)"
+   },
+   {
+    "claim": "PRISM 的核心治理組合——「FDR 校正 AND walk-forward 樣本外驗證(對照 AR(1)/隨機遊走)雙門檻聯合必要,通過才標 CONFIRMED 否則永標 HYPOTHESIS,由軟體強制執行」——在最接近的先行工作中均未找到:(a) HLZ 2016 明確把 OOS 驗證與多重檢定框架列為兩種「替代」補救並只採後者(因 OOS 無法即時使用),全文搜索無任何要求兩者聯合通過的段落;(b) Bailey et al. 的 PBO 雖聯合考慮 IS 最優與 OOS 表現,但用 CSCV 而非 walk-forward、零提及 FDR、是機率估計量而非強制門檻;(c) Harvey 2017 的補救是貝葉斯化 p 值/最小 Bayes factor(分級但連續、非二元標籤、非聯合門檻)。判定:未找到先行工作(not found),依題目要求不等同確認首創。",
+    "confidence": "high",
+    "sources": [
+     "https://doi.org/10.2139/ssrn.2249314",
+     "https://doi.org/10.2139/ssrn.2326253",
+     "https://doi.org/10.2139/ssrn.2893930"
+    ],
+    "evidence": "HLZ 全文逐字:'There are two ways to deal with the bias introduced by multiple testing: out-of-sample validation and using a statistical framework that allows for multiple testing... We pursue the multiple testing framework';PBO 論文全文 grep 零 FDR 提及且明文批評 holdout 'unreliable and inaccurate';Harvey 2017 摘要:'I offer a simple alternative (the minimum Bayes factor)'。三個最接近來源內的「不存在」為 CONFIRMED;全球範圍的「未找到」受搜索覆蓋限制。",
+    "vote": "3-0, 3-0, 3-0 (三條主張合併;負面主張限定於已查來源)"
+   },
+   {
+    "claim": "可發表性建議(綜合推論,非直接來源支撐):最強角度是「方法論/系統論文」——把金融文獻中已提出但無人強制執行的規範(HLZ 的多重校正、Harvey 的預註冊、Fabozzi-LdP 的全試驗披露)實作為生產系統中的機器強制門檻,並以公開記分板(10 測 2 晉 8 敗)提供實證案例。適配出口:Journal of Financial Data Science(方法論+系統)、JOSS(若開源軟體本身)、arXiv q-fin.CP / stat.AP、NeurIPS/ICML 的 ML-for-finance 或 responsible-AI workshops。發表前需補:與「無治理層的同組件基線」的消融對比、正控制功效檢查的形式化描述、LLM agent 披露行為的可驗證評測、以及倫理/免責聲明(非投資建議)。",
+    "confidence": "medium",
+    "sources": [
+     "綜合自上述全部已驗證來源;venue 建議未經獨立查證"
+    ],
+    "evidence": "此建議由已確認的 gap(雙門檻強制機制無先行工作)與已確認的先行工作邊界推導;期刊/會議適配度與各出口的當前徵稿範圍未在本輪驗證中查核。",
+    "vote": "synthesis"
+   }
+  ],
+  "refuted": [
+   {
+    "claim": "The authors claim only in-sample crisis identification plus apparent (hedged, informal) predictive power — the abstract contains no pre-registered protocol, no FDR/multiple-testing correction, and no formal walk-forward out-of-sample validation gate, which supports the hypothesis that PRISM's epistemic governance layer (FDR + walk-forward CONFIRMED/HYPOTHESIS grading) is absent from this closest math-component prior art.",
+    "vote": "0-3",
+    "source": "https://www.sciencedirect.com/science/article/pii/S0304405X11002868"
+   }
+  ],
+  "sources": [
+   {
+    "url": "https://direct.mit.edu/rest/article/107/5/1424/116184/Bayesian-Local-Projections",
+    "quality": "primary",
+    "angle": "數學組件 prior art(預期已有)",
+    "claimCount": 5
+   },
+   {
+    "url": "https://www.sciencedirect.com/science/article/pii/S0927539800000128",
+    "quality": "primary",
+    "angle": "數學組件 prior art(預期已有)",
+    "claimCount": 5
+   },
+   {
+    "url": "https://arxiv.org/abs/2603.20271",
+    "quality": "primary",
+    "angle": "數學組件 prior art(預期已有)",
+    "claimCount": 5
+   },
+   {
+    "url": "https://www.sciencedirect.com/science/article/pii/S0304405X11002868",
+    "quality": "primary",
+    "angle": "數學組件 prior art(預期已有)",
+    "claimCount": 4
+   },
+   {
+    "url": "https://arxiv.org/abs/2605.27848",
+    "quality": "primary",
+    "angle": "數學組件 prior art(預期已有)",
+    "claimCount": 5
+   },
+   {
+    "url": "https://www.mdpi.com/journal/entropy/special_issues/financial_networks",
+    "quality": "primary",
+    "angle": "數學組件 prior art(預期已有)",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.2139/ssrn.2249314",
+    "quality": "primary",
+    "angle": "可複製性危機與多重檢定治理(最接近的方法論先行工作)",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.2139/ssrn.2326253",
+    "quality": "primary",
+    "angle": "可複製性危機與多重檢定治理(最接近的方法論先行工作)",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.2139/ssrn.2893930",
+    "quality": "primary",
+    "angle": "可複製性危機與多重檢定治理(最接近的方法論先行工作)",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.3905/jpm.2018.45.1.141",
+    "quality": "primary",
+    "angle": "可複製性危機與多重檢定治理(最接近的方法論先行工作)",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.2139/ssrn.2460551",
+    "quality": "primary",
+    "angle": "可複製性危機與多重檢定治理(最接近的方法論先行工作)",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.31222/osf.io/v7pxe",
+    "quality": "primary",
+    "angle": "預註冊/registered reports 在經濟金融的制度實踐",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.1111/1475-679x.12208",
+    "quality": "primary",
+    "angle": "預註冊/registered reports 在經濟金融的制度實踐",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.1257/jep.29.3.61",
+    "quality": "primary",
+    "angle": "預註冊/registered reports 在經濟金融的制度實踐",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.3905/jfds.2019.1.064",
+    "quality": "primary",
+    "angle": "預註冊/registered reports 在經濟金融的制度實踐",
+    "claimCount": 5
+   },
+   {
+    "url": "https://doi.org/10.1073/pnas.1708274114",
+    "quality": "primary",
+    "angle": "預註冊/registered reports 在經濟金融的制度實踐",
+    "claimCount": 5
+   },
+   {
+    "url": "https://arxiv.org/abs/2306.13063",
+    "quality": "primary",
+    "angle": "LLM agent 不確定性披露與 ML 治理系統",
+    "claimCount": 5
+   },
+   {
+    "url": "https://arxiv.org/abs/2401.06730",
+    "quality": "primary",
+    "angle": "LLM agent 不確定性披露與 ML 治理系統",
+    "claimCount": 5
+   },
+   {
+    "url": "https://arxiv.org/abs/2405.00623",
+    "quality": "primary",
+    "angle": "LLM agent 不確定性披露與 ML 治理系統",
+    "claimCount": 4
+   },
+   {
+    "url": "https://arxiv.org/abs/1810.03993",
+    "quality": "primary",
+    "angle": "LLM agent 不確定性披露與 ML 治理系統",
+    "claimCount": 5
+   },
+   {
+    "url": "https://royalsocietypublishing.org/doi/10.1098/rsos.181870",
+    "quality": "primary",
+    "angle": "LLM agent 不確定性披露與 ML 治理系統",
+    "claimCount": 5
+   },
+   {
+    "url": "https://arxiv.org/abs/2505.15155",
+    "quality": "primary",
+    "angle": "自主 AI 研究 agent + 量化投資(最新競爭工作)",
+    "claimCount": 5
+   },
+   {
+    "url": "https://arxiv.org/abs/2607.08332",
+    "quality": "primary",
+    "angle": "自主 AI 研究 agent + 量化投資(最新競爭工作)",
+    "claimCount": 5
+   },
+   {
+    "url": "https://arxiv.org/abs/2504.08066",
+    "quality": "primary",
+    "angle": "自主 AI 研究 agent + 量化投資(最新競爭工作)",
+    "claimCount": 5
+   },
+   {
+    "url": "https://arxiv.org/abs/2402.09746",
+    "quality": "primary",
+    "angle": "自主 AI 研究 agent + 量化投資(最新競爭工作)",
+    "claimCount": 4
+   },
+   {
+    "url": "https://arxiv.org/abs/2502.16789",
+    "quality": "primary",
+    "angle": "自主 AI 研究 agent + 量化投資(最新競爭工作)",
+    "claimCount": 5
+   },
+   {
+    "url": "https://arxiv.org/abs/2507.23276",
+    "quality": "secondary",
+    "angle": "自主 AI 研究 agent + 量化投資(最新競爭工作)",
+    "claimCount": 5
+   }
+  ]
+ }
+}
