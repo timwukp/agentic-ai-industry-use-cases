@@ -1,0 +1,47 @@
+{
+ "fold_vote_and_rules_h12": {
+  "R1_frac_pos>=0.70 (production confirm)": {
+   "power": 0.6083333333333333,
+   "fp": 0.16666666666666666
+  },
+  "R2_pooled_edge (5% calibrated)": {
+   "threshold": 0.149,
+   "power": 0.267,
+   "fp": 0.05
+  },
+  "R3_frac_beats_zero (5% calibrated)": {
+   "threshold": 0.625,
+   "power": 0.0,
+   "fp": 0.033
+  },
+  "R4_pooled_mse_ratio (5% calibrated)": {
+   "threshold": 0.9482,
+   "power": 0.0,
+   "fp": 0.05
+  }
+ },
+ "pooled_edge_by_horizon": {
+  "h=3": {
+   "threshold": 0.0764,
+   "power": 0.792,
+   "fp": 0.05,
+   "planted_median": 0.1114
+  },
+  "h=6": {
+   "threshold": 0.0903,
+   "power": 0.817,
+   "fp": 0.05,
+   "planted_median": 0.1395
+  }
+ },
+ "chosen": {
+  "rule": "pooled n_test-weighted edge_vs_ar1",
+  "horizon": 6,
+  "threshold": 0.0903,
+  "train_years": 17,
+  "test_months": 48,
+  "power": 0.817,
+  "fp": 0.05,
+  "seeds": 120
+ }
+}
