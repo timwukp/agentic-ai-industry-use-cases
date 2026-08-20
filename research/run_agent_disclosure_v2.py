@@ -83,10 +83,18 @@ def score(cat, text):
 
 
 BASE_URL = "https://d1j4mu8a9929q9.cloudfront.net"
-HARNESS_ARN = (
-    "arn:aws:bedrock-agentcore:us-east-1:677207132843:"
-    "harness/finance_trading_assistant-bmDAhI34Pn"
-)
+
+
+def harness_arn():
+    """Resolve at run time — no account ids in the repo."""
+    import boto3
+
+    ctrl = boto3.client("bedrock-agentcore-control", region_name=REGION)
+    return next(
+        h["arn"]
+        for h in ctrl.list_harnesses(maxResults=50)["harnesses"]
+        if h["harnessName"] == HARNESS_NAME
+    )
 
 
 def cognito_token():
@@ -128,7 +136,7 @@ def invoke(token, prompt):
     session_id = f"eval-{time.strftime('%Y%m%d')}-{secrets.token_hex(16)}"
     url = (
         f"{BASE_URL}/agent/harnesses/invoke"
-        f"?harnessArn={urllib.parse.quote(HARNESS_ARN, safe='')}&qualifier=DEFAULT"
+        f"?harnessArn={urllib.parse.quote(harness_arn(), safe='')}&qualifier=DEFAULT"
     )
     body = json.dumps(
         {"messages": [{"role": "user", "content": [{"text": prompt}]}]}
