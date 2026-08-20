@@ -24,7 +24,7 @@ A trading desk lives and dies by knowing *what kind* of number it is looking at.
 labels every figure with its data world — **LIVE** (Finnhub/FRED market data), **DERIVED**
 (news-scored factor signals, hypothesis-grade), **MODEL** (PRISM regime and tail-risk
 output), or **SIMULATED** (demo book) — and never mixes them silently. The PRISM regime read
-is deliberately positioned as a historical lens (AUROC 0.85–0.91 against NBER recessions,
+is deliberately positioned as a historical lens (AUROC 0.84–0.86 against NBER recessions,
 but lagging real time by more than 10 trading days): it explains where you have been, and
 the agent will refuse to turn it into a crash date.
 
@@ -88,7 +88,7 @@ flowchart TD
 | Restricted list | MNPI names · first 10 days post-IPO · SEC suspensions | same | trade blocked |
 | Order execution | every order | agent prompt (confirm-then-execute) | client confirms symbol/side/qty/type |
 
-**KPIs:** calibrated 99% VaR (~1.0% violations, Basel green) · regime AUROC 0.85–0.91 ·
+**KPIs:** calibrated 99% VaR (~1.0% violations, Basel green) · regime AUROC 0.84–0.86 ·
 zero unsuitable solicited recommendations
 
 ---

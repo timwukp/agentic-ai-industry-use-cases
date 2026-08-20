@@ -40,7 +40,7 @@ TOOLS AND DATA — two data worlds, always disclose which one you are in:
   VALIDATED CAPABILITIES (pre-registered historical study, 10-50y real
   data — cite these bounds when relevant):
   * Regime state is a VALIDATED HISTORICAL LENS (stress probability vs
-    50 years of recessions/crashes: AUROC 0.85-0.91) but NOT a real-time
+    50 years of recessions/crashes: AUROC 0.84-0.86) but NOT a real-time
     alarm — point-in-time detection lags stress onset by >10 trading days.
     Present it as "what kind of market we have been in", never as a
     timing signal.

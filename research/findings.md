@@ -22,7 +22,9 @@ result, not a failure of the study.
 
 1. **H1a — Regime detection (descriptive): 支持 in 4/5 cohorts.**
    Smoothed stress probability vs NBER recessions + crash windows:
-   AUROC 0.85–0.91 in C40/C36/C20/C10, 0.67 in C50 (the sparse two-variable
+   AUROC 0.84–0.86 in C40/C36/C20/C10 (0.8396–0.8589 in the sealed
+   C*.json artifacts; an earlier transcription here read "0.85–0.91" —
+   corrected 2026-08-20, no artifact changed), 0.67 in C50 (the sparse two-variable
    1970s panel drags it down). The HMM genuinely "sees" 2008, 2020, 2022.
 2. **H1b — Real-time detection: 大體一致, not 支持.** Point-in-time
    AUROC clears 0.70 in 4/5 cohorts, but median detection lag exceeds the

@@ -440,3 +440,15 @@ no protocol defect was recorded; the candidate is closed.
 
 Scoreboard after this test: **2 promoted / 9 fast-failed across 11
 pre-registered tests.**
+
+## Correction (2026-08-20): regime AUROC range misquote
+
+The widely quoted "AUROC 0.85–0.91" for the H1a regime layer does not
+match the sealed C*.json artifacts, which read 0.8396 / 0.8465 / 0.8537 /
+0.8589 for C36/C10/C20/C40 (0.67 for C50). Correct range: **0.84–0.86**.
+The misquote originated as a transcription in findings.md (now corrected
+in place with a dated note) and propagated to the READMEs, the
+business-flow docs, and the finance harness system prompt — all corrected
+in the same commit; no artifact changed. Caught by the paper's
+claims-verification pass: a number in prose is unchecked until it is
+re-derived from data.

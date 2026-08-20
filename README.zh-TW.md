@@ -234,7 +234,7 @@ E2E hook），由一個重建測試釘死：從目錄 key 加參數必須精確�
 PRISM 的聲稱不靠信任，靠檢驗。一項期刊級驗證研究用 10/20/30/40/50 年真實數據對每一層
 做了背靠背回測（協議在任何測試代碼之前凍結並打 git tag；全程 point-in-time 紀律——在
 t 日只用 ≤t 的數據）：體制層作為歷史透鏡成立（對照 NBER 衰退 + 已知崩盤，AUROC
-0.85–0.91），但實時檢測滯後超過 10 個交易日，所以代理將其呈現為背景而非預警；頭條
+0.84–0.86），但實時檢測滯後超過 10 個交易日，所以代理將其呈現為背景而非預警；頭條
 VaR 校準全綠（Kupiec/Christoffersen）；崩盤「擇時」類問題以脆弱度-對-觸發器框架回答，
 因為沒有任何經濟可預測性通過 Hansen SPA 檢驗（見
 [research/report.md](research/report.md)、[research/findings.md](research/findings.md)）。
