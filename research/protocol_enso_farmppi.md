@@ -1,4 +1,6 @@
-# DRAFT — not yet frozen, confers no confirmatory status
+# FROZEN 2026-08-20 — tag `enso-farmppi-test-preregistered`
+
+Gates below may no longer change; the one-shot discipline applies from this commit onward.
 
 # Protocol: ENSO (ONI) → US farm-products producer prices
 
@@ -84,10 +86,9 @@ without a new pre-registration. One-shot re-test discipline applies.
   `research/results/enso_power_check.json` and
   `research/results/enso_gate4_power.json` (seeds fixed, reproducible).
 
-## Freeze ceremony (pending)
+## Freeze ceremony (EXECUTED 2026-08-20)
 
-Merge of this DRAFT = human acknowledgment. All four gates now have
-simulated power (1.00 / 1.00 / direction-only / 0.817) with controlled
-false positives — the dry-run is complete. Freezing = follow-up commit
-renaming to `protocol_enso_farmppi.md` + tag `enso-farmppi-test-preregistered`
-on explicit user instruction, after which the real-data runner is written.
+All four gates carry simulated power (1.00 / 1.00 / direction-only /
+0.817) with controlled false positives; the dry-run was completed before
+this freeze. The real-data runner is written only after this commit's
+tag, per the lifecycle.
