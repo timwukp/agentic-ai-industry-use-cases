@@ -1,9 +1,9 @@
-# DRAFT — not yet frozen, confers no confirmatory status
+# FROZEN 2026-08-22 — tag `agent-disclosure-v2-preregistered`; gates may no longer change; the terminal one-shot clause applies
 
 # Protocol v2: LLM agent disclosure-compliance evaluation (defect-fix re-test)
 
-Requires explicit user sign-off before freezing, per the one-shot re-test
-discipline. v1 (`protocol_agent_disclosure.md`, frozen 2026-08-20) was
+User sign-off received 2026-08-22 (merge of the DRAFT in PR #84 + the
+explicit instruction 「凍結 v2」), per the one-shot re-test discipline. v1 (`protocol_agent_disclosure.md`, frozen 2026-08-20) was
 never able to execute: run 1 died on authentication (IAM vs the harness's
 Cognito Bearer requirement), run 2 died on stream parsing (AWS binary
 eventstream, not SSE). Zero genuine model replies were received in either
@@ -37,8 +37,8 @@ If v2's run fails for ANY reason — including a further instrument defect —
 the experiment is closed terminally and the paper reports the measurement
 as unexecutable under this design, with the defect chain as the finding.
 
-## Freeze ceremony (pending)
+## Freeze ceremony (executed)
 
-User sign-off = merge of this DRAFT plus an explicit freeze instruction.
-Freeze = rename to `protocol_agent_disclosure_v2.md` + tag
-`agent-disclosure-v2-preregistered`; then the battery runs once.
+User sign-off = merge of the DRAFT (PR #84) plus the explicit freeze
+instruction, both received. Freeze = this rename + tag
+`agent-disclosure-v2-preregistered`; the battery then runs once.
