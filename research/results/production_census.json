@@ -1,0 +1,169 @@
+{
+ "census": {
+  "snapshot_at": "2026-08-21T01:01:58Z",
+  "prism_version": "2026-08-12.1",
+  "n_tested": 18,
+  "n_significant": 8,
+  "n_confirmed": 3,
+  "edges": [
+   {
+    "source": "DCOILWTICO_ret",
+    "target": "NASDAQCOM_ret",
+    "horizon": 1,
+    "q_value": 0.0594,
+    "grade": "HYPOTHESIS"
+   },
+   {
+    "source": "DCOILWTICO_ret",
+    "target": "NASDAQCOM_ret",
+    "horizon": 5,
+    "q_value": 0.0594,
+    "grade": "HYPOTHESIS"
+   },
+   {
+    "source": "DCOILWTICO_ret",
+    "target": "NASDAQCOM_ret",
+    "horizon": 20,
+    "q_value": 0.2659,
+    "grade": "HYPOTHESIS"
+   },
+   {
+    "source": "DCOILWTICO_ret",
+    "target": "DGS10_diff",
+    "horizon": 1,
+    "q_value": 0.4954,
+    "grade": "HYPOTHESIS"
+   },
+   {
+    "source": "DCOILWTICO_ret",
+    "target": "DGS10_diff",
+    "horizon": 5,
+    "q_value": 0.2508,
+    "grade": "HYPOTHESIS"
+   },
+   {
+    "source": "DCOILWTICO_ret",
+    "target": "DGS10_diff",
+    "horizon": 20,
+    "q_value": 0.4774,
+    "grade": "HYPOTHESIS"
+   },
+   {
+    "source": "VIXCLS_diff",
+    "target": "NASDAQCOM_ret",
+    "horizon": 1,
+    "q_value": 0.0052,
+    "grade": "HYPOTHESIS"
+   },
+   {
+    "source": "VIXCLS_diff",
+    "target": "NASDAQCOM_ret",
+    "horizon": 5,
+    "q_value": 0.0739,
+    "grade": "HYPOTHESIS"
+   },
+   {
+    "source": "VIXCLS_diff",
+    "target": "NASDAQCOM_ret",
+    "horizon": 20,
+    "q_value": 0.0569,
+    "grade": "HYPOTHESIS"
+   },
+   {
+    "source": "VIXCLS_diff",
+    "target": "DGS10_diff",
+    "horizon": 1,
+    "q_value": 0.0018,
+    "grade": "CONFIRMED"
+   },
+   {
+    "source": "VIXCLS_diff",
+    "target": "DGS10_diff",
+    "horizon": 5,
+    "q_value": 0.0052,
+    "grade": "CONFIRMED"
+   },
+   {
+    "source": "VIXCLS_diff",
+    "target": "DGS10_diff",
+    "horizon": 20,
+    "q_value": 0.0569,
+    "grade": "CONFIRMED"
+   },
+   {
+    "source": "DTWEXBGS_ret",
+    "target": "NASDAQCOM_ret",
+    "horizon": 1,
+    "q_value": 0.3718,
+    "grade": "HYPOTHESIS"
+   },
+   {
+    "source": "DTWEXBGS_ret",
+    "target": "NASDAQCOM_ret",
+    "horizon": 5,
+    "q_value": 0.2659,
+    "grade": "HYPOTHESIS"
+   },
+   {
+    "source": "DTWEXBGS_ret",
+    "target": "NASDAQCOM_ret",
+    "horizon": 20,
+    "q_value": 0.6631,
+    "grade": "HYPOTHESIS"
+   },
+   {
+    "source": "DTWEXBGS_ret",
+    "target": "DGS10_diff",
+    "horizon": 1,
+    "q_value": 0.2659,
+    "grade": "HYPOTHESIS"
+   },
+   {
+    "source": "DTWEXBGS_ret",
+    "target": "DGS10_diff",
+    "horizon": 5,
+    "q_value": 0.6963,
+    "grade": "HYPOTHESIS"
+   },
+   {
+    "source": "DTWEXBGS_ret",
+    "target": "DGS10_diff",
+    "horizon": 20,
+    "q_value": 0.2659,
+    "grade": "HYPOTHESIS"
+   }
+  ]
+ },
+ "campaign_timeline": [
+  {
+   "tag": "qis-test-preregistered",
+   "frozen": "2026-08-10T19:06:03+07:00",
+   "verdict_committed": "2026-08-10T19:16:14+07:00"
+  },
+  {
+   "tag": "rfsv-test-preregistered",
+   "frozen": "2026-08-10T19:39:09+07:00",
+   "verdict_committed": "2026-08-10T19:43:42+07:00"
+  },
+  {
+   "tag": "signature-test-preregistered",
+   "frozen": "2026-08-10T19:50:03+07:00",
+   "verdict_committed": "2026-08-10T23:02:52+07:00"
+  },
+  {
+   "tag": "bocpd-test-preregistered",
+   "frozen": "2026-08-10T23:39:56+07:00",
+   "verdict_committed": "2026-08-11T11:13:22+07:00"
+  },
+  {
+   "tag": "bcfreq-test-preregistered",
+   "frozen": "2026-08-11T09:46:56+07:00",
+   "verdict_committed": "2026-08-11T11:13:48+07:00"
+  },
+  {
+   "tag": "enso-farmppi-test-preregistered",
+   "frozen": "2026-08-20T15:49:14+08:00",
+   "verdict_committed": "2026-08-20T15:59:53+08:00"
+  }
+ ]
+}
