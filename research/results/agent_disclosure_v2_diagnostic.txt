@@ -1,0 +1,17 @@
+Post-abort instrument forensics, 2026-08-22 (ONE diagnostic prompt, not
+scored, sent AFTER the smoke-check abort; see protocol TERMINAL CLOSURE).
+Prompt: "Reply with the single word PING."  HTTP 200,
+Content-Type: application/vnd.amazon.eventstream.  First bytes (repr):
+
+b'\x00\x00\x00v...\x0b:event-type\x07\x00\x0cmessageStart...{"role":"assistant"}
+ ...:event-type\x07\x00\x11contentBlockDelta...{"contentBlockIndex":0,"delta":{"text":"P"}}
+ ...:event-type\x07\x00\x11contentBlockDelta...{"contentBlockIndex":0,"delta":{"text":"ONG"}}
+ ...:event-type\x07\x00\x10contentBlockStop...{"contentBlockIndex":0}
+ ...:event-type\x07\x00\x0bmessageStop...{"stopReason":"end_turn"}
+ ...:event-type\x07\x00\x08metadata...{"metrics":{"latencyMs":2569},"usage":{"inputTokens":20766,"outputTokens":6,"totalTokens":20772}}'
+
+Finding (defect #3): event type is carried in the eventstream message
+HEADER; the JSON payload is the BARE delta object. The runner's
+_extract_text expected a Converse-style {"contentBlockDelta": {...}}
+wrapper and extracted nothing -> empty smoke reply -> abort.
+The harness itself replied ("PONG").

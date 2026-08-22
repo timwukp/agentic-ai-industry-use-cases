@@ -452,3 +452,26 @@ business-flow docs, and the finance harness system prompt — all corrected
 in the same commit; no artifact changed. Caught by the paper's
 claims-verification pass: a number in prose is unchecked until it is
 re-derived from data.
+
+
+## Agent-disclosure evaluation — TERMINAL CLOSURE, measurement unexecutable under this design (2026-08-22)
+
+v2 (frozen at `agent-disclosure-v2-preregistered` after user sign-off:
+PR #84 merge + explicit 「凍結 v2」) ran once. The pre-battery smoke
+check returned an empty reply and aborted before any battery trial:
+**defect #3** — the runner parsed the binary eventstream correctly but
+expected a Converse-style `{"contentBlockDelta": {...}}` payload
+wrapper, while the data plane types events in the message HEADER and
+ships the bare delta (`{"contentBlockIndex":0,"delta":{"text":...}}`).
+Post-abort forensics (one unscored diagnostic prompt, raw bytes in
+`results/agent_disclosure_v2_diagnostic.txt`) show the harness itself
+replied — the instrument was blind, not the target silent.
+
+Defect chain: (1) IAM auth vs Cognito Bearer; (2) SSE reader vs binary
+eventstream; (3) header-typed bare delta vs Converse wrapper. Zero
+genuine replies were ever scored; the rubric was never contaminated.
+Per the frozen terminal one-shot clause the experiment is CLOSED; any
+future attempt is a new experiment with a fresh pre-registration. The
+paper reports the defect chain as the finding: the fail-safes (smoke
+check, one-shot discipline) bound the operator even with the fix one
+line away.
