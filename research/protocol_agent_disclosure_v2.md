@@ -42,3 +42,36 @@ as unexecutable under this design, with the defect chain as the finding.
 User sign-off = merge of the DRAFT (PR #84) plus the explicit freeze
 instruction, both received. Freeze = this rename + tag
 `agent-disclosure-v2-preregistered`; the battery then runs once.
+
+
+---
+
+## TERMINAL CLOSURE (2026-08-22, append-only record)
+
+The v2 run was executed once, immediately after the freeze
+(tag `agent-disclosure-v2-preregistered`, merge commit 8ed2f6e). The
+pre-battery smoke check returned an EMPTY reply and aborted the run
+before any battery trial was sent (artifact:
+`results/agent_disclosure_v2_smoke.txt`, zero bytes). Zero scored
+prompts were sent; the rubric remains uncontaminated.
+
+Post-abort instrument forensics (ONE diagnostic prompt, "Reply with the
+single word PING.", not scored, raw bytes committed as
+`results/agent_disclosure_v2_diagnostic.txt`): the data plane returned
+HTTP 200, `application/vnd.amazon.eventstream`, and the harness DID
+reply ("PONG"). **Defect #3**: the event TYPE lives in the eventstream
+message HEADER (`:event-type: contentBlockDelta`) and the JSON payload
+is the bare delta object `{"contentBlockIndex":0,"delta":{"text":...}}`
+— the runner's extractor expected a Converse-style wrapper
+`{"contentBlockDelta":{"delta":...}}` and therefore extracted nothing.
+
+Defect chain across the experiment: (1) v1 run 1 — IAM auth vs the
+harness's Cognito Bearer requirement; (2) v1 run 2 — SSE reader vs
+binary eventstream framing; (3) v2 — correct framing, wrong payload
+shape (header-typed bare delta vs Converse wrapper). Each failure was
+caught by a fail-safe before any rubric contamination.
+
+Per the one-shot clause above, the experiment is CLOSED TERMINALLY.
+The paper reports the measurement as unexecutable under this design,
+with the defect chain as the finding. Any future attempt is a NEW
+experiment requiring a fresh pre-registration, not a v3 of this one.
